@@ -55,7 +55,7 @@ public abstract class Ticket extends Catchable {
    */
   protected Ticket(
       long id, @Nullable User user, @NotNull TicketStatus status, @Nullable TextChannel channel) {
-    super(Configuration.getInstance().getToDelete());
+    super(Configuration.getInstance().getToUnload());
     this.id = id;
     this.user = user;
     this.status = status;

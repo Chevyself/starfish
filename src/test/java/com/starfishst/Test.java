@@ -6,6 +6,10 @@ package com.starfishst;
 
  */
 
+import com.starfishst.simple.files.FileUtils;
+
+import java.io.IOException;
+
 /** Simple test for spring */
 public class Test {
 
@@ -98,4 +102,5 @@ public class Test {
     return links == null ? "" : links.getHref();
   }
    */
+
 }

@@ -18,9 +18,6 @@ import java.util.stream.Collectors;
 /** This class represents the 'config.json' as a java object */
 public class Configuration {
 
-  /** The instance of configuration for static usage */
-  @Nullable private static Configuration instance;
-
   /** The token for discord authentication */
   @NotNull private final String token;
   /** The prefix to use in commands */
@@ -31,10 +28,8 @@ public class Configuration {
   private final long openTicketsByUserLimit;
   /**
    * The time to delete tickets
-   *
-   * <p>//TODO Change it to unload
    */
-  @NotNull private final Time toDelete;
+  @NotNull private final Time toUnload;
   /** The time to unload freelancers */
   @NotNull private final Time toUnloadFreelancer;
   /** The time to start an inactive check */
@@ -61,19 +56,22 @@ public class Configuration {
   @NotNull private final ManagerOptions commands;
   /** The type of questions send */
   @NotNull private final QuestionSendType questionSendType;
+  /**
+   * The list of ticket types that cannot be created
+   */
+  @NotNull private final List<TicketType> bannedTypes;
   /** The total of tickets */
   private long total;
 
   /**
    * Create an instance
-   *
-   * @param token the token for discord connection
+   *  @param token the token for discord connection
    * @param prefix the prefix to use in commands
    * @param mongo the mongo configuration
    * @param openTicketsByUserLimit the limit for open tickets per user
    * @param orderQuestions the questions for orders
    * @param messages the list of responsive messages
-   * @param toDelete the time to delete tickets
+   * @param toUnload the time to delete tickets
    * @param toUnloadFreelancer the time to unload freelancers
    * @param inactiveTime the time to start inactive tests
    * @param timeToFinishInactiveTest the time to finish inactive tests
@@ -86,35 +84,35 @@ public class Configuration {
    * @param fees the list of fees
    * @param commands the configuration for commands
    * @param questionSendType the type to send questions
+   * @param bannedTypes the type of tickets that cannot be created
    */
   public Configuration(
-      @NotNull String token,
-      @NotNull String prefix,
-      @NotNull MongoConfiguration mongo,
-      long openTicketsByUserLimit,
-      @NotNull List<Question> orderQuestions,
-      @NotNull List<ResponsiveMessage> messages,
-      @NotNull Time toDelete,
-      @NotNull Time toUnloadFreelancer,
-      @NotNull Time inactiveTime,
-      @NotNull Time timeToFinishInactiveTest,
-      @NotNull AutoSaveConfiguration autoSave,
-      @NotNull List<Time> toAnnounce,
-      int total,
-      @NotNull List<Question> applyQuestions,
-      @NotNull List<Question> supportQuestions,
-      @NotNull List<Question> productQuestions,
-      @NotNull List<Fee> fees,
-      @NotNull ManagerOptions commands,
-      @NotNull QuestionSendType questionSendType) {
-    instance = this;
+          @NotNull String token,
+          @NotNull String prefix,
+          @NotNull MongoConfiguration mongo,
+          long openTicketsByUserLimit,
+          @NotNull List<Question> orderQuestions,
+          @NotNull List<ResponsiveMessage> messages,
+          @NotNull Time toUnload,
+          @NotNull Time toUnloadFreelancer,
+          @NotNull Time inactiveTime,
+          @NotNull Time timeToFinishInactiveTest,
+          @NotNull AutoSaveConfiguration autoSave,
+          @NotNull List<Time> toAnnounce,
+          int total,
+          @NotNull List<Question> applyQuestions,
+          @NotNull List<Question> supportQuestions,
+          @NotNull List<Question> productQuestions,
+          @NotNull List<Fee> fees,
+          @NotNull ManagerOptions commands,
+          @NotNull QuestionSendType questionSendType, @NotNull List<TicketType> bannedTypes) {
     this.token = token;
     this.prefix = prefix;
     this.mongo = mongo;
     this.openTicketsByUserLimit = openTicketsByUserLimit;
     this.orderQuestions = orderQuestions;
     this.responsiveMessages = messages;
-    this.toDelete = toDelete;
+    this.toUnload = toUnload;
     this.toUnloadFreelancer = toUnloadFreelancer;
     this.inactiveTime = inactiveTime;
     this.timeToFinishInactiveTest = timeToFinishInactiveTest;
@@ -127,6 +125,7 @@ public class Configuration {
     this.fees = fees;
     this.commands = commands;
     this.questionSendType = questionSendType;
+    this.bannedTypes = bannedTypes;
   }
 
   /**
@@ -254,8 +253,8 @@ public class Configuration {
    * @return the time to unload or delete tickets
    */
   @NotNull
-  public Time getToDelete() {
-    return toDelete;
+  public Time getToUnload() {
+    return toUnload;
   }
 
   /**
@@ -410,5 +409,15 @@ public class Configuration {
   @NotNull
   public static Configuration getInstance() {
     return Main.getConfiguration();
+  }
+
+  /**
+   * Get the list of banned ticket types
+   *
+   * @return the list of banned ticket types
+   */
+  @NotNull
+  public List<TicketType> getBannedTypes() {
+    return bannedTypes;
   }
 }

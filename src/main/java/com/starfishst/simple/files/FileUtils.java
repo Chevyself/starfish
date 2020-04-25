@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -58,6 +59,11 @@ public class FileUtils {
         LOADER.getResourceAsStream(name), "The resource " + name + " does not exist.");
   }
 
+  public static URL getResourceAsUrl(@NotNull String name){
+    return LOADER.getResource(name);
+  }
+
+
   /**
    * Gets the file from the same place as the jar or gets it from the resources and copies it
    *
@@ -84,6 +90,12 @@ public class FileUtils {
    */
   public static File copyResource(@NotNull String name) throws IOException {
     File file = new File(name);
+    File directory = file.getParentFile();
+    if (directory != null && !directory.exists()) {
+      if (!directory.mkdir()) {
+        throw new IOException("Directory " + directory + " could not be created");
+      }
+    }
     Files.copy(getResource(name), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
     return file;
   }

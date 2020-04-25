@@ -7,7 +7,7 @@
   },
   "total": 0,
   "openTicketsByUserLimit": 2,
-  "toDelete": "3m",
+  "toUnload": "3m",
   "toUnloadFreelancer": "10m",
   "inactiveTime": "2w",
   "timeToFinishInactiveTest": "24h",
@@ -109,5 +109,6 @@
     "success": "#ffaa00",
     "error": "#b30000"
   },
-  "questionSendType": "NONE"
+  "questionSendType": "NONE",
+  "bannedTypes": []
 }

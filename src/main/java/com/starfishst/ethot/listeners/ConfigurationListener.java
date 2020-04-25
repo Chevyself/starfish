@@ -86,7 +86,5 @@ public class ConfigurationListener {
     Configuration.getInstance()
         .getResponsiveMessages()
         .removeIf(message -> message != null && message.getId() == event.getMessageIdLong());
-
-    // TODO remove the message from orders, quotes
   }
 }

@@ -62,6 +62,7 @@ public class TicketManager {
   public Ticket createTicket(
       @NotNull TicketType type, @NotNull Member creator, @Nullable Ticket parent)
       throws DiscordManipulationException, TicketCreationException {
+    this.validateTicketType(type);
     this.validateUser(creator);
     long id = this.getId(parent);
     TextChannel channel = getChannel(type, id, creator, parent);
@@ -109,6 +110,19 @@ public class TicketManager {
     }
     ticket.onCreation();
     return ticket;
+  }
+
+  /**
+   * Validates that the type is not forbidden from being created
+   * @param type the type of ticket to check
+   * @throws TicketCreationException if the type of ticket cannot be created
+   */
+  private void validateTicketType(@NotNull TicketType type) throws TicketCreationException {
+    if (Configuration.getInstance().getBannedTypes().contains(type)) {
+      HashMap<String, String> placeholders = new HashMap<>();
+      placeholders.put("type", type.toString().toLowerCase());
+      throw new TicketCreationException(Lang.get("TICKET_TYPE_CANNOT_BE_CREATED", placeholders));
+    }
   }
 
   /**
