@@ -1,0 +1,21 @@
+{
+  "guild": 0,
+  "roles": {
+    "support": [],
+    "management": [],
+    "leadership": []
+  },
+  "categories": {
+  },
+  "channels": {
+  },
+  "roleKeyMap": {
+    "ticketCloser": [],
+    "ticketManager": [],
+    "sendInactiveCheck": [],
+    "allowedInCategories":  [],
+    "allowedToSeeInCategories": [],
+    "applyRoles": [],
+    "supportRoles": []
+  }
+}
