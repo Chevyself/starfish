@@ -18,7 +18,7 @@ public class OrderClaimingReactionResponse implements ReactionResponse {
 
   @Override
   public @NotNull String getUnicode() {
-    return Unicode.WHITE_CHECK_MARK;
+    return Unicode.getEmoji("UNICODE_ORDER_CLAIMING");
   }
 
   @Override

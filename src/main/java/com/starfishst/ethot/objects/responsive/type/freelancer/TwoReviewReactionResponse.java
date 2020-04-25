@@ -18,7 +18,7 @@ public class TwoReviewReactionResponse extends ReviewReactionResponse {
 
   @Override
   public @NotNull String getUnicode() {
-    return Unicode.TWO;
+    return Unicode.getEmoji("UNICODE_2_REVIEW");
   }
 
   @Override

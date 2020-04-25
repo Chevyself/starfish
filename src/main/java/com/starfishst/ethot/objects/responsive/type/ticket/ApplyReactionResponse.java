@@ -1,5 +1,6 @@
 package com.starfishst.ethot.objects.responsive.type.ticket;
 
+import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.type.TicketCreator;
 import com.starfishst.ethot.util.Unicode;
@@ -19,7 +20,7 @@ public class ApplyReactionResponse extends TicketReactionResponse {
 
   @Override
   public @NotNull String getUnicode() {
-    return Unicode.MEMO;
+    return Lang.get("UNICODE_APPLY");
   }
 
   @Override

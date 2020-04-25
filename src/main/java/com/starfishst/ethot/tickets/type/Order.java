@@ -116,7 +116,6 @@ public class Order extends FreelancingTicket {
               getType().getChannel(),
               msg -> {
                 message = new OrderClaimingResponsiveMessage(msg.getIdLong());
-                msg.addReaction(Unicode.WHITE_CHECK_MARK).queue();
               });
     } catch (DiscordManipulationException e) {
       Messages.error("This ticket could not be announced");

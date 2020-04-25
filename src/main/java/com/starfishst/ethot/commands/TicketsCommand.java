@@ -210,10 +210,7 @@ public class TicketsCommand {
             ResultType.GENERIC,
             Messages.create(
                 "ARCHIVE_CONFIRM_TITLE", "ARCHIVE_CONFIRM_DESCRIPTION", placeholders, placeholders),
-            msg -> {
-              new ArchiveResponsiveMessage(msg);
-              msg.addReaction(Unicode.WHITE_CHECK_MARK).queue();
-            });
+                ArchiveResponsiveMessage::new);
       } else {
         return new Result(ResultType.USAGE, Lang.get("ALREADY_ARCHIVED", placeholders));
       }
@@ -235,9 +232,6 @@ public class TicketsCommand {
     return new Result(
         ResultType.GENERIC,
         Messages.create("TICKET_PANEL_TITLE", "TICKET_PANEL_DESCRIPTION", null, null),
-        msg -> {
-          new TicketPanel(msg);
-          msg.addReaction(Unicode.TICKET).queue();
-        });
+            TicketPanel::new);
   }
 }

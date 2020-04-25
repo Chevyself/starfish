@@ -53,7 +53,7 @@ public class TicketPanel extends ResponsiveMessage {
         new ReactionResponse() {
           @Override
           public @NotNull String getUnicode() {
-            return Unicode.TICKET;
+            return Unicode.getEmoji("UNICODE_TICKET_PANEL");
           }
 
           @Override

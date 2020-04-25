@@ -19,7 +19,7 @@ public class SupportReactionResponse extends TicketReactionResponse {
 
   @Override
   public @NotNull String getUnicode() {
-    return Unicode.HAMMER;
+    return Unicode.getEmoji("UNICODE_SUPPORT");
   }
 
   @Override

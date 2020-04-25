@@ -19,7 +19,7 @@ public class OfferAcceptReactionResponse implements ReactionResponse {
 
   @Override
   public @NotNull String getUnicode() {
-    return Unicode.WHITE_CHECK_MARK;
+    return Unicode.getEmoji("UNICODE_OFFER_ACCEPT");
   }
 
   @Override

@@ -50,6 +50,7 @@ public class TicketCreator extends Ticket {
         QuestionTicketListener.sendNextMessage(
             this.id,
             channel,
+            // TODO A WAY TO DISABLE THE CATEGORIES THAT PEOPLE CAN CREATE
             Messages.create("CREATOR_TITLE", "CREATOR_DESCRIPTION", placeholders, placeholders)
                 .getAsMessageQuery()
                 .getMessage(),

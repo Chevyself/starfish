@@ -18,7 +18,7 @@ public class ThreeReviewReactionResponse extends ReviewReactionResponse {
 
   @Override
   public @NotNull String getUnicode() {
-    return Unicode.THREE;
+    return Unicode.getEmoji("UNICODE_3_REVIEW");
   }
 
   @Override

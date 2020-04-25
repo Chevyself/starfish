@@ -52,7 +52,7 @@ public class ProductShopResponsiveMessage extends ResponsiveMessage {
         new ReactionResponse() {
           @Override
           public @NotNull String getUnicode() {
-            return Unicode.WHITE_CHECK_MARK;
+            return Unicode.getEmoji("UNICODE_PRODUCT_SHOP");
           }
 
           @Override

@@ -92,7 +92,6 @@ public class InactiveCheck extends TimerTask {
                                                       ticket.getId(),
                                                       new ArrayList<>(),
                                                       false);
-                                                  msg.addReaction(Unicode.WHITE_CHECK_MARK).queue();
                                                 });
                                       }
                                     }));
