@@ -18,5 +18,7 @@ public enum ResponsiveMessageType {
   /** The message listening for customers to create tickets */
   TICKET_PANEL,
   /** The message waiting for customer to buy a product */
-  PRODUCT
+  PRODUCT,
+  /** The message sent to confirm a suggestion */
+  SUGGESTION_CONFIRM
 }

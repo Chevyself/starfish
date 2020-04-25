@@ -46,7 +46,13 @@ import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.ethot.util.Console;
 import com.starfishst.simple.config.JsonConfiguration;
+import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
+import java.awt.*;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Category;
@@ -56,12 +62,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.security.auth.login.LoginException;
-import java.awt.*;
-import java.io.IOException;
-import java.util.Scanner;
-import java.util.logging.Level;
 
 /**
  * The main class of the bot! This bot allows you to make your discord server to become a service!
@@ -133,7 +133,9 @@ public class Main {
       GsonProvider.addAdapter(TextChannel.class, new TextChannelAdapter());
       GsonProvider.addAdapter(Time.class, new TimeAdapter());
       GsonProvider.refresh();
-      configuration = JsonConfiguration.getInstance("config.json", Configuration.class);
+      configuration =
+          JsonConfiguration.getInstance(
+              FileUtils.getFileOrResource("config.json"), Configuration.class);
       Console.info("Configuration setup has been completed");
     } catch (IOException e) {
       Console.log(Level.SEVERE, e);
@@ -189,7 +191,8 @@ public class Main {
     try {
       if (jda != null) {
         Console.info("Setting up Discord configuration");
-        discConfiguration = JsonConfiguration.getInstance("discord.json", DiscordConfiguration.class);
+        discConfiguration =
+            JsonConfiguration.getInstance("discord.json", DiscordConfiguration.class);
       } else {
         Errors.addError("Discord configuration could not be setup as there is no JDA connection");
       }

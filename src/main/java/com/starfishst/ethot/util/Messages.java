@@ -18,6 +18,7 @@ import com.starfishst.ethot.objects.questions.RoleAnswer;
 import com.starfishst.ethot.tickets.type.Apply;
 import com.starfishst.ethot.tickets.type.FreelancingTicket;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
+import com.starfishst.ethot.tickets.type.Report;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
 import java.awt.*;
@@ -218,6 +219,10 @@ public class Messages {
       messageBuilder.append(
           Lots.pretty(
               Discord.getAsMention(config.getRolesByKeys(config.getRolesKeys("supportRoles")))));
+    } else if (ticket instanceof Report) {
+      messageBuilder.append(
+          Lots.pretty(
+              Discord.getAsMention(config.getRolesByKeys(config.getRolesKeys("reportRoles")))));
     } else {
       ticket
           .getAnswers()

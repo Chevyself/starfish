@@ -7,6 +7,9 @@ import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.util.Discord;
 import com.starfishst.simple.config.JsonConfiguration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -14,18 +17,11 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 /** This class is 'discord.json' as a java object */
 public class DiscordConfiguration extends JsonConfiguration {
 
-  /**
-   * The instance of this class for static usage
-   */
-  @Nullable
-  private static DiscordConfiguration instance;
+  /** The instance of this class for static usage */
+  @Nullable private static DiscordConfiguration instance;
   /** A map of roles and their keys */
   @NotNull private final HashMap<String, List<Role>> roles;
   /** A map of categories and their keys */
@@ -38,9 +34,7 @@ public class DiscordConfiguration extends JsonConfiguration {
   /** The guild that's being used in the bot */
   @Nullable private Guild guild;
 
-  /**
-   * Constructor for json
-   */
+  /** Constructor for json */
   public DiscordConfiguration() {
     instance = this;
     this.roles = new HashMap<>();

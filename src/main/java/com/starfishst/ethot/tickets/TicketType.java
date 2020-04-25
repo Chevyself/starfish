@@ -49,10 +49,9 @@ public enum TicketType {
   /** The ticket that is created when a customer wants to buy a product from a freelancer */
   CHECK_OUT(Lang.get("CATEGORY_NAME_CHECK_OUT"), "none"),
   /** Creates a suggestion that later the user can either send it or cancel it */
-  // TODO
-  SUGGESTIONS(Lang.get("CATEGORY_NAME_SUGGESTIONS"), "none"),
+  SUGGESTION(Lang.get("CATEGORY_NAME_SUGGESTIONS"), "none"),
   /** Create a report ticket */
-  REPORTS(Lang.get("CATEGORY_NAME_REPORTS"), "none");
+  REPORT(Lang.get("CATEGORY_NAME_REPORTS"), "none");
 
   /** The name of the category where this tickets can be stored */
   @NotNull private final String categoryName;

@@ -43,6 +43,12 @@ public class TicketCreatorResponsiveMessage extends ResponsiveMessage {
     if (!bans.contains(TicketType.SUPPORT)) {
       responses.add(new SupportReactionResponse(creator));
     }
+    if (!bans.contains(TicketType.REPORT)) {
+      responses.add(new ReportReactionResponse(creator));
+    }
+    if (!bans.contains(TicketType.SUGGESTION)) {
+      responses.add(new SuggestionReactionResponse(creator));
+    }
     return responses;
   }
 }

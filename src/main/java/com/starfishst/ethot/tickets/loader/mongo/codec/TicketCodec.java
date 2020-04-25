@@ -15,6 +15,8 @@ import com.starfishst.ethot.tickets.type.CheckOut;
 import com.starfishst.ethot.tickets.type.Order;
 import com.starfishst.ethot.tickets.type.Product;
 import com.starfishst.ethot.tickets.type.Quote;
+import com.starfishst.ethot.tickets.type.Report;
+import com.starfishst.ethot.tickets.type.Suggestion;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.tickets.type.TicketCreator;
@@ -128,6 +130,10 @@ public class TicketCodec implements Codec<Ticket> {
             id, user, status, channel, details, (ProductShopResponsiveMessage) message);
       case CHECK_OUT:
         return new CheckOut(id, user, status, channel, freelancer, parentId);
+      case SUGGESTION:
+        return new Suggestion(id, user, status, channel, details);
+      case REPORT:
+        return new Report(id, user, status, channel, details);
       default:
         throw new IllegalArgumentException(type + " is not a valid type");
     }

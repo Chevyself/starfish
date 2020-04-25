@@ -1,6 +1,5 @@
 package com.starfishst.ethot.tickets.type;
 
-import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.questions.QuestionsHandler;
 import com.starfishst.ethot.listeners.questions.QuestionTicketListener;
 import com.starfishst.ethot.objects.questions.Answer;

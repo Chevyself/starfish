@@ -12,6 +12,8 @@ import com.starfishst.ethot.tickets.type.Order;
 import com.starfishst.ethot.tickets.type.Product;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
 import com.starfishst.ethot.tickets.type.Quote;
+import com.starfishst.ethot.tickets.type.Report;
+import com.starfishst.ethot.tickets.type.Suggestion;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.tickets.type.TicketCreator;
@@ -84,6 +86,12 @@ public class TicketManager {
         break;
       case PRODUCT:
         ticket = new Product(id, user, channel);
+        break;
+      case REPORT:
+        ticket = new Report(id, user, channel);
+        break;
+      case SUGGESTION:
+        ticket = new Suggestion(id, user, channel);
         break;
       case CHECK_OUT:
         ticket =
@@ -187,6 +195,8 @@ public class TicketManager {
       case ORDER:
       case APPLY:
       case QUOTE:
+      case REPORT:
+      case SUGGESTION:
         if (parent != null && parent.getChannel() != null) {
           channel = parent.getChannel();
         } else {

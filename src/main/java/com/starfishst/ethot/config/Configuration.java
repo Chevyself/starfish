@@ -5,31 +5,23 @@ import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
-import com.starfishst.ethot.Main;
 import com.starfishst.ethot.listeners.questions.QuestionSendType;
 import com.starfishst.ethot.objects.invoicing.Fee;
 import com.starfishst.ethot.objects.questions.Question;
 import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.tickets.TicketType;
-
-import java.io.IOException;
+import com.starfishst.simple.config.JsonConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.starfishst.simple.config.JsonConfiguration;
-import com.starfishst.simple.files.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** This class represents the 'config.json' as a java object */
 public class Configuration extends JsonConfiguration {
 
-  /**
-   * The instance of this class for static usage
-   */
-  @Nullable
-  private static Configuration instance;
+  /** The instance of this class for static usage */
+  @Nullable private static Configuration instance;
   /** The token for discord authentication */
   @NotNull private final String token;
   /** The prefix to use in commands */
@@ -71,10 +63,7 @@ public class Configuration extends JsonConfiguration {
   /** The total of tickets */
   private long total;
 
-  /**
-   *
-   * Constructor for gson!
-   */
+  /** Constructor for gson! */
   public Configuration() {
     instance = this;
     this.token = "";
