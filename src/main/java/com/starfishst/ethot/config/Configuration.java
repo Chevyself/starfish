@@ -3,81 +3,90 @@ package com.starfishst.ethot.config;
 import com.starfishst.commands.ManagerOptions;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.time.Time;
-import com.starfishst.ethot.config.objects.invoicing.Fee;
-import com.starfishst.ethot.config.objects.questions.Question;
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessage;
+import com.starfishst.ethot.Main;
 import com.starfishst.ethot.listeners.questions.QuestionSendType;
+import com.starfishst.ethot.objects.invoicing.Fee;
+import com.starfishst.ethot.objects.questions.Question;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.tickets.TicketType;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * This class represents the 'config.json' as a java object
- *
- * <ul>
- *   <li>'token' is used for Discord authentication. Create your app and get your token <a
- *       href="https://discordapp.com/developers/applications">here</a>
- *   <li>'prefix' is how the bot will listen to command execution
- *   <li>'total' the total of tickets. This number is kept in memory so we don't waste memory
- *       counting
- *   <li>'openTicketsByUser' the limit of open tickets that a user can have
- *   <li>'toDelete' ignore the word 'delete' as tickets are only going to be deleted if they are
- *       still in creation. this actually sets the time to unload tickets out of memory and save
- *       them into the database
- *   <li>'toAnnounce' as said above if a ticket is still in creation it will be deleted. So, when
- *       should we notify that it is going to be deleted
- *   <li>'-Questions' anything related to questions is here.
- *       <p>Questions need a 'title', 'description', 'simple' and 'limit'. If in a question you want
- *       to ask for roles you also have to add a key called 'roles' in which you will have to add
- *       the identification of the list of roles.
- *       <p>In role questions 'limit' is going to be the limit of roles to tag else it is the limit
- *       of characters. Also role questions have a place holder %roles% which is the list of roles
- *       that you can use
- *       <p>'simple' must be single words for identification. This means no spaces ' ' you can use
- *       '_' instead
- *   <li>'responsiveMessages' do not touch this setting
- *   <li>'commands' everything related to command responses also embed decor
- *       <ul>
- *         <li>'deleteCommands' true if you want to delete the message send by the client to execute
- *             a command
- *         <li>'embedMessages' true if you want messages to be embed
- *         <li>'deleteErrors' should the messages related to errors be deleted
- *         <li>'deleteTime' if option of above is true. The value of time to be deleted
- *         <li>'deleteUnit' the unit for the value above. Use SECONDS, MINUTES or HOURS
- *         <li>'success' if using embeds set this for the color to use in generic messages
- *         <li>'error' if using embeds set this for the color to use in errors
- *         <li>for the two options above: Colors must be in <a href="https://www.color-hex.com/">hex
- *             code</a>
- *       </ul>
- * </ul>
- *
- * @author Chevy
- * @version 1.0.0
- */
+import java.util.List;
+import java.util.stream.Collectors;
+
+/** This class represents the 'config.json' as a java object */
 public class Configuration {
 
+  /** The instance of configuration for static usage */
+  @Nullable private static Configuration instance;
+
+  /** The token for discord authentication */
   @NotNull private final String token;
+  /** The prefix to use in commands */
   @NotNull private final String prefix;
+  /** The mongo configuration */
   @NotNull private final MongoConfiguration mongo;
+  /** The limit of tickets that a user can have open */
   private final long openTicketsByUserLimit;
+  /**
+   * The time to delete tickets
+   *
+   * <p>//TODO Change it to unload
+   */
   @NotNull private final Time toDelete;
+  /** The time to unload freelancers */
   @NotNull private final Time toUnloadFreelancer;
+  /** The time to start an inactive check */
   @NotNull private final Time inactiveTime;
+  /** The time to finish an inactive check */
   @NotNull private final Time timeToFinishInactiveTest;
+  /** The auto-save configuration */
   @NotNull private final AutoSaveConfiguration autoSave;
+  /** The times to announce that the ticket is going to be deleted (when is creating) */
   @NotNull private final List<Time> toAnnounce;
+  /** The questions for applies tickets */
   @NotNull private final List<Question> applyQuestions;
+  /** The questions for orders tickets */
   @NotNull private final List<Question> orderQuestions;
+  /** The questions for support tickets */
   @NotNull private final List<Question> supportQuestions;
+  /** The questions for product tickets */
   @NotNull private final List<Question> productQuestions;
+  /** The list of responsive messages */
   @NotNull private final List<ResponsiveMessage> responsiveMessages;
+  /** The list of fees */
   @NotNull private final List<Fee> fees;
+  /** The configuration for commands */
   @NotNull private final ManagerOptions commands;
+  /** The type of questions send */
   @NotNull private final QuestionSendType questionSendType;
+  /** The total of tickets */
   private long total;
 
+  /**
+   * Create an instance
+   *
+   * @param token the token for discord connection
+   * @param prefix the prefix to use in commands
+   * @param mongo the mongo configuration
+   * @param openTicketsByUserLimit the limit for open tickets per user
+   * @param orderQuestions the questions for orders
+   * @param messages the list of responsive messages
+   * @param toDelete the time to delete tickets
+   * @param toUnloadFreelancer the time to unload freelancers
+   * @param inactiveTime the time to start inactive tests
+   * @param timeToFinishInactiveTest the time to finish inactive tests
+   * @param autoSave the auto-save configuration
+   * @param toAnnounce the times to announce that a ticket is going to close
+   * @param total the total of tickets
+   * @param applyQuestions the questions for apply tickets
+   * @param supportQuestions the questions for support tickets
+   * @param productQuestions the questions for product tickets
+   * @param fees the list of fees
+   * @param commands the configuration for commands
+   * @param questionSendType the type to send questions
+   */
   public Configuration(
       @NotNull String token,
       @NotNull String prefix,
@@ -98,6 +107,7 @@ public class Configuration {
       @NotNull List<Fee> fees,
       @NotNull ManagerOptions commands,
       @NotNull QuestionSendType questionSendType) {
+    instance = this;
     this.token = token;
     this.prefix = prefix;
     this.mongo = mongo;
@@ -119,10 +129,16 @@ public class Configuration {
     this.questionSendType = questionSendType;
   }
 
+  /**
+   * Get the fees that apply to a subtotal
+   *
+   * @param subtotal the subtotal looking for fees
+   * @return a list of fees that apply to the subtotal
+   */
   @NotNull
-  public List<Fee> getApplyingFees(double total) {
+  public List<Fee> getApplyingFees(double subtotal) {
     return fees.stream()
-        .filter(fee -> fee.getMin() <= total && total <= fee.getMax())
+        .filter(fee -> fee.getMin() <= subtotal && subtotal <= fee.getMax())
         .collect(Collectors.toList());
   }
 
@@ -135,14 +151,40 @@ public class Configuration {
     responsiveMessages.remove(responsiveMessage);
   }
 
+  /**
+   * Get the list of questions for certain ticket type
+   *
+   * @param type the ticket type looking for questions
+   * @return the type looking for questions
+   * @throws IllegalArgumentException if the type that requests questions does not have any
+   */
+  @NotNull
+  public List<Question> getQuestions(@NotNull TicketType type) {
+    switch (type) {
+      case APPLY:
+        return getApplyQuestions();
+      case ORDER:
+      case QUOTE:
+        return getOrderQuestions();
+      case SUPPORT:
+        return getSupportQuestions();
+      case PRODUCT:
+        return getProductQuestions();
+      default:
+        String error = type + " is not a valid type for questions";
+        Errors.addError(error);
+        throw new IllegalArgumentException(error);
+    }
+  }
+
+  /**
+   * Get the time to finish an inactive test
+   *
+   * @return the time to finish an inactive test
+   */
   @NotNull
   public Time getTimeToFinishInactiveTest() {
     return timeToFinishInactiveTest;
-  }
-
-  @NotNull
-  public Time getInactiveTime() {
-    return inactiveTime;
   }
 
   /**
@@ -290,23 +332,14 @@ public class Configuration {
     return supportQuestions;
   }
 
+  /**
+   * Get the time to start an inactive test
+   *
+   * @return the time to start an inactive test
+   */
   @NotNull
-  public List<Question> getQuestions(@NotNull TicketType type) {
-    switch (type) {
-      case APPLY:
-        return getApplyQuestions();
-      case ORDER:
-      case QUOTE:
-        return getOrderQuestions();
-      case SUPPORT:
-        return getSupportQuestions();
-      case PRODUCT:
-        return getProductQuestions();
-      default:
-        String error = type + " is not a valid type for questions";
-        Errors.addError(error);
-        throw new IllegalArgumentException(error);
-    }
+  public Time getInactiveTime() {
+    return inactiveTime;
   }
 
   /**
@@ -314,6 +347,7 @@ public class Configuration {
    *
    * @return the questions for products
    */
+  @NotNull
   private List<Question> getProductQuestions() {
     return productQuestions;
   }
@@ -342,6 +376,8 @@ public class Configuration {
    *
    * @return the list of fees
    */
+  @Deprecated
+  @NotNull
   public List<Fee> getFees() {
     return fees;
   }
@@ -364,5 +400,15 @@ public class Configuration {
   @NotNull
   public AutoSaveConfiguration getAutoSave() {
     return autoSave;
+  }
+
+  /**
+   * Get the instance of configuration for static usage
+   *
+   * @return the instance
+   */
+  @NotNull
+  public static Configuration getInstance() {
+    return Main.getConfiguration();
   }
 }

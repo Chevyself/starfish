@@ -7,12 +7,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
-/**
- * Decodes and encodes {@link TicketStatus} for mongo usage
- *
- * @author Chevy
- * @version 1.0.0
- */
+/** Decode and encode {@link TicketStatus} for mongo */
 public class TicketStatusCodec implements Codec<TicketStatus> {
 
   @Override

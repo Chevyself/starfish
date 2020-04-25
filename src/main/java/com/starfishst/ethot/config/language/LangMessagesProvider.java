@@ -4,15 +4,13 @@ import com.starfishst.commands.messages.MessagesProvider;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.ethot.Main;
-import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 /**
  * This provider is needed by the command framework for customization. In case messages are too long
  * errors will be thrown in startup
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class LangMessagesProvider implements MessagesProvider {
 

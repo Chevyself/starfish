@@ -13,21 +13,22 @@ import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.config.language.LangMessagesProvider;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
-import com.starfishst.ethot.config.objects.questions.RoleAnswer;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.questions.RoleAnswer;
 import com.starfishst.ethot.tickets.type.Apply;
 import com.starfishst.ethot.tickets.type.FreelancingTicket;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
-import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Utils for sending messages in discord easily
@@ -70,6 +71,7 @@ public class Messages {
    * @param placeholders the placeholders to build the message
    * @return the query to use
    */
+  @Deprecated
   public static MessageQuery error(
       @NotNull String key, @NotNull HashMap<String, String> placeholders) {
     return error(Lang.get(key, placeholders));
@@ -208,15 +210,15 @@ public class Messages {
    */
   private static void appendRoleTags(
       @NotNull QuestionsTicket ticket, MessageBuilder messageBuilder) {
-    DiscordConfiguration config = Main.getDiscordConfiguration();
+    DiscordConfiguration config = DiscordConfiguration.getInstance();
     if (ticket instanceof Apply) {
       messageBuilder.append(
           Lots.pretty(
-              Discord.getAsMention(config.getRolesByKeys(config.getRoleKeys("applyRoles")))));
+              Discord.getAsMention(config.getRolesByKeys(config.getRolesKeys("applyRoles")))));
     } else if (ticket instanceof Support) {
       messageBuilder.append(
           Lots.pretty(
-              Discord.getAsMention(config.getRolesByKeys(config.getRoleKeys("supportRoles")))));
+              Discord.getAsMention(config.getRolesByKeys(config.getRolesKeys("supportRoles")))));
     } else {
       ticket
           .getAnswers()

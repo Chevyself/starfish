@@ -2,11 +2,12 @@ package com.starfishst.simple.logging;
 
 import com.starfishst.core.utils.Strings;
 import com.starfishst.core.utils.time.TimeUtils;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Make a formatter for you handlers easily.
@@ -19,8 +20,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CustomFormatter extends Formatter {
 
+  /** The format for the formatter */
   @NotNull private final String format;
 
+  /**
+   * Create an instance
+   *
+   * @param format the format to use
+   */
   public CustomFormatter(@NotNull String format) {
     this.format = format;
   }

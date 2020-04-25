@@ -1,12 +1,12 @@
 package com.starfishst.ethot.tickets.loader.mongo.codec;
 
-import com.starfishst.ethot.Main;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
-import com.starfishst.ethot.config.objects.freelancers.Offer;
-import com.starfishst.ethot.config.objects.questions.Answer;
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.type.orders.OrderClaimingResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.type.product.ProductShopResponsiveMessage;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.freelancers.Offer;
+import com.starfishst.ethot.objects.questions.Answer;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.type.orders.OrderClaimingResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.type.product.ProductShopResponsiveMessage;
+import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
@@ -18,9 +18,6 @@ import com.starfishst.ethot.tickets.type.Quote;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.tickets.type.TicketCreator;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.internal.entities.TextChannelImpl;
@@ -34,6 +31,11 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+/** Decode and encode {@link Ticket} for mongo */
 public class TicketCodec implements Codec<Ticket> {
 
   @Override
@@ -73,7 +75,7 @@ public class TicketCodec implements Codec<Ticket> {
         }
         reader.readEndDocument();
       } else if (fieldName.equalsIgnoreCase("freelancer")) {
-        freelancer = Main.getManager().getLoader().getFreelancer(reader.readInt64());
+        freelancer = TicketManager.getInstance().getLoader().getFreelancer(reader.readInt64());
       } else if (fieldName.equalsIgnoreCase("message")) {
         if (type != null) {
           switch (type) {

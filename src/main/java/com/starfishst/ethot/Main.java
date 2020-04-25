@@ -33,26 +33,20 @@ import com.starfishst.ethot.config.adapters.RoleAdapter;
 import com.starfishst.ethot.config.adapters.TextChannelAdapter;
 import com.starfishst.ethot.config.adapters.TimeAdapter;
 import com.starfishst.ethot.config.language.Lang;
-import com.starfishst.ethot.config.objects.invoicing.Fee;
-import com.starfishst.ethot.config.objects.questions.Question;
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.listeners.ConfigurationListener;
 import com.starfishst.ethot.listeners.ResponsiveMessagesListener;
 import com.starfishst.ethot.listeners.TicketTranscriptListener;
 import com.starfishst.ethot.listeners.questions.QuestionTicketListener;
+import com.starfishst.ethot.objects.invoicing.Fee;
+import com.starfishst.ethot.objects.questions.Question;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.tasks.AutoSave;
-import com.starfishst.ethot.tasks.InnactiveCheck;
+import com.starfishst.ethot.tasks.InactiveCheck;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.ethot.util.Console;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
-import java.util.logging.Level;
-import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Category;
@@ -63,10 +57,16 @@ import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.security.auth.login.LoginException;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.logging.Level;
+
 /**
- * The main class of the bot!
- * This bot allows you to make your discord server to become a service! Allow people to create tickets
- * you can also have freelancers and sell stuff!
+ * The main class of the bot! This bot allows you to make your discord server to become a service!
+ * Allow people to create tickets you can also have freelancers and sell stuff!
  *
  * @author Chevy
  * @version 1.0.0
@@ -104,7 +104,7 @@ public class Main {
 
     Console.info("Creating tasks");
 
-    new InnactiveCheck();
+    new InactiveCheck();
     if (configuration != null && configuration.getAutoSave().isEnable()) {
       new AutoSave(configuration.getAutoSave().getToSave());
     }
@@ -362,17 +362,19 @@ public class Main {
   }
 
   /**
-   * Get the ticket manager and manipulate tickets/freelancers
+   * Get the ticket manager and manipulate tickets/freelancers. Use {@link
+   * TicketManager#getInstance()}
    *
    * @return the ticket manager
    */
+  @Deprecated
   @NotNull
   public static TicketManager getManager() {
     return Validate.notNull(manager, "Ticket Manager was not setup properly");
   }
 
   /**
-   * Get the discord configuration 'discord.json'
+   * Get the discord configuration 'discord.json'. Use {@link TicketManager#getInstance()}
    *
    * @return the config java object
    */

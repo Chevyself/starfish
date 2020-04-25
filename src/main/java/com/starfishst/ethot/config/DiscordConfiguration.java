@@ -2,12 +2,11 @@ package com.starfishst.ethot.config;
 
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.Validate;
+import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.tickets.TicketType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.starfishst.ethot.util.Discord;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -15,11 +14,13 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 /** This class is 'discord.json' as a java object */
 public class DiscordConfiguration {
 
-  /** The instance for static usage */
-  @Nullable private static DiscordConfiguration instance;
   /** A map of roles and their keys */
   @NotNull private final HashMap<String, List<Role>> roles;
   /** A map of categories and their keys */
@@ -46,7 +47,6 @@ public class DiscordConfiguration {
       @NotNull HashMap<String, Category> categories,
       @NotNull HashMap<String, TextChannel> channels,
       @NotNull HashMap<String, List<String>> roleKeyMap) {
-    DiscordConfiguration.instance = this;
     this.guild = guild;
     this.roles = roles;
     this.categories = categories;
@@ -89,9 +89,10 @@ public class DiscordConfiguration {
    *
    * @param type the ticket type
    * @return the category if found
+   * @throws DiscordManipulationException when the validation of the category goes wrong
    */
-  @Nullable
-  public Category getCategory(TicketType type) {
+  @NotNull
+  public Category getCategory(TicketType type) throws DiscordManipulationException {
     return getCategoryByKey(type.getCategoryName());
   }
 
@@ -111,10 +112,22 @@ public class DiscordConfiguration {
    *
    * @param key the name to get the category from
    * @return the category if found else null
+   * @throws DiscordManipulationException when the validation of the category goes wrong
    */
-  @Nullable
-  public Category getCategoryByKey(@NotNull String key) {
-    return categories.getOrDefault(key, null);
+  @NotNull
+  public Category getCategoryByKey(@NotNull String key) throws DiscordManipulationException {
+    Category category = categories.getOrDefault(key, null);
+    if (category == null || category.getChannels().size() > 50) {
+      category =
+          Discord.validateCategory(
+              category,
+              key,
+              true,
+              this.getRolesByKeys(this.getRolesKeys("allowedInCategories")),
+              this.getRolesByKeys(this.getRolesKeys("allowedToSeeInCategories")));
+      this.categories.put(key, category);
+    }
+    return category;
   }
 
   /**
@@ -124,6 +137,7 @@ public class DiscordConfiguration {
    * @param type the type to set the category
    * @param category the category to set
    */
+  @Deprecated
   public void setCategory(@NotNull TicketType type, @NotNull Category category) {
     setCategoryByKey(type.getCategoryName(), category);
   }
@@ -153,10 +167,22 @@ public class DiscordConfiguration {
    *
    * @param key the key of the channel
    * @return the channel if found else null
+   * @throws DiscordManipulationException in case that the channel validation goes wrong
    */
-  @Nullable
-  public TextChannel getChannelByKey(@NotNull String key) {
-    return channels.getOrDefault(key, null);
+  @NotNull
+  public TextChannel getChannelByKey(@NotNull String key) throws DiscordManipulationException {
+    TextChannel channel = channels.getOrDefault(key, null);
+    if (channel == null) {
+      channel =
+          Discord.validateChannel(
+              null,
+              key,
+              true,
+              this.getRolesByKeys(this.getRolesKeys("allowedInChannels")),
+              this.getRolesByKeys(this.getRolesKeys("allowedToSeeInChannels")));
+      this.channels.put(key, channel);
+    }
+    return channel;
   }
 
   /**
@@ -165,8 +191,10 @@ public class DiscordConfiguration {
    *
    * @param type the type of ticket
    * @return the channel if found
+   * @throws DiscordManipulationException in case that the channel validation goes wrong
    */
-  public TextChannel getChannel(TicketType type) {
+  @NotNull
+  public TextChannel getChannel(TicketType type) throws DiscordManipulationException {
     return getChannelByKey(type.getChannelName());
   }
 
@@ -177,6 +205,7 @@ public class DiscordConfiguration {
    * @param type the type to set the channel
    * @param channel the channel to set
    */
+  @Deprecated
   public void setChannel(@NotNull TicketType type, @NotNull TextChannel channel) {
     setChannelByKey(type.getChannelName(), channel);
   }
@@ -249,7 +278,7 @@ public class DiscordConfiguration {
    * @return the list of roles string
    */
   @NotNull
-  public List<String> getRoleKeys(@NotNull String key) {
+  public List<String> getRolesKeys(@NotNull String key) {
     return Validate.notNull(roleKeyMap.get(key), "There's no roles with the key " + key);
   }
 
@@ -260,6 +289,6 @@ public class DiscordConfiguration {
    */
   @NotNull
   public static DiscordConfiguration getInstance() {
-    return Validate.notNull(instance, "Discord config has not been initialized");
+    return Main.getDiscordConfiguration();
   }
 }

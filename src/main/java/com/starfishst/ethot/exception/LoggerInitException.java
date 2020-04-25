@@ -2,14 +2,10 @@ package com.starfishst.ethot.exception;
 
 import com.starfishst.core.exceptions.type.SimpleRuntimeException;
 
-/**
- * In case something goes wrong while trying to start the application logger
- *
- * @author Chevy
- * @version 1.0.0
- */
+/** In case something goes wrong while trying to start the application logger */
 public class LoggerInitException extends SimpleRuntimeException {
 
+  /** Create an instance */
   public LoggerInitException() {
     super("Logger could not be initialized");
   }

@@ -2,6 +2,9 @@ package com.starfishst.simple.logging;
 
 import com.starfishst.core.utils.time.TimeUtils;
 import com.starfishst.simple.files.FileUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.OffsetDateTime;
@@ -9,9 +12,8 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Logger;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+/** A factory for creating loggers */
 public class LoggerFactory {
 
   /**
@@ -38,6 +40,7 @@ public class LoggerFactory {
    * Get a file handler which creates files in /logs
    *
    * @param formatter the formatter to use in the handler
+   * @param url the path to the file
    * @return the handler created
    * @throws IOException in case the /logs directory could not be created
    */

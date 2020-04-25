@@ -1,27 +1,22 @@
 package com.starfishst.ethot.listeners.questions;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.Lots;
-import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
-import com.starfishst.ethot.config.objects.questions.Answer;
-import com.starfishst.ethot.config.objects.questions.Question;
-import com.starfishst.ethot.config.objects.questions.QuestionRole;
-import com.starfishst.ethot.config.objects.questions.RoleAnswer;
-import com.starfishst.ethot.config.objects.questions.StringAnswer;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.TicketCreationException;
+import com.starfishst.ethot.objects.questions.Answer;
+import com.starfishst.ethot.objects.questions.Question;
+import com.starfishst.ethot.objects.questions.QuestionRole;
+import com.starfishst.ethot.objects.questions.RoleAnswer;
+import com.starfishst.ethot.objects.questions.StringAnswer;
+import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Messages;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Consumer;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
@@ -31,87 +26,36 @@ import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Listens to {@link QuestionsTicket} when tye are being created
- *
- * @author Chevy
- * @version 1.0.0
- */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Consumer;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+/** Listens to {@link QuestionsTicket} when tye are being created and the answers of the user */
 public class QuestionTicketListener {
 
-  /*
-   * <Ticket Id, Message Id>
-   */
+  /** The active messages map: <Ticket Id, Message Id> */
   @NotNull private static final HashMap<Long, Long> active = new HashMap<>();
+  /** The active messages sent by an user: <Ticket Id, Message Id> */
   @NotNull private static final HashMap<Long, Long> activeUserMessage = new HashMap<>();
 
   /**
-   * When a message is received we should start the checks and set the answer.
+   * Sends the next message/question to the channel and handles according to {@link
+   * QuestionSendType}
    *
-   * @param event the event of receiving a message inside a guild
+   * @param ticketId the ticket id asking questions
+   * @param channel the channel receiving questions and answers
+   * @param message the message to send
+   * @param consumer in case something especial wants to be executed with the message
    */
-  @SubscribeEvent
-  public void onMessageReceivedEvent(GuildMessageReceivedEvent event) {
-    DiscordConfiguration configuration = Main.getDiscordConfiguration();
-    Ticket ticket =
-        Main.getManager().getLoader().getTicketByChannel(event.getChannel().getIdLong());
-    Guild guild;
-    try {
-      guild = configuration.getGuild();
-    } catch (DiscordManipulationException e) {
-      Messages.error(e.getMessage()).send(event.getChannel());
-      return;
-    }
-    if (!event.getAuthor().isBot()
-        && guild == event.getGuild()
-        && ticket instanceof QuestionsTicket
-        && ticket.getStatus() == TicketStatus.CREATING) {
-      QuestionsTicket questionsTicket = (QuestionsTicket) ticket;
-      List<Question> questions = Main.getConfiguration().getQuestions(ticket.getType());
-      Question question = questions.get(questionsTicket.getCurrent());
-      Answer answer = getAnswer(event, question);
-      activeUserMessage.put(questionsTicket.getId(), event.getMessage().getIdLong());
-      if (answer != null) {
-        questionsTicket.addAnswer(question, answer);
-
-        // We reload the ticket in case that it changed (for example with quotes)
-        questionsTicket =
-            (QuestionsTicket)
-                Main.getManager().getLoader().getTicketByChannel(event.getChannel().getIdLong());
-        if (questionsTicket != null) {
-          if (questionsTicket.getCurrent() >= questions.size()) {
-            questionsTicket.refresh().onDone();
-          } else {
-            questionsTicket.refresh();
-            question = questions.get(questionsTicket.getCurrent());
-            sendNextMessage(
-                questionsTicket.getId(),
-                event.getChannel(),
-                Messages.create(question.getTitle(), question.getDescription())
-                    .getAsMessageQuery()
-                    .getMessage(),
-                null);
-          }
-        }
-      } else {
-        if (Main.getConfiguration().getQuestionSendType() == QuestionSendType.DELETE) {
-          if (activeUserMessage.containsKey(questionsTicket.getId())) {
-            event
-                .getChannel()
-                .deleteMessageById(activeUserMessage.get(questionsTicket.getId()))
-                .queue();
-          }
-        }
-      }
-    }
-  }
-
   public static void sendNextMessage(
       long ticketId,
       @NotNull TextChannel channel,
       @NotNull Message message,
       @Nullable Consumer<Message> consumer) {
-    switch (Main.getConfiguration().getQuestionSendType()) {
+    switch (Configuration.getInstance().getQuestionSendType()) {
       case NONE:
         channel
             .sendMessage(message)
@@ -147,6 +91,69 @@ public class QuestionTicketListener {
                   });
         }
         break;
+    }
+  }
+
+  /**
+   * When a message is received we should start the checks and set the answer.
+   *
+   * @param event the event of receiving a message inside a guild
+   */
+  @SubscribeEvent
+  public void onMessageReceivedEvent(GuildMessageReceivedEvent event) {
+    DiscordConfiguration configuration = DiscordConfiguration.getInstance();
+    Ticket ticket =
+        TicketManager.getInstance().getLoader().getTicketByChannel(event.getChannel().getIdLong());
+    Guild guild;
+    try {
+      guild = configuration.getGuild();
+    } catch (DiscordManipulationException e) {
+      Messages.error(e.getMessage()).send(event.getChannel());
+      return;
+    }
+    if (!event.getAuthor().isBot()
+        && guild == event.getGuild()
+        && ticket instanceof QuestionsTicket
+        && ticket.getStatus() == TicketStatus.CREATING) {
+      QuestionsTicket questionsTicket = (QuestionsTicket) ticket;
+      List<Question> questions = Configuration.getInstance().getQuestions(ticket.getType());
+      Question question = questions.get(questionsTicket.getCurrent());
+      Answer answer = getAnswer(event, question);
+      activeUserMessage.put(questionsTicket.getId(), event.getMessage().getIdLong());
+      if (answer != null) {
+        questionsTicket.addAnswer(question, answer);
+
+        // We reload the ticket in case that it changed (for example with quotes)
+        questionsTicket =
+            (QuestionsTicket)
+                TicketManager.getInstance()
+                    .getLoader()
+                    .getTicketByChannel(event.getChannel().getIdLong());
+        if (questionsTicket != null) {
+          if (questionsTicket.getCurrent() >= questions.size()) {
+            questionsTicket.refresh().onDone();
+          } else {
+            questionsTicket.refresh();
+            question = questions.get(questionsTicket.getCurrent());
+            sendNextMessage(
+                questionsTicket.getId(),
+                event.getChannel(),
+                Messages.create(question.getBuiltTitle(), question.getBuiltDescription())
+                    .getAsMessageQuery()
+                    .getMessage(),
+                null);
+          }
+        }
+      } else {
+        if (Configuration.getInstance().getQuestionSendType() == QuestionSendType.DELETE) {
+          if (activeUserMessage.containsKey(questionsTicket.getId())) {
+            event
+                .getChannel()
+                .deleteMessageById(activeUserMessage.get(questionsTicket.getId()))
+                .queue();
+          }
+        }
+      }
     }
   }
 

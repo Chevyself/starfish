@@ -8,13 +8,14 @@ import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedQuery;
 import com.starfishst.core.arguments.JoinedStrings;
 import com.starfishst.core.utils.Strings;
-import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.language.Lang;
-import com.starfishst.ethot.config.objects.invoicing.Fee;
-import com.starfishst.ethot.config.objects.management.AllowedTicketCloserChecker;
-import com.starfishst.ethot.config.objects.management.AllowedTicketManagerChecker;
-import com.starfishst.ethot.config.objects.responsive.type.archive.ArchiveResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.type.panel.TicketPanel;
+import com.starfishst.ethot.objects.invoicing.Fee;
+import com.starfishst.ethot.objects.management.AllowedTicketCloserChecker;
+import com.starfishst.ethot.objects.management.AllowedTicketManagerChecker;
+import com.starfishst.ethot.objects.responsive.type.archive.ArchiveResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.type.panel.TicketPanel;
+import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.loader.TicketLoader;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
@@ -23,11 +24,13 @@ import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.SimpleMath;
 import com.starfishst.ethot.util.Tickets;
 import com.starfishst.ethot.util.Unicode;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 
 /**
  * Some tickets commands are administrative others are also for public usage
@@ -65,12 +68,13 @@ public class TicketsCommand {
   /**
    * Gives information about a ticket
    *
+   * @param id the id of the ticket looking for info
    * @return the information of a ticket if it exists
    */
   @Command(aliases = "info", description = "Gives you the info about a Ticket")
   public Result info(
       @Required(name = "id", description = "The id of the ticket to get information") long id) {
-    Ticket ticket = Main.getManager().getLoader().getTicket(id);
+    Ticket ticket = TicketManager.getInstance().getLoader().getTicket(id);
     if (ticket != null) {
       return new Result(
           ResultType.GENERIC,
@@ -87,6 +91,7 @@ public class TicketsCommand {
    *
    * @param user the user adding
    * @param message the message to get the members to
+   * @param id the id of the ticket to announce
    * @return successful result if there's mentioned members
    */
   @Command(aliases = "announce", description = "Announces a ticket")
@@ -95,7 +100,7 @@ public class TicketsCommand {
       Message message,
       @Optional(name = "id", description = "The id of the ticket to announce", suggestions = "-1")
           long id) {
-    TicketLoader loader = Main.getManager().getLoader();
+    TicketLoader loader = TicketManager.getInstance().getLoader();
     Ticket ticket;
     if (id == -1) {
       ticket = loader.getTicketByChannel(message.getTextChannel().getIdLong());
@@ -118,21 +123,21 @@ public class TicketsCommand {
   /**
    * Creates an invoice embed
    *
-   * @param user the user creating the embed
+   * @param checker the check to see if the checker is allowed to create invoices
+   * @param channel the channel to generate the invoice
    * @param subtotal the subtotal of the service
    * @param strings the service
    * @return a successful result sending the invoice
    */
   @Command(aliases = "invoice", description = "Generates an invoice")
   public Result invoice(
-      AllowedTicketManagerChecker user,
-      Message message,
+      AllowedTicketManagerChecker checker,
+      TextChannel channel,
       @Required(name = "subtotal", description = "The subtotal of the service") double subtotal,
       @Required(name = "service", description = "The service applying") JoinedStrings strings) {
-    List<Fee> applyingFees = Main.getConfiguration().getApplyingFees(subtotal);
+    List<Fee> applyingFees = Configuration.getInstance().getApplyingFees(subtotal);
     double total = SimpleMath.getTotal(subtotal, applyingFees);
-    Ticket ticket =
-        Main.getManager().getLoader().getTicketByChannel(message.getTextChannel().getIdLong());
+    Ticket ticket = TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("subtotal", String.format("%.02f", subtotal));
     placeholders.put("total", String.format("%.02f", total));
@@ -165,13 +170,13 @@ public class TicketsCommand {
   /**
    * Closes a ticket
    *
-   * @param checker the check if the user can use the commans
+   * @param checker the check if the user can use the command
+   * @param channel the channel to close
    * @return a successful result if the ticket is closing
    */
   @Command(aliases = "close", description = "Closes a ticket")
-  public Result close(AllowedTicketCloserChecker checker, Message message) {
-    Ticket ticket =
-        Main.getManager().getLoader().getTicketByChannel(message.getTextChannel().getIdLong());
+  public Result close(AllowedTicketCloserChecker checker, TextChannel channel) {
+    Ticket ticket = TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());
     if (ticket != null) {
       if (ticket.getStatus() != TicketStatus.CLOSED) {
         ticket.setStatus(TicketStatus.CLOSED);
@@ -195,7 +200,9 @@ public class TicketsCommand {
   @Command(aliases = "archive", description = "Archives a Ticket")
   public Result archive(AllowedTicketCloserChecker checker, Message message) {
     Ticket ticket =
-        Main.getManager().getLoader().getTicketByChannel(message.getTextChannel().getIdLong());
+        TicketManager.getInstance()
+            .getLoader()
+            .getTicketByChannel(message.getTextChannel().getIdLong());
     if (ticket != null) {
       HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
       if (ticket.getStatus() != TicketStatus.ARCHIVED) {
@@ -204,7 +211,7 @@ public class TicketsCommand {
             Messages.create(
                 "ARCHIVE_CONFIRM_TITLE", "ARCHIVE_CONFIRM_DESCRIPTION", placeholders, placeholders),
             msg -> {
-              new ArchiveResponsiveMessage(msg.getIdLong(), new AllowedTicketCloserChecker());
+              new ArchiveResponsiveMessage(msg);
               msg.addReaction(Unicode.WHITE_CHECK_MARK).queue();
             });
       } else {
@@ -215,6 +222,12 @@ public class TicketsCommand {
     }
   }
 
+  /**
+   * Creates a ticket panel
+   *
+   * @param checker to check if the user can create one
+   * @return the created panel
+   */
   @Command(
       aliases = {"ticketpanel", "tp"},
       description = "Creates a ticket creator panel")
@@ -223,7 +236,7 @@ public class TicketsCommand {
         ResultType.GENERIC,
         Messages.create("TICKET_PANEL_TITLE", "TICKET_PANEL_DESCRIPTION", null, null),
         msg -> {
-          new TicketPanel(msg.getIdLong());
+          new TicketPanel(msg);
           msg.addReaction(Unicode.TICKET).queue();
         });
   }

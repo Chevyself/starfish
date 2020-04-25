@@ -4,11 +4,15 @@ import com.starfishst.commands.context.GuildCommandContext;
 import com.starfishst.core.context.ICommandContext;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.core.providers.type.IExtraArgumentProvider;
-import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.language.Lang;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.tickets.TicketManager;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Provides {@link com.starfishst.commands.CommandManager} with a method to get a {@link Freelancer}
+ * when it is a sender
+ */
 public class FreelancerSenderProvider implements IExtraArgumentProvider<Freelancer> {
 
   @NotNull
@@ -17,7 +21,7 @@ public class FreelancerSenderProvider implements IExtraArgumentProvider<Freelanc
       throws ArgumentProviderException {
     if (context instanceof GuildCommandContext) {
       Freelancer freelancer =
-          Main.getManager()
+          TicketManager.getInstance()
               .getLoader()
               .getFreelancer(((GuildCommandContext) context).getMember().getIdLong());
       if (freelancer != null) {

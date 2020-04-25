@@ -1,24 +1,20 @@
 package com.starfishst.ethot.commands;
 
 import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.ethot.Main;
 import com.starfishst.ethot.util.Console;
+import net.dv8tion.jda.api.Permission;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 
 /**
  * Developer commands are not only used for 'debug'. They also control some aspects of the bot like
  * stopping and saving the configuration files.
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class DevCommands {
 
@@ -54,16 +50,6 @@ public class DevCommands {
   @Command(aliases = "stop", description = "Stops the bot", permission = Permission.ADMINISTRATOR)
   public Result stop() {
     Main.stop();
-    return new Result();
-  }
-
-  /**
-   * Runs some test
-   *
-   * @return the result depending on the test
-   */
-  @Command(aliases = "test", description = "some test", permission = Permission.ADMINISTRATOR)
-  public Result test(Member member, @Required long id) {
     return new Result();
   }
 }

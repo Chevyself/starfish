@@ -10,6 +10,7 @@ import com.google.gson.JsonSerializer;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
+
 import java.lang.reflect.Type;
 
 /**
@@ -17,9 +18,6 @@ import java.lang.reflect.Type;
  * objects.
  *
  * <p>This one in particular, converts {@link Time}
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class TimeAdapter implements JsonSerializer<Time>, JsonDeserializer<Time> {
 

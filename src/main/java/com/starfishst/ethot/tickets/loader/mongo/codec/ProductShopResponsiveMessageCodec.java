@@ -1,13 +1,14 @@
 package com.starfishst.ethot.tickets.loader.mongo.codec;
 
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessageType;
-import com.starfishst.ethot.config.objects.responsive.type.product.ProductShopResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessageType;
+import com.starfishst.ethot.objects.responsive.type.product.ProductShopResponsiveMessage;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
+/** Decode and encode {@link ProductShopResponsiveMessage} for mongo */
 public class ProductShopResponsiveMessageCodec implements Codec<ProductShopResponsiveMessage> {
 
   @Override

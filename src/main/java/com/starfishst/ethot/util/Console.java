@@ -5,11 +5,12 @@ import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.LoggerInitException;
 import com.starfishst.simple.logging.LoggerFactory;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Static logger usage
@@ -19,9 +20,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Console {
 
-  /**
-   * The logger instance to log messages
-   */
+  /** The logger instance to log messages */
   @NotNull private static final Logger logger;
 
   static {
@@ -47,6 +46,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void severe(String msg) {
     logger.severe(msg);
   }
@@ -56,6 +56,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void warning(String msg) {
     logger.warning(msg);
   }
@@ -74,6 +75,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void config(String msg) {
     logger.config(msg);
   }
@@ -83,6 +85,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void fine(String msg) {
     logger.fine(msg);
   }
@@ -92,6 +95,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void finer(String msg) {
     logger.finer(msg);
   }
@@ -101,6 +105,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void finest(String msg) {
     logger.finest(msg);
   }
@@ -114,5 +119,4 @@ public class Console {
   public static void log(Level level, Throwable thrown) {
     logger.log(level, thrown.getMessage(), thrown);
   }
-
 }

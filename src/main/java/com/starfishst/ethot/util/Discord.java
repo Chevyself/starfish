@@ -2,10 +2,8 @@ package com.starfishst.ethot.util;
 
 import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.exception.DiscordManipulationException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
@@ -20,6 +18,10 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Various utils for discord
@@ -43,9 +45,7 @@ public class Discord {
   public static final List<Permission> ALLOWED_SEE =
       Lots.list(Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
 
-  /**
-   * The JDA instance for discord manipulation
-   */
+  /** The JDA instance for discord manipulation */
   @NotNull private static final JDA jda = Main.getJda();
 
   /**
@@ -75,7 +75,7 @@ public class Discord {
       if (category != null) {
         return category.createCopy().complete();
       } else {
-        Guild guild = Main.getDiscordConfiguration().getGuild();
+        Guild guild = DiscordConfiguration.getInstance().getGuild();
         category = guild.createCategory(name).complete();
         applyPermissions(category, removePerms, allow, allowSee);
         return category;
@@ -220,7 +220,7 @@ public class Discord {
       @Nullable List<I> allowSee)
       throws DiscordManipulationException {
     if (channel == null) {
-      Guild guild = Main.getDiscordConfiguration().getGuild();
+      Guild guild = DiscordConfiguration.getInstance().getGuild();
       channel = guild.createTextChannel(channelName).complete();
       applyPermissions(channel, removePerms, allow, allowSee);
     }
@@ -231,8 +231,8 @@ public class Discord {
    * Applies permissions in a discord channel
    *
    * @param channel the channel to apply permissions to
-   * @param removePerms if set to true every permission for the public role (@everyone) will be
-   *                    set to disabled
+   * @param removePerms if set to true every permission for the public role (@everyone) will be set
+   *     to disabled
    * @param allow the allowed roles inside the channel
    * @param allowSee the allowed roles to see inside the channel
    * @param <C> the guild channel interface
@@ -263,7 +263,7 @@ public class Discord {
    */
   @Nullable
   public static Member getMember(@Nullable User user) throws DiscordManipulationException {
-    Guild guild = Main.getDiscordConfiguration().getGuild();
+    Guild guild = DiscordConfiguration.getInstance().getGuild();
     if (user != null) {
       return guild.getMember(user);
     }

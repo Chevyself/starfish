@@ -1,8 +1,9 @@
 package com.starfishst.ethot.util;
 
-import com.starfishst.ethot.config.objects.invoicing.Fee;
-import java.util.List;
+import com.starfishst.ethot.objects.invoicing.Fee;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * Simple math utils

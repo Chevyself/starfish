@@ -7,12 +7,9 @@ import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.arguments.JoinedStrings;
 import com.starfishst.core.utils.Lots;
-import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.util.Discord;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -20,17 +17,11 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-/**
- * Set commands are used to "set" values inside configuration properties.
- *
- * <p>In this project the config files are 'config.json', 'discord.json', 'lang.properties'
- *
- * <p>'config.json' stores information used in the bot startup: commands properties, discord
- * authentication, ticket customization, embeds decor
- *
- * @author Chevy
- * @version 1.0.0
- */
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+/** Set commands are used to "set" values inside configuration properties. */
 public class SetCommand {
 
   /**
@@ -47,7 +38,7 @@ public class SetCommand {
       permission = Permission.ADMINISTRATOR)
   @Parent
   public Result set(Guild guild) {
-    Main.getDiscordConfiguration().setGuild(guild);
+    DiscordConfiguration.getInstance().setGuild(guild);
     return new Result("Guild has been set to " + guild.getName());
   }
 
@@ -92,7 +83,7 @@ public class SetCommand {
     if (roles.isEmpty()) {
       return new Result(ResultType.USAGE, Lang.get("MENTION_ROLE"));
     } else {
-      Main.getDiscordConfiguration().setRolesByKey(key, roles);
+      DiscordConfiguration.getInstance().setRolesByKey(key, roles);
 
       HashMap<String, String> placeholders = new HashMap<>();
       placeholders.put("roles", Lots.pretty(Discord.getAsMention(roles)));
@@ -125,7 +116,7 @@ public class SetCommand {
     if (parent == null) {
       return new Result(ResultType.USAGE, Lang.get("NOT_IN_CATEGORY", placeholders));
     } else {
-      Main.getDiscordConfiguration().setCategoryByKey(key, parent);
+      DiscordConfiguration.getInstance().setCategoryByKey(key, parent);
 
       placeholders.put("category", parent.getName());
       placeholders.put("key", key);
@@ -153,10 +144,9 @@ public class SetCommand {
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("channel", channel.getAsMention());
     placeholders.put("key", key);
-    Main.getDiscordConfiguration().setChannelByKey(key, channel);
+    DiscordConfiguration.getInstance().setChannelByKey(key, channel);
     return new Result(
-            Lang.get("CHANNEL_UPDATED", placeholders),
-            msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+        Lang.get("CHANNEL_UPDATED", placeholders),
+        msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
   }
-
 }

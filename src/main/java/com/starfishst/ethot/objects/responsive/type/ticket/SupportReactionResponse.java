@@ -1,0 +1,29 @@
+package com.starfishst.ethot.objects.responsive.type.ticket;
+
+import com.starfishst.ethot.tickets.TicketType;
+import com.starfishst.ethot.tickets.type.TicketCreator;
+import com.starfishst.ethot.util.Unicode;
+import org.jetbrains.annotations.NotNull;
+
+/** The reaction response to create a support ticket */
+public class SupportReactionResponse extends TicketReactionResponse {
+
+  /**
+   * Create the reaction response
+   *
+   * @param creator the ticket creator waiting for the reaction
+   */
+  public SupportReactionResponse(@NotNull TicketCreator creator) {
+    super(creator);
+  }
+
+  @Override
+  public @NotNull String getUnicode() {
+    return Unicode.HAMMER;
+  }
+
+  @Override
+  protected @NotNull TicketType getType() {
+    return TicketType.SUPPORT;
+  }
+}

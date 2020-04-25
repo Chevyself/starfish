@@ -7,6 +7,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
+/** Decode and encode {@link TicketType} for mongo */
 public class TicketTypeCodec implements Codec<TicketType> {
 
   @Override

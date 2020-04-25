@@ -1,5 +1,7 @@
 package com.starfishst.simple.files;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,13 +12,20 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-import org.jetbrains.annotations.NotNull;
 
 /** Many file utils */
 public class FileUtils {
 
+  /** The class to load files */
   @NotNull private static final ClassLoader LOADER = FileUtils.class.getClassLoader();
 
+  /**
+   * Get a file using a path
+   *
+   * @param url the path to the file
+   * @return the file if fond
+   * @throws FileNotFoundException if the file is not found
+   */
   @NotNull
   public static File getFile(String url) throws FileNotFoundException {
     final File file = new File(url);
@@ -79,6 +88,13 @@ public class FileUtils {
     return file;
   }
 
+  /**
+   * Get a file reader using a file
+   *
+   * @param file the file to get the reader from
+   * @return the reader
+   * @throws FileNotFoundException if the file is not null
+   */
   @NotNull
   public static Reader getReader(@NotNull File file) throws FileNotFoundException {
     return new BufferedReader(new FileReader(file));

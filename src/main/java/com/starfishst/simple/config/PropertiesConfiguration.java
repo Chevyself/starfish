@@ -1,19 +1,23 @@
 package com.starfishst.simple.config;
 
 import com.starfishst.simple.files.FileUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** Use a properties file as configuration */
 public class PropertiesConfiguration {
 
+  /** The name of the file */
   @NotNull private final String fileName;
+  /** The file of the configuration */
   @NotNull private final File file;
+  /** The properties instance to set and get values */
   @NotNull private final Properties properties;
 
   /**
