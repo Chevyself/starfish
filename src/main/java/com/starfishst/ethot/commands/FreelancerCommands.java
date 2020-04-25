@@ -22,16 +22,15 @@ import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Freelancers;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /** Commands related to freelancers */
 public class FreelancerCommands {
@@ -156,17 +155,18 @@ public class FreelancerCommands {
         placeholders.put("offer", strings.getString());
         placeholders.put("quote", strings.getString());
         Messages.create("NEW_OFFER_TITLE", "NEW_OFFER_DESCRIPTION", placeholders, placeholders)
-                .send(
-                        ticket.getChannel(),
-                        msg ->
-                                ((Quote) ticket)
-                                        .addOffer(
-                                                new Offer(
-                                                        freelancer,
-                                                        strings.getString(),
-                                                        new OfferAcceptResponsiveMessage(msg))));
+            .send(
+                ticket.getChannel(),
+                msg ->
+                    ((Quote) ticket)
+                        .addOffer(
+                            new Offer(
+                                freelancer,
+                                strings.getString(),
+                                new OfferAcceptResponsiveMessage(msg))));
       } else {
-        return new Result(ResultType.ERROR, Lang.get("QUOTE_HAS_FREELANCER", Tickets.getPlaceholders(ticket)));
+        return new Result(
+            ResultType.ERROR, Lang.get("QUOTE_HAS_FREELANCER", Tickets.getPlaceholders(ticket)));
       }
       return new Result(
           ResultType.GENERIC, Lang.get("OFFER_SENT", Tickets.getPlaceholders(ticket)));

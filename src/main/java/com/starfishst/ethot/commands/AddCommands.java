@@ -14,10 +14,9 @@ import com.starfishst.ethot.tickets.type.FreelancingTicket;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Messages;
+import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-
-import java.util.concurrent.TimeUnit;
 
 /** Multiple commands related to 'adding' */
 public class AddCommands {

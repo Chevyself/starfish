@@ -7,11 +7,10 @@ import com.starfishst.core.providers.type.IArgumentProvider;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.objects.freelancers.Freelancer;
 import com.starfishst.ethot.tickets.TicketManager;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
 
 /**
  * Provides {@link com.starfishst.commands.CommandManager} with a method to get a {@link Freelancer}

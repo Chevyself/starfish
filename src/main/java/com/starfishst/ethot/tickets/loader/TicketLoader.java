@@ -5,11 +5,10 @@ import com.starfishst.ethot.tickets.type.Order;
 import com.starfishst.ethot.tickets.type.Product;
 import com.starfishst.ethot.tickets.type.Quote;
 import com.starfishst.ethot.tickets.type.Ticket;
+import java.util.List;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /** The ticket loader is used to get ticket from the database */
 public interface TicketLoader {

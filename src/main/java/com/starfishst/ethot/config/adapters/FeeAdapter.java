@@ -8,7 +8,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.starfishst.ethot.objects.invoicing.Fee;
-
 import java.lang.reflect.Type;
 
 /** Serializes {@link Fee} */

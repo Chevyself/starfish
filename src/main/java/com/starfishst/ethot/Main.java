@@ -45,7 +45,7 @@ import com.starfishst.ethot.tasks.InactiveCheck;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.ethot.util.Console;
-import com.starfishst.simple.files.FileUtils;
+import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.gson.GsonProvider;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -59,7 +59,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -73,12 +72,8 @@ import java.util.logging.Level;
  */
 public class Main {
 
-  /** The 'config.json' file for saving it */
-  @Nullable private static File configurationFile;
   /** The config instance for multipurpose */
   @Nullable private static Configuration configuration;
-  /** The 'discord.json' file for saving it */
-  @Nullable private static File discConfigFile;
   /** The discord config instance for multipurpose */
   @Nullable private static DiscordConfiguration discConfiguration;
   /** The JDA instance for discord manipulation */
@@ -138,9 +133,7 @@ public class Main {
       GsonProvider.addAdapter(TextChannel.class, new TextChannelAdapter());
       GsonProvider.addAdapter(Time.class, new TimeAdapter());
       GsonProvider.refresh();
-      configurationFile = FileUtils.getFileOrResource("config.json");
-      configuration =
-          GsonProvider.GSON.fromJson(FileUtils.getReader(configurationFile), Configuration.class);
+      configuration = JsonConfiguration.getInstance("config.json", Configuration.class);
       Console.info("Configuration setup has been completed");
     } catch (IOException e) {
       Console.log(Level.SEVERE, e);
@@ -196,10 +189,7 @@ public class Main {
     try {
       if (jda != null) {
         Console.info("Setting up Discord configuration");
-        discConfigFile = FileUtils.getFileOrResource("discord.json");
-        discConfiguration =
-            GsonProvider.GSON.fromJson(
-                FileUtils.getReader(discConfigFile), DiscordConfiguration.class);
+        discConfiguration = JsonConfiguration.getInstance("discord.json", DiscordConfiguration.class);
       } else {
         Errors.addError("Discord configuration could not be setup as there is no JDA connection");
       }
@@ -301,16 +291,8 @@ public class Main {
   public static void save() throws IOException {
     Console.info("Saving configurations...");
     Lang.save();
-    if (configurationFile != null && configuration != null) {
-      GsonProvider.save(configurationFile, configuration);
-    } else {
-      Errors.addError("config.json could not be saved because it was not setup properly");
-    }
-    if (discConfigFile != null && discConfiguration != null) {
-      GsonProvider.save(discConfigFile, discConfiguration);
-    } else {
-      Errors.addError("discord.json could not be saved because it was not setup properly");
-    }
+    getConfiguration().save();
+    getDiscordConfiguration().save();
   }
 
   /** Stops the bot while saving the config */

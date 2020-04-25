@@ -8,15 +8,14 @@ import com.starfishst.ethot.objects.questions.Answer;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.util.Messages;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Quotes are like Order but they have a different system when it comes to adding Freelancers. The

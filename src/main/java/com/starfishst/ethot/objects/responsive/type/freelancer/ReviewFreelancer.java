@@ -5,10 +5,9 @@ import com.starfishst.ethot.objects.responsive.ReactionResponse;
 import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.objects.responsive.ResponsiveMessageType;
 import com.starfishst.simple.Lots;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /** The message asking for the review of a {@link Freelancer} */
 public class ReviewFreelancer extends ResponsiveMessage {

@@ -20,15 +20,14 @@ import com.starfishst.ethot.tickets.type.FreelancingTicket;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  * Utils for sending messages in discord easily

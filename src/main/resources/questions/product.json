@@ -1,0 +1,10 @@
+{
+  "questions": [
+    {
+      "title": "What are you selling?",
+      "simple": "selling",
+      "description": "Please describe what you are selling",
+      "limit": 50
+    }
+  ]
+}

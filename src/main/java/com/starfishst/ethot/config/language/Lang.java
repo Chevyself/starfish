@@ -3,11 +3,10 @@ package com.starfishst.ethot.config.language;
 import com.starfishst.core.utils.Strings;
 import com.starfishst.ethot.exception.LanguageInitException;
 import com.starfishst.simple.config.PropertiesConfiguration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.util.HashMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Class used for static methods related to the configuration file 'lang.properties' */
 public class Lang {

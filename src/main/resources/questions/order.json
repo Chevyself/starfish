@@ -1,0 +1,47 @@
+{
+  "questions": [
+    {
+      "title": "Whats your name?",
+      "simple": "name",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "Whats your email?",
+      "simple": "email",
+      "description": "How can we contact you besides Discord?",
+      "limit": 50
+    },
+    {
+      "title": "What do you need?",
+      "simple": "description",
+      "description": "Tell us about your project (You can link documents if your description is too long)",
+      "limit": 1000
+    },
+    {
+      "title": "Tag the roles for the work",
+      "simple": "roles",
+      "description": "You can tag \u003c@\u0026701553600035422278\u003e only 2 of them!",
+      "limit": 2,
+      "role": "freelancers"
+    },
+    {
+      "title": "Whats your budget?",
+      "simple": "budget",
+      "description": "If you are not certain yet, you can type \u0027quote\u0027 to receive them",
+      "limit": 50
+    },
+    {
+      "title": "Whats your time-frame?",
+      "simple": "time",
+      "description": "",
+      "limit": 10
+    },
+    {
+      "title": "Where did you find us?",
+      "simple": "find",
+      "description": "",
+      "limit": 1000
+    }
+  ]
+}

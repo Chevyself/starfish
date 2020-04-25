@@ -2,6 +2,8 @@ package com.starfishst.ethot.tickets.loader.mongo.codec;
 
 import com.starfishst.ethot.objects.questions.RoleAnswer;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
+import java.util.ArrayList;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Role;
 import org.bson.BsonReader;
 import org.bson.BsonType;
@@ -9,9 +11,6 @@ import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /** Decode and encode {@link RoleAnswer} for mongo */
 public class RoleAnswerCodec implements Codec<RoleAnswer> {

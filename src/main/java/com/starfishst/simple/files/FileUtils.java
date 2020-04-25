@@ -1,7 +1,5 @@
 package com.starfishst.simple.files;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +11,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 /** Many file utils */
 public class FileUtils {
@@ -59,10 +58,9 @@ public class FileUtils {
         LOADER.getResourceAsStream(name), "The resource " + name + " does not exist.");
   }
 
-  public static URL getResourceAsUrl(@NotNull String name){
+  public static URL getResourceAsUrl(@NotNull String name) {
     return LOADER.getResource(name);
   }
-
 
   /**
    * Gets the file from the same place as the jar or gets it from the resources and copies it

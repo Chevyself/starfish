@@ -11,7 +11,6 @@ import com.google.gson.JsonSerializer;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.ethot.objects.questions.Question;
 import com.starfishst.ethot.objects.questions.QuestionRole;
-
 import java.lang.reflect.Type;
 
 /**

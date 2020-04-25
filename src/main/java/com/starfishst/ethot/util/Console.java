@@ -5,12 +5,11 @@ import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.LoggerInitException;
 import com.starfishst.simple.logging.LoggerFactory;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Static logger usage

@@ -2,12 +2,11 @@ package com.starfishst.simple.logging;
 
 import com.starfishst.core.utils.Strings;
 import com.starfishst.core.utils.time.TimeUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Make a formatter for you handlers easily.

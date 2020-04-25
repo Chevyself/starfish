@@ -5,10 +5,9 @@ import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.objects.freelancers.Freelancer;
 import com.starfishst.ethot.objects.questions.Answer;
 import com.starfishst.ethot.objects.questions.RoleAnswer;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
 
 /**
  * Various utils for freelancers

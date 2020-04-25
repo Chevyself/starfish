@@ -2,10 +2,9 @@ package com.starfishst.ethot.objects.questions;
 
 import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.util.Discord;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /** When the answer is related to roles */
 public class RoleAnswer implements Answer {

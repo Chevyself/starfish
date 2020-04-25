@@ -10,7 +10,6 @@ import com.google.gson.JsonSerializer;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
-
 import java.lang.reflect.Type;
 
 /**

@@ -10,16 +10,15 @@ import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.util.Discord;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /** Set commands are used to "set" values inside configuration properties. */
 public class SetCommand {

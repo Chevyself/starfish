@@ -14,7 +14,6 @@ import com.starfishst.ethot.objects.responsive.type.freelancer.ReviewFreelancer;
 import com.starfishst.ethot.objects.responsive.type.inactive.InactiveCheckResponsiveMessage;
 import com.starfishst.ethot.objects.responsive.type.panel.TicketPanel;
 import com.starfishst.simple.Lots;
-
 import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.List;

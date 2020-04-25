@@ -5,6 +5,8 @@ import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.type.Ticket;
+import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -13,9 +15,6 @@ import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.role.RoleDeleteEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * It can happen that when trying to use a channel, category, etc. In the program can be a non null

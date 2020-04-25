@@ -23,14 +23,12 @@ import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.SimpleMath;
 import com.starfishst.ethot.util.Tickets;
-import com.starfishst.ethot.util.Unicode;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 /**
  * Some tickets commands are administrative others are also for public usage
@@ -210,7 +208,7 @@ public class TicketsCommand {
             ResultType.GENERIC,
             Messages.create(
                 "ARCHIVE_CONFIRM_TITLE", "ARCHIVE_CONFIRM_DESCRIPTION", placeholders, placeholders),
-                ArchiveResponsiveMessage::new);
+            ArchiveResponsiveMessage::new);
       } else {
         return new Result(ResultType.USAGE, Lang.get("ALREADY_ARCHIVED", placeholders));
       }
@@ -232,6 +230,6 @@ public class TicketsCommand {
     return new Result(
         ResultType.GENERIC,
         Messages.create("TICKET_PANEL_TITLE", "TICKET_PANEL_DESCRIPTION", null, null),
-            TicketPanel::new);
+        TicketPanel::new);
   }
 }

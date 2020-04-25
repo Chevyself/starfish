@@ -11,15 +11,13 @@ import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
-import com.starfishst.ethot.util.Unicode;
-import net.dv8tion.jda.api.entities.Member;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import net.dv8tion.jda.api.entities.Member;
+import org.jetbrains.annotations.Nullable;
 
 /** This is a task that is ran to check that a ticket is not being inactive */
 public class InactiveCheck extends TimerTask {

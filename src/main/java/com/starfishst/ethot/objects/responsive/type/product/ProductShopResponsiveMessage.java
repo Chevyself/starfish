@@ -13,13 +13,12 @@ import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
 import com.starfishst.ethot.util.Unicode;
 import com.starfishst.simple.Lots;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import org.jetbrains.annotations.NotNull;
 
 /** The message that the product sent to create checkouts */
 public class ProductShopResponsiveMessage extends ResponsiveMessage {
@@ -63,8 +62,13 @@ public class ProductShopResponsiveMessage extends ResponsiveMessage {
               TicketManager manager = TicketManager.getInstance();
               Product parent = manager.getLoader().getProductByMessage(event.getMessageIdLong());
               Ticket ticket = manager.createTicket(TicketType.CHECK_OUT, event.getMember(), parent);
-                HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
-                Messages.create("CHECK_OUT_CREATED_TITLE", "CHECK_OUT_CREATED_DESCRIPTION", placeholders, placeholders).send(event.getChannel(), msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+              HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
+              Messages.create(
+                      "CHECK_OUT_CREATED_TITLE",
+                      "CHECK_OUT_CREATED_DESCRIPTION",
+                      placeholders,
+                      placeholders)
+                  .send(event.getChannel(), msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
             } catch (DiscordManipulationException | TicketCreationException e) {
               Messages.error(e.getMessage())
                   .send(event.getChannel(), msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));

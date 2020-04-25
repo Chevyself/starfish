@@ -1,18 +1,18 @@
 package com.starfishst.ethot.tickets.type;
 
 import com.starfishst.ethot.config.Configuration;
+import com.starfishst.ethot.config.questions.QuestionsHandler;
 import com.starfishst.ethot.listeners.questions.QuestionTicketListener;
 import com.starfishst.ethot.objects.questions.Answer;
 import com.starfishst.ethot.objects.questions.Question;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.util.Messages;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
 
 /**
  * This is a type of ticket that will ask for details to provide to the freelancers, the management
@@ -97,7 +97,7 @@ public class QuestionsTicket extends Ticket {
   @Override
   public void onCreation() {
     if (channel != null) {
-      Question question = Configuration.getInstance().getQuestions(this.getType()).get(0);
+      Question question = QuestionsHandler.getInstance().getQuestions(this.getType()).get(0);
       QuestionTicketListener.sendNextMessage(
           this.id,
           channel,

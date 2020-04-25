@@ -8,10 +8,9 @@ import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.util.Freelancers;
 import com.starfishst.ethot.util.Messages;
+import java.util.HashMap;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
 
 /** The reaction response for the reviews */
 public abstract class ReviewReactionResponse implements ReactionResponse {

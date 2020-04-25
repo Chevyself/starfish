@@ -2,10 +2,9 @@ package com.starfishst.ethot.objects.questions;
 
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.Strings;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
 
 /**
  * This represents a question. Used in {@link com.starfishst.ethot.tickets.type.QuestionsTicket}

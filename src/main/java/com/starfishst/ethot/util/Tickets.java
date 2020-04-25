@@ -9,16 +9,15 @@ import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.type.FreelancingTicket;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
 import com.starfishst.ethot.tickets.type.Ticket;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Many utilities for tickets

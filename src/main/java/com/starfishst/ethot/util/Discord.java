@@ -4,6 +4,9 @@ import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.exception.DiscordManipulationException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
@@ -18,10 +21,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Various utils for discord

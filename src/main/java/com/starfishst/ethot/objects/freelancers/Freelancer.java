@@ -9,14 +9,13 @@ import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Freelancers;
 import com.starfishst.ethot.util.Maps;
+import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.List;
 
 /** This class represents the freelancers inside the server */
 public class Freelancer extends Catchable {

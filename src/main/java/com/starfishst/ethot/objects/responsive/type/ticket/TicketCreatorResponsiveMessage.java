@@ -6,11 +6,10 @@ import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.objects.responsive.ResponsiveMessageType;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.type.TicketCreator;
-import net.dv8tion.jda.api.entities.Message;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.dv8tion.jda.api.entities.Message;
+import org.jetbrains.annotations.NotNull;
 
 /** This is the message sent in {@link TicketCreator} */
 public class TicketCreatorResponsiveMessage extends ResponsiveMessage {
@@ -41,7 +40,7 @@ public class TicketCreatorResponsiveMessage extends ResponsiveMessage {
     if (!bans.contains(TicketType.APPLY)) {
       responses.add(new ApplyReactionResponse(creator));
     }
-    if (!bans.contains(TicketType.SUPPORT)){
+    if (!bans.contains(TicketType.SUPPORT)) {
       responses.add(new SupportReactionResponse(creator));
     }
     return responses;

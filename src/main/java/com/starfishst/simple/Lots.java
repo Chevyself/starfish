@@ -1,10 +1,9 @@
 package com.starfishst.simple;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /** Simple utils for lists and arrays */
 public class Lots {

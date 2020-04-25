@@ -2,11 +2,10 @@ package com.starfishst.ethot.objects.responsive;
 
 import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.Configuration;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Responsive messages listen to reactions inside of discord and execute a desired action when the

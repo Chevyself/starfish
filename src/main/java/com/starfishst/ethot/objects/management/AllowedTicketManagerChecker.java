@@ -2,11 +2,10 @@ package com.starfishst.ethot.objects.management;
 
 import com.starfishst.core.utils.Atomic;
 import com.starfishst.ethot.config.DiscordConfiguration;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /** Checks if a user is allowed to manage tickets */
 public class AllowedTicketManagerChecker implements AllowedChecker {

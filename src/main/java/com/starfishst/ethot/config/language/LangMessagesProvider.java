@@ -4,9 +4,8 @@ import com.starfishst.commands.messages.MessagesProvider;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.ethot.Main;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This provider is needed by the command framework for customization. In case messages are too long

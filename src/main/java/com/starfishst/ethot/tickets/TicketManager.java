@@ -17,14 +17,13 @@ import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.tickets.type.TicketCreator;
 import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Tickets;
+import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * The ticket manager administrates everything related to tickets. From creating them to even give
@@ -114,6 +113,7 @@ public class TicketManager {
 
   /**
    * Validates that the type is not forbidden from being created
+   *
    * @param type the type of ticket to check
    * @throws TicketCreationException if the type of ticket cannot be created
    */

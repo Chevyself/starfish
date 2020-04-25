@@ -2,22 +2,34 @@ package com.starfishst.ethot.config;
 
 import com.starfishst.commands.ManagerOptions;
 import com.starfishst.core.utils.Errors;
+import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.time.Time;
+import com.starfishst.core.utils.time.Unit;
 import com.starfishst.ethot.Main;
 import com.starfishst.ethot.listeners.questions.QuestionSendType;
 import com.starfishst.ethot.objects.invoicing.Fee;
 import com.starfishst.ethot.objects.questions.Question;
 import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.tickets.TicketType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/** This class represents the 'config.json' as a java object */
-public class Configuration {
+import com.starfishst.simple.config.JsonConfiguration;
+import com.starfishst.simple.files.FileUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+/** This class represents the 'config.json' as a java object */
+public class Configuration extends JsonConfiguration {
+
+  /**
+   * The instance of this class for static usage
+   */
+  @Nullable
+  private static Configuration instance;
   /** The token for discord authentication */
   @NotNull private final String token;
   /** The prefix to use in commands */
@@ -26,9 +38,7 @@ public class Configuration {
   @NotNull private final MongoConfiguration mongo;
   /** The limit of tickets that a user can have open */
   private final long openTicketsByUserLimit;
-  /**
-   * The time to delete tickets
-   */
+  /** The time to delete tickets */
   @NotNull private final Time toUnload;
   /** The time to unload freelancers */
   @NotNull private final Time toUnloadFreelancer;
@@ -56,76 +66,37 @@ public class Configuration {
   @NotNull private final ManagerOptions commands;
   /** The type of questions send */
   @NotNull private final QuestionSendType questionSendType;
-  /**
-   * The list of ticket types that cannot be created
-   */
+  /** The list of ticket types that cannot be created */
   @NotNull private final List<TicketType> bannedTypes;
   /** The total of tickets */
   private long total;
 
   /**
-   * Create an instance
-   *  @param token the token for discord connection
-   * @param prefix the prefix to use in commands
-   * @param mongo the mongo configuration
-   * @param openTicketsByUserLimit the limit for open tickets per user
-   * @param orderQuestions the questions for orders
-   * @param messages the list of responsive messages
-   * @param toUnload the time to delete tickets
-   * @param toUnloadFreelancer the time to unload freelancers
-   * @param inactiveTime the time to start inactive tests
-   * @param timeToFinishInactiveTest the time to finish inactive tests
-   * @param autoSave the auto-save configuration
-   * @param toAnnounce the times to announce that a ticket is going to close
-   * @param total the total of tickets
-   * @param applyQuestions the questions for apply tickets
-   * @param supportQuestions the questions for support tickets
-   * @param productQuestions the questions for product tickets
-   * @param fees the list of fees
-   * @param commands the configuration for commands
-   * @param questionSendType the type to send questions
-   * @param bannedTypes the type of tickets that cannot be created
+   *
+   * Constructor for gson!
    */
-  public Configuration(
-          @NotNull String token,
-          @NotNull String prefix,
-          @NotNull MongoConfiguration mongo,
-          long openTicketsByUserLimit,
-          @NotNull List<Question> orderQuestions,
-          @NotNull List<ResponsiveMessage> messages,
-          @NotNull Time toUnload,
-          @NotNull Time toUnloadFreelancer,
-          @NotNull Time inactiveTime,
-          @NotNull Time timeToFinishInactiveTest,
-          @NotNull AutoSaveConfiguration autoSave,
-          @NotNull List<Time> toAnnounce,
-          int total,
-          @NotNull List<Question> applyQuestions,
-          @NotNull List<Question> supportQuestions,
-          @NotNull List<Question> productQuestions,
-          @NotNull List<Fee> fees,
-          @NotNull ManagerOptions commands,
-          @NotNull QuestionSendType questionSendType, @NotNull List<TicketType> bannedTypes) {
-    this.token = token;
-    this.prefix = prefix;
-    this.mongo = mongo;
-    this.openTicketsByUserLimit = openTicketsByUserLimit;
-    this.orderQuestions = orderQuestions;
-    this.responsiveMessages = messages;
-    this.toUnload = toUnload;
-    this.toUnloadFreelancer = toUnloadFreelancer;
-    this.inactiveTime = inactiveTime;
-    this.timeToFinishInactiveTest = timeToFinishInactiveTest;
-    this.autoSave = autoSave;
-    this.toAnnounce = toAnnounce;
-    this.total = total;
-    this.applyQuestions = applyQuestions;
-    this.supportQuestions = supportQuestions;
-    this.productQuestions = productQuestions;
-    this.fees = fees;
-    this.commands = commands;
-    this.questionSendType = questionSendType;
-    this.bannedTypes = bannedTypes;
+  public Configuration() {
+    instance = this;
+    this.token = "";
+    this.prefix = "-";
+    this.mongo = new MongoConfiguration("", "");
+    this.openTicketsByUserLimit = 2;
+    this.toUnload = new Time(15, Unit.MINUTES);
+    this.toUnloadFreelancer = new Time(15, Unit.MINUTES);
+    this.inactiveTime = new Time(2, Unit.WEEKS);
+    this.timeToFinishInactiveTest = new Time(1, Unit.DAYS);
+    this.autoSave = new AutoSaveConfiguration(false, new Time(5, Unit.MINUTES));
+    this.toAnnounce = new ArrayList<>();
+    this.applyQuestions = new ArrayList<>();
+    this.orderQuestions = new ArrayList<>();
+    this.supportQuestions = new ArrayList<>();
+    this.productQuestions = new ArrayList<>();
+    this.responsiveMessages = new ArrayList<>();
+    this.fees = new ArrayList<>();
+    this.commands = new ManagerOptions();
+    this.questionSendType = QuestionSendType.NONE;
+    this.bannedTypes = new ArrayList<>();
+    this.total = 0;
   }
 
   /**
@@ -158,6 +129,7 @@ public class Configuration {
    * @throws IllegalArgumentException if the type that requests questions does not have any
    */
   @NotNull
+  @Deprecated
   public List<Question> getQuestions(@NotNull TicketType type) {
     switch (type) {
       case APPLY:
@@ -408,7 +380,7 @@ public class Configuration {
    */
   @NotNull
   public static Configuration getInstance() {
-    return Main.getConfiguration();
+    return Validate.notNull(instance, "Configuration may not have been initialized");
   }
 
   /**

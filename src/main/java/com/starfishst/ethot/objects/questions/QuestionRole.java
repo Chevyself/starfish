@@ -6,11 +6,10 @@ import com.starfishst.core.utils.Strings;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.exception.TicketCreationException;
 import com.starfishst.ethot.util.Discord;
-import net.dv8tion.jda.api.entities.Role;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.List;
+import net.dv8tion.jda.api.entities.Role;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This represents a role question. Used in {@link

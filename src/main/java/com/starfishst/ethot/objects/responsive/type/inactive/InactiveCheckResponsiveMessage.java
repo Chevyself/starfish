@@ -6,12 +6,11 @@ import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.objects.responsive.ResponsiveMessageType;
 import com.starfishst.ethot.util.Unicode;
 import com.starfishst.simple.Lots;
+import java.time.OffsetDateTime;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
-
-import java.time.OffsetDateTime;
-import java.util.List;
 
 /** This is the message send when an inactivity check starts */
 public class InactiveCheckResponsiveMessage extends ResponsiveMessage {

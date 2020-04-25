@@ -3,6 +3,9 @@ package com.starfishst.ethot.tickets.loader.mongo.codec;
 import com.starfishst.ethot.objects.freelancers.Freelancer;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.ethot.util.Maps;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import org.bson.BsonReader;
 import org.bson.BsonType;
 import org.bson.BsonWriter;
@@ -10,10 +13,6 @@ import org.bson.Document;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /** Decode and encode {@link Freelancer} for mongo */
 public class FreelancerCodec implements Codec<Freelancer> {

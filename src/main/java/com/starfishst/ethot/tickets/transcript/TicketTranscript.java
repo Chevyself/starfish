@@ -7,12 +7,11 @@ import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.logging.LoggerFactory;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /** Ticket transcripts are the messages send in a ticket channel saved in a log file inside /logs */
 public class TicketTranscript extends Catchable {

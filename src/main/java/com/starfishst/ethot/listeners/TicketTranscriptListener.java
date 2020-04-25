@@ -7,13 +7,12 @@ import com.starfishst.ethot.tickets.transcript.TicketTranscript;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.SubscribeEvent;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.SubscribeEvent;
+import org.jetbrains.annotations.NotNull;
 
 /** The listener of ticket transcripts. This adds the messages to the transcripts */
 public class TicketTranscriptListener {

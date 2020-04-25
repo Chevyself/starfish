@@ -12,13 +12,12 @@ import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
 import com.starfishst.ethot.util.Unicode;
 import com.starfishst.simple.Lots;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import org.jetbrains.annotations.NotNull;
 
 /** This panel helps customer to easily create tickets */
 public class TicketPanel extends ResponsiveMessage {

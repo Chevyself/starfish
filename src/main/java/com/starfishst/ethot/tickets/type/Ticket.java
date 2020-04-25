@@ -14,6 +14,9 @@ import com.starfishst.ethot.tickets.transcript.TicketTranscript;
 import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PrivateChannel;
@@ -22,10 +25,6 @@ import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This is the parent of all tickets. It all starts here, methods can be overwritten but this may

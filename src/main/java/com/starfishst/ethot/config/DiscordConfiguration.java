@@ -2,11 +2,11 @@ package com.starfishst.ethot.config;
 
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.Validate;
-import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.util.Discord;
+import com.starfishst.simple.config.JsonConfiguration;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -19,8 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 
 /** This class is 'discord.json' as a java object */
-public class DiscordConfiguration {
+public class DiscordConfiguration extends JsonConfiguration {
 
+  /**
+   * The instance of this class for static usage
+   */
+  @Nullable
+  private static DiscordConfiguration instance;
   /** A map of roles and their keys */
   @NotNull private final HashMap<String, List<Role>> roles;
   /** A map of categories and their keys */
@@ -28,30 +33,20 @@ public class DiscordConfiguration {
   /** A map of channels and their keys */
   @NotNull private final HashMap<String, TextChannel> channels;
   /** A map of role list and their keys */
+  // TODO A way to set them
   @NotNull private final HashMap<String, List<String>> roleKeyMap;
   /** The guild that's being used in the bot */
   @Nullable private Guild guild;
 
   /**
-   * Create a new discord configuration instance
-   *
-   * @param guild the guild that's going to be used
-   * @param roles the map of roles
-   * @param categories the map of categories
-   * @param channels the map of channels
-   * @param roleKeyMap the map of role keys
+   * Constructor for json
    */
-  public DiscordConfiguration(
-      @Nullable Guild guild,
-      @NotNull HashMap<String, List<Role>> roles,
-      @NotNull HashMap<String, Category> categories,
-      @NotNull HashMap<String, TextChannel> channels,
-      @NotNull HashMap<String, List<String>> roleKeyMap) {
-    this.guild = guild;
-    this.roles = roles;
-    this.categories = categories;
-    this.channels = channels;
-    this.roleKeyMap = roleKeyMap;
+  public DiscordConfiguration() {
+    instance = this;
+    this.roles = new HashMap<>();
+    this.categories = new HashMap<>();
+    this.channels = new HashMap<>();
+    this.roleKeyMap = new HashMap<>();
   }
 
   /**
@@ -289,6 +284,6 @@ public class DiscordConfiguration {
    */
   @NotNull
   public static DiscordConfiguration getInstance() {
-    return Main.getDiscordConfiguration();
+    return Validate.notNull(instance, "Discord configuration may not have been initialized");
   }
 }

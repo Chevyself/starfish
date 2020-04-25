@@ -11,13 +11,12 @@ import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.loader.TicketLoader;
 import com.starfishst.ethot.util.Messages;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
 
 /**
  * A product ticket is something that the freelancer is selling. It will have a message where

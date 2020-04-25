@@ -7,12 +7,11 @@ import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
 
 /** A ticket creator is the one that is made only to select another ticket type to create */
 public class TicketCreator extends Ticket {

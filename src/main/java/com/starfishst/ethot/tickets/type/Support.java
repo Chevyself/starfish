@@ -3,12 +3,11 @@ package com.starfishst.ethot.tickets.type;
 import com.starfishst.ethot.objects.questions.Answer;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
 
 /** When a client needs help it needs to create this ticket */
 public class Support extends QuestionsTicket {

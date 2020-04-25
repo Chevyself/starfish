@@ -3,7 +3,6 @@ package com.starfishst.ethot.objects.responsive.type.ticket;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.type.TicketCreator;
-import com.starfishst.ethot.util.Unicode;
 import org.jetbrains.annotations.NotNull;
 
 /** The reaction response to create an apply ticket */

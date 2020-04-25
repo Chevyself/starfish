@@ -1,10 +1,13 @@
 package com.starfishst.ethot.listeners.questions;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
+import com.starfishst.ethot.config.questions.QuestionsHandler;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.TicketCreationException;
 import com.starfishst.ethot.objects.questions.Answer;
@@ -17,6 +20,10 @@ import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Messages;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Consumer;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
@@ -25,13 +32,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Consumer;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /** Listens to {@link QuestionsTicket} when tye are being created and the answers of the user */
 public class QuestionTicketListener {
@@ -116,7 +116,7 @@ public class QuestionTicketListener {
         && ticket instanceof QuestionsTicket
         && ticket.getStatus() == TicketStatus.CREATING) {
       QuestionsTicket questionsTicket = (QuestionsTicket) ticket;
-      List<Question> questions = Configuration.getInstance().getQuestions(ticket.getType());
+      List<Question> questions = QuestionsHandler.getInstance().getQuestions(ticket.getType());
       Question question = questions.get(questionsTicket.getCurrent());
       Answer answer = getAnswer(event, question);
       activeUserMessage.put(questionsTicket.getId(), event.getMessage().getIdLong());

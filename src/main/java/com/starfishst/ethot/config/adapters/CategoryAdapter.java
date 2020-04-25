@@ -8,9 +8,8 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.starfishst.ethot.util.Discord;
-import net.dv8tion.jda.api.entities.Category;
-
 import java.lang.reflect.Type;
+import net.dv8tion.jda.api.entities.Category;
 
 /**
  * Gson adapters convert <a href="https://www.json.org/json-en.html">Json</a> objects to java

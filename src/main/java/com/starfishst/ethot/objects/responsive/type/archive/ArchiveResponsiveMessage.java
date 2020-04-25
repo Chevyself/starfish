@@ -13,12 +13,11 @@ import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
 import com.starfishst.ethot.util.Unicode;
 import com.starfishst.simple.Lots;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /** The message to make sure that the user archiving the ticket really wants to do it */
 public class ArchiveResponsiveMessage extends ResponsiveMessage {

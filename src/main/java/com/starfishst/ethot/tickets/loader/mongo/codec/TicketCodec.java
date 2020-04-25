@@ -18,6 +18,9 @@ import com.starfishst.ethot.tickets.type.Quote;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.tickets.type.TicketCreator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.internal.entities.TextChannelImpl;
@@ -30,10 +33,6 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /** Decode and encode {@link Ticket} for mongo */
 public class TicketCodec implements Codec<Ticket> {

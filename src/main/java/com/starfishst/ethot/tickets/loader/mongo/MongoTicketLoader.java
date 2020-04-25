@@ -33,6 +33,9 @@ import com.starfishst.ethot.tickets.type.Quote;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Console;
 import com.starfishst.ethot.util.Tickets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.BsonReader;
@@ -44,10 +47,6 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.json.JsonReader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 
 /** This loads a ticket from a mongo database */
 public class MongoTicketLoader implements TicketLoader {

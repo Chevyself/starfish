@@ -10,13 +10,12 @@ import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Freelancers;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
 
 /** Is the kind of ticket that needs of a freelancer to exist */
 public class FreelancingTicket extends QuestionsTicket {
