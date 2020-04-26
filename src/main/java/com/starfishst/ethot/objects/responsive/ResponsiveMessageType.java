@@ -20,5 +20,7 @@ public enum ResponsiveMessageType {
   /** The message waiting for customer to buy a product */
   PRODUCT,
   /** The message sent to confirm a suggestion */
-  SUGGESTION_CONFIRM
+  SUGGESTION_CONFIRM,
+  /** The verification for when a player joins the server */
+  JOIN_VERIFICATION
 }

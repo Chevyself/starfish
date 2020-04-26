@@ -47,7 +47,7 @@ public class Lang {
   @NotNull
   public static String get(@NotNull String key) {
     String raw = getRaw(key);
-    return raw == null ? "Null" : raw;
+    return raw == null ? key : raw;
   }
 
   /**
@@ -70,7 +70,7 @@ public class Lang {
   @NotNull
   public static String get(@NotNull String key, @NotNull HashMap<String, String> placeHolders) {
     String raw = getRaw(key);
-    return raw == null ? "Null" : Strings.buildMessage(raw, placeHolders);
+    return raw == null ? key : Strings.buildMessage(raw, placeHolders);
   }
 
   /**

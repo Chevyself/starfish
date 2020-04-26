@@ -10,9 +10,11 @@ import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.PunishmentsConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
+import com.starfishst.ethot.objects.responsive.type.verification.VerificationResponsiveMessage;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Discord;
+import com.starfishst.ethot.util.Messages;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -185,5 +187,22 @@ public class ModerationCommands {
       Discord.addRoles(user, roles);
       return new Result(Lang.get("USER_BLACKLISTED", placeholders));
     }
+  }
+
+  /**
+   * Create a verification message
+   *
+   * @return a new verification message in the channel executed
+   */
+  @Command(
+      aliases = {"verificationmsg", "vmsg"},
+      description = "Creates a verification message",
+      permission = Permission.ADMINISTRATOR)
+  public Result verificationMsg() {
+    return new Result(
+        ResultType.GENERIC,
+        Messages.create(
+            "VERIFICATION_MESSAGE_TITLE", "VERIFICATION_MESSAGE_DESCRIPTION", null, null),
+        VerificationResponsiveMessage::new);
   }
 }

@@ -37,8 +37,10 @@ import com.starfishst.ethot.config.adapters.TimeAdapter;
 import com.starfishst.ethot.config.adapters.UserAdapter;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.listeners.ConfigurationListener;
+import com.starfishst.ethot.listeners.ModerationListener;
 import com.starfishst.ethot.listeners.ResponsiveMessagesListener;
 import com.starfishst.ethot.listeners.TicketTranscriptListener;
+import com.starfishst.ethot.listeners.WelcomeListener;
 import com.starfishst.ethot.listeners.questions.QuestionTicketListener;
 import com.starfishst.ethot.objects.invoicing.Fee;
 import com.starfishst.ethot.objects.questions.Question;
@@ -165,6 +167,8 @@ public class Main {
                 .addEventListeners(new QuestionTicketListener())
                 .addEventListeners(new TicketTranscriptListener())
                 .addEventListeners(new ConfigurationListener())
+                .addEventListeners(new WelcomeListener())
+                .addEventListeners(new ModerationListener())
                 .build();
 
         Console.info("Waiting for Discord connection...");

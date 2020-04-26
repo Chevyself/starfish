@@ -167,8 +167,10 @@ public class TicketManager {
       throws TicketCreationException {
     DiscordConfiguration instance = DiscordConfiguration.getInstance();
     List<Role> roles = instance.getRolesByKeys(instance.getRolesKeys("blacklist"));
-    if (Discord.hasRole(creator, roles) && type != TicketType.SUPPORT
-        | type != TicketType.SUGGESTION | type != TicketType.TICKET_CREATOR) {
+    if (Discord.hasRole(creator, roles)
+        && type != TicketType.SUPPORT
+            | type != TicketType.SUGGESTION
+            | type != TicketType.TICKET_CREATOR) {
       throw new TicketCreationException(Lang.get("USER_IS_BLACKLISTED"));
     }
   }

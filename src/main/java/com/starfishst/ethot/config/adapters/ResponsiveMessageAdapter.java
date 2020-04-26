@@ -13,6 +13,7 @@ import com.starfishst.ethot.objects.responsive.type.archive.ArchiveResponsiveMes
 import com.starfishst.ethot.objects.responsive.type.freelancer.ReviewFreelancer;
 import com.starfishst.ethot.objects.responsive.type.inactive.InactiveCheckResponsiveMessage;
 import com.starfishst.ethot.objects.responsive.type.panel.TicketPanel;
+import com.starfishst.ethot.objects.responsive.type.verification.VerificationResponsiveMessage;
 import com.starfishst.simple.Lots;
 import java.awt.*;
 import java.lang.reflect.Type;
@@ -47,6 +48,8 @@ public class ResponsiveMessageAdapter
         boolean finished = object.get("finished").getAsBoolean();
         List<Long> reacted = Lots.list(context.deserialize(object.get("reacted"), Long[].class));
         return new InactiveCheckResponsiveMessage(id, createdAt, ticket, reacted, finished);
+      case JOIN_VERIFICATION:
+        return new VerificationResponsiveMessage(id);
       case TICKET_PANEL:
         return new TicketPanel(id);
     }

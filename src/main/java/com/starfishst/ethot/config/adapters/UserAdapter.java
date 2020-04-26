@@ -8,9 +8,8 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.starfishst.ethot.util.Discord;
-import net.dv8tion.jda.api.entities.User;
-
 import java.lang.reflect.Type;
+import net.dv8tion.jda.api.entities.User;
 
 /**
  * Gson adapters convert <a href="https://www.json.org/json-en.html">Json</a> objects to java
@@ -20,16 +19,16 @@ import java.lang.reflect.Type;
  */
 public class UserAdapter implements JsonSerializer<User>, JsonDeserializer<User> {
 
-    @Override
-    public User deserialize(
-            JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext)
-            throws JsonParseException {
-        return Discord.getUser(jsonElement.getAsLong());
-    }
+  @Override
+  public User deserialize(
+      JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext)
+      throws JsonParseException {
+    return Discord.getUser(jsonElement.getAsLong());
+  }
 
-    @Override
-    public JsonElement serialize(
-            User user, Type type, JsonSerializationContext jsonSerializationContext) {
-        return new JsonPrimitive(user.getIdLong());
-    }
+  @Override
+  public JsonElement serialize(
+      User user, Type type, JsonSerializationContext jsonSerializationContext) {
+    return new JsonPrimitive(user.getIdLong());
+  }
 }
