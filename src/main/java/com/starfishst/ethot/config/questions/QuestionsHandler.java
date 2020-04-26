@@ -1,7 +1,7 @@
 package com.starfishst.ethot.config.questions;
 
 import com.starfishst.core.utils.Errors;
-import com.starfishst.ethot.exception.QuestionsInitExecption;
+import com.starfishst.ethot.exception.QuestionsInitException;
 import com.starfishst.ethot.objects.questions.Question;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.simple.config.JsonConfiguration;
@@ -21,8 +21,8 @@ public class QuestionsHandler {
     try {
       instance = new QuestionsHandler();
     } catch (IOException e) {
-      Errors.addError("Questions could not be initialized");
-      throw new QuestionsInitExecption();
+      Errors.addError(e.getMessage());
+      throw new QuestionsInitException();
     }
   }
 
@@ -50,7 +50,8 @@ public class QuestionsHandler {
     this.support = JsonConfiguration.getInstance(getFile("support"), QuestionsConfiguration.class);
     this.order = JsonConfiguration.getInstance(getFile("order"), QuestionsConfiguration.class);
     this.report = JsonConfiguration.getInstance(getFile("report"), QuestionsConfiguration.class);
-    this.suggestion = JsonConfiguration.getInstance(getFile("suggestion"), QuestionsConfiguration.class);
+    this.suggestion =
+        JsonConfiguration.getInstance(getFile("suggestion"), QuestionsConfiguration.class);
   }
 
   /**

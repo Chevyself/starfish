@@ -1,10 +1,8 @@
 package com.starfishst.ethot.objects.management;
 
-import com.starfishst.core.utils.Atomic;
 import com.starfishst.ethot.config.DiscordConfiguration;
-import java.util.List;
+import com.starfishst.ethot.util.Discord;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
 
 /** Checks if a user is allowed to close/manage tickets */
@@ -26,15 +24,7 @@ public class AllowedTicketCloserChecker implements AllowedChecker {
 
   @Override
   public boolean isAllowed(@NotNull Member member) {
-    Atomic<Boolean> atomic = new Atomic<>(false);
     DiscordConfiguration config = DiscordConfiguration.getInstance();
-    List<Role> roles = config.getRolesByKeys(config.getRolesKeys("ticketCloser"));
-    roles.forEach(
-        role -> {
-          if (member.getRoles().contains(role)) {
-            atomic.set(true);
-          }
-        });
-    return atomic.get();
+    return Discord.hasRole(member, config.getRolesByKeys(config.getRolesKeys("ticketCloser")));
   }
 }

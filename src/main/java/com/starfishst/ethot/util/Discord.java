@@ -1,5 +1,6 @@
 package com.starfishst.ethot.util;
 
+import com.starfishst.core.utils.Atomic;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.DiscordConfiguration;
@@ -307,5 +308,79 @@ public class Discord {
   public static <I extends IPermissionHolder, C extends GuildChannel> void disallow(
       @NotNull C channel, @NotNull List<I> members) {
     members.forEach(member -> disallow(channel, member));
+  }
+
+  /**
+   * Checks if the user is banned inside the guild
+   *
+   * @param user the user to check if is banned
+   * @return true if is banned
+   * @throws DiscordManipulationException if the guild is not set
+   */
+  public static boolean isBanned(@NotNull User user) throws DiscordManipulationException {
+    Atomic<Boolean> booleanAtomic = new Atomic<>(false);
+    List<Guild.Ban> bans =
+        DiscordConfiguration.getInstance().getGuild().retrieveBanList().complete();
+    bans.forEach(
+        ban -> {
+          if (ban.getUser().getIdLong() == user.getIdLong()) {
+            booleanAtomic.set(true);
+          }
+        });
+    return booleanAtomic.get();
+  }
+
+  /**
+   * Checks if a member has certain role
+   *
+   * @param member the member to check
+   * @param query the role querying
+   * @return true if the member has the role
+   */
+  public static boolean hasRole(@NotNull Member member, @NotNull Role query) {
+    Atomic<Boolean> atomic = new Atomic<>(false);
+    member
+        .getRoles()
+        .forEach(
+            role -> {
+              if (role.getIdLong() == query.getIdLong()) {
+                atomic.set(true);
+              }
+            });
+    return atomic.get();
+  }
+
+  /**
+   * Checks if the member has at least one role from the querying list
+   *
+   * @param member the member to check
+   * @param query the list querying
+   * @return true if the member has at least one role
+   */
+  public static boolean hasRole(@NotNull Member member, @NotNull List<Role> query) {
+    Atomic<Boolean> atomic = new Atomic<>(false);
+    query.forEach(
+        role -> {
+          if (hasRole(member, role)) {
+            atomic.set(true);
+          }
+        });
+    return atomic.get();
+  }
+
+  /**
+   * Add a list of roles to a member
+   *
+   * @param member the member to add the roles
+   * @param roles the roles to add
+   * @throws DiscordManipulationException if the guild has not been set
+   */
+  public static void addRoles(@NotNull Member member, @NotNull List<Role> roles)
+      throws DiscordManipulationException {
+    Guild guild = DiscordConfiguration.getInstance().getGuild();
+    roles.forEach(
+        role -> {
+          guild.addRoleToMember(member, role).queue();
+        });
   }
 }

@@ -2,6 +2,7 @@ package com.starfishst.ethot.tickets;
 
 import com.starfishst.core.utils.Validate;
 import com.starfishst.ethot.config.Configuration;
+import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.TicketCreationException;
@@ -22,6 +23,7 @@ import com.starfishst.ethot.util.Tickets;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +66,7 @@ public class TicketManager {
       @NotNull TicketType type, @NotNull Member creator, @Nullable Ticket parent)
       throws DiscordManipulationException, TicketCreationException {
     this.validateTicketType(type);
-    this.validateUser(creator);
+    this.validateUser(type, creator);
     long id = this.getId(parent);
     TextChannel channel = getChannel(type, id, creator, parent);
     User user = getUser(creator, parent);
@@ -136,10 +138,13 @@ public class TicketManager {
   /**
    * Validates if the user can create the ticket
    *
+   * @param type the type of ticket creating
    * @param creator the user trying to create the ticket
    * @throws TicketCreationException in case that the user cannot create more tickets
    */
-  private void validateUser(@NotNull Member creator) throws TicketCreationException {
+  private void validateUser(@NotNull TicketType type, @NotNull Member creator)
+      throws TicketCreationException {
+    validateRoles(type, creator);
     List<Ticket> tickets =
         Tickets.getTicketsMatchingStatus(TicketStatus.OPEN, loader.getTickets(creator.getUser()));
     if (tickets.size() > Configuration.getInstance().getOpenTicketsByUserLimit() + 1) {
@@ -148,6 +153,23 @@ public class TicketManager {
           "limit", String.valueOf(Configuration.getInstance().getOpenTicketsByUserLimit()));
       placeHolders.put("have", String.valueOf(tickets.size()));
       throw new TicketCreationException(Lang.get("MORE_THAN_LIMIT", placeHolders), placeHolders);
+    }
+  }
+
+  /**
+   * Validates that a user creating a ticket is not blacklisted
+   *
+   * @param type the type of ticket creating
+   * @param creator the creator of the ticket
+   * @throws TicketCreationException if the user is blacklisted
+   */
+  private void validateRoles(@NotNull TicketType type, @NotNull Member creator)
+      throws TicketCreationException {
+    DiscordConfiguration instance = DiscordConfiguration.getInstance();
+    List<Role> roles = instance.getRolesByKeys(instance.getRolesKeys("blacklist"));
+    if (Discord.hasRole(creator, roles) && type != TicketType.SUPPORT
+        | type != TicketType.SUGGESTION | type != TicketType.TICKET_CREATOR) {
+      throw new TicketCreationException(Lang.get("USER_IS_BLACKLISTED"));
     }
   }
 

@@ -1,7 +1,7 @@
 package com.starfishst.ethot.objects.management;
 
-import com.starfishst.core.utils.Atomic;
 import com.starfishst.ethot.config.DiscordConfiguration;
+import com.starfishst.ethot.util.Discord;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -26,16 +26,9 @@ public class AllowedTicketManagerChecker implements AllowedChecker {
 
   @Override
   public boolean isAllowed(@NotNull Member member) {
-    Atomic<Boolean> atomic = new Atomic<>(false);
     DiscordConfiguration config = DiscordConfiguration.getInstance();
     List<Role> roles = config.getRolesByKeys(config.getRolesKeys("ticketManager"));
     roles.addAll(config.getRolesByKeys(config.getRolesKeys("ticketCloser")));
-    roles.forEach(
-        role -> {
-          if (member.getRoles().contains(role)) {
-            atomic.set(true);
-          }
-        });
-    return atomic.get();
+    return Discord.hasRole(member, roles);
   }
 }

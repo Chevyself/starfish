@@ -140,8 +140,8 @@ public class InactiveCheck extends TimerTask {
                   }
                 }
               });
-    } catch (DiscordManipulationException e) {
-      e.printStackTrace();
+    } catch (DiscordManipulationException ignored) {
+
     }
   }
 }

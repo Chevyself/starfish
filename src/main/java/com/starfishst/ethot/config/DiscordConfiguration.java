@@ -29,7 +29,6 @@ public class DiscordConfiguration extends JsonConfiguration {
   /** A map of channels and their keys */
   @NotNull private final HashMap<String, TextChannel> channels;
   /** A map of role list and their keys */
-  // TODO A way to set them
   @NotNull private final HashMap<String, List<String>> roleKeyMap;
   /** The guild that's being used in the bot */
   @Nullable private Guild guild;
@@ -279,5 +278,15 @@ public class DiscordConfiguration extends JsonConfiguration {
   @NotNull
   public static DiscordConfiguration getInstance() {
     return Validate.notNull(instance, "Discord configuration may not have been initialized");
+  }
+
+  /**
+   * Get the whole key-roles map
+   *
+   * @return the map
+   */
+  @NotNull
+  public HashMap<String, List<String>> getRoleKeyMap() {
+    return roleKeyMap;
   }
 }

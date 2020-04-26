@@ -67,14 +67,9 @@ public class Freelancers {
       answers.forEach(
           (simple, answer) -> {
             if (answer instanceof RoleAnswer) {
-              ((RoleAnswer) answer)
-                  .getAnswer()
-                  .forEach(
-                      role -> {
-                        if (member.getRoles().contains(role)) {
-                          atomic.set(true);
-                        }
-                      });
+              if (Discord.hasRole(member, ((RoleAnswer) answer).getAnswer())) {
+                atomic.set(true);
+              }
             }
           });
       return atomic.get();

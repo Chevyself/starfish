@@ -95,6 +95,31 @@ public class SetCommand {
   }
 
   /**
+   * Set the key for a specific list of role keys
+   *
+   * @param key the key to set the list to
+   * @param keys the list of roles keys
+   * @return a successful result saying that the keys have been set
+   */
+  @Command(
+      aliases = "rolesKeys",
+      description = "Sets the keys for roles identification",
+      permission = Permission.ADMINISTRATOR)
+  public Result rolesKeys(
+      @Required(name = "key", description = "The key to set the other role keys") String key,
+      @Required(name = "keys", description = "The keys to set") JoinedStrings keys) {
+    HashMap<String, List<String>> roleKeyMap = DiscordConfiguration.getInstance().getRoleKeyMap();
+    List<String> list = Lots.list(keys.getStrings());
+    roleKeyMap.put(key, list);
+    HashMap<String, String> placeholders = new HashMap<>();
+    placeholders.put("key", key);
+    placeholders.put("keys", Lots.pretty(list));
+    return new Result(
+        Lang.get("KEY_SET_TO_ROLES", placeholders),
+        msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+  }
+
+  /**
    * Sets the category for a certain key
    *
    * @param message the message to get the category from

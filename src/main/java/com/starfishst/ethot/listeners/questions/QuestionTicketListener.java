@@ -5,10 +5,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.config.Configuration;
-import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.config.questions.QuestionsHandler;
-import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.TicketCreationException;
 import com.starfishst.ethot.objects.questions.Answer;
 import com.starfishst.ethot.objects.questions.Question;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -101,18 +98,9 @@ public class QuestionTicketListener {
    */
   @SubscribeEvent
   public void onMessageReceivedEvent(GuildMessageReceivedEvent event) {
-    DiscordConfiguration configuration = DiscordConfiguration.getInstance();
     Ticket ticket =
         TicketManager.getInstance().getLoader().getTicketByChannel(event.getChannel().getIdLong());
-    Guild guild;
-    try {
-      guild = configuration.getGuild();
-    } catch (DiscordManipulationException e) {
-      Messages.error(e.getMessage()).send(event.getChannel());
-      return;
-    }
     if (!event.getAuthor().isBot()
-        && guild == event.getGuild()
         && ticket instanceof QuestionsTicket
         && ticket.getStatus() == TicketStatus.CREATING) {
       QuestionsTicket questionsTicket = (QuestionsTicket) ticket;

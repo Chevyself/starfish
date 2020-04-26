@@ -69,7 +69,7 @@ public class TicketPanel extends ResponsiveMessage {
                       placeholders)
                   .send(event.getChannel(), msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
             } catch (TicketCreationException | DiscordManipulationException e) {
-              e.printStackTrace();
+              Messages.error(e.getMessage()).send(event.getChannel());
             }
           }
         });

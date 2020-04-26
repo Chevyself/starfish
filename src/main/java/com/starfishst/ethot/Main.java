@@ -13,6 +13,7 @@ import com.starfishst.ethot.commands.AddCommands;
 import com.starfishst.ethot.commands.DevCommands;
 import com.starfishst.ethot.commands.FreelancerCommands;
 import com.starfishst.ethot.commands.HelpCommands;
+import com.starfishst.ethot.commands.ModerationCommands;
 import com.starfishst.ethot.commands.RemoveCommands;
 import com.starfishst.ethot.commands.SetCommand;
 import com.starfishst.ethot.commands.TicketsCommand;
@@ -23,6 +24,7 @@ import com.starfishst.ethot.commands.provider.FreelancerSenderProvider;
 import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.MongoConfiguration;
+import com.starfishst.ethot.config.PunishmentsConfiguration;
 import com.starfishst.ethot.config.adapters.CategoryAdapter;
 import com.starfishst.ethot.config.adapters.ColorAdapter;
 import com.starfishst.ethot.config.adapters.FeeAdapter;
@@ -32,6 +34,7 @@ import com.starfishst.ethot.config.adapters.ResponsiveMessageAdapter;
 import com.starfishst.ethot.config.adapters.RoleAdapter;
 import com.starfishst.ethot.config.adapters.TextChannelAdapter;
 import com.starfishst.ethot.config.adapters.TimeAdapter;
+import com.starfishst.ethot.config.adapters.UserAdapter;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.listeners.ConfigurationListener;
 import com.starfishst.ethot.listeners.ResponsiveMessagesListener;
@@ -59,6 +62,7 @@ import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -132,6 +136,7 @@ public class Main {
       GsonProvider.addAdapter(Role.class, new RoleAdapter());
       GsonProvider.addAdapter(TextChannel.class, new TextChannelAdapter());
       GsonProvider.addAdapter(Time.class, new TimeAdapter());
+      GsonProvider.addAdapter(User.class, new UserAdapter());
       GsonProvider.refresh();
       configuration =
           JsonConfiguration.getInstance(
@@ -238,6 +243,7 @@ public class Main {
       commandManager.registerCommand(new DevCommands());
       commandManager.registerCommand(new FreelancerCommands());
       commandManager.registerCommand(new HelpCommands());
+      commandManager.registerCommand(new ModerationCommands());
       commandManager.registerCommand(new RemoveCommands());
       commandManager.registerCommand(new SetCommand());
       commandManager.registerCommand(new TicketsCommand());
@@ -296,6 +302,7 @@ public class Main {
     Lang.save();
     getConfiguration().save();
     getDiscordConfiguration().save();
+    PunishmentsConfiguration.getInstance().save();
   }
 
   /** Stops the bot while saving the config */
