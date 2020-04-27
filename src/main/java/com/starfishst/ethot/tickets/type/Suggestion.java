@@ -1,5 +1,7 @@
 package com.starfishst.ethot.tickets.type;
 
+import com.starfishst.core.utils.Errors;
+import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.objects.questions.Answer;
 import com.starfishst.ethot.objects.responsive.type.suggestions.SuggestionsResponsiveMessage;
 import com.starfishst.ethot.tickets.TicketStatus;
@@ -46,6 +48,12 @@ public class Suggestion extends QuestionsTicket {
 
   /** Calls the onDone super method */
   public void superOnDone() {
+    try {
+      Messages.announce(this).send(getType().getChannel());
+    } catch (DiscordManipulationException e) {
+      Messages.error("This ticket could not be announced");
+      Errors.addError(e.getMessage());
+    }
     super.onDone();
   }
 

@@ -9,7 +9,6 @@ import com.starfishst.ethot.objects.freelancers.Freelancer;
 import com.starfishst.ethot.tickets.TicketManager;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -31,7 +30,7 @@ public class FreelancerProvider implements IArgumentProvider<Freelancer> {
         ICommandManager.getProvider(Member.class, IArgumentProvider.class);
     if (provider != null) {
       Object object = provider.fromString(s, context);
-      if (object instanceof Message) {
+      if (object instanceof Member) {
         Member member = (Member) object;
         Freelancer freelancer =
             TicketManager.getInstance().getLoader().getFreelancer(member.getIdLong());

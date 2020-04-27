@@ -6,6 +6,7 @@
     "database": "database"
   },
   "total": 0,
+  "limitOfQuotes": 2,
   "openTicketsByUserLimit": 2,
   "toUnload": "3m",
   "toUnloadFreelancer": "10m",

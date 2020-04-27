@@ -161,7 +161,7 @@ public class ModerationCommands {
             .retrievePast(amount)
             .queue(messages -> messages.forEach(message -> message.delete().queue()));
         return new Result(
-            Lang.get("MESSAGES_CLEARED"), msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+            Lang.get("MESSAGES_CLEARED"), msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
       }
     }
   }

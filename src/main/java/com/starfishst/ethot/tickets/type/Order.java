@@ -113,7 +113,7 @@ public class Order extends FreelancingTicket {
           .send(
               getType().getChannel(),
               msg -> {
-                message = new OrderClaimingResponsiveMessage(msg.getIdLong());
+                message = new OrderClaimingResponsiveMessage(msg);
               });
     } catch (DiscordManipulationException e) {
       Messages.error("This ticket could not be announced");

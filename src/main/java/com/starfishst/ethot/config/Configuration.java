@@ -62,6 +62,8 @@ public class Configuration extends JsonConfiguration {
   @NotNull private final List<TicketType> bannedTypes;
   /** The total of tickets */
   private long total;
+  /** The limit of quotes send by a freelancer */
+  private long limitOfQuotes;
 
   /** Constructor for gson! */
   public Configuration() {
@@ -86,6 +88,7 @@ public class Configuration extends JsonConfiguration {
     this.questionSendType = QuestionSendType.NONE;
     this.bannedTypes = new ArrayList<>();
     this.total = 0;
+    this.limitOfQuotes = 2;
   }
 
   /**
@@ -380,5 +383,14 @@ public class Configuration extends JsonConfiguration {
   @NotNull
   public List<TicketType> getBannedTypes() {
     return bannedTypes;
+  }
+
+  /**
+   * Get the limit that a freelancer has to send quotes
+   *
+   * @return the limit that a freelancer has to send quotes
+   */
+  public long getLimitOfQuotes() {
+    return limitOfQuotes;
   }
 }

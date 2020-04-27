@@ -6,6 +6,7 @@ import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.arguments.JoinedStrings;
+import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
@@ -129,15 +130,14 @@ public class FreelancerCommands {
    *
    * @param freelancer the freelancer sending the quote
    * @param id the id of the quote
-   * @param strings the message that the freelancer is sending
+   * @param quote the offer that the freelancer is sending
    * @return successful result if the quote is send ok
    */
   @Command(aliases = "quote", description = "Sends a quote to an order")
   public Result quote(
       Freelancer freelancer,
       @Required(name = "id", description = "The id of the ticket") long id,
-      @Required(name = "quote", description = "The quote to send to the order")
-          JoinedStrings strings) {
+      @Required(name = "quote", description = "The quote to send to the order") double quote) {
     Ticket ticket = TicketManager.getInstance().getLoader().getTicket(id);
     if (!(ticket instanceof Quote)) {
       if (ticket != null) {
@@ -152,25 +152,31 @@ public class FreelancerCommands {
       return new Result(ResultType.UNKNOWN, "This should not have happened... Your user is null");
     } else {
       if (((Quote) ticket).getFreelancer() == null) {
+        long limit = Configuration.getInstance().getLimitOfQuotes();
         HashMap<String, String> placeholders = Freelancers.getPlaceholders(freelancer);
-        placeholders.put("offer", strings.getString());
-        placeholders.put("quote", strings.getString());
-        Messages.create("NEW_OFFER_TITLE", "NEW_OFFER_DESCRIPTION", placeholders, placeholders)
-            .send(
-                ticket.getChannel(),
-                msg ->
-                    ((Quote) ticket)
-                        .addOffer(
-                            new Offer(
-                                freelancer,
-                                strings.getString(),
-                                new OfferAcceptResponsiveMessage(msg))));
+        if (((Quote) ticket).countOffers(freelancer) < limit) {
+          placeholders.put("offer", String.valueOf(quote));
+          placeholders.put("quote", String.valueOf(quote));
+          Messages.create("NEW_OFFER_TITLE", "NEW_OFFER_DESCRIPTION", placeholders, placeholders)
+              .send(
+                  ticket.getChannel(),
+                  msg ->
+                      ((Quote) ticket)
+                          .addOffer(
+                              new Offer(
+                                  freelancer,
+                                  String.valueOf(quote),
+                                  new OfferAcceptResponsiveMessage(msg))));
+          return new Result(
+              ResultType.GENERIC, Lang.get("OFFER_SENT", Tickets.getPlaceholders(ticket)));
+        } else {
+          placeholders.put("limit", String.valueOf(limit));
+          return new Result(ResultType.ERROR, Lang.get("NO_MORE_QUOTES", placeholders));
+        }
       } else {
         return new Result(
             ResultType.ERROR, Lang.get("QUOTE_HAS_FREELANCER", Tickets.getPlaceholders(ticket)));
       }
-      return new Result(
-          ResultType.GENERIC, Lang.get("OFFER_SENT", Tickets.getPlaceholders(ticket)));
     }
   }
 

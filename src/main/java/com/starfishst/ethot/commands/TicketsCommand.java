@@ -92,7 +92,7 @@ public class TicketsCommand {
    * @param id the id of the ticket to announce
    * @return successful result if there's mentioned members
    */
-  @Command(aliases = "announce", description = "Announces a ticket")
+  @Command(aliases = "repost", description = "Announces a ticket")
   public Result announce(
       AllowedTicketManagerChecker user,
       Message message,

@@ -46,6 +46,8 @@ public class SuggestionsResponsiveMessage extends ResponsiveMessage {
             Ticket ticket = TicketManager.getInstance().getLoader().getTicket(suggestionId);
             if (ticket instanceof Suggestion) {
               ((Suggestion) ticket).superOnDone();
+              ticket.setStatus(TicketStatus.CLOSED);
+              event.getChannel().deleteMessageById(event.getMessageIdLong()).queue();
             }
           }
         },
@@ -60,6 +62,7 @@ public class SuggestionsResponsiveMessage extends ResponsiveMessage {
             Ticket ticket = TicketManager.getInstance().getLoader().getTicket(suggestionId);
             if (ticket != null) {
               ticket.setStatus(TicketStatus.CLOSED);
+              event.getChannel().deleteMessageById(event.getMessageIdLong()).queue();
             }
           }
         });

@@ -1,5 +1,6 @@
 package com.starfishst.ethot.tickets.type;
 
+import com.starfishst.core.utils.Atomic;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.objects.freelancers.Freelancer;
@@ -114,6 +115,23 @@ public class Quote extends FreelancingTicket {
         .filter(offer -> offer.getMessage() != null && offer.getMessage().getId() == id)
         .findFirst()
         .orElse(null);
+  }
+
+  /**
+   * Counts how many offers has a freelancer sent to a quote
+   *
+   * @param freelancer the freelancer to check
+   * @return the number of offers send or zero if none
+   */
+  public int countOffers(@NotNull Freelancer freelancer) {
+    Atomic<Integer> atomic = new Atomic<>(0);
+    offers.forEach(
+        offer -> {
+          if (offer.getFreelancer() == freelancer) {
+            atomic.set(atomic.get() + 1);
+          }
+        });
+    return atomic.get();
   }
 
   @Override
