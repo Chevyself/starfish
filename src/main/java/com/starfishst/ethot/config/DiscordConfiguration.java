@@ -220,7 +220,7 @@ public class DiscordConfiguration extends JsonConfiguration {
     keys.forEach(
         key -> {
           List<Role> rolesByKey = getRolesByKey(key);
-          if (rolesByKey != null && !rolesByKey.isEmpty()) {
+          if (rolesByKey != null) {
             roles.addAll(rolesByKey);
           } else {
             Errors.addError("Roles with key " + key + " are empty or null");

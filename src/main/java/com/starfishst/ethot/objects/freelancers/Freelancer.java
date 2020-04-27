@@ -23,7 +23,7 @@ public class Freelancer extends Catchable {
   /** The id of the freelancer */
   private final long id;
   /** The portfolio of the freelancer */
-  @NotNull private final List<String> portfolio;
+  @NotNull private List<String> portfolio;
   /** The map of ratings of the freelancer */
   @NotNull private final HashMap<Long, Integer> rating;
 
@@ -139,6 +139,15 @@ public class Freelancer extends Catchable {
   public String getRatingAsString() {
     double rating = Freelancers.getRating(this);
     return rating == 0 ? Lang.get("NO_RATING") : String.format("%.02f", rating);
+  }
+
+  /**
+   * Set the portfolio of a freelancer
+   *
+   * @param portfolio the new portfolio to set
+   */
+  public void setPortfolio(@NotNull List<String> portfolio) {
+    this.portfolio = portfolio;
   }
 
   @Override

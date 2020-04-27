@@ -23,6 +23,7 @@ import com.starfishst.ethot.util.Freelancers;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -241,5 +242,22 @@ public class FreelancerCommands {
       return new Result(
           ResultType.UNKNOWN, "This should not have happened freelancer member is null!");
     }
+  }
+
+  /**
+   * Sets the portfolio of a freelancer
+   *
+   * @param freelancer the freelancer to set the portfolio
+   * @param strings the portfolio to set
+   * @return a successful result showing that the portfolio changed
+   */
+  @Command(aliases = "portfolio", description = "Let's a freelancer edit their portfolio")
+  public Result portfolio(
+      Freelancer freelancer,
+      @Required(name = "portfolio", description = "The portfolio to set") JoinedStrings strings) {
+    List<String> portfolio = new ArrayList<>(Arrays.asList(strings.getString().split(", ")));
+    freelancer.setPortfolio(portfolio);
+    return new Result(
+        Lang.get("FREELANCER_PORTFOLIO_SET"), msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
   }
 }

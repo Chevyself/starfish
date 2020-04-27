@@ -45,6 +45,7 @@ public class ModerationCommands {
               description = "The reason to mute the user",
               suggestions = "No reason")
           JoinedStrings reason) {
+    // TODO REASON IS NOT USED
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("user", user.getEffectiveName());
     PunishmentsConfiguration configuration = PunishmentsConfiguration.getInstance();

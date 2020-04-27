@@ -21,7 +21,7 @@ public class SimpleMath {
    */
   public static double getTotal(double subtotal, @NotNull List<Fee> toApply) {
     for (Fee fee : toApply) {
-      subtotal = fee.apply(subtotal);
+      subtotal += fee.apply(subtotal);
     }
     return subtotal;
   }

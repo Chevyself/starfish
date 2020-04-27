@@ -154,7 +154,7 @@ public class TicketsCommand {
           feePlaceholders.put("addition", String.valueOf(fee.getAddition()));
           feePlaceholders.put("percentage", String.valueOf(fee.getPercentage()));
           if (fee.getAddition() != 0) {
-            stringBuilder.append(Lang.get("ADDITION", feePlaceholders));
+            stringBuilder.append(Lang.get("FEE_ADDITION", feePlaceholders));
           }
           if (fee.getPercentage() != 0) {
             stringBuilder.append(Lang.get("PERCENTAGE", feePlaceholders));

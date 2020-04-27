@@ -42,7 +42,7 @@ public class Fee {
    */
   public double apply(double subtotal) {
     if (this.percentage != 0) {
-      subtotal = (this.percentage + subtotal) / 100;
+      subtotal = (this.percentage * subtotal) / 100;
     }
     return subtotal + this.addition;
   }

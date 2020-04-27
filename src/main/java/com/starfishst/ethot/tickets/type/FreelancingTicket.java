@@ -68,7 +68,8 @@ public class FreelancingTicket extends QuestionsTicket {
           Lang.get("TICKET_CLAIMED", Tickets.getPlaceholders(this)));
     } else if (this.freelancer == null && freelancer != null) {
       if (getStatus() != TicketStatus.OPEN) {
-        throw new FreelancerJoinTicketException(Lang.get("FREELANCER_NOT_JOINABLE"));
+        throw new FreelancerJoinTicketException(
+            Lang.get("FREELANCER_NOT_JOINABLE", Tickets.getPlaceholders(this)));
       }
       if (!Freelancers.hasRole(getAnswers(), freelancer)) {
         if (freelancer.getUser() != null) {

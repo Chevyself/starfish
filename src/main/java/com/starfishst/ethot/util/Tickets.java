@@ -86,7 +86,7 @@ public class Tickets {
     placeHolders.put("type", type.toString().toLowerCase());
     placeHolders.put("creator", customer == null ? "null" : customer.getName());
     placeHolders.put("id", String.valueOf(id));
-    placeHolders.put("status", status.toString());
+    placeHolders.put("status", status.toString().toLowerCase());
     placeHolders.put("channel", channel == null ? "null" : channel.getAsMention());
     return placeHolders;
   }
