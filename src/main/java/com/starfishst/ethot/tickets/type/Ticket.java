@@ -142,7 +142,9 @@ public abstract class Ticket extends Catchable {
     } else if (status == TicketStatus.ARCHIVED) {
       archive();
     }
-    updateChannelName();
+    if (status != TicketStatus.CLOSED) {
+      updateChannelName();
+    }
   }
 
   /**

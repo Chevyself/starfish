@@ -16,15 +16,14 @@ import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Messages;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 /** Commands related to moderation */
+@Deprecated
 public class ModerationCommands {
 
   /**
@@ -163,30 +162,6 @@ public class ModerationCommands {
         return new Result(
             Lang.get("MESSAGES_CLEARED"), msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
       }
-    }
-  }
-
-  /**
-   * Blacklist an user from creating every other type of tickets besides support and suggestions
-   *
-   * @param user the user to blacklist
-   * @return a successful result if the user has been blacklisted
-   * @throws DiscordManipulationException if the guild has not been set while adding the blacklist
-   *     roles
-   */
-  @Command(aliases = "blacklist", description = "Black list an user from opening tickets")
-  public Result blacklist(
-      @Required(name = "user", description = "The user to blacklist") Member user)
-      throws DiscordManipulationException {
-    HashMap<String, String> placeholders = new HashMap<>();
-    placeholders.put("user", user.getEffectiveName());
-    DiscordConfiguration instance = DiscordConfiguration.getInstance();
-    List<Role> roles = instance.getRolesByKeys(instance.getRolesKeys("blacklist"));
-    if (Discord.hasRole(user, roles)) {
-      return new Result(ResultType.ERROR, Lang.get("USER_ALREADY_BLACKLISTED", placeholders));
-    } else {
-      Discord.addRoles(user, roles);
-      return new Result(Lang.get("USER_BLACKLISTED", placeholders));
     }
   }
 

@@ -378,9 +378,19 @@ public class Discord {
   public static void addRoles(@NotNull Member member, @NotNull List<Role> roles)
       throws DiscordManipulationException {
     Guild guild = DiscordConfiguration.getInstance().getGuild();
-    roles.forEach(
-        role -> {
-          guild.addRoleToMember(member, role).queue();
-        });
+    roles.forEach(role -> guild.addRoleToMember(member, role).queue());
+  }
+
+  /**
+   * Remove a list of romes from a member
+   *
+   * @param member the member to remove the roles
+   * @param roles the roles to be removed
+   * @throws DiscordManipulationException in case that the guild could not be gotten
+   */
+  public static void removeRoles(@NotNull Member member, @NotNull List<Role> roles)
+      throws DiscordManipulationException {
+    Guild guild = DiscordConfiguration.getInstance().getGuild();
+    roles.forEach(role -> guild.removeRoleFromMember(member, role).queue());
   }
 }

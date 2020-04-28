@@ -267,7 +267,7 @@ public class DiscordConfiguration extends JsonConfiguration {
    */
   @NotNull
   public List<String> getRolesKeys(@NotNull String key) {
-    return Validate.notNull(roleKeyMap.get(key), "There's no roles with the key " + key);
+    return Validate.notNull(roleKeyMap.get(key), "There's no key roles with the key " + key);
   }
 
   /**

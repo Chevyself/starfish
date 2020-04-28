@@ -118,4 +118,14 @@ public class Console {
   public static void log(Level level, Throwable thrown) {
     logger.log(level, thrown.getMessage(), thrown);
   }
+
+  /**
+   * Get the logger that is being used in the console
+   *
+   * @return the logger being used in the console
+   */
+  @NotNull
+  public static Logger getLogger() {
+    return logger;
+  }
 }

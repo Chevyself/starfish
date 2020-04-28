@@ -10,10 +10,10 @@ import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.ethot.commands.AddCommands;
+import com.starfishst.ethot.commands.BlacklistCommands;
 import com.starfishst.ethot.commands.DevCommands;
 import com.starfishst.ethot.commands.FreelancerCommands;
 import com.starfishst.ethot.commands.HelpCommands;
-import com.starfishst.ethot.commands.ModerationCommands;
 import com.starfishst.ethot.commands.RemoveCommands;
 import com.starfishst.ethot.commands.SetCommand;
 import com.starfishst.ethot.commands.TicketsCommand;
@@ -53,6 +53,7 @@ import com.starfishst.ethot.util.Console;
 import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
+import com.starfishst.simple.logging.LoggerUncaughtExceptionHandler;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Scanner;
@@ -97,6 +98,8 @@ public class Main {
   public static void main(String[] args) {
     System.out.println("This messages wont be saved in the log file");
     Console.info("From now the messages will be saved in the log file");
+    Thread.setDefaultUncaughtExceptionHandler(
+        new LoggerUncaughtExceptionHandler(Console.getLogger()));
     setupConfiguration();
     setupJDA();
     setupDiscordConfig();
@@ -247,7 +250,7 @@ public class Main {
       commandManager.registerCommand(new DevCommands());
       commandManager.registerCommand(new FreelancerCommands());
       commandManager.registerCommand(new HelpCommands());
-      commandManager.registerCommand(new ModerationCommands());
+      commandManager.registerCommand(new BlacklistCommands());
       commandManager.registerCommand(new RemoveCommands());
       commandManager.registerCommand(new SetCommand());
       commandManager.registerCommand(new TicketsCommand());
