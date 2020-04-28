@@ -6,11 +6,10 @@ import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.ethot.Main;
 import com.starfishst.ethot.util.Console;
-import net.dv8tion.jda.api.Permission;
-
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import net.dv8tion.jda.api.Permission;
 
 /**
  * Developer commands are not only used for 'debug'. They also control some aspects of the bot like

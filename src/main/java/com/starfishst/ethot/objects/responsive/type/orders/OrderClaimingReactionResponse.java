@@ -29,6 +29,10 @@ public class OrderClaimingReactionResponse implements ReactionResponse {
     if (order != null && freelancer != null) {
       try {
         order.setFreelancer(freelancer);
+        event
+                .getChannel()
+                .removeReactionById(event.getMessageIdLong(), getUnicode(), event.getJDA().getSelfUser())
+                .queue();
       } catch (FreelancerJoinTicketException | DiscordManipulationException e) {
         event
             .getUser()
@@ -41,9 +45,5 @@ public class OrderClaimingReactionResponse implements ReactionResponse {
           .openPrivateChannel()
           .queue(channel -> Messages.error(Lang.get("NOT_FREELANCER")).send(channel));
     }
-    event
-        .getChannel()
-        .removeReactionById(event.getMessageIdLong(), getUnicode(), event.getJDA().getSelfUser())
-        .queue();
   }
 }
