@@ -146,7 +146,8 @@ public class TicketManager {
       throws TicketCreationException {
     validateRoles(type, creator);
     List<Ticket> tickets =
-        Tickets.getTicketsMatchingStatus(TicketStatus.OPEN, loader.getTickets(creator.getUser()));
+        Tickets.getTicketsMatchingStatus(
+            loader.getTickets(creator.getUser()), TicketStatus.OPEN, TicketStatus.CREATING);
     if (tickets.size() >= (Configuration.getInstance().getOpenTicketsByUserLimit())) {
       HashMap<String, String> placeHolders = new HashMap<>();
       placeHolders.put(

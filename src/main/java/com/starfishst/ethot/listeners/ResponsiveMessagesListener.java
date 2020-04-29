@@ -68,8 +68,8 @@ public class ResponsiveMessagesListener {
         ReactionResponse response = responsiveMessage.getResponse(Unicode.fromReaction(event));
         if (response != null) {
           response.onReaction(event);
-          event.getReaction().removeReaction(event.getUser()).queue();
         }
+        event.getReaction().removeReaction(event.getUser()).queue();
       }
     }
   }

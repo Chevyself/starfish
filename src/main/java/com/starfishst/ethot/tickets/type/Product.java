@@ -105,5 +105,8 @@ public class Product extends QuestionsTicket {
     }
     super.onDone();
     setStatus(TicketStatus.SELLING);
+    if (channel != null) {
+      this.close(false);
+    }
   }
 }

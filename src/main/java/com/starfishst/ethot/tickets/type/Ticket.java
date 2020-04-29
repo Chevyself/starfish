@@ -3,6 +3,7 @@ package com.starfishst.ethot.tickets.type;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.Catchable;
+import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
@@ -97,13 +98,18 @@ public abstract class Ticket extends Catchable {
   /**
    * Closes a ticket. If it has a channel it will be deleted in 15 seconds.
    *
-   * <p>##NOTE## This wont set the status to closed!
+   * @param force if true the channel will be deleted immediately
+   *     <p>##NOTE## This wont set the status to closed!
    */
-  private void close() {
+  public void close(boolean force) {
     if (channel != null) {
       Messages.create("TICKET_CLOSING_TITLE", "TICKET_CLOSING_DESCRIPTION", null, null)
           .send(channel);
-      channel.delete().queueAfter(15, TimeUnit.SECONDS);
+      if (force) {
+        channel.delete().queue();
+      } else {
+        channel.delete().queueAfter(15, TimeUnit.SECONDS);
+      }
       channel = null;
       save();
     }
@@ -138,7 +144,11 @@ public abstract class Ticket extends Catchable {
   public void setStatus(@NotNull TicketStatus status) {
     this.status = status;
     if (status == TicketStatus.CLOSED) {
-      close();
+      if (Main.isStoppig()) {
+        close(true);
+      } else {
+        close(false);
+      }
     } else if (status == TicketStatus.ARCHIVED) {
       archive();
     }

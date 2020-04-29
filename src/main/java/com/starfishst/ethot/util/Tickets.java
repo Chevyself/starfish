@@ -30,14 +30,22 @@ public class Tickets {
   /**
    * Gets all the tickets from 'tickets' that have the status 'status'
    *
-   * @param status the status to match
+   * @param statuses the status to match
    * @param tickets the ticket to match
    * @return a list of tickets matching the status
    */
   public static List<Ticket> getTicketsMatchingStatus(
-      @NotNull TicketStatus status, @NotNull List<Ticket> tickets) {
+      @NotNull List<Ticket> tickets, @NotNull TicketStatus... statuses) {
     return tickets.stream()
-        .filter(ticket -> ticket.getStatus() == status)
+        .filter(
+            ticket -> {
+              for (TicketStatus status : statuses) {
+                if (ticket.getStatus() == status) {
+                  return true;
+                }
+              }
+              return false;
+            })
         .collect(Collectors.toList());
   }
 

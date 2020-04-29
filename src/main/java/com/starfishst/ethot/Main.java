@@ -87,6 +87,8 @@ public class Main {
   @Nullable private static TicketManager manager;
   /** The command manager for command listening */
   @Nullable private static CommandManager commandManager;
+  /** If the ticket is stopping it will be true */
+  private static boolean stoppig = false;
 
   /**
    * Main java method
@@ -313,6 +315,7 @@ public class Main {
   /** Stops the bot while saving the config */
   public static void stop() {
     try {
+      stoppig = true;
       Console.info("Cleaning cache");
       Cache.getCache().forEach(Catchable::onRemove);
       Cache.getCache().clear();
@@ -398,5 +401,14 @@ public class Main {
   @NotNull
   public static CommandManager getCommandManager() {
     return Validate.notNull(commandManager, "Commands were not setup properly");
+  }
+
+  /**
+   * Get if the bot is stopping
+   *
+   * @return true if stopping
+   */
+  public static boolean isStoppig() {
+    return stoppig;
   }
 }
