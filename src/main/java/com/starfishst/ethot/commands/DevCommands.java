@@ -5,7 +5,9 @@ import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.Errors;
 import com.starfishst.ethot.Main;
+import com.starfishst.ethot.objects.responsive.type.verification.VerificationResponsiveMessage;
 import com.starfishst.ethot.util.Console;
+import com.starfishst.ethot.util.Messages;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -50,6 +52,23 @@ public class DevCommands {
   public Result stop() {
     Main.stop();
     return new Result();
+  }
+
+  /**
+   * Create a verification message
+   *
+   * @return a new verification message in the channel executed
+   */
+  @Command(
+      aliases = {"verificationmsg", "vmsg"},
+      description = "Creates a verification message",
+      permission = Permission.ADMINISTRATOR)
+  public Result verificationMsg() {
+    return new Result(
+        ResultType.GENERIC,
+        Messages.create(
+            "VERIFICATION_MESSAGE_TITLE", "VERIFICATION_MESSAGE_DESCRIPTION", null, null),
+        VerificationResponsiveMessage::new);
   }
 
   /*

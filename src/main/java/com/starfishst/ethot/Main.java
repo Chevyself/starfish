@@ -24,7 +24,6 @@ import com.starfishst.ethot.commands.provider.FreelancerSenderProvider;
 import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.MongoConfiguration;
-import com.starfishst.ethot.config.PunishmentsConfiguration;
 import com.starfishst.ethot.config.adapters.CategoryAdapter;
 import com.starfishst.ethot.config.adapters.ColorAdapter;
 import com.starfishst.ethot.config.adapters.FeeAdapter;
@@ -37,7 +36,6 @@ import com.starfishst.ethot.config.adapters.TimeAdapter;
 import com.starfishst.ethot.config.adapters.UserAdapter;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.listeners.ConfigurationListener;
-import com.starfishst.ethot.listeners.ModerationListener;
 import com.starfishst.ethot.listeners.ResponsiveMessagesListener;
 import com.starfishst.ethot.listeners.TicketTranscriptListener;
 import com.starfishst.ethot.listeners.WelcomeListener;
@@ -171,7 +169,7 @@ public class Main {
                 .addEventListeners(new TicketTranscriptListener())
                 .addEventListeners(new ConfigurationListener())
                 .addEventListeners(new WelcomeListener())
-                .addEventListeners(new ModerationListener())
+                // .addEventListeners(new ModerationListener())
                 .build();
 
         Console.info("Waiting for Discord connection...");
@@ -309,7 +307,7 @@ public class Main {
     Lang.save();
     getConfiguration().save();
     getDiscordConfiguration().save();
-    PunishmentsConfiguration.getInstance().save();
+    // PunishmentsConfiguration.getInstance().save();
   }
 
   /** Stops the bot while saving the config */

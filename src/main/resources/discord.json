@@ -19,6 +19,7 @@
     "allowedToSeeInChannels": [],
     "applyRoles": [],
     "supportRoles": [],
+    "reportRoles": [],
     "verificationRoles": [],
     "blacklist": []
   }
