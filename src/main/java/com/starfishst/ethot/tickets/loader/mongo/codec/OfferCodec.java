@@ -1,9 +1,9 @@
 package com.starfishst.ethot.tickets.loader.mongo.codec;
 
-import com.starfishst.ethot.Main;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
-import com.starfishst.ethot.config.objects.freelancers.Offer;
-import com.starfishst.ethot.config.objects.responsive.type.quotes.OfferAcceptResponsiveMessage;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.freelancers.Offer;
+import com.starfishst.ethot.objects.responsive.type.quotes.OfferAcceptResponsiveMessage;
+import com.starfishst.ethot.tickets.TicketManager;
 import org.bson.BsonReader;
 import org.bson.BsonType;
 import org.bson.BsonWriter;
@@ -11,6 +11,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
+/** Decode and encode {@link Offer} for mongo */
 public class OfferCodec implements Codec<Offer> {
 
   @Override
@@ -22,7 +23,7 @@ public class OfferCodec implements Codec<Offer> {
     while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
       String fieldName = reader.readName();
       if (fieldName.equalsIgnoreCase("freelancer")) {
-        freelancer = Main.getManager().getLoader().getFreelancer(reader.readInt64());
+        freelancer = TicketManager.getInstance().getLoader().getFreelancer(reader.readInt64());
       } else if (fieldName.equalsIgnoreCase("offer")) {
         offer = reader.readString();
       } else if (fieldName.equalsIgnoreCase("message")) {
@@ -39,11 +40,13 @@ public class OfferCodec implements Codec<Offer> {
 
   @Override
   public void encode(BsonWriter bsonWriter, Offer offer, EncoderContext encoderContext) {
-    bsonWriter.writeStartDocument();
-    bsonWriter.writeInt64("freelancer", offer.getFreelancer().getId());
-    bsonWriter.writeString("offer", offer.getOffer());
-    bsonWriter.writeInt64("message", offer.getMessage().getId());
-    bsonWriter.writeEndDocument();
+    if (offer.getMessage() != null) {
+      bsonWriter.writeStartDocument();
+      bsonWriter.writeInt64("freelancer", offer.getFreelancer().getId());
+      bsonWriter.writeString("offer", offer.getOffer());
+      bsonWriter.writeInt64("message", offer.getMessage().getId());
+      bsonWriter.writeEndDocument();
+    }
   }
 
   @Override

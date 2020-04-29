@@ -5,6 +5,14 @@ package com.starfishst;
 @RestController
 
  */
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+
+/** Simple test for spring */
 public class Test {
 
   /*
@@ -96,4 +104,11 @@ public class Test {
     return links == null ? "" : links.getHref();
   }
    */
+
+  public static void main(String[] args) throws IOException {
+    String url = "https://api.github.com/repos/xChevy/Easy-Commands/git/refs/heads/master";
+    JsonParser parser = new JsonParser();
+    JsonElement element = parser.parse(new InputStreamReader(new URL(url).openStream()));
+    System.out.println(element);
+  }
 }

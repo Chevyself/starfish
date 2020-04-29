@@ -3,12 +3,12 @@ package com.starfishst.ethot.commands;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
-import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.language.Lang;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
-import com.starfishst.ethot.config.objects.management.AllowedTicketManagerChecker;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.FreelancerJoinTicketException;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.management.AllowedTicketManagerChecker;
+import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.loader.TicketLoader;
 import com.starfishst.ethot.tickets.type.FreelancingTicket;
 import com.starfishst.ethot.tickets.type.Ticket;
@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+/** Commands for multiple tasks that are related to removing */
 public class RemoveCommands {
 
   /**
@@ -33,7 +34,7 @@ public class RemoveCommands {
     if (message.getMentionedMembers().isEmpty()) {
       return new Result(ResultType.USAGE, Lang.get("NO_MENTIONED_TO_REMOVE"));
     } else {
-      TicketLoader loader = Main.getManager().getLoader();
+      TicketLoader loader = TicketManager.getInstance().getLoader();
       TextChannel channel = message.getTextChannel();
       Ticket ticket = loader.getTicketByChannel(channel.getIdLong());
 

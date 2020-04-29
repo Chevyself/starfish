@@ -10,9 +10,6 @@ import org.jetbrains.annotations.NotNull;
 /**
  * This provider is needed by the command framework for customization. In case messages are too long
  * errors will be thrown in startup
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class LangMessagesProvider implements MessagesProvider {
 

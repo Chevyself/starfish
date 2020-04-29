@@ -1,8 +1,9 @@
 package com.starfishst.ethot.tickets.type;
 
-import com.starfishst.ethot.Main;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
+import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.exception.DiscordManipulationException;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.util.Messages;
@@ -14,9 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A checkout is created when a client wants product it will have both the freelancer and the client
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class CheckOut extends Ticket {
 
@@ -24,10 +22,18 @@ public class CheckOut extends Ticket {
    * The freelancer owner of the {@link Product} it can be null because the freelancer can get
    * demoted
    */
-  @Nullable private Freelancer freelancer;
+  @Nullable private final Freelancer freelancer;
   /** The id of the parent ticket */
   private final long parentId;
 
+  /**
+   * The constructor for when the ticket is just being created
+   *
+   * @param id the id of the ticket
+   * @param user the user that wants to buy the product
+   * @param channel the channel where the ticket was created
+   * @param parent the product that's being purchased
+   */
   public CheckOut(
       long id, @Nullable User user, @Nullable TextChannel channel, @NotNull Product parent) {
     super(id, user, TicketStatus.OPEN, channel);
@@ -35,6 +41,16 @@ public class CheckOut extends Ticket {
     this.parentId = parent.getId();
   }
 
+  /**
+   * The generic constructor for databases
+   *
+   * @param id the id of the ticket
+   * @param user the user that created the ticket
+   * @param status the status of the ticket
+   * @param channel the channel of the ticket
+   * @param freelancer the freelancer that sells the product
+   * @param parentId the id of the product
+   */
   public CheckOut(
       long id,
       @Nullable User user,
@@ -50,13 +66,13 @@ public class CheckOut extends Ticket {
   @Override
   public void onCreation() {
     try {
-      Ticket ticket = Main.getManager().getLoader().getTicket(parentId);
+      Ticket ticket = TicketManager.getInstance().getLoader().getTicket(parentId);
       if (this.channel != null && ticket instanceof Product) {
         this.channel
             .sendMessage(
                 Messages.announce((Product) ticket)
                     .getBuilder()
-                    .append(Main.getDiscordConfiguration().getGuild().getPublicRole())
+                    .append(DiscordConfiguration.getInstance().getGuild().getPublicRole())
                     .build())
             .queue();
       }

@@ -4,9 +4,11 @@ import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
+import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.transcript.TicketTranscript;
@@ -15,12 +17,10 @@ import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
@@ -29,21 +29,33 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This is the parent of all tickets. It all starts here, methods can be overwritten but this may
- * control all of them
+ * control all of them.
  *
- * @author Chevy
- * @version 1.0.0
+ * <p>It is a {@link Catchable} so we don't have to request all the time for it in the {@link
+ * com.starfishst.ethot.tickets.loader.TicketLoader}
  */
 public abstract class Ticket extends Catchable {
 
+  /** The id of the ticket */
   protected final long id;
+  /** The user that created the ticket */
   @Nullable protected final User user;
+  /** The channel that is being used for the ticket */
   @Nullable protected TextChannel channel;
+  /** The status of the ticket */
   @NotNull private TicketStatus status;
 
+  /**
+   * Create a ticket instance
+   *
+   * @param id the id of the ticket
+   * @param user the user owner of the ticket
+   * @param status the status of the ticket
+   * @param channel the channel where the ticket is operating
+   */
   protected Ticket(
       long id, @Nullable User user, @NotNull TicketStatus status, @Nullable TextChannel channel) {
-    super(Main.getConfiguration().getToDelete());
+    super(Configuration.getInstance().getToUnload());
     this.id = id;
     this.user = user;
     this.status = status;
@@ -56,12 +68,15 @@ public abstract class Ticket extends Catchable {
   /** On done will be run when the ticket is finished creating */
   public abstract void onDone();
 
-  /** Saves the ticket into the database */
+  /**
+   * Saves the ticket into the database. If the channel of the ticket is deleted it will be
+   * considered as a trash ticket and will be given the {@link TicketStatus#CLOSED}
+   */
   private void save() {
     if (channel == null && status == TicketStatus.OPEN) {
       status = TicketStatus.CLOSED;
     }
-    Main.getManager().getLoader().saveTicket(this);
+    TicketManager.getInstance().getLoader().saveTicket(this);
   }
 
   /**
@@ -73,43 +88,40 @@ public abstract class Ticket extends Catchable {
     this.channel = channel;
   }
 
-  /**
-   * Sets the status of a ticket
-   *
-   * @param status the new status to set
-   */
-  public void setStatus(@NotNull TicketStatus status) {
-    this.status = status;
-    if (status == TicketStatus.CLOSED) {
-      if (channel != null) {
-        Messages.create("TICKET_CLOSING_TITLE", "TICKET_CLOSING_DESCRIPTION", null, null)
-            .send(channel);
-        channel.delete().queueAfter(15, TimeUnit.SECONDS);
-        channel = null;
-        save();
-      }
-    } else if (status == TicketStatus.ARCHIVED) {
-      archive();
-    }
+  /** Updates the name of the channel if it exists */
+  private void updateChannelName() {
     if (channel != null) {
-      channel.getManager().setName(Main.getManager().getTicketName(this)).queue();
+      channel.getManager().setName(TicketManager.getInstance().getTicketName(this)).queue();
     }
   }
 
+  /**
+   * Closes a ticket. If it has a channel it will be deleted in 15 seconds.
+   *
+   * @param force if true the channel will be deleted immediately
+   *     <p>##NOTE## This wont set the status to closed!
+   */
+  public void close(boolean force) {
+    if (channel != null) {
+      Messages.create("TICKET_CLOSING_TITLE", "TICKET_CLOSING_DESCRIPTION", null, null)
+          .send(channel);
+      if (force) {
+        channel.delete().queue();
+      } else {
+        channel.delete().queueAfter(15, TimeUnit.SECONDS);
+      }
+      channel = null;
+      save();
+    }
+  }
+
+  /** Archives a ticket ##NOTE This will not set the {@link TicketStatus#ARCHIVED} */
   protected void archive() {
     refresh();
     if (channel != null) {
       try {
-        String name = Lang.get("CATEGORY_NAME_ARCHIVED");
-        DiscordConfiguration config = Main.getDiscordConfiguration();
-        List<Role> allowed = config.getRolesByKeys(config.getRoleKeys("allowedInCategories"));
-        List<Role> allowedSee =
-            config.getRolesByKeys(config.getRoleKeys("allowedToSeeInCategories"));
-        Category category = config.getCategoryByKey(name);
-        if (category == null || category.getChannels().size() >= 50) {
-          category = Discord.validateCategory(category, name, true, allowed, allowedSee);
-          config.setCategoryByKey(name, category);
-        }
+        Category category =
+            DiscordConfiguration.getInstance().getCategoryByKey(Lang.get("CATEGORY_NAME_ARCHIVED"));
         if (channel.getParent() != category) {
           channel.getManager().setParent(category).queue();
         }
@@ -121,6 +133,27 @@ public abstract class Ticket extends Catchable {
     }
     if (this.user != null) {
       this.user.openPrivateChannel().queue(this::sendTranscript);
+    }
+  }
+
+  /**
+   * Sets the status of a ticket
+   *
+   * @param status the new status to set
+   */
+  public void setStatus(@NotNull TicketStatus status) {
+    this.status = status;
+    if (status == TicketStatus.CLOSED) {
+      if (Main.isStoppig()) {
+        close(true);
+      } else {
+        close(false);
+      }
+    } else if (status == TicketStatus.ARCHIVED) {
+      archive();
+    }
+    if (status != TicketStatus.CLOSED) {
+      updateChannelName();
     }
   }
 
@@ -186,6 +219,7 @@ public abstract class Ticket extends Catchable {
    * Get the customer as a member
    *
    * @return the discord member
+   * @throws DiscordManipulationException in case that working with discord goes wrong
    */
   @NotNull
   public Member getMember() throws DiscordManipulationException {
@@ -193,7 +227,7 @@ public abstract class Ticket extends Catchable {
     if (member == null) {
       throw new DiscordManipulationException(
           "Could not get a member. Is guild set? "
-              + (Main.getDiscordConfiguration().hasGuild())
+              + (DiscordConfiguration.getInstance().hasGuild())
               + " or is the customer null?"
               + (user == null));
     } else {
@@ -232,9 +266,32 @@ public abstract class Ticket extends Catchable {
     return (Ticket) super.refresh();
   }
 
+  /**
+   * Get the transcript that is saving the messages send in the ticket channel
+   *
+   * @return the ticket transcript
+   * @throws IOException when working with files goes wrong
+   */
+  @NotNull
+  public TicketTranscript getTranscript() throws IOException {
+    TicketTranscript ticketTranscript =
+        (TicketTranscript)
+            Cache.getCache().stream()
+                .filter(
+                    catchable ->
+                        catchable instanceof TicketTranscript
+                            && ((TicketTranscript) catchable).getTicket().getId() == this.id)
+                .findFirst()
+                .orElse(null);
+    if (ticketTranscript == null) {
+      ticketTranscript = new TicketTranscript(this);
+    }
+    return ticketTranscript;
+  }
+
   @Override
   public void onSecondsPassed() {
-    Main.getConfiguration()
+    Configuration.getInstance()
         .getToAnnounce()
         .forEach(
             time -> {
@@ -253,23 +310,6 @@ public abstract class Ticket extends Catchable {
                 }
               }
             });
-  }
-
-  @NotNull
-  public TicketTranscript getTranscript() throws IOException {
-    TicketTranscript ticketTranscript =
-        (TicketTranscript)
-            Cache.getCache().stream()
-                .filter(
-                    catchable ->
-                        catchable instanceof TicketTranscript
-                            && ((TicketTranscript) catchable).getTicket().getId() == this.id)
-                .findFirst()
-                .orElse(null);
-    if (ticketTranscript == null) {
-      ticketTranscript = new TicketTranscript(this);
-    }
-    return ticketTranscript;
   }
 
   @Override

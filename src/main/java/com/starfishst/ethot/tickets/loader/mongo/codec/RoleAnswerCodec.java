@@ -1,6 +1,6 @@
 package com.starfishst.ethot.tickets.loader.mongo.codec;
 
-import com.starfishst.ethot.config.objects.questions.RoleAnswer;
+import com.starfishst.ethot.objects.questions.RoleAnswer;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
+/** Decode and encode {@link RoleAnswer} for mongo */
 public class RoleAnswerCodec implements Codec<RoleAnswer> {
 
   @Override

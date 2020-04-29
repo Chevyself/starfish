@@ -6,8 +6,9 @@
     "database": "database"
   },
   "total": 0,
+  "limitOfQuotes": 2,
   "openTicketsByUserLimit": 2,
-  "toDelete": "3m",
+  "toUnload": "3m",
   "toUnloadFreelancer": "10m",
   "inactiveTime": "2w",
   "timeToFinishInactiveTest": "24h",
@@ -19,75 +20,6 @@
     "3m",
     "1m",
     "15s"
-  ],
-  "applyQuestions": [
-    {
-      "title": "Why are you applying",
-      "description": "",
-      "simple": "why",
-      "limit": 50
-    }
-  ],
-  "orderQuestions": [
-    {
-      "title": "Whats your name?",
-      "description": "",
-      "simple": "name",
-      "limit": 50
-    },
-    {
-      "title": "Whats your email?",
-      "description": "How can we contact you besides Discord?",
-      "simple": "email",
-      "limit": 50
-    },
-    {
-      "title": "What do you need?",
-      "description": "Tell us about your project (You can link documents if your description is too long)",
-      "simple": "description",
-      "limit": 1000
-    },
-    {
-      "title": "Tag the roles for the work",
-      "description": "You can tag %roles% only %limit% of them!",
-      "simple": "roles",
-      "limit": 2,
-      "roles": "freelancers"
-    },
-    {
-      "title": "Whats your budget?",
-      "description": "If you are not certain yet, you can type 'quote' to receive them",
-      "simple": "budget",
-      "limit": 50
-    },
-    {
-      "title": "Whats your time-frame?",
-      "description": "",
-      "simple": "time",
-      "limit": 10
-    },
-    {
-      "title": "Where did you find us?",
-      "description": "",
-      "simple": "find",
-      "limit": 1000
-    }
-  ],
-  "supportQuestions": [
-    {
-      "title": "TODO",
-      "description": "",
-      "simple": "TODO",
-      "limit": 50
-    }
-  ],
-  "productQuestions": [
-    {
-      "title": "What are you selling?",
-      "description": "Please describe what you are selling",
-      "simple": "selling",
-      "limit": 50
-    }
   ],
   "responsiveMessages": [
   ],
@@ -109,5 +41,6 @@
     "success": "#ffaa00",
     "error": "#b30000"
   },
-  "questionSendType": "NONE"
+  "questionSendType": "NONE",
+  "bannedTypes": []
 }

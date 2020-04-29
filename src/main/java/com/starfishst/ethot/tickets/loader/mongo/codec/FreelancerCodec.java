@@ -1,6 +1,6 @@
 package com.starfishst.ethot.tickets.loader.mongo.codec;
 
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.ethot.util.Maps;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
+/** Decode and encode {@link Freelancer} for mongo */
 public class FreelancerCodec implements Codec<Freelancer> {
 
   @Override

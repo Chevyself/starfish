@@ -19,9 +19,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Console {
 
-  /**
-   * The logger instance to log messages
-   */
+  /** The logger instance to log messages */
   @NotNull private static final Logger logger;
 
   static {
@@ -47,6 +45,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void severe(String msg) {
     logger.severe(msg);
   }
@@ -56,6 +55,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void warning(String msg) {
     logger.warning(msg);
   }
@@ -74,6 +74,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void config(String msg) {
     logger.config(msg);
   }
@@ -83,6 +84,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void fine(String msg) {
     logger.fine(msg);
   }
@@ -92,6 +94,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void finer(String msg) {
     logger.finer(msg);
   }
@@ -101,6 +104,7 @@ public class Console {
    *
    * @param msg the message to log
    */
+  @Deprecated
   public static void finest(String msg) {
     logger.finest(msg);
   }
@@ -115,4 +119,13 @@ public class Console {
     logger.log(level, thrown.getMessage(), thrown);
   }
 
+  /**
+   * Get the logger that is being used in the console
+   *
+   * @return the logger being used in the console
+   */
+  @NotNull
+  public static Logger getLogger() {
+    return logger;
+  }
 }

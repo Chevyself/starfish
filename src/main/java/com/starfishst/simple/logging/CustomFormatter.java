@@ -19,8 +19,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public class CustomFormatter extends Formatter {
 
+  /** The format for the formatter */
   @NotNull private final String format;
 
+  /**
+   * Create an instance
+   *
+   * @param format the format to use
+   */
   public CustomFormatter(@NotNull String format) {
     this.format = format;
   }

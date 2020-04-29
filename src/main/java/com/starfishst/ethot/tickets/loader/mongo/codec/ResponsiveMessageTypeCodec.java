@@ -1,18 +1,13 @@
 package com.starfishst.ethot.tickets.loader.mongo.codec;
 
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessageType;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessageType;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
-/**
- * Decodes and encodes {@link ResponsiveMessageType} for mongo usage
- *
- * @author Chevy
- * @version 1.0.0
- */
+/** Decode and encode {@link ResponsiveMessageType} for mongo */
 public class ResponsiveMessageTypeCodec implements Codec<ResponsiveMessageType> {
 
   @Override

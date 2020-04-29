@@ -1,0 +1,22 @@
+{
+  "questions": [
+    {
+      "title": "Whats your name?",
+      "simple": "name",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "Whats your email?",
+      "simple": "email",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "Whats your problem?",
+      "simple": "problem",
+      "description": "",
+      "limit": 50
+    }
+  ]
+}

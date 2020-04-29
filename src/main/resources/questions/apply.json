@@ -1,0 +1,59 @@
+{
+  "questions": [
+    {
+      "title": "Whats your name?",
+      "simple": "name",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "What\u0027s your email?",
+      "simple": "email",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "What role are you applying to?",
+      "simple": "applying",
+      "description": "You can apply to \u003c@\u0026701553600035422278\u003e",
+      "limit": 2,
+      "role": "toApply"
+    },
+    {
+      "title": "Tell us about you",
+      "simple": "about",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "Whats your time zone?",
+      "simple": "timezone",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "What languages do you speak?",
+      "simple": "languages",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "Why should we choose you?",
+      "simple": "whyChoose",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "Link us your portfolio",
+      "simple": "portfolio",
+      "description": "",
+      "limit": 50
+    },
+    {
+      "title": "Where did you find us?",
+      "simple": "find",
+      "description": "",
+      "limit": 50
+    }
+  ]
+}

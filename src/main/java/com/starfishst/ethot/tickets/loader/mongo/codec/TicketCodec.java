@@ -1,12 +1,12 @@
 package com.starfishst.ethot.tickets.loader.mongo.codec;
 
-import com.starfishst.ethot.Main;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
-import com.starfishst.ethot.config.objects.freelancers.Offer;
-import com.starfishst.ethot.config.objects.questions.Answer;
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.type.orders.OrderClaimingResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.type.product.ProductShopResponsiveMessage;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.freelancers.Offer;
+import com.starfishst.ethot.objects.questions.Answer;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.type.orders.OrderClaimingResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.type.product.ProductShopResponsiveMessage;
+import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
@@ -15,6 +15,8 @@ import com.starfishst.ethot.tickets.type.CheckOut;
 import com.starfishst.ethot.tickets.type.Order;
 import com.starfishst.ethot.tickets.type.Product;
 import com.starfishst.ethot.tickets.type.Quote;
+import com.starfishst.ethot.tickets.type.Report;
+import com.starfishst.ethot.tickets.type.Suggestion;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.tickets.type.TicketCreator;
@@ -34,6 +36,7 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 
+/** Decode and encode {@link Ticket} for mongo */
 public class TicketCodec implements Codec<Ticket> {
 
   @Override
@@ -73,7 +76,7 @@ public class TicketCodec implements Codec<Ticket> {
         }
         reader.readEndDocument();
       } else if (fieldName.equalsIgnoreCase("freelancer")) {
-        freelancer = Main.getManager().getLoader().getFreelancer(reader.readInt64());
+        freelancer = TicketManager.getInstance().getLoader().getFreelancer(reader.readInt64());
       } else if (fieldName.equalsIgnoreCase("message")) {
         if (type != null) {
           switch (type) {
@@ -127,6 +130,10 @@ public class TicketCodec implements Codec<Ticket> {
             id, user, status, channel, details, (ProductShopResponsiveMessage) message);
       case CHECK_OUT:
         return new CheckOut(id, user, status, channel, freelancer, parentId);
+      case SUGGESTION:
+        return new Suggestion(id, user, status, channel, details);
+      case REPORT:
+        return new Report(id, user, status, channel, details);
       default:
         throw new IllegalArgumentException(type + " is not a valid type");
     }

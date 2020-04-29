@@ -1,10 +1,10 @@
 package com.starfishst.ethot.util;
 
 import com.starfishst.core.utils.Atomic;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
-import com.starfishst.ethot.config.objects.questions.Answer;
-import com.starfishst.ethot.config.objects.questions.RoleAnswer;
 import com.starfishst.ethot.exception.DiscordManipulationException;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.questions.Answer;
+import com.starfishst.ethot.objects.questions.RoleAnswer;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.NotNull;
@@ -55,8 +55,8 @@ public class Freelancers {
    * @param answers the answers to get role answers from
    * @param freelancer the freelancer to check
    * @return checks if the role answers contain a role that the freelancer also has
-   * @throws DiscordManipulationException when the discord has not been set and getting
-   * the freelancer's member is ntt possible
+   * @throws DiscordManipulationException when the discord has not been set and getting the
+   *     freelancer's member is ntt possible
    */
   public static boolean hasRole(
       @NotNull HashMap<String, Answer> answers, @NotNull Freelancer freelancer)
@@ -67,14 +67,9 @@ public class Freelancers {
       answers.forEach(
           (simple, answer) -> {
             if (answer instanceof RoleAnswer) {
-              ((RoleAnswer) answer)
-                  .getAnswer()
-                  .forEach(
-                      role -> {
-                        if (member.getRoles().contains(role)) {
-                          atomic.set(true);
-                        }
-                      });
+              if (Discord.hasRole(member, ((RoleAnswer) answer).getAnswer())) {
+                atomic.set(true);
+              }
             }
           });
       return atomic.get();

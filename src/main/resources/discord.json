@@ -15,7 +15,12 @@
     "sendInactiveCheck": [],
     "allowedInCategories":  [],
     "allowedToSeeInCategories": [],
+    "allowedInChannels": [],
+    "allowedToSeeInChannels": [],
     "applyRoles": [],
-    "supportRoles": []
+    "supportRoles": [],
+    "reportRoles": [],
+    "verificationRoles": [],
+    "blacklist": []
   }
 }

@@ -13,12 +13,22 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 
+/** Ticket transcripts are the messages send in a ticket channel saved in a log file inside /logs */
 public class TicketTranscript extends Catchable {
 
+  /** The logger instance used to save the messages */
   @NotNull private final Logger logger;
+  /** The ticket that this is listening to */
   @NotNull private final Ticket ticket;
+  /** The path to the file */
   @NotNull private String url;
 
+  /**
+   * The generic constructor to get the file
+   *
+   * @param ticket the ticket to log messages from
+   * @throws IOException in case that file manipulation goes wrong
+   */
   public TicketTranscript(@NotNull Ticket ticket) throws IOException {
     super(new Time(30, Unit.MINUTES));
     this.ticket = ticket;
@@ -34,11 +44,21 @@ public class TicketTranscript extends Catchable {
         LoggerFactory.getLogger("ticket-" + ticket.getId(), Lang.get("LOG_FORMAT_TRANSCRIPT"), url);
   }
 
+  /**
+   * Get the logger instance
+   *
+   * @return the logger instance
+   */
   @NotNull
   public Logger getLogger() {
     return logger;
   }
 
+  /**
+   * Get the ticket that this is listening to
+   *
+   * @return the ticket
+   */
   @NotNull
   public Ticket getTicket() {
     return ticket;
@@ -54,6 +74,12 @@ public class TicketTranscript extends Catchable {
     }
   }
 
+  /**
+   * Get this as the file created
+   *
+   * @return the file
+   * @throws IOException in case working with files goes wrong
+   */
   @NotNull
   public File getFile() throws IOException {
     return FileUtils.getFile(url);

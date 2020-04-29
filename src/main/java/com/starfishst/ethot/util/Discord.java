@@ -1,7 +1,9 @@
 package com.starfishst.ethot.util;
 
+import com.starfishst.core.utils.Atomic;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,9 +45,7 @@ public class Discord {
   public static final List<Permission> ALLOWED_SEE =
       Lots.list(Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
 
-  /**
-   * The JDA instance for discord manipulation
-   */
+  /** The JDA instance for discord manipulation */
   @NotNull private static final JDA jda = Main.getJda();
 
   /**
@@ -75,7 +75,7 @@ public class Discord {
       if (category != null) {
         return category.createCopy().complete();
       } else {
-        Guild guild = Main.getDiscordConfiguration().getGuild();
+        Guild guild = DiscordConfiguration.getInstance().getGuild();
         category = guild.createCategory(name).complete();
         applyPermissions(category, removePerms, allow, allowSee);
         return category;
@@ -220,7 +220,7 @@ public class Discord {
       @Nullable List<I> allowSee)
       throws DiscordManipulationException {
     if (channel == null) {
-      Guild guild = Main.getDiscordConfiguration().getGuild();
+      Guild guild = DiscordConfiguration.getInstance().getGuild();
       channel = guild.createTextChannel(channelName).complete();
       applyPermissions(channel, removePerms, allow, allowSee);
     }
@@ -231,8 +231,8 @@ public class Discord {
    * Applies permissions in a discord channel
    *
    * @param channel the channel to apply permissions to
-   * @param removePerms if set to true every permission for the public role (@everyone) will be
-   *                    set to disabled
+   * @param removePerms if set to true every permission for the public role (@everyone) will be set
+   *     to disabled
    * @param allow the allowed roles inside the channel
    * @param allowSee the allowed roles to see inside the channel
    * @param <C> the guild channel interface
@@ -263,7 +263,7 @@ public class Discord {
    */
   @Nullable
   public static Member getMember(@Nullable User user) throws DiscordManipulationException {
-    Guild guild = Main.getDiscordConfiguration().getGuild();
+    Guild guild = DiscordConfiguration.getInstance().getGuild();
     if (user != null) {
       return guild.getMember(user);
     }
@@ -308,5 +308,89 @@ public class Discord {
   public static <I extends IPermissionHolder, C extends GuildChannel> void disallow(
       @NotNull C channel, @NotNull List<I> members) {
     members.forEach(member -> disallow(channel, member));
+  }
+
+  /**
+   * Checks if the user is banned inside the guild
+   *
+   * @param user the user to check if is banned
+   * @return true if is banned
+   * @throws DiscordManipulationException if the guild is not set
+   */
+  public static boolean isBanned(@NotNull User user) throws DiscordManipulationException {
+    Atomic<Boolean> booleanAtomic = new Atomic<>(false);
+    List<Guild.Ban> bans =
+        DiscordConfiguration.getInstance().getGuild().retrieveBanList().complete();
+    bans.forEach(
+        ban -> {
+          if (ban.getUser().getIdLong() == user.getIdLong()) {
+            booleanAtomic.set(true);
+          }
+        });
+    return booleanAtomic.get();
+  }
+
+  /**
+   * Checks if a member has certain role
+   *
+   * @param member the member to check
+   * @param query the role querying
+   * @return true if the member has the role
+   */
+  public static boolean hasRole(@NotNull Member member, @NotNull Role query) {
+    Atomic<Boolean> atomic = new Atomic<>(false);
+    member
+        .getRoles()
+        .forEach(
+            role -> {
+              if (role.getIdLong() == query.getIdLong()) {
+                atomic.set(true);
+              }
+            });
+    return atomic.get();
+  }
+
+  /**
+   * Checks if the member has at least one role from the querying list
+   *
+   * @param member the member to check
+   * @param query the list querying
+   * @return true if the member has at least one role
+   */
+  public static boolean hasRole(@NotNull Member member, @NotNull List<Role> query) {
+    Atomic<Boolean> atomic = new Atomic<>(false);
+    query.forEach(
+        role -> {
+          if (hasRole(member, role)) {
+            atomic.set(true);
+          }
+        });
+    return atomic.get();
+  }
+
+  /**
+   * Add a list of roles to a member
+   *
+   * @param member the member to add the roles
+   * @param roles the roles to add
+   * @throws DiscordManipulationException if the guild has not been set
+   */
+  public static void addRoles(@NotNull Member member, @NotNull List<Role> roles)
+      throws DiscordManipulationException {
+    Guild guild = DiscordConfiguration.getInstance().getGuild();
+    roles.forEach(role -> guild.addRoleToMember(member, role).queue());
+  }
+
+  /**
+   * Remove a list of romes from a member
+   *
+   * @param member the member to remove the roles
+   * @param roles the roles to be removed
+   * @throws DiscordManipulationException in case that the guild could not be gotten
+   */
+  public static void removeRoles(@NotNull Member member, @NotNull List<Role> roles)
+      throws DiscordManipulationException {
+    Guild guild = DiscordConfiguration.getInstance().getGuild();
+    roles.forEach(role -> guild.removeRoleFromMember(member, role).queue());
   }
 }

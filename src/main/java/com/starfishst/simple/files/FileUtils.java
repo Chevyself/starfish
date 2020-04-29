@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -15,8 +16,16 @@ import org.jetbrains.annotations.NotNull;
 /** Many file utils */
 public class FileUtils {
 
+  /** The class to load files */
   @NotNull private static final ClassLoader LOADER = FileUtils.class.getClassLoader();
 
+  /**
+   * Get a file using a path
+   *
+   * @param url the path to the file
+   * @return the file if fond
+   * @throws FileNotFoundException if the file is not found
+   */
   @NotNull
   public static File getFile(String url) throws FileNotFoundException {
     final File file = new File(url);
@@ -49,6 +58,10 @@ public class FileUtils {
         LOADER.getResourceAsStream(name), "The resource " + name + " does not exist.");
   }
 
+  public static URL getResourceAsUrl(@NotNull String name) {
+    return LOADER.getResource(name);
+  }
+
   /**
    * Gets the file from the same place as the jar or gets it from the resources and copies it
    *
@@ -75,10 +88,23 @@ public class FileUtils {
    */
   public static File copyResource(@NotNull String name) throws IOException {
     File file = new File(name);
+    File directory = file.getParentFile();
+    if (directory != null && !directory.exists()) {
+      if (!directory.mkdir()) {
+        throw new IOException("Directory " + directory + " could not be created");
+      }
+    }
     Files.copy(getResource(name), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
     return file;
   }
 
+  /**
+   * Get a file reader using a file
+   *
+   * @param file the file to get the reader from
+   * @return the reader
+   * @throws FileNotFoundException if the file is not null
+   */
   @NotNull
   public static Reader getReader(@NotNull File file) throws FileNotFoundException {
     return new BufferedReader(new FileReader(file));

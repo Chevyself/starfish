@@ -9,8 +9,8 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.starfishst.core.utils.Validate;
-import com.starfishst.ethot.config.objects.questions.Question;
-import com.starfishst.ethot.config.objects.questions.QuestionRole;
+import com.starfishst.ethot.objects.questions.Question;
+import com.starfishst.ethot.objects.questions.QuestionRole;
 import java.lang.reflect.Type;
 
 /**

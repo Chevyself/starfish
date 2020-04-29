@@ -10,6 +10,7 @@ import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.ethot.commands.AddCommands;
+import com.starfishst.ethot.commands.BlacklistCommands;
 import com.starfishst.ethot.commands.DevCommands;
 import com.starfishst.ethot.commands.FreelancerCommands;
 import com.starfishst.ethot.commands.HelpCommands;
@@ -32,23 +33,26 @@ import com.starfishst.ethot.config.adapters.ResponsiveMessageAdapter;
 import com.starfishst.ethot.config.adapters.RoleAdapter;
 import com.starfishst.ethot.config.adapters.TextChannelAdapter;
 import com.starfishst.ethot.config.adapters.TimeAdapter;
+import com.starfishst.ethot.config.adapters.UserAdapter;
 import com.starfishst.ethot.config.language.Lang;
-import com.starfishst.ethot.config.objects.invoicing.Fee;
-import com.starfishst.ethot.config.objects.questions.Question;
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.listeners.ConfigurationListener;
 import com.starfishst.ethot.listeners.ResponsiveMessagesListener;
 import com.starfishst.ethot.listeners.TicketTranscriptListener;
+import com.starfishst.ethot.listeners.WelcomeListener;
 import com.starfishst.ethot.listeners.questions.QuestionTicketListener;
+import com.starfishst.ethot.objects.invoicing.Fee;
+import com.starfishst.ethot.objects.questions.Question;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.tasks.AutoSave;
-import com.starfishst.ethot.tasks.InnactiveCheck;
+import com.starfishst.ethot.tasks.InactiveCheck;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.ethot.util.Console;
+import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
+import com.starfishst.simple.logging.LoggerUncaughtExceptionHandler;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -59,26 +63,22 @@ import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * The main class of the bot!
- * This bot allows you to make your discord server to become a service! Allow people to create tickets
- * you can also have freelancers and sell stuff!
+ * The main class of the bot! This bot allows you to make your discord server to become a service!
+ * Allow people to create tickets you can also have freelancers and sell stuff!
  *
  * @author Chevy
  * @version 1.0.0
  */
 public class Main {
 
-  /** The 'config.json' file for saving it */
-  @Nullable private static File configurationFile;
   /** The config instance for multipurpose */
   @Nullable private static Configuration configuration;
-  /** The 'discord.json' file for saving it */
-  @Nullable private static File discConfigFile;
   /** The discord config instance for multipurpose */
   @Nullable private static DiscordConfiguration discConfiguration;
   /** The JDA instance for discord manipulation */
@@ -87,6 +87,8 @@ public class Main {
   @Nullable private static TicketManager manager;
   /** The command manager for command listening */
   @Nullable private static CommandManager commandManager;
+  /** If the ticket is stopping it will be true */
+  private static boolean stoppig = false;
 
   /**
    * Main java method
@@ -96,6 +98,8 @@ public class Main {
   public static void main(String[] args) {
     System.out.println("This messages wont be saved in the log file");
     Console.info("From now the messages will be saved in the log file");
+    Thread.setDefaultUncaughtExceptionHandler(
+        new LoggerUncaughtExceptionHandler(Console.getLogger()));
     setupConfiguration();
     setupJDA();
     setupDiscordConfig();
@@ -104,7 +108,7 @@ public class Main {
 
     Console.info("Creating tasks");
 
-    new InnactiveCheck();
+    new InactiveCheck();
     if (configuration != null && configuration.getAutoSave().isEnable()) {
       new AutoSave(configuration.getAutoSave().getToSave());
     }
@@ -137,10 +141,11 @@ public class Main {
       GsonProvider.addAdapter(Role.class, new RoleAdapter());
       GsonProvider.addAdapter(TextChannel.class, new TextChannelAdapter());
       GsonProvider.addAdapter(Time.class, new TimeAdapter());
+      GsonProvider.addAdapter(User.class, new UserAdapter());
       GsonProvider.refresh();
-      configurationFile = FileUtils.getFileOrResource("config.json");
       configuration =
-          GsonProvider.GSON.fromJson(FileUtils.getReader(configurationFile), Configuration.class);
+          JsonConfiguration.getInstance(
+              FileUtils.getFileOrResource("config.json"), Configuration.class);
       Console.info("Configuration setup has been completed");
     } catch (IOException e) {
       Console.log(Level.SEVERE, e);
@@ -165,6 +170,8 @@ public class Main {
                 .addEventListeners(new QuestionTicketListener())
                 .addEventListeners(new TicketTranscriptListener())
                 .addEventListeners(new ConfigurationListener())
+                .addEventListeners(new WelcomeListener())
+                // .addEventListeners(new ModerationListener())
                 .build();
 
         Console.info("Waiting for Discord connection...");
@@ -196,10 +203,8 @@ public class Main {
     try {
       if (jda != null) {
         Console.info("Setting up Discord configuration");
-        discConfigFile = FileUtils.getFileOrResource("discord.json");
         discConfiguration =
-            GsonProvider.GSON.fromJson(
-                FileUtils.getReader(discConfigFile), DiscordConfiguration.class);
+            JsonConfiguration.getInstance("discord.json", DiscordConfiguration.class);
       } else {
         Errors.addError("Discord configuration could not be setup as there is no JDA connection");
       }
@@ -245,6 +250,7 @@ public class Main {
       commandManager.registerCommand(new DevCommands());
       commandManager.registerCommand(new FreelancerCommands());
       commandManager.registerCommand(new HelpCommands());
+      commandManager.registerCommand(new BlacklistCommands());
       commandManager.registerCommand(new RemoveCommands());
       commandManager.registerCommand(new SetCommand());
       commandManager.registerCommand(new TicketsCommand());
@@ -301,21 +307,15 @@ public class Main {
   public static void save() throws IOException {
     Console.info("Saving configurations...");
     Lang.save();
-    if (configurationFile != null && configuration != null) {
-      GsonProvider.save(configurationFile, configuration);
-    } else {
-      Errors.addError("config.json could not be saved because it was not setup properly");
-    }
-    if (discConfigFile != null && discConfiguration != null) {
-      GsonProvider.save(discConfigFile, discConfiguration);
-    } else {
-      Errors.addError("discord.json could not be saved because it was not setup properly");
-    }
+    getConfiguration().save();
+    getDiscordConfiguration().save();
+    // PunishmentsConfiguration.getInstance().save();
   }
 
   /** Stops the bot while saving the config */
   public static void stop() {
     try {
+      stoppig = true;
       Console.info("Cleaning cache");
       Cache.getCache().forEach(Catchable::onRemove);
       Cache.getCache().clear();
@@ -362,17 +362,19 @@ public class Main {
   }
 
   /**
-   * Get the ticket manager and manipulate tickets/freelancers
+   * Get the ticket manager and manipulate tickets/freelancers. Use {@link
+   * TicketManager#getInstance()}
    *
    * @return the ticket manager
    */
+  @Deprecated
   @NotNull
   public static TicketManager getManager() {
     return Validate.notNull(manager, "Ticket Manager was not setup properly");
   }
 
   /**
-   * Get the discord configuration 'discord.json'
+   * Get the discord configuration 'discord.json'. Use {@link TicketManager#getInstance()}
    *
    * @return the config java object
    */
@@ -399,5 +401,14 @@ public class Main {
   @NotNull
   public static CommandManager getCommandManager() {
     return Validate.notNull(commandManager, "Commands were not setup properly");
+  }
+
+  /**
+   * Get if the bot is stopping
+   *
+   * @return true if stopping
+   */
+  public static boolean isStoppig() {
+    return stoppig;
   }
 }

@@ -1,8 +1,8 @@
 package com.starfishst.ethot.tickets.loader.mongo.codec;
 
-import com.starfishst.ethot.config.objects.questions.Answer;
-import com.starfishst.ethot.config.objects.questions.RoleAnswer;
-import com.starfishst.ethot.config.objects.questions.StringAnswer;
+import com.starfishst.ethot.objects.questions.Answer;
+import com.starfishst.ethot.objects.questions.RoleAnswer;
+import com.starfishst.ethot.objects.questions.StringAnswer;
 import com.starfishst.ethot.tickets.loader.mongo.MongoTicketLoader;
 import org.bson.BsonReader;
 import org.bson.BsonType;
@@ -12,6 +12,7 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 
+/** Decode and encode {@link Answer} for mongo */
 public class AnswerCodec implements Codec<Answer> {
 
   @Override

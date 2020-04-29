@@ -1,6 +1,6 @@
 package com.starfishst.ethot.util;
 
-import com.starfishst.ethot.config.objects.invoicing.Fee;
+import com.starfishst.ethot.objects.invoicing.Fee;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public class SimpleMath {
    */
   public static double getTotal(double subtotal, @NotNull List<Fee> toApply) {
     for (Fee fee : toApply) {
-      subtotal = fee.apply(subtotal);
+      subtotal += fee.apply(subtotal);
     }
     return subtotal;
   }

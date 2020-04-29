@@ -7,13 +7,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.starfishst.ethot.config.objects.management.AllowedTicketCloserChecker;
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.ResponsiveMessageType;
-import com.starfishst.ethot.config.objects.responsive.type.archive.ArchiveResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.type.freelancer.ReviewFreelancer;
-import com.starfishst.ethot.config.objects.responsive.type.inactive.InactiveCheckResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.type.panel.TicketPanel;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.ResponsiveMessageType;
+import com.starfishst.ethot.objects.responsive.type.archive.ArchiveResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.type.freelancer.ReviewFreelancer;
+import com.starfishst.ethot.objects.responsive.type.inactive.InactiveCheckResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.type.panel.TicketPanel;
+import com.starfishst.ethot.objects.responsive.type.verification.VerificationResponsiveMessage;
 import com.starfishst.simple.Lots;
 import java.awt.*;
 import java.lang.reflect.Type;
@@ -24,9 +24,6 @@ import java.util.List;
  * objects.
  *
  * <p>This one in particular, converts {@link Color}
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class ResponsiveMessageAdapter
     implements JsonDeserializer<ResponsiveMessage>, JsonSerializer<ResponsiveMessage> {
@@ -44,13 +41,15 @@ public class ResponsiveMessageAdapter
         long user = object.get("user").getAsLong();
         return new ReviewFreelancer(id, freelancer, user);
       case ARCHIVE:
-        return new ArchiveResponsiveMessage(id, new AllowedTicketCloserChecker());
+        return new ArchiveResponsiveMessage(id);
       case INACTIVE_CHECK:
         long createdAt = object.get("createdAt").getAsLong();
         long ticket = object.get("ticket").getAsLong();
         boolean finished = object.get("finished").getAsBoolean();
         List<Long> reacted = Lots.list(context.deserialize(object.get("reacted"), Long[].class));
         return new InactiveCheckResponsiveMessage(id, createdAt, ticket, reacted, finished);
+      case JOIN_VERIFICATION:
+        return new VerificationResponsiveMessage(id);
       case TICKET_PANEL:
         return new TicketPanel(id);
     }

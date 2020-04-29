@@ -16,9 +16,6 @@ import net.dv8tion.jda.api.entities.Category;
  * objects.
  *
  * <p>This one in particular, converts {@link Category}
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class CategoryAdapter implements JsonDeserializer<Category>, JsonSerializer<Category> {
 

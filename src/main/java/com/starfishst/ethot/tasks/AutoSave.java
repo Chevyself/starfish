@@ -9,10 +9,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.jetbrains.annotations.NotNull;
 
+/** A task to auto-save the config */
 public class AutoSave extends TimerTask {
 
+  /**
+   * Create the task
+   *
+   * @param time the time to auto-save
+   */
   public AutoSave(@NotNull Time time) {
-    new Timer().schedule(this, 0, time.millis());
+    new Timer().schedule(this, time.millis(), time.millis());
   }
 
   @Override

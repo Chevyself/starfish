@@ -1,7 +1,8 @@
 package com.starfishst.ethot.tickets;
 
 import com.starfishst.core.utils.Validate;
-import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.Configuration;
+import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.TicketCreationException;
@@ -12,6 +13,8 @@ import com.starfishst.ethot.tickets.type.Order;
 import com.starfishst.ethot.tickets.type.Product;
 import com.starfishst.ethot.tickets.type.QuestionsTicket;
 import com.starfishst.ethot.tickets.type.Quote;
+import com.starfishst.ethot.tickets.type.Report;
+import com.starfishst.ethot.tickets.type.Suggestion;
 import com.starfishst.ethot.tickets.type.Support;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.tickets.type.TicketCreator;
@@ -20,6 +23,7 @@ import com.starfishst.ethot.util.Tickets;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
@@ -28,15 +32,22 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The ticket manager administrates everything related to tickets. From creating them to even give
  * them channels
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class TicketManager {
 
+  /** The instance of the ticket manager for static usage */
+  @Nullable private static TicketManager instance;
+
+  /** The ticket loader instance for getting them from a database */
   @NotNull private final TicketLoader loader;
 
+  /**
+   * Create a ticket manager instance
+   *
+   * @param loader the ticket loader to use in the manager
+   */
   public TicketManager(@NotNull TicketLoader loader) {
+    instance = this;
     this.loader = loader;
   }
 
@@ -48,17 +59,17 @@ public class TicketManager {
    * @param parent if the ticket was created from another one
    * @return the ticket if everything goes well
    * @throws DiscordManipulationException in case anything with discord goes wrong
+   * @throws TicketCreationException when something in the ticket creation goes wrong
    */
   @NotNull
   public Ticket createTicket(
       @NotNull TicketType type, @NotNull Member creator, @Nullable Ticket parent)
       throws DiscordManipulationException, TicketCreationException {
-    validateUser(creator);
-    long id = getId(parent);
-
+    this.validateTicketType(type);
+    this.validateUser(type, creator);
+    long id = this.getId(parent);
     TextChannel channel = getChannel(type, id, creator, parent);
     User user = getUser(creator, parent);
-
     Discord.allow(channel, creator, Discord.ALLOWED);
 
     Ticket ticket;
@@ -77,6 +88,12 @@ public class TicketManager {
         break;
       case PRODUCT:
         ticket = new Product(id, user, channel);
+        break;
+      case REPORT:
+        ticket = new Report(id, user, channel);
+        break;
+      case SUGGESTION:
+        ticket = new Suggestion(id, user, channel);
         break;
       case CHECK_OUT:
         ticket =
@@ -105,20 +122,57 @@ public class TicketManager {
   }
 
   /**
+   * Validates that the type is not forbidden from being created
+   *
+   * @param type the type of ticket to check
+   * @throws TicketCreationException if the type of ticket cannot be created
+   */
+  private void validateTicketType(@NotNull TicketType type) throws TicketCreationException {
+    if (Configuration.getInstance().getBannedTypes().contains(type)) {
+      HashMap<String, String> placeholders = new HashMap<>();
+      placeholders.put("type", type.toString().toLowerCase());
+      throw new TicketCreationException(Lang.get("TICKET_TYPE_CANNOT_BE_CREATED", placeholders));
+    }
+  }
+
+  /**
    * Validates if the user can create the ticket
    *
+   * @param type the type of ticket creating
    * @param creator the user trying to create the ticket
    * @throws TicketCreationException in case that the user cannot create more tickets
    */
-  private void validateUser(@NotNull Member creator) throws TicketCreationException {
+  private void validateUser(@NotNull TicketType type, @NotNull Member creator)
+      throws TicketCreationException {
+    validateRoles(type, creator);
     List<Ticket> tickets =
-        Tickets.getTicketsMatchingStatus(TicketStatus.OPEN, loader.getTickets(creator.getUser()));
-    if (tickets.size() > Main.getConfiguration().getOpenTicketsByUserLimit() + 1) {
+        Tickets.getTicketsMatchingStatus(
+            loader.getTickets(creator.getUser()), TicketStatus.OPEN, TicketStatus.CREATING);
+    if (tickets.size() >= (Configuration.getInstance().getOpenTicketsByUserLimit())) {
       HashMap<String, String> placeHolders = new HashMap<>();
       placeHolders.put(
-          "limit", String.valueOf(Main.getConfiguration().getOpenTicketsByUserLimit()));
+          "limit", String.valueOf(Configuration.getInstance().getOpenTicketsByUserLimit()));
       placeHolders.put("have", String.valueOf(tickets.size()));
       throw new TicketCreationException(Lang.get("MORE_THAN_LIMIT", placeHolders), placeHolders);
+    }
+  }
+
+  /**
+   * Validates that a user creating a ticket is not blacklisted
+   *
+   * @param type the type of ticket creating
+   * @param creator the creator of the ticket
+   * @throws TicketCreationException if the user is blacklisted
+   */
+  private void validateRoles(@NotNull TicketType type, @NotNull Member creator)
+      throws TicketCreationException {
+    DiscordConfiguration instance = DiscordConfiguration.getInstance();
+    List<Role> roles = instance.getRolesByKeys(instance.getRolesKeys("blacklist"));
+    if (Discord.hasRole(creator, roles)
+        && type != TicketType.SUPPORT
+            | type != TicketType.SUGGESTION
+            | type != TicketType.TICKET_CREATOR) {
+      throw new TicketCreationException(Lang.get("USER_IS_BLACKLISTED"));
     }
   }
 
@@ -166,6 +220,8 @@ public class TicketManager {
       case ORDER:
       case APPLY:
       case QUOTE:
+      case REPORT:
+      case SUGGESTION:
         if (parent != null && parent.getChannel() != null) {
           channel = parent.getChannel();
         } else {
@@ -203,19 +259,20 @@ public class TicketManager {
    * <p>Gets the total of tickets from config and checks that there is not a ticket with that id
    * already else it will increase the total until it finds a free ticket id
    *
+   * @param parent the parent creating the ticket
    * @return the ticket id for a ticket
    */
   private long getId(@Nullable Ticket parent) {
     if (parent != null && !(parent instanceof Product)) {
       return parent.getId();
     } else {
-      long total = Main.getConfiguration().getTotal();
+      long total = Configuration.getInstance().getTotal();
       Ticket ticket = loader.getTicket(total);
       while (ticket != null) {
         total++;
         ticket = loader.getTicket(total);
       }
-      Main.getConfiguration().setTotal(total);
+      Configuration.getInstance().setTotal(total);
       return total;
     }
   }
@@ -255,5 +312,15 @@ public class TicketManager {
       @NotNull TicketType type, @Nullable User customer, long id, @NotNull TicketStatus status) {
     return Lang.get(
         "TICKET_CHANNEL_NAME", Tickets.getPlaceholders(type, customer, id, status, null));
+  }
+
+  /**
+   * Get the static instance of the ticket manager
+   *
+   * @return the ticket manager static instance
+   */
+  @NotNull
+  public static TicketManager getInstance() {
+    return Validate.notNull(instance, "Ticket manager has not been initialized");
   }
 }

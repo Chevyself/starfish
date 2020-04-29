@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/** A factory for creating loggers */
 public class LoggerFactory {
 
   /**
@@ -38,6 +39,7 @@ public class LoggerFactory {
    * Get a file handler which creates files in /logs
    *
    * @param formatter the formatter to use in the handler
+   * @param url the path to the file
    * @return the handler created
    * @throws IOException in case the /logs directory could not be created
    */

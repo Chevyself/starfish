@@ -12,8 +12,11 @@ import org.jetbrains.annotations.Nullable;
 /** Use a properties file as configuration */
 public class PropertiesConfiguration {
 
+  /** The name of the file */
   @NotNull private final String fileName;
+  /** The file of the configuration */
   @NotNull private final File file;
+  /** The properties instance to set and get values */
   @NotNull private final Properties properties;
 
   /**

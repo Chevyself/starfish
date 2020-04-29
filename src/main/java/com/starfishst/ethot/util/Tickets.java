@@ -1,9 +1,9 @@
 package com.starfishst.ethot.util;
 
 import com.starfishst.ethot.config.language.Lang;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
-import com.starfishst.ethot.config.objects.questions.Question;
-import com.starfishst.ethot.config.objects.questions.RoleAnswer;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.questions.Question;
+import com.starfishst.ethot.objects.questions.RoleAnswer;
 import com.starfishst.ethot.tickets.TicketStatus;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.type.FreelancingTicket;
@@ -30,14 +30,22 @@ public class Tickets {
   /**
    * Gets all the tickets from 'tickets' that have the status 'status'
    *
-   * @param status the status to match
+   * @param statuses the status to match
    * @param tickets the ticket to match
    * @return a list of tickets matching the status
    */
   public static List<Ticket> getTicketsMatchingStatus(
-      @NotNull TicketStatus status, @NotNull List<Ticket> tickets) {
+      @NotNull List<Ticket> tickets, @NotNull TicketStatus... statuses) {
     return tickets.stream()
-        .filter(ticket -> ticket.getStatus() == status)
+        .filter(
+            ticket -> {
+              for (TicketStatus status : statuses) {
+                if (ticket.getStatus() == status) {
+                  return true;
+                }
+              }
+              return false;
+            })
         .collect(Collectors.toList());
   }
 
@@ -86,7 +94,7 @@ public class Tickets {
     placeHolders.put("type", type.toString().toLowerCase());
     placeHolders.put("creator", customer == null ? "null" : customer.getName());
     placeHolders.put("id", String.valueOf(id));
-    placeHolders.put("status", status.toString());
+    placeHolders.put("status", status.toString().toLowerCase());
     placeHolders.put("channel", channel == null ? "null" : channel.getAsMention());
     return placeHolders;
   }

@@ -8,6 +8,7 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 
+/** Decode and encode {@link Role} for mongo */
 public class RoleCodec implements Codec<Role> {
 
   @Override

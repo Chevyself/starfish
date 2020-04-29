@@ -17,9 +17,6 @@ import java.lang.reflect.Type;
  * objects.
  *
  * <p>This one in particular, converts {@link Time}
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class TimeAdapter implements JsonSerializer<Time>, JsonDeserializer<Time> {
 

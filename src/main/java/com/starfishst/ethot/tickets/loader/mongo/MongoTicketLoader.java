@@ -5,11 +5,12 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.cache.Cache;
-import com.starfishst.ethot.config.objects.freelancers.Freelancer;
-import com.starfishst.ethot.config.objects.freelancers.Offer;
-import com.starfishst.ethot.config.objects.responsive.type.orders.OrderClaimingResponsiveMessage;
-import com.starfishst.ethot.config.objects.responsive.type.product.ProductShopResponsiveMessage;
+import com.starfishst.ethot.objects.freelancers.Freelancer;
+import com.starfishst.ethot.objects.freelancers.Offer;
+import com.starfishst.ethot.objects.responsive.type.orders.OrderClaimingResponsiveMessage;
+import com.starfishst.ethot.objects.responsive.type.product.ProductShopResponsiveMessage;
 import com.starfishst.ethot.tickets.loader.TicketLoader;
 import com.starfishst.ethot.tickets.loader.mongo.codec.AnswerCodec;
 import com.starfishst.ethot.tickets.loader.mongo.codec.FreelancerCodec;
@@ -34,7 +35,6 @@ import com.starfishst.ethot.util.Console;
 import com.starfishst.ethot.util.Tickets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -48,42 +48,30 @@ import org.bson.json.JsonReader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * This loads a ticket from a mongo database
- *
- * @author Chevy
- * @version 1.0.0
- */
+/** This loads a ticket from a mongo database */
 public class MongoTicketLoader implements TicketLoader {
 
+  /** The instance of the loader for static use */
   @Nullable private static MongoTicketLoader instance;
+  /** The mongo client created for the use of the database */
   @NotNull private final MongoClient client;
+  /** The database that this will be using */
   @NotNull private final MongoDatabase database;
+  /** The collection to work with tickets */
   @NotNull private final MongoCollection<Document> tickets;
+  /** The collection to work with freelancers */
   @NotNull private final MongoCollection<Document> freelancers;
 
+  /**
+   * Creates the mongo loader instance
+   *
+   * @param uri the mongo uri for authentication
+   * @param database the database to use
+   */
   public MongoTicketLoader(@NotNull String uri, @NotNull String database) {
     MongoTicketLoader.instance = this;
 
-    CodecRegistry codecRegistry =
-        CodecRegistries.fromRegistries(
-            CodecRegistries.fromCodecs(
-                new AnswerCodec(),
-                new FreelancerCodec(),
-                new OfferCodec(),
-                new OrderClaimingResponsiveMessageCodec(),
-                new ProductShopResponsiveMessageCodec(),
-                new ResponsiveMessageCodec(),
-                new ResponsiveMessageTypeCodec(),
-                new RoleAnswerCodec(),
-                new RoleCodec(),
-                new StringAnswerCodec(),
-                new TextChannelCodec(),
-                new TicketCodec(),
-                new TicketStatusCodec(),
-                new TicketTypeCodec(),
-                new UserCodec()),
-            MongoClient.getDefaultCodecRegistry());
+    CodecRegistry codecRegistry = getCodecs();
     MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
     builder.connectTimeout(300).sslEnabled(true);
     builder.codecRegistry(codecRegistry);
@@ -95,15 +83,36 @@ public class MongoTicketLoader implements TicketLoader {
     ping();
   }
 
+  /** Ping the mongo database to make sure that this is working */
+  public void ping() {
+    database.runCommand(new Document("serverStatus", 1));
+  }
+
   /**
-   * Get the instance of mongo client
+   * Registers the codecs for the client to use and deserialize documents
    *
-   * @return the instance of mongo
-   * @throws NullPointerException when it has not been initialized
+   * @return the codec registry for the client
    */
   @NotNull
-  public static MongoTicketLoader getInstance() {
-    return Objects.requireNonNull(instance, "Mongo instance has not been initialized");
+  private CodecRegistry getCodecs() {
+    return CodecRegistries.fromRegistries(
+        CodecRegistries.fromCodecs(
+            new AnswerCodec(),
+            new FreelancerCodec(),
+            new OfferCodec(),
+            new OrderClaimingResponsiveMessageCodec(),
+            new ProductShopResponsiveMessageCodec(),
+            new ResponsiveMessageCodec(),
+            new ResponsiveMessageTypeCodec(),
+            new RoleAnswerCodec(),
+            new RoleCodec(),
+            new StringAnswerCodec(),
+            new TextChannelCodec(),
+            new TicketCodec(),
+            new TicketStatusCodec(),
+            new TicketTypeCodec(),
+            new UserCodec()),
+        MongoClient.getDefaultCodecRegistry());
   }
 
   /**
@@ -116,8 +125,14 @@ public class MongoTicketLoader implements TicketLoader {
     return getInstance().getClient().getMongoClientOptions().getCodecRegistry();
   }
 
-  public void ping() {
-    database.runCommand(new Document("serverStatus", 1));
+  /**
+   * Get the instance of mongo client
+   *
+   * @return the instance of mongo
+   */
+  @NotNull
+  public static MongoTicketLoader getInstance() {
+    return Validate.notNull(instance, "Mongo instance has not been initialized");
   }
 
   @Override

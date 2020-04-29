@@ -8,10 +8,17 @@ import com.starfishst.commands.utils.embeds.EmbedFactory;
 import com.starfishst.commands.utils.message.MessagesFactory;
 import com.starfishst.core.utils.Strings;
 import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.Configuration;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+/** Commands for helping the user */
 public class HelpCommands {
 
+  /**
+   * The main command for helping
+   *
+   * @return the message with a list of commands
+   */
   @Command(
       aliases = {"help", "commands"},
       description = "Get the list of commands")
@@ -24,17 +31,18 @@ public class HelpCommands {
               StringBuilder stringBuilder = Strings.getBuilder();
               String description;
               if (command instanceof ParentCommand) {
-                stringBuilder.append(command.getDescription()).append(" | **Subcommands**: ");
+                stringBuilder.append(command.getDescription()).append(" | **Sub-Commands**: ");
                 ((ParentCommand) command)
                     .getCommands()
-                    .forEach(subcommand -> stringBuilder.append(subcommand.getName()).append(", "));
+                    .forEach(
+                        subCommands -> stringBuilder.append(subCommands.getName()).append(", "));
                 stringBuilder.setLength(stringBuilder.length() - 2);
                 description = stringBuilder.toString();
               } else {
                 description = command.getDescription();
               }
               embedBuilder.addField(
-                  Main.getConfiguration().getPrefix() + command.getName(), description, false);
+                  Configuration.getInstance().getPrefix() + command.getName(), description, false);
             });
     return new Result(
         ResultType.GENERIC,

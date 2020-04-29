@@ -46,11 +46,11 @@
                 <groupId>com.coveo</groupId>
                 <version>2.9</version>
             </plugin>
-            <!-- Maven jar shade plugin -->
+            <!-- Maven shade plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -58,40 +58,55 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.springframework.boot:spring-boot-starter-web</exclude>
-                                    <exclude>org.springframework:spring-core</exclude>
-                                    <exclude>com.paypal.sdk:rest-api-sdk</exclude>
-                                </excludes>
-                            </artifactSet>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <finalName>${project.artifactId}-${git.commit.id.describe-short}</finalName>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <!-- Commit id plugin -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.0</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                </configuration>
+            </plugin>
+            <!-- Javadoc plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.2.0</version>
-                <configuration>
-                    <show>public</show>
-                    <failOnError>false</failOnError>
-                </configuration>
                 <executions>
                     <execution>
-                        <id>aggregate</id>
+                        <phase>prepare-package</phase>
                         <goals>
-                            <goal>aggregate</goal>
+                            <goal>javadoc</goal>
                         </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <show>public</show>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+
+    <pluginRepositories>
+        <!-- Git commit id plugin -->
+        <pluginRepository>
+            <id>sonatype-snapshots</id>
+            <name>Sonatype Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <repositories>
         <!-- JDA Repository -->
@@ -108,7 +123,6 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>4.1.1_137</version>
-            <type>pom</type>
         </dependency>
         <!-- Command Framework -->
         <dependency>

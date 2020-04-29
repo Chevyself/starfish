@@ -7,7 +7,7 @@ import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.arguments.JoinedStrings;
 import com.starfishst.core.utils.Lots;
-import com.starfishst.ethot.Main;
+import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.util.Discord;
 import java.util.HashMap;
@@ -20,17 +20,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-/**
- * Set commands are used to "set" values inside configuration properties.
- *
- * <p>In this project the config files are 'config.json', 'discord.json', 'lang.properties'
- *
- * <p>'config.json' stores information used in the bot startup: commands properties, discord
- * authentication, ticket customization, embeds decor
- *
- * @author Chevy
- * @version 1.0.0
- */
+/** Set commands are used to "set" values inside configuration properties. */
 public class SetCommand {
 
   /**
@@ -47,7 +37,7 @@ public class SetCommand {
       permission = Permission.ADMINISTRATOR)
   @Parent
   public Result set(Guild guild) {
-    Main.getDiscordConfiguration().setGuild(guild);
+    DiscordConfiguration.getInstance().setGuild(guild);
     return new Result("Guild has been set to " + guild.getName());
   }
 
@@ -92,7 +82,7 @@ public class SetCommand {
     if (roles.isEmpty()) {
       return new Result(ResultType.USAGE, Lang.get("MENTION_ROLE"));
     } else {
-      Main.getDiscordConfiguration().setRolesByKey(key, roles);
+      DiscordConfiguration.getInstance().setRolesByKey(key, roles);
 
       HashMap<String, String> placeholders = new HashMap<>();
       placeholders.put("roles", Lots.pretty(Discord.getAsMention(roles)));
@@ -102,6 +92,31 @@ public class SetCommand {
           Lang.get("ROLES_UPDATED", placeholders),
           msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
     }
+  }
+
+  /**
+   * Set the key for a specific list of role keys
+   *
+   * @param key the key to set the list to
+   * @param keys the list of roles keys
+   * @return a successful result saying that the keys have been set
+   */
+  @Command(
+      aliases = "rolesKeys",
+      description = "Sets the keys for roles identification",
+      permission = Permission.ADMINISTRATOR)
+  public Result rolesKeys(
+      @Required(name = "key", description = "The key to set the other role keys") String key,
+      @Required(name = "keys", description = "The keys to set") JoinedStrings keys) {
+    HashMap<String, List<String>> roleKeyMap = DiscordConfiguration.getInstance().getRoleKeyMap();
+    List<String> list = Lots.list(keys.getStrings());
+    roleKeyMap.put(key, list);
+    HashMap<String, String> placeholders = new HashMap<>();
+    placeholders.put("key", key);
+    placeholders.put("keys", Lots.pretty(list));
+    return new Result(
+        Lang.get("KEY_SET_TO_ROLES", placeholders),
+        msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
   }
 
   /**
@@ -125,7 +140,7 @@ public class SetCommand {
     if (parent == null) {
       return new Result(ResultType.USAGE, Lang.get("NOT_IN_CATEGORY", placeholders));
     } else {
-      Main.getDiscordConfiguration().setCategoryByKey(key, parent);
+      DiscordConfiguration.getInstance().setCategoryByKey(key, parent);
 
       placeholders.put("category", parent.getName());
       placeholders.put("key", key);
@@ -153,10 +168,9 @@ public class SetCommand {
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("channel", channel.getAsMention());
     placeholders.put("key", key);
-    Main.getDiscordConfiguration().setChannelByKey(key, channel);
+    DiscordConfiguration.getInstance().setChannelByKey(key, channel);
     return new Result(
-            Lang.get("CHANNEL_UPDATED", placeholders),
-            msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+        Lang.get("CHANNEL_UPDATED", placeholders),
+        msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
   }
-
 }
