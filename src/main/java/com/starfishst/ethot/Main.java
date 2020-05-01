@@ -55,6 +55,7 @@ import com.starfishst.simple.logging.LoggerUncaughtExceptionHandler;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TimerTask;
@@ -68,6 +69,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -170,18 +172,15 @@ public class Main {
     if (configuration != null) {
       try {
         Console.info("Connecting to discord...");
-        // TODO Change it to a proper JDABuilder
         jda =
-            new JDABuilder(configuration.getToken())
+            JDABuilder.create(configuration.getToken(), Arrays.asList(GatewayIntent.values()))
                 .setEventManager(new AnnotatedEventManager())
                 .addEventListeners(new ResponsiveMessagesListener(configuration))
                 .addEventListeners(new QuestionTicketListener())
                 .addEventListeners(new TicketTranscriptListener())
                 .addEventListeners(new ConfigurationListener())
                 .addEventListeners(new WelcomeListener())
-                // .addEventListeners(new ModerationListener())
                 .build();
-
         Console.info("Waiting for Discord connection...");
         long millis = 0;
         while (jda.getStatus() != JDA.Status.CONNECTED) {
