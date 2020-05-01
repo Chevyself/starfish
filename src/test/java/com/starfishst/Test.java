@@ -6,8 +6,6 @@ package com.starfishst;
 
  */
 
-
-
 /** Simple test for spring */
 public class Test {
 
