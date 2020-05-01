@@ -1,6 +1,5 @@
 package com.starfishst.ethot.config.questions;
 
-import com.starfishst.core.utils.Errors;
 import com.starfishst.ethot.exception.QuestionsInitException;
 import com.starfishst.ethot.objects.questions.Question;
 import com.starfishst.ethot.tickets.TicketType;
@@ -21,7 +20,6 @@ public class QuestionsHandler {
     try {
       instance = new QuestionsHandler();
     } catch (IOException e) {
-      Errors.addError(e.getMessage());
       throw new QuestionsInitException();
     }
   }
@@ -91,7 +89,6 @@ public class QuestionsHandler {
         return suggestion.getQuestions();
       default:
         String error = type + " is not a valid type for questions";
-        Errors.addError(error);
         throw new IllegalArgumentException(error);
     }
   }

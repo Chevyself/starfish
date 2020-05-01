@@ -66,7 +66,7 @@ public class TicketManager {
       @NotNull TicketType type, @NotNull Member creator, @Nullable Ticket parent)
       throws DiscordManipulationException, TicketCreationException {
     this.validateTicketType(type);
-    this.validateUser(type, creator);
+    this.validateUser(type, creator, parent);
     long id = this.getId(parent);
     TextChannel channel = getChannel(type, id, creator, parent);
     User user = getUser(creator, parent);
@@ -140,20 +140,25 @@ public class TicketManager {
    *
    * @param type the type of ticket creating
    * @param creator the user trying to create the ticket
+   * @param parent the parent ticket in case there's one
    * @throws TicketCreationException in case that the user cannot create more tickets
    */
-  private void validateUser(@NotNull TicketType type, @NotNull Member creator)
+  private void validateUser(
+      @NotNull TicketType type, @NotNull Member creator, @Nullable Ticket parent)
       throws TicketCreationException {
     validateRoles(type, creator);
     List<Ticket> tickets =
         Tickets.getTicketsMatchingStatus(
             loader.getTickets(creator.getUser()), TicketStatus.OPEN, TicketStatus.CREATING);
+    if (parent != null && parent.getType() == TicketType.TICKET_CREATOR) {
+      tickets.remove(parent);
+    }
     if (tickets.size() >= (Configuration.getInstance().getOpenTicketsByUserLimit())) {
       HashMap<String, String> placeHolders = new HashMap<>();
       placeHolders.put(
           "limit", String.valueOf(Configuration.getInstance().getOpenTicketsByUserLimit()));
       placeHolders.put("have", String.valueOf(tickets.size()));
-      throw new TicketCreationException(Lang.get("MORE_THAN_LIMIT", placeHolders), placeHolders);
+      throw new TicketCreationException(Lang.get("MORE_THAN_LIMIT", placeHolders));
     }
   }
 

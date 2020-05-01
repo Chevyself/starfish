@@ -1,5 +1,6 @@
 package com.starfishst.simple.logging;
 
+import com.starfishst.core.fallback.Fallback;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,7 @@ public class LoggerUncaughtExceptionHandler implements Thread.UncaughtExceptionH
 
   @Override
   public void uncaughtException(Thread thread, Throwable throwable) {
+    Fallback.addError(throwable.getMessage());
     logger.log(Level.SEVERE, throwable.getMessage(), throwable);
   }
 }

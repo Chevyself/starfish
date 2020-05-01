@@ -1,6 +1,5 @@
 package com.starfishst.ethot.objects.questions;
 
-import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.Strings;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -41,13 +40,11 @@ public class Question {
     this.limit = limit;
     if (simple.contains(" ")) {
       String error = "The 'simple' or summary of a question may not have spaces but got: " + simple;
-      Errors.addError(error);
       throw new IllegalArgumentException(error);
     }
     if (limit > MessageEmbed.TEXT_MAX_LENGTH) {
       String error =
           "The limit cannot be longer than Embeds limit: " + MessageEmbed.TEXT_MAX_LENGTH;
-      Errors.addError(error);
       throw new IllegalArgumentException(error);
     }
     this.title = title;

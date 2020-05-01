@@ -1,9 +1,9 @@
 package com.starfishst.ethot;
 
 import com.starfishst.commands.CommandManager;
-import com.starfishst.commands.commands.Fallback;
+import com.starfishst.commands.commands.FallbackCommands;
 import com.starfishst.core.ICommandManager;
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Strings;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.cache.Cache;
@@ -52,9 +52,12 @@ import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
 import com.starfishst.simple.logging.LoggerUncaughtExceptionHandler;
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
@@ -89,6 +92,8 @@ public class Main {
   @Nullable private static CommandManager commandManager;
   /** If the ticket is stopping it will be true */
   private static boolean stoppig = false;
+  /** The tasks that are running in the bot */
+  @NotNull private static final List<TimerTask> tasks = new ArrayList<>();
 
   /**
    * Main java method
@@ -105,19 +110,22 @@ public class Main {
     setupDiscordConfig();
     setupTicketManager();
     setupCommands();
+    startTasks();
 
-    Console.info("Creating tasks");
-
-    new InactiveCheck();
-    if (configuration != null && configuration.getAutoSave().isEnable()) {
-      new AutoSave(configuration.getAutoSave().getToSave());
-    }
-
-    if (!Errors.getList().isEmpty()) {
+    if (!Fallback.isEmpty()) {
       createFallback(
           "There was some errors while enabling the bot \n Run 'errors' in console to get a list of them or 'exit' to end the program");
     }
     Console.info("Bot is up and running");
+  }
+
+  /** Starts the tasks that will be running in the bot */
+  private static void startTasks() {
+    Console.info("Creating tasks");
+    tasks.add(new InactiveCheck());
+    if (configuration != null && configuration.getAutoSave().isEnable()) {
+      tasks.add(new AutoSave(configuration.getAutoSave().getToSave()));
+    }
   }
 
   /**
@@ -149,7 +157,7 @@ public class Main {
       Console.info("Configuration setup has been completed");
     } catch (IOException e) {
       Console.log(Level.SEVERE, e);
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
     }
   }
 
@@ -183,14 +191,14 @@ public class Main {
         Console.info("Discord took " + Time.fromMillis(millis).toEffectiveString() + " to connect");
 
       } catch (LoginException e) {
-        Errors.addError("Discord token is wrong");
+        Fallback.addError("Discord token is wrong");
         Console.log(Level.SEVERE, e);
       } catch (InterruptedException e) {
-        Errors.addError(e.getMessage());
+        Fallback.addError(e.getMessage());
         Console.log(Level.SEVERE, e);
       }
     } else {
-      Errors.addError(
+      Fallback.addError(
           "JDA Could not be initialized because there was an error while setting up configuration");
     }
   }
@@ -206,11 +214,11 @@ public class Main {
         discConfiguration =
             JsonConfiguration.getInstance("discord.json", DiscordConfiguration.class);
       } else {
-        Errors.addError("Discord configuration could not be setup as there is no JDA connection");
+        Fallback.addError("Discord configuration could not be setup as there is no JDA connection");
       }
     } catch (IOException e) {
       Console.log(Level.SEVERE, e);
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
     }
   }
 
@@ -223,10 +231,10 @@ public class Main {
         manager = new TicketManager(new MongoTicketLoader(mongo.getUri(), mongo.getDatabase()));
       } catch (Throwable e) {
         Console.log(Level.SEVERE, e);
-        Errors.addError("Ticket manager could not be setup: " + e.getMessage());
+        Fallback.addError("Ticket manager could not be setup: " + e.getMessage());
       }
     } else {
-      Errors.addError(
+      Fallback.addError(
           "Ticket Manager could not be setup because there's some errors in the configuration");
     }
   }
@@ -254,9 +262,9 @@ public class Main {
       commandManager.registerCommand(new RemoveCommands());
       commandManager.registerCommand(new SetCommand());
       commandManager.registerCommand(new TicketsCommand());
-      commandManager.registerCommand(new Fallback());
+      commandManager.registerCommand(new FallbackCommands());
     } else {
-      Errors.addError(
+      Fallback.addError(
           "Could not setup commands because JDA or the configuration were not setup properly");
     }
   }
@@ -295,7 +303,9 @@ public class Main {
   private static StringBuilder buildErrorsMessage() {
     StringBuilder builder = Strings.getBuilder();
     builder.append("Errors: \n");
-    Errors.getList().forEach(error -> builder.append("> ").append(error).append("\n"));
+    Fallback.getErrors()
+        .getList()
+        .forEach(error -> builder.append("> ").append(error).append("\n"));
     return builder;
   }
 
@@ -316,6 +326,7 @@ public class Main {
   public static void stop() {
     try {
       stoppig = true;
+      tasks.forEach(TimerTask::cancel);
       Console.info("Cleaning cache");
       Cache.getCache().forEach(Catchable::onRemove);
       Cache.getCache().clear();
@@ -330,9 +341,9 @@ public class Main {
       }
     } catch (Throwable e) {
       Console.log(Level.SEVERE, e);
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
     }
-    if (!Errors.getList().isEmpty()) {
+    if (!Fallback.isEmpty()) {
       createFallback(
           "There was some errors while disabling the bot \n Run 'errors' in console to get a list of them or 'exit' to end the program");
     } else {

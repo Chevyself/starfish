@@ -1,6 +1,6 @@
 package com.starfishst.ethot.tickets.type;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.objects.freelancers.Freelancer;
@@ -101,7 +101,7 @@ public class Product extends QuestionsTicket {
           .send(getType().getChannel(), msg -> message = new ProductShopResponsiveMessage(msg));
     } catch (DiscordManipulationException e) {
       Messages.error("This ticket could not be announced");
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
     }
     super.onDone();
     setStatus(TicketStatus.SELLING);

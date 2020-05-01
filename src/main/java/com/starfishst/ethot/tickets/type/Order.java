@@ -1,6 +1,6 @@
 package com.starfishst.ethot.tickets.type;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.TicketCreationException;
 import com.starfishst.ethot.objects.freelancers.Freelancer;
@@ -117,7 +117,7 @@ public class Order extends FreelancingTicket {
               });
     } catch (DiscordManipulationException e) {
       Messages.error("This ticket could not be announced");
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
     }
     super.onDone();
   }

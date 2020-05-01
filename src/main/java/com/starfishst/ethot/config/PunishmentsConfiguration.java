@@ -1,6 +1,5 @@
 package com.starfishst.ethot.config;
 
-import com.starfishst.core.utils.Errors;
 import com.starfishst.ethot.exception.PunishmentsInitException;
 import com.starfishst.simple.config.JsonConfiguration;
 import java.io.IOException;
@@ -19,7 +18,6 @@ public class PunishmentsConfiguration extends JsonConfiguration {
     try {
       instance = JsonConfiguration.getInstance("punishments.json", PunishmentsConfiguration.class);
     } catch (IOException e) {
-      Errors.addError(e.getMessage());
       throw new PunishmentsInitException();
     }
   }

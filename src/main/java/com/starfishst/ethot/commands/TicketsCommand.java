@@ -6,7 +6,7 @@ import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedQuery;
-import com.starfishst.core.arguments.JoinedStrings;
+import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.core.utils.Strings;
 import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.language.Lang;

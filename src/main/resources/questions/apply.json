@@ -15,7 +15,7 @@
     {
       "title": "What role are you applying to?",
       "simple": "applying",
-      "description": "You can apply to \u003c@\u0026701553600035422278\u003e",
+      "description": "You can apply to %roles%",
       "limit": 2,
       "role": "toApply"
     },

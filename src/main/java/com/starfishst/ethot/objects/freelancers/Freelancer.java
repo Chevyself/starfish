@@ -1,10 +1,12 @@
 package com.starfishst.ethot.objects.freelancers;
 
+import com.starfishst.commands.utils.message.MessageQuery;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
+import com.starfishst.ethot.objects.questions.Answer;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Freelancers;
@@ -12,6 +14,7 @@ import com.starfishst.ethot.util.Maps;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
@@ -148,6 +151,42 @@ public class Freelancer extends Catchable {
    */
   public void setPortfolio(@NotNull List<String> portfolio) {
     this.portfolio = portfolio;
+  }
+
+  /**
+   * Check if a freelancer has a mentioned role in the mentioned ticket. Check {@link
+   * Freelancers#hasRole(HashMap, Freelancer)}
+   *
+   * @param map the map of answers
+   * @return true if the freelancer does
+   * @throws DiscordManipulationException in case that the freelancer doesn't have a member
+   */
+  public boolean hasRole(@NotNull HashMap<String, Answer> map) throws DiscordManipulationException {
+    return Freelancers.hasRole(map, this);
+  }
+
+  /**
+   * Sends a private message to the freelancer
+   *
+   * @param message the message to send
+   */
+  public void sendMessage(@NotNull Message message) {
+    User user = getUser();
+    if (user != null) {
+      user.openPrivateChannel().queue(channel -> channel.sendMessage(message).queue());
+    }
+  }
+
+  /**
+   * Sends a private message to the freelancer
+   *
+   * @param query the message query to send
+   */
+  public void sendMessage(@NotNull MessageQuery query) {
+    User user = getUser();
+    if (user != null) {
+      user.openPrivateChannel().queue(query::send);
+    }
   }
 
   @Override

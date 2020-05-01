@@ -10,9 +10,8 @@ public class FreelancerJoinTicketException extends SimpleException {
    * Create an instance
    *
    * @param message the message to send
-   * @param objects to change the placeholders
    */
-  public FreelancerJoinTicketException(@NotNull String message, @NotNull Object... objects) {
-    super(message, objects);
+  public FreelancerJoinTicketException(@NotNull String message) {
+    super(message);
   }
 }

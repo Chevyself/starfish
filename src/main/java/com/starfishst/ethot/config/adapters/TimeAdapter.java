@@ -7,7 +7,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.starfishst.core.utils.Errors;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
 import java.lang.reflect.Type;
@@ -28,7 +27,6 @@ public class TimeAdapter implements JsonSerializer<Time>, JsonDeserializer<Time>
     try {
       return Time.fromString(element);
     } catch (IllegalArgumentException e) {
-      Errors.addError(element + " is not the correct format of time: 1d, 2h, 4w is");
       return new Time(10, Unit.MINUTES);
     }
   }

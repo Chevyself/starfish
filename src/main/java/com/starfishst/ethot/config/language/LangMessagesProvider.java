@@ -1,7 +1,9 @@
 package com.starfishst.ethot.config.language;
 
+import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.messages.MessagesProvider;
 import com.starfishst.commands.result.ResultType;
+import com.starfishst.core.utils.Maps;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.ethot.Main;
 import java.util.HashMap;
@@ -12,6 +14,31 @@ import org.jetbrains.annotations.NotNull;
  * errors will be thrown in startup
  */
 public class LangMessagesProvider implements MessagesProvider {
+
+  @Override
+  public @NotNull String invalidLong(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_LONG", Maps.singleton("string", s));
+  }
+
+  @Override
+  public @NotNull String invalidInteger(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_INTEGER", Maps.singleton("string", s));
+  }
+
+  @Override
+  public @NotNull String invalidDouble(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_DOUBLE", Maps.singleton("string", s));
+  }
+
+  @Override
+  public @NotNull String invalidBoolean(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_BOOLEAN", Maps.singleton("string", s));
+  }
+
+  @Override
+  public @NotNull String invalidTime(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_TIME", Maps.singleton("string", s));
+  }
 
   @Override
   public @NotNull String commandNotFound(@NotNull String s) {
@@ -84,8 +111,29 @@ public class LangMessagesProvider implements MessagesProvider {
 
   @Override
   public @NotNull String cooldown(@NotNull Time time) {
-    HashMap<String, String> placeHolders = new HashMap<>();
-    placeHolders.put("time", time.toEffectiveString());
-    return Lang.get("ON_COOLDOWN", placeHolders);
+    return Lang.get("ON_COOLDOWN", Maps.singleton("time", time.toEffectiveString()));
+  }
+
+  @Override
+  public @NotNull String invalidUser(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_USER", Maps.singleton("string", s));
+  }
+
+  @NotNull
+  @Override
+  public String invalidMember(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_MEMBER", Maps.singleton("string", s));
+  }
+
+  @NotNull
+  @Override
+  public String invalidRole(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_ROLE", Maps.singleton("string", s));
+  }
+
+  @NotNull
+  @Override
+  public String invalidTextChannel(String s, CommandContext commandContext) {
+    return Lang.get("INVALID_TEXT_CHANNEL", Maps.singleton("string", s));
   }
 }

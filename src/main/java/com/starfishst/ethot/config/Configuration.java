@@ -1,7 +1,7 @@
 package com.starfishst.ethot.config;
 
 import com.starfishst.commands.ManagerOptions;
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
@@ -135,7 +135,7 @@ public class Configuration extends JsonConfiguration {
         return getProductQuestions();
       default:
         String error = type + " is not a valid type for questions";
-        Errors.addError(error);
+        Fallback.addError(error);
         throw new IllegalArgumentException(error);
     }
   }

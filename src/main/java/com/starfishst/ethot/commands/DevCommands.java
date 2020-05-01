@@ -3,11 +3,9 @@ package com.starfishst.ethot.commands;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.ethot.Main;
-import com.starfishst.ethot.objects.responsive.type.verification.VerificationResponsiveMessage;
 import com.starfishst.ethot.util.Console;
-import com.starfishst.ethot.util.Messages;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -35,7 +33,7 @@ public class DevCommands {
       return new Result("Configuration successfully saved");
     } catch (IOException e) {
       Console.log(Level.SEVERE, e);
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
       return new Result(
           ResultType.ERROR,
           "There's been an error while trying to save the configuration",
@@ -54,11 +52,11 @@ public class DevCommands {
     return new Result();
   }
 
+  /*
   /**
    * Create a verification message
    *
    * @return a new verification message in the channel executed
-   */
   @Command(
       aliases = {"verificationmsg", "vmsg"},
       description = "Creates a verification message",
@@ -70,6 +68,7 @@ public class DevCommands {
             "VERIFICATION_MESSAGE_TITLE", "VERIFICATION_MESSAGE_DESCRIPTION", null, null),
         VerificationResponsiveMessage::new);
   }
+   */
 
   /*
   /**

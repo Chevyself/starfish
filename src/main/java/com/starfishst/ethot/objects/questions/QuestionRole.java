@@ -1,6 +1,6 @@
 package com.starfishst.ethot.objects.questions;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.Strings;
 import com.starfishst.ethot.config.DiscordConfiguration;
@@ -82,7 +82,7 @@ public class QuestionRole extends Question {
       placeholders.put("limit", String.valueOf(limit));
       return Strings.buildMessage(super.getBuiltDescription(), placeholders);
     } catch (TicketCreationException e) {
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
       return super.getBuiltDescription();
     }
   }

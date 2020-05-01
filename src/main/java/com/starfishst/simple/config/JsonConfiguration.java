@@ -1,6 +1,5 @@
 package com.starfishst.simple.config;
 
-import com.google.gson.annotations.Expose;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
 import java.io.File;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class JsonConfiguration {
 
   /** The file that this configuration is using */
-  @Expose @Nullable private transient File file;
+  @Nullable private transient File file;
 
   /**
    * Create a T instance

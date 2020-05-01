@@ -1,6 +1,6 @@
 package com.starfishst.ethot.config;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
@@ -43,15 +43,24 @@ public class DiscordConfiguration extends JsonConfiguration {
   }
 
   /**
-   * Get the working guild
+   * Get a list of roles using many keys
    *
-   * @return if the guild is not set null
-   * @throws DiscordManipulationException when the guild has not been set
+   * @param keys the keys to get the roles from
+   * @return a list of roles (it could be empty)
    */
   @NotNull
-  public Guild getGuild() throws DiscordManipulationException {
-    return Validate.notNull(
-        guild, Lang.GUILD_NOT_SET, new DiscordManipulationException(Lang.GUILD_NOT_SET));
+  public List<Role> getRolesByKeys(@NotNull List<String> keys) {
+    List<Role> roles = new ArrayList<>();
+    keys.forEach(
+        key -> {
+          List<Role> rolesByKey = getRolesByKey(key);
+          if (rolesByKey != null) {
+            roles.addAll(rolesByKey);
+          } else {
+            Fallback.addError("Roles with key " + key + " are empty or null");
+          }
+        });
+    return roles;
   }
 
   /**
@@ -209,24 +218,14 @@ public class DiscordConfiguration extends JsonConfiguration {
   }
 
   /**
-   * Get a list of roles using many keys
+   * Get the working guild
    *
-   * @param keys the keys to get the roles from
-   * @return a list of roles (it could be empty)
+   * @return if the guild is not set null
+   * @throws DiscordManipulationException when the guild has not been set
    */
   @NotNull
-  public List<Role> getRolesByKeys(@NotNull List<String> keys) {
-    List<Role> roles = new ArrayList<>();
-    keys.forEach(
-        key -> {
-          List<Role> rolesByKey = getRolesByKey(key);
-          if (rolesByKey != null) {
-            roles.addAll(rolesByKey);
-          } else {
-            Errors.addError("Roles with key " + key + " are empty or null");
-          }
-        });
-    return roles;
+  public Guild getGuild() throws DiscordManipulationException {
+    return Validate.notNull(guild, new DiscordManipulationException(Lang.GUILD_NOT_SET));
   }
 
   /**

@@ -1,8 +1,6 @@
 package com.starfishst.ethot.listeners.questions;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.language.Lang;
@@ -21,6 +19,7 @@ import com.starfishst.ethot.util.Messages;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
@@ -181,7 +180,7 @@ public class QuestionTicketListener {
       HashMap<String, String> placeHolders = new HashMap<>();
       placeHolders.put("limit", String.valueOf(limit));
       Messages.error(Lang.get("TOO_LONG_ANSWER", placeHolders))
-          .send(channel, msg -> msg.delete().queueAfter(15, SECONDS));
+          .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
       return null;
     }
   }
@@ -200,13 +199,13 @@ public class QuestionTicketListener {
       QuestionRole question, List<Role> mentionedRoles, TextChannel channel, int limit) {
     if (mentionedRoles.isEmpty()) {
       Messages.error(Lang.get("MENTION_ROLE"))
-          .send(channel, msg -> msg.delete().queueAfter(15, SECONDS));
+          .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
       return null;
     } else if (mentionedRoles.size() > limit) {
       HashMap<String, String> placeHolders = new HashMap<>();
       placeHolders.put("limit", String.valueOf(limit));
       Messages.error(Lang.get("ROLE_LIMIT", placeHolders))
-          .send(channel, msg -> msg.delete().queueAfter(15, SECONDS));
+          .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
       return null;
     }
     try {
@@ -215,13 +214,15 @@ public class QuestionTicketListener {
         HashMap<String, String> placeHolders = new HashMap<>();
         placeHolders.put("roles", Lots.pretty(notMentionable));
         Messages.error(Lang.get("NOT_MENTIONABLE", placeHolders))
-            .send(channel, msg -> msg.delete().queueAfter(15, SECONDS));
+            .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
         return null;
       } else {
         return new RoleAnswer(mentionedRoles);
       }
     } catch (TicketCreationException e) {
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
+      Messages.error(e.getMessage())
+          .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
       return null;
     }
   }

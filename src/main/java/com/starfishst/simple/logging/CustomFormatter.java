@@ -2,7 +2,7 @@ package com.starfishst.simple.logging;
 
 import com.starfishst.core.utils.Strings;
 import com.starfishst.core.utils.time.TimeUtils;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -68,7 +68,7 @@ public class CustomFormatter extends Formatter {
    */
   private void addTimePlaceholders(
       @NotNull LogRecord record, @NotNull HashMap<String, String> placeHolders) {
-    OffsetDateTime date = TimeUtils.millisToOffsetDateTime(record.getMillis());
+    LocalDateTime date = TimeUtils.getLocalDateFromMillis(record.getMillis());
     placeHolders.put("day", String.valueOf(date.getDayOfMonth()));
     placeHolders.put("month", String.valueOf(date.getMonthValue()));
     placeHolders.put("year", String.valueOf(date.getYear()));

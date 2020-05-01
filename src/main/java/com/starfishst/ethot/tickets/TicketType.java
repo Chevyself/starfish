@@ -1,6 +1,5 @@
 package com.starfishst.ethot.tickets;
 
-import com.starfishst.core.utils.Errors;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
@@ -82,7 +81,6 @@ public enum TicketType {
     try {
       return TicketType.valueOf(document.getString("type"));
     } catch (NullPointerException | IllegalArgumentException e) {
-      Errors.addError(e.getMessage());
       throw e;
     }
   }

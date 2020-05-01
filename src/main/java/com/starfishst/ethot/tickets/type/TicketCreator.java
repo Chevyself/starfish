@@ -1,6 +1,6 @@
 package com.starfishst.ethot.tickets.type;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.ethot.listeners.questions.QuestionTicketListener;
 import com.starfishst.ethot.objects.responsive.type.ticket.TicketCreatorResponsiveMessage;
 import com.starfishst.ethot.tickets.TicketStatus;
@@ -54,7 +54,7 @@ public class TicketCreator extends Ticket {
                 .getMessage(),
             msg -> message = new TicketCreatorResponsiveMessage(msg, this));
       } else {
-        Errors.addError(
+        Fallback.addError(
             "Ticket "
                 + this.id
                 + " is missing customer: "

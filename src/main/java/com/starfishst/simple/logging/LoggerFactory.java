@@ -4,7 +4,7 @@ import com.starfishst.core.utils.time.TimeUtils;
 import com.starfishst.simple.files.FileUtils;
 import java.io.File;
 import java.io.IOException;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -53,7 +53,7 @@ public class LoggerFactory {
         throw new IOException("The logs directory could not be created");
       }
     }
-    OffsetDateTime date = TimeUtils.millisToOffsetDateTime(System.currentTimeMillis());
+    LocalDateTime date = TimeUtils.getLocalDateFromMillis(System.currentTimeMillis());
     FileHandler handler;
     if (url != null) {
       handler = new FileHandler(url, true);

@@ -69,7 +69,7 @@ public class ResponsiveMessagesListener {
         if (response != null) {
           response.onReaction(event);
         }
-        event.getReaction().removeReaction(event.getUser()).queue();
+        event.getReaction().removeReaction(event.getUser()).queue(aVoid -> {}, exception -> {});
       }
     }
   }

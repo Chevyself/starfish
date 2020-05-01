@@ -1,7 +1,7 @@
 package com.starfishst.ethot.commands.provider;
 
+import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.context.GuildCommandContext;
-import com.starfishst.core.context.ICommandContext;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.core.providers.type.IExtraArgumentProvider;
 import com.starfishst.ethot.config.language.Lang;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * AllowedTicketCloserChecker}
  */
 public class AllowedTicketCloserCheckerProvider
-    implements IExtraArgumentProvider<AllowedTicketCloserChecker> {
+    implements IExtraArgumentProvider<AllowedTicketCloserChecker, CommandContext> {
 
   @Override
   public @NotNull Class<AllowedTicketCloserChecker> getClazz() {
@@ -22,7 +22,7 @@ public class AllowedTicketCloserCheckerProvider
 
   @NotNull
   @Override
-  public AllowedTicketCloserChecker getObject(@NotNull ICommandContext<?> context)
+  public AllowedTicketCloserChecker getObject(@NotNull CommandContext context)
       throws ArgumentProviderException {
     if (context instanceof GuildCommandContext) {
       AllowedTicketCloserChecker instance = AllowedTicketCloserChecker.getInstance();

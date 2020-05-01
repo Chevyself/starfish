@@ -1,6 +1,6 @@
 package com.starfishst.ethot.listeners;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.transcript.TicketTranscript;
@@ -32,7 +32,7 @@ public class TicketTranscriptListener {
         HashMap<String, String> placeholders = getPlaceholders(event, ticket);
         transcript.getLogger().info(Lang.get("LOG_FORMAT_TRANSCRIPT_MESSAGE", placeholders));
       } catch (IOException e) {
-        Errors.addError(e.getMessage());
+        Fallback.addError(e.getMessage());
         Messages.error("There's been an error while trying to load the ticket transcript")
             .send(event.getChannel(), msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
       }

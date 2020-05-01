@@ -28,12 +28,13 @@ public class OrderClaimingReactionResponse implements ReactionResponse {
     Freelancer freelancer = loader.getFreelancer(event.getUser().getIdLong());
     if (order != null && freelancer != null) {
       try {
-        order.setFreelancer(freelancer);
-        event
-            .getChannel()
-            .removeReactionById(
-                event.getMessageIdLong(), getUnicode(), event.getJDA().getSelfUser())
-            .queue();
+        if (order.setFreelancer(freelancer)) {
+          event
+              .getChannel()
+              .removeReactionById(
+                  event.getMessageIdLong(), getUnicode(), event.getJDA().getSelfUser())
+              .queue();
+        }
       } catch (FreelancerJoinTicketException | DiscordManipulationException e) {
         event
             .getUser()

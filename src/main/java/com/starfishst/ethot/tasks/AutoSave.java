@@ -1,6 +1,6 @@
 package com.starfishst.ethot.tasks;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.ethot.Main;
 import com.starfishst.ethot.util.Console;
@@ -28,7 +28,7 @@ public class AutoSave extends TimerTask {
       Console.info("Configuration saved successfully");
     } catch (IOException e) {
       e.printStackTrace();
-      Errors.addError("Bot could not be auto-saved");
+      Fallback.addError("Bot could not be auto-saved");
     }
   }
 }

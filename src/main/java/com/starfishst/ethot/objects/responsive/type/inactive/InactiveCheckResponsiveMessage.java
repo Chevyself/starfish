@@ -6,7 +6,7 @@ import com.starfishst.ethot.objects.responsive.ResponsiveMessage;
 import com.starfishst.ethot.objects.responsive.ResponsiveMessageType;
 import com.starfishst.ethot.util.Unicode;
 import com.starfishst.simple.Lots;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -103,10 +103,10 @@ public class InactiveCheckResponsiveMessage extends ResponsiveMessage {
   /**
    * Get when the inactive check started
    *
-   * @return when the inactive check started as {@link OffsetDateTime}
+   * @return when the inactive check started as {@link LocalDateTime}
    */
-  public OffsetDateTime getCreatedAtDate() {
-    return TimeUtils.millisToOffsetDateTime(createdAt);
+  public LocalDateTime getCreatedAtDate() {
+    return TimeUtils.getLocalDateFromMillis(createdAt);
   }
 
   /**

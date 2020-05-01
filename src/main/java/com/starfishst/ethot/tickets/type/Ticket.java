@@ -1,6 +1,6 @@
 package com.starfishst.ethot.tickets.type;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.ethot.Main;
@@ -126,7 +126,7 @@ public abstract class Ticket extends Catchable {
           channel.getManager().setParent(category).queue();
         }
       } catch (DiscordManipulationException e) {
-        Errors.addError(e.getMessage());
+        Fallback.addError(e.getMessage());
         Messages.error(e.getMessage());
       }
       save();
@@ -171,7 +171,7 @@ public abstract class Ticket extends Catchable {
       channel.sendFile(getTranscript().getFile()).queue();
     } catch (IOException e) {
       e.printStackTrace();
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
       Messages.error("Transcript could not be send. Check errors").send(channel);
     }
   }
@@ -335,5 +335,20 @@ public abstract class Ticket extends Catchable {
         + ", type="
         + getType()
         + '}';
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) return true;
+    if (object == null || getClass() != object.getClass()) return false;
+
+    Ticket ticket = (Ticket) object;
+
+    return id == ticket.id;
+  }
+
+  @Override
+  public int hashCode() {
+    return (int) (id ^ (id >>> 32));
   }
 }

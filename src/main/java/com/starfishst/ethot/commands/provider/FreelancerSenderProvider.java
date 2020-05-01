@@ -1,7 +1,7 @@
 package com.starfishst.ethot.commands.provider;
 
+import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.context.GuildCommandContext;
-import com.starfishst.core.context.ICommandContext;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.core.providers.type.IExtraArgumentProvider;
 import com.starfishst.ethot.config.language.Lang;
@@ -13,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
  * Provides {@link com.starfishst.commands.CommandManager} with a method to get a {@link Freelancer}
  * when it is a sender
  */
-public class FreelancerSenderProvider implements IExtraArgumentProvider<Freelancer> {
+public class FreelancerSenderProvider
+    implements IExtraArgumentProvider<Freelancer, CommandContext> {
 
   @NotNull
   @Override
-  public Freelancer getObject(@NotNull ICommandContext<?> context)
-      throws ArgumentProviderException {
+  public Freelancer getObject(@NotNull CommandContext context) throws ArgumentProviderException {
     if (context instanceof GuildCommandContext) {
       Freelancer freelancer =
           TicketManager.getInstance()

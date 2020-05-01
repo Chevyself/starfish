@@ -10,9 +10,8 @@ public class LanguageInitException extends SimpleRuntimeException {
    * Create an instance
    *
    * @param message the message to send
-   * @param objects to change the placeholders
    */
-  public LanguageInitException(@NotNull String message, @NotNull Object... objects) {
-    super(message, objects);
+  public LanguageInitException(@NotNull String message) {
+    super(message);
   }
 }

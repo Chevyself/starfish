@@ -21,7 +21,7 @@
     {
       "title": "Tag the roles for the work",
       "simple": "roles",
-      "description": "You can tag \u003c@\u0026701553600035422278\u003e only 2 of them!",
+      "description": "You can tag %roles% only 2 of them!",
       "limit": 2,
       "role": "freelancers"
     },

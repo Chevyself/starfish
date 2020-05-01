@@ -5,7 +5,9 @@ import com.starfishst.commands.annotations.Optional;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.arguments.JoinedStrings;
+import com.starfishst.core.objects.JoinedStrings;
+import com.starfishst.core.utils.Atomic;
+import com.starfishst.core.utils.Lots;
 import com.starfishst.ethot.config.Configuration;
 import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
@@ -13,13 +15,17 @@ import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.TicketCreationException;
 import com.starfishst.ethot.objects.freelancers.Freelancer;
 import com.starfishst.ethot.objects.freelancers.Offer;
+import com.starfishst.ethot.objects.management.AllowedTicketCloserChecker;
 import com.starfishst.ethot.objects.management.AllowedTicketManagerChecker;
+import com.starfishst.ethot.objects.questions.RoleAnswer;
 import com.starfishst.ethot.objects.responsive.type.freelancer.ReviewFreelancer;
 import com.starfishst.ethot.objects.responsive.type.quotes.OfferAcceptResponsiveMessage;
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.TicketType;
+import com.starfishst.ethot.tickets.type.Apply;
 import com.starfishst.ethot.tickets.type.Quote;
 import com.starfishst.ethot.tickets.type.Ticket;
+import com.starfishst.ethot.util.Discord;
 import com.starfishst.ethot.util.Freelancers;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
@@ -30,7 +36,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -40,7 +45,6 @@ public class FreelancerCommands {
   /**
    * Promotes a freelancer
    *
-   * @param message the message to get the mentioned roles to give to the freelancer
    * @param member the member to promote as freelancer
    * @return a successful result if the member was not a freelancer
    */
@@ -49,7 +53,6 @@ public class FreelancerCommands {
       description = "Promotes a Freelancer",
       permission = Permission.ADMINISTRATOR)
   public Result promote(
-      Message message,
       @Required(name = "member", description = "The member to promote as Freelancer")
           Member member) {
     Freelancer freelancer =
@@ -57,27 +60,69 @@ public class FreelancerCommands {
     if (freelancer != null) {
       return new Result(ResultType.USAGE, member.getAsMention() + " is already a freelancer!");
     } else {
-      if (message.getMentionedRoles().isEmpty()) {
-        return new Result(ResultType.USAGE, Lang.get("MENTION_ROLES"));
-      } else {
-        message
-            .getMentionedRoles()
-            .forEach(
-                role -> {
-                  try {
-                    DiscordConfiguration.getInstance()
-                        .getGuild()
-                        .addRoleToMember(member, role)
-                        .queue();
-                  } catch (DiscordManipulationException e) {
-                    Messages.error(e.getMessage()).send(message.getTextChannel());
+      new Freelancer(new ArrayList<>(), new HashMap<>(), member.getIdLong());
+      return new Result(
+          member.getAsMention() + " has been promoted to freelancer",
+          msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+    }
+  }
+
+  /**
+   * Accepts an application. Basically gives the roles that were mentioned in the answers to the
+   * accepted user
+   *
+   * @param checker checks the user that can use the command
+   * @param channel the channel where it was executed
+   * @return a success if everything goes as planned
+   */
+  @Command(aliases = "accept", description = "Accepts an application")
+  public Result accept(AllowedTicketCloserChecker checker, TextChannel channel) {
+    Ticket ticket = TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());
+    if (ticket == null) {
+      return new Result(ResultType.ERROR, Lang.get("NOT_TICKET_CHANNEL"));
+    } else if (ticket instanceof Apply) {
+      Atomic<Boolean> success = new Atomic<>(false);
+      List<Role> given = new ArrayList<>();
+      ((Apply) ticket)
+          .getAnswers()
+          .forEach(
+              (simple, answer) -> {
+                if (answer instanceof RoleAnswer) {
+                  if (ticket.getUser() != null) {
+                    try {
+                      Member member = Discord.getMember(ticket.getUser());
+                      if (member != null) {
+                        Discord.addRoles(member, ((RoleAnswer) answer).getAnswer());
+                        given.addAll(((RoleAnswer) answer).getAnswer());
+                        success.set(true);
+                      } else {
+                        Messages.error(
+                                Lang.get("TICKET_NOT_MEMBER", Tickets.getPlaceholders(ticket)))
+                            .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+                        success.set(false);
+                      }
+                    } catch (DiscordManipulationException e) {
+                      Messages.error(e.getMessage())
+                          .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+                      success.set(false);
+                    }
+                  } else {
+                    Messages.error(Lang.get("TICKET_NOT_USER", Tickets.getPlaceholders(ticket)))
+                        .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+                    success.set(false);
                   }
-                });
-        new Freelancer(new ArrayList<>(), new HashMap<>(), member.getIdLong());
-        return new Result(
-            member.getAsMention() + " has been promoted to freelancer",
-            msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+                }
+              });
+      if (success.get()) {
+        HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
+        placeholders.put("given", Lots.pretty(Discord.getAsMention(given)));
+        return new Result(Lang.get("APPLICATION_ACCEPTED", placeholders));
+      } else {
+        return new Result();
       }
+    } else {
+      return new Result(
+          ResultType.ERROR, Lang.get("NOT_AN_APPLICATION", Tickets.getPlaceholders(ticket)));
     }
   }
 
@@ -151,31 +196,42 @@ public class FreelancerCommands {
     } else if (freelancer.getUser() == null) {
       return new Result(ResultType.UNKNOWN, "This should not have happened... Your user is null");
     } else {
-      if (((Quote) ticket).getFreelancer() == null) {
-        long limit = Configuration.getInstance().getLimitOfQuotes();
-        HashMap<String, String> placeholders = Freelancers.getPlaceholders(freelancer);
-        if (((Quote) ticket).countOffers(freelancer) < limit) {
-          placeholders.put("offer", String.valueOf(quote));
-          placeholders.put("quote", String.valueOf(quote));
-          Messages.create("NEW_OFFER_TITLE", "NEW_OFFER_DESCRIPTION", placeholders, placeholders)
-              .send(
-                  ticket.getChannel(),
-                  msg ->
-                      ((Quote) ticket)
-                          .addOffer(
-                              new Offer(
-                                  freelancer,
-                                  String.valueOf(quote),
-                                  new OfferAcceptResponsiveMessage(msg))));
-          return new Result(
-              ResultType.GENERIC, Lang.get("OFFER_SENT", Tickets.getPlaceholders(ticket)));
+      try {
+        if (freelancer.hasRole(((Quote) ticket).getAnswers())) {
+          if (((Quote) ticket).getFreelancer() == null) {
+            long limit = Configuration.getInstance().getLimitOfQuotes();
+            HashMap<String, String> placeholders = Freelancers.getPlaceholders(freelancer);
+            if (((Quote) ticket).countOffers(freelancer) < limit) {
+              placeholders.put("offer", String.valueOf(quote));
+              placeholders.put("quote", String.valueOf(quote));
+              Messages.create(
+                      "NEW_OFFER_TITLE", "NEW_OFFER_DESCRIPTION", placeholders, placeholders)
+                  .send(
+                      ticket.getChannel(),
+                      msg ->
+                          ((Quote) ticket)
+                              .addOffer(
+                                  new Offer(
+                                      freelancer,
+                                      String.valueOf(quote),
+                                      new OfferAcceptResponsiveMessage(msg))));
+              return new Result(
+                  ResultType.GENERIC, Lang.get("OFFER_SENT", Tickets.getPlaceholders(ticket)));
+            } else {
+              placeholders.put("limit", String.valueOf(limit));
+              return new Result(ResultType.ERROR, Lang.get("NO_MORE_QUOTES", placeholders));
+            }
+          } else {
+            return new Result(
+                ResultType.ERROR,
+                Lang.get("QUOTE_HAS_FREELANCER", Tickets.getPlaceholders(ticket)));
+          }
         } else {
-          placeholders.put("limit", String.valueOf(limit));
-          return new Result(ResultType.ERROR, Lang.get("NO_MORE_QUOTES", placeholders));
+          freelancer.sendMessage(Messages.error(Lang.get("FREELANCER_NO_ROLE")));
+          return new Result();
         }
-      } else {
-        return new Result(
-            ResultType.ERROR, Lang.get("QUOTE_HAS_FREELANCER", Tickets.getPlaceholders(ticket)));
+      } catch (DiscordManipulationException e) {
+        return new Result(ResultType.ERROR, e.getMessage());
       }
     }
   }

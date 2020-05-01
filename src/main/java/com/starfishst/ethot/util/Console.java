@@ -1,6 +1,6 @@
 package com.starfishst.ethot.util;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.ethot.Main;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.LoggerInitException;
@@ -27,7 +27,7 @@ public class Console {
       System.out.println("Initializing logger");
       logger = LoggerFactory.getLogger(Main.class.getName(), Lang.get("LOG_FORMAT"), null);
     } catch (IOException e) {
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
       throw new LoggerInitException();
     }
   }

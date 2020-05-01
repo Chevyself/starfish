@@ -60,10 +60,11 @@ public class FreelancingTicket extends QuestionsTicket {
    * Sets the freelancer in charge of the ticket
    *
    * @param freelancer the freelancer to set
+   * @return true if the freelancer is set
    * @throws DiscordManipulationException when using discord goes wrong
    * @throws FreelancerJoinTicketException in case adding the freelancer goes wrong
    */
-  public void setFreelancer(@Nullable Freelancer freelancer)
+  public boolean setFreelancer(@Nullable Freelancer freelancer)
       throws FreelancerJoinTicketException, DiscordManipulationException {
     if (this.freelancer != null && freelancer != null) {
       throw new FreelancerJoinTicketException(
@@ -80,6 +81,7 @@ public class FreelancingTicket extends QuestionsTicket {
               .openPrivateChannel()
               .queue(channel -> Messages.error(Lang.get("FREELANCER_NO_ROLE")).send(channel));
         }
+        return false;
       } else {
         this.freelancer = freelancer;
 
@@ -100,6 +102,7 @@ public class FreelancingTicket extends QuestionsTicket {
                   .build();
           channel.sendMessage(message).queue();
         }
+        return true;
       }
     } else if (this.freelancer != null) {
       if (channel != null && this.freelancer.getMember() != null) {
@@ -111,10 +114,12 @@ public class FreelancingTicket extends QuestionsTicket {
                 placeholders)
             .send(channel);
         Discord.disallow(channel, this.freelancer.getMember());
+        return false;
       }
       this.freelancer = null;
     }
     refresh();
+    return false;
   }
 
   @Override

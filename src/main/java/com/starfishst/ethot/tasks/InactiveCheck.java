@@ -75,7 +75,8 @@ public class InactiveCheck extends TimerTask {
                                       if (message.getIdLong() == channel.getLatestMessageIdLong()
                                           && message
                                               .getTimeCreated()
-                                              .isBefore(config.getInactiveTime().previousDate())) {
+                                              .isBefore(
+                                                  config.getInactiveTime().previousDateOffset())) {
                                         Messages.create(
                                                 "INACTIVITY_CHECK_TITLE",
                                                 "INACTIVITY_CHECK_DESCRIPTION",
@@ -83,14 +84,13 @@ public class InactiveCheck extends TimerTask {
                                                 placeholders)
                                             .send(
                                                 channel,
-                                                msg -> {
-                                                  new InactiveCheckResponsiveMessage(
-                                                      msg,
-                                                      System.currentTimeMillis(),
-                                                      ticket.getId(),
-                                                      new ArrayList<>(),
-                                                      false);
-                                                });
+                                                msg ->
+                                                    new InactiveCheckResponsiveMessage(
+                                                        msg,
+                                                        System.currentTimeMillis(),
+                                                        ticket.getId(),
+                                                        new ArrayList<>(),
+                                                        false));
                                       }
                                     }));
                   } else {

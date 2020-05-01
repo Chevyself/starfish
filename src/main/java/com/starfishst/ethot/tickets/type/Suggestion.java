@@ -1,6 +1,6 @@
 package com.starfishst.ethot.tickets.type;
 
-import com.starfishst.core.utils.Errors;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.objects.questions.Answer;
 import com.starfishst.ethot.objects.responsive.type.suggestions.SuggestionsResponsiveMessage;
@@ -52,7 +52,7 @@ public class Suggestion extends QuestionsTicket {
       Messages.announce(this).send(getType().getChannel());
     } catch (DiscordManipulationException e) {
       Messages.error("This ticket could not be announced");
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
     }
     super.onDone();
   }

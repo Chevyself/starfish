@@ -1,7 +1,7 @@
 package com.starfishst.ethot.tickets.type;
 
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Atomic;
-import com.starfishst.core.utils.Errors;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.objects.freelancers.Freelancer;
 import com.starfishst.ethot.objects.freelancers.Offer;
@@ -140,7 +140,7 @@ public class Quote extends FreelancingTicket {
       Messages.announce(this).send(getType().getChannel());
     } catch (DiscordManipulationException e) {
       Messages.error("This ticket could not be announced");
-      Errors.addError(e.getMessage());
+      Fallback.addError(e.getMessage());
     }
     super.onDone();
   }
