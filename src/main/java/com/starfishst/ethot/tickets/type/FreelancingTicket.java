@@ -1,6 +1,5 @@
 package com.starfishst.ethot.tickets.type;
 
-import com.starfishst.ethot.config.DiscordConfiguration;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.exception.DiscordManipulationException;
 import com.starfishst.ethot.exception.FreelancerJoinTicketException;
@@ -12,7 +11,8 @@ import com.starfishst.ethot.util.Freelancers;
 import com.starfishst.ethot.util.Messages;
 import com.starfishst.ethot.util.Tickets;
 import java.util.HashMap;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
@@ -90,17 +90,19 @@ public class FreelancingTicket extends QuestionsTicket {
             Discord.allow(channel, freelancer.getMember(), Discord.ALLOWED);
           }
           HashMap<String, String> placeholders = Freelancers.getPlaceholders(freelancer);
-          Message message =
+          MessageBuilder builder =
               Messages.create(
                       "FREELANCER_JOIN_TITLE",
                       "FREELANCER_JOIN_DESCRIPTION",
                       placeholders,
                       placeholders)
                   .getAsMessageQuery()
-                  .getBuilder()
-                  .append(DiscordConfiguration.getInstance().getGuild().getPublicRole())
-                  .build();
-          channel.sendMessage(message).queue();
+                  .getBuilder();
+          Member member = Discord.getMember(this.user);
+          if (member != null) {
+            builder.append(member);
+          }
+          channel.sendMessage(builder.build()).queue();
         }
         return true;
       }

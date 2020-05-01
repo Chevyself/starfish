@@ -23,6 +23,7 @@ import com.starfishst.ethot.objects.responsive.type.quotes.OfferAcceptResponsive
 import com.starfishst.ethot.tickets.TicketManager;
 import com.starfishst.ethot.tickets.TicketType;
 import com.starfishst.ethot.tickets.type.Apply;
+import com.starfishst.ethot.tickets.type.FreelancingTicket;
 import com.starfishst.ethot.tickets.type.Quote;
 import com.starfishst.ethot.tickets.type.Ticket;
 import com.starfishst.ethot.util.Discord;
@@ -38,6 +39,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 /** Commands related to freelancers */
 public class FreelancerCommands {
@@ -240,24 +242,44 @@ public class FreelancerCommands {
    * Creates a message for the user to react and give a rating to a freelancer
    *
    * @param checker the check to see if the user executed the command can create the message
-   * @param member the member that will give a rating to the freelancer
-   * @param freelancer the freelancer that will receive the rating
+   * @param channel the channel where the rating embed will be created
    * @return the message if it could be created
    */
   @Command(aliases = "review", description = "Makes a freelancer review for an user")
-  public Result review(
-      AllowedTicketManagerChecker checker,
-      @Required(name = "user", description = "The user rating the freelancer") Member member,
-      @Required(name = "freelancer", description = "The freelancer to rate")
-          Freelancer freelancer) {
-    HashMap<String, String> placeholders = Freelancers.getPlaceholders(freelancer);
-    placeholders.put("user", member.getAsMention());
-    placeholders.put("username", member.getEffectiveName());
-    return new Result(
-        ResultType.GENERIC,
-        Messages.create(
-            "FREELANCER_REVIEW_TITLE", "FREELANCER_REVIEW_DESCRIPTION", placeholders, placeholders),
-        msg -> new ReviewFreelancer(msg, freelancer.getId(), member.getUser().getIdLong()));
+  public Result review(AllowedTicketManagerChecker checker, TextChannel channel) {
+    Ticket ticket = TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());
+    if (ticket == null) {
+      return new Result(ResultType.ERROR, Lang.get("NOT_TICKET_CHANNEL"));
+    } else if (ticket instanceof FreelancingTicket) {
+      try {
+        Freelancer freelancer = ((FreelancingTicket) ticket).getFreelancer();
+        User user = ticket.getUser();
+        Member member = Discord.getMember(user);
+        HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
+        if (freelancer == null) {
+          return new Result(ResultType.ERROR, Lang.get("TICKET_NOT_FREELANCER", placeholders));
+        } else if (member == null) {
+          return new Result(ResultType.ERROR, Lang.get("TICKET_NOT_USER", placeholders));
+        } else {
+          placeholders.putAll(Freelancers.getPlaceholders(freelancer));
+          placeholders.put("user", member.getAsMention());
+          placeholders.put("username", member.getEffectiveName());
+          return new Result(
+              ResultType.GENERIC,
+              Messages.create(
+                  "FREELANCER_REVIEW_TITLE",
+                  "FREELANCER_REVIEW_DESCRIPTION",
+                  placeholders,
+                  placeholders),
+              msg -> new ReviewFreelancer(msg, freelancer.getId(), member.getUser().getIdLong()));
+        }
+      } catch (DiscordManipulationException e) {
+        return new Result(ResultType.ERROR, e.getMessage());
+      }
+
+    } else {
+      return new Result(ResultType.USAGE, Lang.get("TICKET_NOT_REVIEWABLE"));
+    }
   }
 
   /**

@@ -50,6 +50,7 @@ public abstract class ReviewReactionResponse implements ReactionResponse {
           Messages.error(Lang.get("ALREADY_RATED", placeholders));
         } else {
           freelancer.addRating(event.getUser().getIdLong(), value());
+          event.getChannel().deleteMessageById(event.getMessageIdLong()).queue();
           ResponsiveMessage responsiveMessage =
               Configuration.getInstance().getResponsiveMessage(event.getMessageIdLong());
           if (responsiveMessage != null) {
