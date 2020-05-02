@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.starfish.ethot</groupId>
+    <groupId>com.starfish.bot</groupId>
     <artifactId>EthotBot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -28,7 +28,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.starfishst.ethot.Main</mainClass>
+                            <mainClass>com.starfishst.bot.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -36,6 +36,11 @@
             <!-- Maven java formatter plugin (Google format) -->
             <plugin>
                 <artifactId>fmt-maven-plugin</artifactId>
+                <groupId>com.coveo</groupId>
+                <version>2.9</version>
+                <configuration>
+                    <style>google</style>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -43,8 +48,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <groupId>com.coveo</groupId>
-                <version>2.9</version>
             </plugin>
             <!-- Maven shade plugin -->
             <plugin>
