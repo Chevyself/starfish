@@ -1,0 +1,16 @@
+# Project exclude paths
+.idea
+/logs/
+/questions/
+/target/
+/transcripts/
+*.iml
+config.json
+discord.json
+punishments.json
+lang.properties
+dependency-reduced-pom.xml
+
+
+
+
