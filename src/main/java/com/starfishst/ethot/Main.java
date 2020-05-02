@@ -14,6 +14,7 @@ import com.starfishst.ethot.commands.BlacklistCommands;
 import com.starfishst.ethot.commands.DevCommands;
 import com.starfishst.ethot.commands.FreelancerCommands;
 import com.starfishst.ethot.commands.HelpCommands;
+import com.starfishst.ethot.commands.ModerationCommands;
 import com.starfishst.ethot.commands.RemoveCommands;
 import com.starfishst.ethot.commands.SetCommand;
 import com.starfishst.ethot.commands.TicketsCommand;
@@ -36,6 +37,7 @@ import com.starfishst.ethot.config.adapters.TimeAdapter;
 import com.starfishst.ethot.config.adapters.UserAdapter;
 import com.starfishst.ethot.config.language.Lang;
 import com.starfishst.ethot.listeners.ConfigurationListener;
+import com.starfishst.ethot.listeners.ModerationListener;
 import com.starfishst.ethot.listeners.ResponsiveMessagesListener;
 import com.starfishst.ethot.listeners.TicketTranscriptListener;
 import com.starfishst.ethot.listeners.WelcomeListener;
@@ -175,6 +177,7 @@ public class Main {
         jda =
             JDABuilder.create(configuration.getToken(), Arrays.asList(GatewayIntent.values()))
                 .setEventManager(new AnnotatedEventManager())
+                .addEventListeners(new ModerationListener())
                 .addEventListeners(new ResponsiveMessagesListener(configuration))
                 .addEventListeners(new QuestionTicketListener())
                 .addEventListeners(new TicketTranscriptListener())
@@ -257,6 +260,7 @@ public class Main {
       commandManager.registerCommand(new DevCommands());
       commandManager.registerCommand(new FreelancerCommands());
       commandManager.registerCommand(new HelpCommands());
+      commandManager.registerCommand(new ModerationCommands());
       commandManager.registerCommand(new BlacklistCommands());
       commandManager.registerCommand(new RemoveCommands());
       commandManager.registerCommand(new SetCommand());

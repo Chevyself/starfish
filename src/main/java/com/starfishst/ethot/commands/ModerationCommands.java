@@ -21,7 +21,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 /** Commands related to moderation */
-@Deprecated
 public class ModerationCommands {
 
   /**
