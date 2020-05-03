@@ -12,6 +12,7 @@ import com.starfishst.bot.objects.responsive.type.product.ProductShopResponsiveM
 import com.starfishst.bot.tickets.loader.TicketLoader;
 import com.starfishst.bot.tickets.loader.mongo.codec.AnswerCodec;
 import com.starfishst.bot.tickets.loader.mongo.codec.FreelancerCodec;
+import com.starfishst.bot.tickets.loader.mongo.codec.ImageAnswerCodec;
 import com.starfishst.bot.tickets.loader.mongo.codec.OfferCodec;
 import com.starfishst.bot.tickets.loader.mongo.codec.OrderClaimingResponsiveMessageCodec;
 import com.starfishst.bot.tickets.loader.mongo.codec.ProductShopResponsiveMessageCodec;
@@ -99,6 +100,7 @@ public class MongoTicketLoader implements TicketLoader {
         CodecRegistries.fromCodecs(
             new AnswerCodec(),
             new FreelancerCodec(),
+            new ImageAnswerCodec(),
             new OfferCodec(),
             new OrderClaimingResponsiveMessageCodec(),
             new ProductShopResponsiveMessageCodec(),

@@ -3,17 +3,20 @@ package com.starfishst.bot.tickets.type;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.objects.freelancers.Freelancer;
 import com.starfishst.bot.objects.questions.Answer;
+import com.starfishst.bot.objects.questions.ImageAnswer;
 import com.starfishst.bot.objects.responsive.type.product.ProductShopResponsiveMessage;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.tickets.loader.TicketLoader;
 import com.starfishst.bot.util.Messages;
+import com.starfishst.commands.utils.embeds.EmbedQuery;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Validate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
@@ -101,8 +104,18 @@ public class Product extends QuestionsTicket {
   @Override
   public void onDone() {
     try {
-      Messages.announce(this)
-          .send(getType().getChannel(), msg -> message = new ProductShopResponsiveMessage(msg));
+      EmbedBuilder embedBuilder = Messages.announceEmbed(this).getEmbedBuilder();
+      getAnswers()
+          .forEach(
+              (simple, answer) -> {
+                if (answer instanceof ImageAnswer) {
+                  embedBuilder.setImage(((ImageAnswer) answer).getUrl());
+                }
+              });
+      getType()
+          .getChannel()
+          .sendMessage(new EmbedQuery(embedBuilder).getAsMessageQuery().getMessage())
+          .queue(msg -> message = new ProductShopResponsiveMessage(msg));
     } catch (DiscordManipulationException e) {
       Messages.error("This ticket could not be announced");
       Fallback.addError(e.getMessage());

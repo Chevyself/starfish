@@ -264,14 +264,18 @@ public class FreelancerCommands {
           placeholders.putAll(Freelancers.getPlaceholders(freelancer));
           placeholders.put("user", member.getAsMention());
           placeholders.put("username", member.getEffectiveName());
-          return new Result(
-              ResultType.GENERIC,
-              Messages.create(
-                  "FREELANCER_REVIEW_TITLE",
-                  "FREELANCER_REVIEW_DESCRIPTION",
-                  placeholders,
-                  placeholders),
-              msg -> new ReviewFreelancer(msg, freelancer.getId(), member.getUser().getIdLong()));
+          if (freelancer.getRating().containsKey(member.getIdLong())) {
+            return new Result(ResultType.ERROR, Lang.get("ALREADY_RATED", placeholders));
+          } else {
+            return new Result(
+                ResultType.GENERIC,
+                Messages.create(
+                    "FREELANCER_REVIEW_TITLE",
+                    "FREELANCER_REVIEW_DESCRIPTION",
+                    placeholders,
+                    placeholders),
+                msg -> new ReviewFreelancer(msg, freelancer.getId(), member.getUser().getIdLong()));
+          }
         }
       } catch (DiscordManipulationException e) {
         return new Result(ResultType.ERROR, e.getMessage());

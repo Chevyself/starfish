@@ -12,6 +12,7 @@ import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.Strings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,7 +102,7 @@ public class Order extends FreelancingTicket {
   public void addAnswer(@NotNull Question question, @NotNull Answer answer) {
     if (question.getSimple().equalsIgnoreCase("budget")
         && answer instanceof StringAnswer
-        && ((StringAnswer) answer).getAnswer().contains("quote")) {
+        && Strings.containsIgnoreCase(((StringAnswer) answer).getAnswer(), "quote")) {
       try {
         Ticket ticket =
             TicketManager.getInstance().createTicket(TicketType.QUOTE, getMember(), this);
