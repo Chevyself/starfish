@@ -1,14 +1,5 @@
 package com.starfishst.bot;
 
-import com.starfishst.commands.CommandManager;
-import com.starfishst.commands.commands.FallbackCommands;
-import com.starfishst.core.ICommandManager;
-import com.starfishst.core.fallback.Fallback;
-import com.starfishst.core.utils.Strings;
-import com.starfishst.core.utils.Validate;
-import com.starfishst.core.utils.cache.Cache;
-import com.starfishst.core.utils.cache.Catchable;
-import com.starfishst.core.utils.time.Time;
 import com.starfishst.bot.commands.AddCommands;
 import com.starfishst.bot.commands.BlacklistCommands;
 import com.starfishst.bot.commands.DevCommands;
@@ -18,6 +9,8 @@ import com.starfishst.bot.commands.ModerationCommands;
 import com.starfishst.bot.commands.RemoveCommands;
 import com.starfishst.bot.commands.SetCommand;
 import com.starfishst.bot.commands.TicketsCommand;
+import com.starfishst.bot.commands.invoices.EnhancedInvoice;
+import com.starfishst.bot.commands.invoices.InvoiceCommand;
 import com.starfishst.bot.commands.provider.AllowedTicketCloserCheckerProvider;
 import com.starfishst.bot.commands.provider.AllowedTicketManagerCheckerProvider;
 import com.starfishst.bot.commands.provider.FreelancerProvider;
@@ -43,6 +36,7 @@ import com.starfishst.bot.listeners.TicketTranscriptListener;
 import com.starfishst.bot.listeners.WelcomeListener;
 import com.starfishst.bot.listeners.questions.QuestionTicketListener;
 import com.starfishst.bot.objects.invoicing.Fee;
+import com.starfishst.bot.objects.invoicing.Payments;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.tasks.AutoSave;
@@ -50,6 +44,15 @@ import com.starfishst.bot.tasks.InactiveCheck;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.bot.util.Console;
+import com.starfishst.commands.CommandManager;
+import com.starfishst.commands.commands.FallbackCommands;
+import com.starfishst.core.ICommandManager;
+import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.Strings;
+import com.starfishst.core.utils.Validate;
+import com.starfishst.core.utils.cache.Cache;
+import com.starfishst.core.utils.cache.Catchable;
+import com.starfishst.core.utils.time.Time;
 import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
@@ -266,6 +269,17 @@ public class Main {
       commandManager.registerCommand(new SetCommand());
       commandManager.registerCommand(new TicketsCommand());
       commandManager.registerCommand(new FallbackCommands());
+      if (configuration.getPayments().isEnable()) {
+        try {
+          Payments.initialize();
+          commandManager.registerCommand(new EnhancedInvoice());
+        } catch (IOException e) {
+          Fallback.addError(e.getMessage());
+        }
+      } else {
+        commandManager.registerCommand(new InvoiceCommand());
+      }
+
     } else {
       Fallback.addError(
           "Could not setup commands because JDA or the configuration were not setup properly");

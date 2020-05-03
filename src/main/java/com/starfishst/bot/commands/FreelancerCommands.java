@@ -1,13 +1,5 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Optional;
-import com.starfishst.commands.annotations.Required;
-import com.starfishst.commands.result.Result;
-import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.objects.JoinedStrings;
-import com.starfishst.core.utils.Atomic;
-import com.starfishst.core.utils.Lots;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.config.language.Lang;
@@ -30,6 +22,14 @@ import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Freelancers;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Optional;
+import com.starfishst.commands.annotations.Required;
+import com.starfishst.commands.result.Result;
+import com.starfishst.commands.result.ResultType;
+import com.starfishst.core.objects.JoinedStrings;
+import com.starfishst.core.utils.Atomic;
+import com.starfishst.core.utils.Lots;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

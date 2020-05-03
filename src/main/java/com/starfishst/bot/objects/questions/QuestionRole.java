@@ -1,19 +1,18 @@
 package com.starfishst.bot.objects.questions;
 
-import com.starfishst.core.fallback.Fallback;
-import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.Strings;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.exception.TicketCreationException;
 import com.starfishst.bot.util.Discord;
+import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.Lots;
+import com.starfishst.core.utils.Strings;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * This represents a role question. Used in {@link
- * com.starfishst.bot.tickets.type.QuestionsTicket}
+ * This represents a role question. Used in {@link com.starfishst.bot.tickets.type.QuestionsTicket}
  *
  * <p>The representation in json:
  *

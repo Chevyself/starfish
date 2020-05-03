@@ -1,7 +1,7 @@
 package com.starfishst.bot.objects.questions;
 
-import com.starfishst.core.utils.Lots;
 import com.starfishst.bot.util.Discord;
+import com.starfishst.core.utils.Lots;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;

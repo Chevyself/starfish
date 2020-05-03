@@ -41,10 +41,21 @@ public class Fee {
    * @return the total with the fee applied
    */
   public double apply(double subtotal) {
+    return getApply(subtotal) + subtotal;
+  }
+
+  /**
+   * Get how much it would apply for a subtotal
+   *
+   * @param subtotal the subtotal to get how much it would apply
+   * @return the amount to apply
+   */
+  public double getApply(double subtotal) {
+    double apply = 0;
     if (this.percentage != 0) {
-      subtotal = (this.percentage * subtotal) / 100;
+      apply = (this.percentage * subtotal) / 100;
     }
-    return subtotal + this.addition;
+    return apply + this.addition;
   }
 
   /**

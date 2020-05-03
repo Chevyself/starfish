@@ -1,7 +1,5 @@
 package com.starfishst.bot.tickets.type;
 
-import com.starfishst.core.fallback.Fallback;
-import com.starfishst.core.utils.Atomic;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.objects.freelancers.Freelancer;
 import com.starfishst.bot.objects.freelancers.Offer;
@@ -9,6 +7,8 @@ import com.starfishst.bot.objects.questions.Answer;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Messages;
+import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.Atomic;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +41,7 @@ public class Quote extends FreelancingTicket {
         channel,
         parent.getAnswers(),
         null,
+        new ArrayList<>(),
         new ArrayList<>());
     setCurrent(parent.getCurrent());
   }
@@ -55,6 +56,7 @@ public class Quote extends FreelancingTicket {
    * @param details the details provided for the freelancers
    * @param freelancer the freelancer that created the ticket
    * @param offers the offers that send the ticket
+   * @param payments the payments of the ticket
    */
   public Quote(
       long id,
@@ -63,8 +65,9 @@ public class Quote extends FreelancingTicket {
       @Nullable TextChannel channel,
       @NotNull HashMap<String, Answer> details,
       @Nullable Freelancer freelancer,
-      @NotNull List<Offer> offers) {
-    super(id, user, status, channel, details, freelancer);
+      @NotNull List<Offer> offers,
+      @NotNull List<String> payments) {
+    super(id, user, status, channel, details, freelancer, payments);
     this.offers = offers;
   }
 

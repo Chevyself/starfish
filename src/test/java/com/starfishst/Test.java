@@ -6,6 +6,11 @@ package com.starfishst;
 
  */
 
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.APIContext;
+import com.paypal.base.rest.PayPalRESTException;
+import java.io.IOException;
+
 /** Simple test for spring */
 public class Test {
 
@@ -99,4 +104,22 @@ public class Test {
   }
    */
 
+  public static void main(String[] args) throws IOException, PayPalRESTException {
+    // Payments.initialize(3000, "C:\\Users\\Chevy\\keystore.p12", "Amesias123", "tomcat");
+
+    // APIContext context =
+    // PayPalUtils.getApiContext(
+    // "Aelz-BmzZLkzZRDfw-cbceXBzfrZvzdrBDIWb_aCcJe5NVTYg_j1MP4WUjVyzS8Tzy6tka0ijYizPOtD",
+    //   "EG_6JlvHgb84StP0qxpGEYNUjsnOVULl4YXTUS94W7g8IpS1XtI679-nZLe9i1wp6SH_Kabcxhi-K98_",
+    // "sandbox");
+    // System.out.println(
+    // PayPalUtils.createPayment(
+    //   "10.00", "localhost:3000/cancel", "ocalhost:3000/return", context));
+    APIContext context =
+        new APIContext(
+            "Aelz-BmzZLkzZRDfw-cbceXBzfrZvzdrBDIWb_aCcJe5NVTYg_j1MP4WUjVyzS8Tzy6tka0ijYizPOtD",
+            "EG_6JlvHgb84StP0qxpGEYNUjsnOVULl4YXTUS94W7g8IpS1XtI679-nZLe9i1wp6SH_Kabcxhi-K98_",
+            "sandbox");
+    System.out.println(Payment.get(context, "PAYID-L2XAGSY7NS05990983851734"));
+  }
 }

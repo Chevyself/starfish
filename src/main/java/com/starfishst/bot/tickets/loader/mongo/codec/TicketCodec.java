@@ -53,6 +53,7 @@ public class TicketCodec implements Codec<Ticket> {
     Freelancer freelancer = null;
     ResponsiveMessage message = null;
     List<Offer> offers = new ArrayList<>();
+    List<String> payments = new ArrayList<>();
     reader.readStartDocument();
     reader.readObjectId();
     while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
@@ -101,6 +102,12 @@ public class TicketCodec implements Codec<Ticket> {
         reader.readEndArray();
       } else if (fieldName.equalsIgnoreCase("parent")) {
         parentId = reader.readInt64();
+      } else if (fieldName.equalsIgnoreCase("payments")) {
+        reader.readStartArray();
+        while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
+          payments.add(reader.readString());
+        }
+        reader.readEndArray();
       }
     }
     reader.readEndDocument();
@@ -116,24 +123,25 @@ public class TicketCodec implements Codec<Ticket> {
             channel,
             details,
             freelancer,
-            (OrderClaimingResponsiveMessage) message);
+            (OrderClaimingResponsiveMessage) message,
+            payments);
       case SUPPORT:
-        return new Support(id, user, status, channel, details);
+        return new Support(id, user, status, channel, details, payments);
       case APPLY:
-        return new Apply(id, user, status, channel, details);
+        return new Apply(id, user, status, channel, details, payments);
       case QUOTE:
-        return new Quote(id, user, status, channel, details, freelancer, offers);
+        return new Quote(id, user, status, channel, details, freelancer, offers, payments);
       case TICKET_CREATOR:
         return new TicketCreator(id, user, channel);
       case PRODUCT:
         return new Product(
-            id, user, status, channel, details, (ProductShopResponsiveMessage) message);
+            id, user, status, channel, details, (ProductShopResponsiveMessage) message, payments);
       case CHECK_OUT:
-        return new CheckOut(id, user, status, channel, freelancer, parentId);
+        return new CheckOut(id, user, status, channel, freelancer, parentId, payments);
       case SUGGESTION:
-        return new Suggestion(id, user, status, channel, details);
+        return new Suggestion(id, user, status, channel, details, payments);
       case REPORT:
-        return new Report(id, user, status, channel, details);
+        return new Report(id, user, status, channel, details, payments);
       default:
         throw new IllegalArgumentException(type + " is not a valid type");
     }

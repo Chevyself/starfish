@@ -6,7 +6,9 @@ import com.starfishst.bot.objects.questions.Answer;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.util.Messages;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
@@ -32,14 +34,16 @@ public class QuestionsTicket extends Ticket {
    * @param status the status of the ticket
    * @param channel the channel of the ticket
    * @param answers the answers provided by the ticket
+   * @param payments the payments of the ticket
    */
   protected QuestionsTicket(
       long id,
       @Nullable User customer,
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
-      @NotNull HashMap<String, Answer> answers) {
-    super(id, customer, status, channel);
+      @NotNull HashMap<String, Answer> answers,
+      List<String> payments) {
+    super(id, customer, status, channel, payments);
     this.answers = answers;
   }
 
@@ -51,7 +55,7 @@ public class QuestionsTicket extends Ticket {
    * @param channel the channel where the ticket was created
    */
   public QuestionsTicket(long id, @Nullable User customer, @Nullable TextChannel channel) {
-    this(id, customer, TicketStatus.CREATING, channel, new HashMap<>());
+    this(id, customer, TicketStatus.CREATING, channel, new HashMap<>(), new ArrayList<>());
   }
 
   /**

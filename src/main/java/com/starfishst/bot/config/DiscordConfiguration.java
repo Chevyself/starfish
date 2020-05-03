@@ -1,11 +1,11 @@
 package com.starfishst.bot.config;
 
-import com.starfishst.core.fallback.Fallback;
-import com.starfishst.core.utils.Validate;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Discord;
+import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.Validate;
 import com.starfishst.simple.config.JsonConfiguration;
 import java.util.ArrayList;
 import java.util.HashMap;

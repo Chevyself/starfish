@@ -1,7 +1,7 @@
 package com.starfishst.bot.config.language;
 
-import com.starfishst.core.utils.Strings;
 import com.starfishst.bot.exception.LanguageInitException;
+import com.starfishst.core.utils.Strings;
 import com.starfishst.simple.config.PropertiesConfiguration;
 import java.io.IOException;
 import java.util.HashMap;

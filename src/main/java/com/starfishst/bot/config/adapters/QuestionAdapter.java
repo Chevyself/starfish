@@ -8,9 +8,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.starfishst.core.utils.Validate;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.objects.questions.QuestionRole;
+import com.starfishst.core.utils.Validate;
 import java.lang.reflect.Type;
 
 /**

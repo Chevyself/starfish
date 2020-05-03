@@ -1,12 +1,13 @@
 package com.starfishst.bot.tickets.type;
 
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.bot.listeners.questions.QuestionTicketListener;
 import com.starfishst.bot.objects.responsive.type.ticket.TicketCreatorResponsiveMessage;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.core.fallback.Fallback;
+import java.util.ArrayList;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -27,7 +28,7 @@ public class TicketCreator extends Ticket {
    * @param channel the channel to use for the ticket
    */
   public TicketCreator(long id, @Nullable User customer, @Nullable TextChannel channel) {
-    super(id, customer, TicketStatus.CREATING, channel);
+    super(id, customer, TicketStatus.CREATING, channel, new ArrayList<>());
   }
 
   /**

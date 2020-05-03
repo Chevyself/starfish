@@ -1,6 +1,5 @@
 package com.starfishst.bot.tickets.type;
 
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.exception.TicketCreationException;
 import com.starfishst.bot.objects.freelancers.Freelancer;
@@ -12,7 +11,10 @@ import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Messages;
+import com.starfishst.core.fallback.Fallback;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -36,6 +38,7 @@ public class Order extends FreelancingTicket {
    * @param details the details given by the customer
    * @param freelancer the freelancer that is in the order
    * @param message the message that the product is listening to
+   * @param payments the payments of the ticket
    */
   public Order(
       long id,
@@ -44,8 +47,9 @@ public class Order extends FreelancingTicket {
       @Nullable TextChannel channel,
       @NotNull HashMap<String, Answer> details,
       @Nullable Freelancer freelancer,
-      @Nullable OrderClaimingResponsiveMessage message) {
-    super(id, user, status, channel, details, freelancer);
+      @Nullable OrderClaimingResponsiveMessage message,
+      @NotNull List<String> payments) {
+    super(id, user, status, channel, details, freelancer, payments);
     this.message = message;
   }
 
@@ -57,7 +61,15 @@ public class Order extends FreelancingTicket {
    * @param channel the channel where the ticket was created
    */
   public Order(long id, @Nullable User customer, @Nullable TextChannel channel) {
-    this(id, customer, TicketStatus.CREATING, channel, new HashMap<>(), null, null);
+    this(
+        id,
+        customer,
+        TicketStatus.CREATING,
+        channel,
+        new HashMap<>(),
+        null,
+        null,
+        new ArrayList<>());
   }
 
   @Override

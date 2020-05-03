@@ -1,6 +1,5 @@
 package com.starfishst.bot.tasks;
 
-import com.starfishst.core.utils.Lots;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.exception.DiscordManipulationException;
@@ -11,6 +10,7 @@ import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.core.utils.Lots;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

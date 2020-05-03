@@ -32,6 +32,18 @@
       "max": 10.0
     }
   ],
+  "payments": {
+    "enable": false,
+    "port": 3000,
+    "keyStore": "",
+    "keyStorePassword": "",
+    "keyAlias": "",
+    "url": "",
+    "clientId": "",
+    "clientSecret": "",
+    "mode": "sandbox",
+    "note": ""
+  },
   "commands": {
     "deleteCommands": false,
     "embedMessages": true,

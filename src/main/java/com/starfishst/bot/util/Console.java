@@ -1,9 +1,9 @@
 package com.starfishst.bot.util;
 
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.bot.Main;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.exception.LoggerInitException;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.simple.logging.LoggerFactory;
 import java.io.IOException;
 import java.util.logging.Handler;

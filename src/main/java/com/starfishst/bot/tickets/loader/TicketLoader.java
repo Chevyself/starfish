@@ -99,4 +99,13 @@ public interface TicketLoader {
    * @param freelancer the freelancer to demote
    */
   void demoteFreelancer(Freelancer freelancer);
+
+  /**
+   * Get a ticket using a payment
+   *
+   * @param id the id of the payment
+   * @return the ticket if found else null
+   */
+  @Nullable
+  Ticket getTicketByPayment(String id);
 }

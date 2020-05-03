@@ -1,15 +1,15 @@
 package com.starfishst.bot.config;
 
-import com.starfishst.commands.ManagerOptions;
-import com.starfishst.core.fallback.Fallback;
-import com.starfishst.core.utils.Validate;
-import com.starfishst.core.utils.time.Time;
-import com.starfishst.core.utils.time.Unit;
 import com.starfishst.bot.listeners.questions.QuestionSendType;
 import com.starfishst.bot.objects.invoicing.Fee;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.commands.ManagerOptions;
+import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.Validate;
+import com.starfishst.core.utils.time.Time;
+import com.starfishst.core.utils.time.Unit;
 import com.starfishst.simple.config.JsonConfiguration;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +54,8 @@ public class Configuration extends JsonConfiguration {
   @NotNull private final List<ResponsiveMessage> responsiveMessages;
   /** The list of fees */
   @NotNull private final List<Fee> fees;
+  /** The configuration for payments */
+  @NotNull private final PaymentsConfiguration payments;
   /** The configuration for commands */
   @NotNull private final ManagerOptions commands;
   /** The type of questions send */
@@ -84,6 +86,7 @@ public class Configuration extends JsonConfiguration {
     this.productQuestions = new ArrayList<>();
     this.responsiveMessages = new ArrayList<>();
     this.fees = new ArrayList<>();
+    this.payments = new PaymentsConfiguration();
     this.commands = new ManagerOptions();
     this.questionSendType = QuestionSendType.NONE;
     this.bannedTypes = new ArrayList<>();
@@ -383,6 +386,16 @@ public class Configuration extends JsonConfiguration {
   @NotNull
   public List<TicketType> getBannedTypes() {
     return bannedTypes;
+  }
+
+  /**
+   * Get the payments of the bot
+   *
+   * @return the payments configuration
+   */
+  @NotNull
+  public PaymentsConfiguration getPayments() {
+    return payments;
   }
 
   /**

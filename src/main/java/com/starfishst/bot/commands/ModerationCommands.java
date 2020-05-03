@@ -1,11 +1,5 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Optional;
-import com.starfishst.commands.annotations.Required;
-import com.starfishst.commands.result.Result;
-import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.config.PunishmentsConfiguration;
 import com.starfishst.bot.config.language.Lang;
@@ -13,6 +7,12 @@ import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Discord;
+import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Optional;
+import com.starfishst.commands.annotations.Required;
+import com.starfishst.commands.result.Result;
+import com.starfishst.commands.result.ResultType;
+import com.starfishst.core.objects.JoinedStrings;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;

@@ -7,6 +7,8 @@ import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Messages;
+import java.util.ArrayList;
+import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
@@ -36,7 +38,7 @@ public class CheckOut extends Ticket {
    */
   public CheckOut(
       long id, @Nullable User user, @Nullable TextChannel channel, @NotNull Product parent) {
-    super(id, user, TicketStatus.OPEN, channel);
+    super(id, user, TicketStatus.OPEN, channel, new ArrayList<>());
     this.freelancer = parent.getFreelancer();
     this.parentId = parent.getId();
   }
@@ -50,6 +52,7 @@ public class CheckOut extends Ticket {
    * @param channel the channel of the ticket
    * @param freelancer the freelancer that sells the product
    * @param parentId the id of the product
+   * @param payments the payments of the ticket
    */
   public CheckOut(
       long id,
@@ -57,8 +60,9 @@ public class CheckOut extends Ticket {
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
       @Nullable Freelancer freelancer,
-      long parentId) {
-    super(id, user, status, channel);
+      long parentId,
+      List<String> payments) {
+    super(id, user, status, channel, payments);
     this.freelancer = freelancer;
     this.parentId = parentId;
   }

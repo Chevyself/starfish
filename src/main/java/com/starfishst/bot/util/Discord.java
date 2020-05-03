@@ -1,10 +1,10 @@
 package com.starfishst.bot.util;
 
-import com.starfishst.core.utils.Atomic;
-import com.starfishst.core.utils.Lots;
 import com.starfishst.bot.Main;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.exception.DiscordManipulationException;
+import com.starfishst.core.utils.Atomic;
+import com.starfishst.core.utils.Lots;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
