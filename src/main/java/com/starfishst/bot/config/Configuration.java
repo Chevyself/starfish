@@ -9,12 +9,11 @@ import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
 import com.starfishst.simple.config.JsonConfiguration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** This class represents the 'config.json' as a java object */
 public class Configuration extends JsonConfiguration {

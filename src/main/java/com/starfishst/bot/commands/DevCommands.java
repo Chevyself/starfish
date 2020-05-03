@@ -12,11 +12,10 @@ import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.objects.JoinedStrings;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
-import com.starfishst.core.objects.JoinedStrings;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -110,5 +109,4 @@ public class DevCommands {
               "You must split the title and the description using '-d' to start the description"));
     }
   }
-
 }
