@@ -2,6 +2,7 @@ package com.starfishst.bot.util;
 
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.objects.freelancers.Freelancer;
+import com.starfishst.bot.objects.questions.ImageAnswer;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.objects.questions.RoleAnswer;
 import com.starfishst.bot.tickets.TicketStatus;
@@ -19,12 +20,7 @@ import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Many utilities for tickets
- *
- * @author Chevy
- * @version 1.0.0
- */
+/** Many utilities for tickets */
 public class Tickets {
 
   /**
@@ -145,7 +141,7 @@ public class Tickets {
                 fields.put(
                     Lang.getRaw(string) == null ? string : Lang.get(string),
                     ((RoleAnswer) answer).getTags());
-              } else {
+              } else if (!(answer instanceof ImageAnswer)) {
                 fields.put(
                     Lang.getRaw(string) == null ? string : Lang.get(string),
                     answer.getAnswer().toString());

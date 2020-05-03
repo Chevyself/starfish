@@ -175,18 +175,16 @@ public class Messages {
   }
 
   /**
-   * Creates the announce message for tickets
+   * Get the embed that is used for the announcement of a ticket
    *
-   * @param ticket the ticket to create the message from
-   * @return the message query to use
+   * @param ticket the ticket that is being announced
+   * @return the embed query for the ticket that is going to be announced
    */
-  public static MessageQuery announce(@NotNull QuestionsTicket ticket) {
-    MessageBuilder messageBuilder = MessagesFactory.getMessageBuilder();
+  public static EmbedQuery announceEmbed(@NotNull QuestionsTicket ticket) {
     HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
     ManagerOptions options = Main.getCommandManager().getManagerOptions();
     Color color = ResultType.GENERIC.getColor(options);
     LinkedHashMap<String, String> fields = Tickets.getFields(ticket);
-    appendRoleTags(ticket, messageBuilder);
     EmbedQuery embed =
         EmbedFactory.newEmbed(
             Lang.get("TICKET_ANNOUNCE_TITLE", placeholders),
@@ -197,7 +195,19 @@ public class Messages {
             color,
             fields,
             true);
-    return new MessageQuery(messageBuilder.setEmbed(embed.getEmbed()));
+    return new EmbedQuery(embed.getEmbedBuilder());
+  }
+
+  /**
+   * Creates the announce message for tickets
+   *
+   * @param ticket the ticket to create the message from
+   * @return the message query to use
+   */
+  public static MessageQuery announce(@NotNull QuestionsTicket ticket) {
+    MessageBuilder builder = MessagesFactory.getMessageBuilder();
+    appendRoleTags(ticket, builder);
+    return new MessageQuery(builder.setEmbed(announceEmbed(ticket).getEmbed()));
   }
 
   /**

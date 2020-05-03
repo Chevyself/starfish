@@ -5,7 +5,9 @@ import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.config.questions.QuestionsHandler;
 import com.starfishst.bot.exception.TicketCreationException;
 import com.starfishst.bot.objects.questions.Answer;
+import com.starfishst.bot.objects.questions.ImageAnswer;
 import com.starfishst.bot.objects.questions.Question;
+import com.starfishst.bot.objects.questions.QuestionImage;
 import com.starfishst.bot.objects.questions.QuestionRole;
 import com.starfishst.bot.objects.questions.RoleAnswer;
 import com.starfishst.bot.objects.questions.StringAnswer;
@@ -159,8 +161,30 @@ public class QuestionTicketListener {
     int limit = question.getLimit();
     if (question instanceof QuestionRole) {
       return getQuestionRoleAnswers((QuestionRole) question, mentionedRoles, channel, limit);
+    } else if (question instanceof QuestionImage) {
+      return getImageAnswer(message, channel);
     } else {
       return getGenericQuestionAnswers(message, channel, limit);
+    }
+  }
+
+  /**
+   * Get the answer for an image question
+   *
+   * @param message the message containing the answer
+   * @param channel the channel where the questions are being answered
+   * @return the image answer if correct else null
+   */
+  @Nullable
+  private ImageAnswer getImageAnswer(@NotNull Message message, TextChannel channel) {
+    try {
+      String raw = message.getContentRaw();
+      QuestionImage.checkUrl(raw);
+      return new ImageAnswer(raw);
+    } catch (TicketCreationException | IllegalArgumentException e) {
+      Messages.error(e.getMessage())
+          .send(channel, msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+      return null;
     }
   }
 
@@ -173,7 +197,7 @@ public class QuestionTicketListener {
    * @return the answer for the question or null if the answer does not accomplish the parameters
    */
   @Nullable
-  private Answer getGenericQuestionAnswers(Message message, TextChannel channel, int limit) {
+  private StringAnswer getGenericQuestionAnswers(Message message, TextChannel channel, int limit) {
     if (message.getContentRaw().length() < limit) {
       return new StringAnswer(message.getContentRaw());
     } else {

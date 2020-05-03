@@ -1,5 +1,6 @@
 package com.starfishst.bot.tickets.loader.mongo.codec;
 
+import com.starfishst.bot.objects.questions.ImageAnswer;
 import com.starfishst.bot.objects.questions.StringAnswer;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
@@ -11,8 +12,13 @@ import org.bson.codecs.EncoderContext;
 public class StringAnswerCodec implements Codec<StringAnswer> {
 
   @Override
-  public StringAnswer decode(BsonReader bsonReader, DecoderContext decoderContext) {
-    return new StringAnswer(bsonReader.readString());
+  public StringAnswer decode(BsonReader bsonReader, DecoderContext context) {
+    String string = bsonReader.readString();
+    if (string.toLowerCase().startsWith("image")) {
+      return new ImageAnswer(ImageAnswer.removePrefix(string));
+    } else {
+      return new StringAnswer(string);
+    }
   }
 
   @Override
