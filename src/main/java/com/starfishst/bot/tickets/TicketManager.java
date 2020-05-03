@@ -1,6 +1,5 @@
 package com.starfishst.bot.tickets;
 
-import com.starfishst.core.utils.Validate;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.config.language.Lang;
@@ -20,6 +19,7 @@ import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.tickets.type.TicketCreator;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.core.utils.Validate;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;

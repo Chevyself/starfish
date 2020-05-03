@@ -1,8 +1,5 @@
 package com.starfishst.bot.objects.freelancers;
 
-import com.starfishst.commands.utils.message.MessageQuery;
-import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
@@ -11,6 +8,9 @@ import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Freelancers;
 import com.starfishst.bot.util.Maps;
+import com.starfishst.commands.utils.message.MessageQuery;
+import com.starfishst.core.utils.Lots;
+import com.starfishst.core.utils.cache.Catchable;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;

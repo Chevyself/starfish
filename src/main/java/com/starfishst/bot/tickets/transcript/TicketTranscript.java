@@ -1,10 +1,10 @@
 package com.starfishst.bot.tickets.transcript;
 
+import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
-import com.starfishst.bot.config.language.Lang;
-import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.logging.LoggerFactory;
 import java.io.File;

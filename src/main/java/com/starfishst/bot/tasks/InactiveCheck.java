@@ -1,6 +1,5 @@
 package com.starfishst.bot.tasks;
 
-import com.starfishst.core.utils.Lots;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.exception.DiscordManipulationException;
@@ -11,6 +10,7 @@ import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.core.utils.Lots;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,16 +67,15 @@ public class InactiveCheck extends TimerTask {
                     // If the message is null check if you are able to create one
                     channel
                         .getHistory()
-                        .retrievePast(10)
+                        .retrievePast(1)
                         .queue(
                             messages ->
                                 messages.forEach(
                                     message -> {
-                                      if (message.getIdLong() == channel.getLatestMessageIdLong()
-                                          && message
-                                              .getTimeCreated()
-                                              .isBefore(
-                                                  config.getInactiveTime().previousDateOffset())) {
+                                      if (message
+                                          .getTimeCreated()
+                                          .isBefore(
+                                              config.getInactiveTime().previousDateOffset())) {
                                         Messages.create(
                                                 "INACTIVITY_CHECK_TITLE",
                                                 "INACTIVITY_CHECK_DESCRIPTION",
@@ -140,7 +139,7 @@ public class InactiveCheck extends TimerTask {
                   }
                 }
               });
-    } catch (DiscordManipulationException | IllegalStateException ignored) {
+    } catch (DiscordManipulationException ignored) {
 
     }
   }

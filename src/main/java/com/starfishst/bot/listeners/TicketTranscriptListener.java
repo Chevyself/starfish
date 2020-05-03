@@ -1,12 +1,12 @@
 package com.starfishst.bot.listeners;
 
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.transcript.TicketTranscript;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.core.fallback.Fallback;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;

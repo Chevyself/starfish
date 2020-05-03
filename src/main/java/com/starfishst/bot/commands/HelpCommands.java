@@ -1,5 +1,7 @@
 package com.starfishst.bot.commands;
 
+import com.starfishst.bot.Main;
+import com.starfishst.bot.config.Configuration;
 import com.starfishst.commands.ParentCommand;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;
@@ -7,8 +9,6 @@ import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedFactory;
 import com.starfishst.commands.utils.message.MessagesFactory;
 import com.starfishst.core.utils.Strings;
-import com.starfishst.bot.Main;
-import com.starfishst.bot.config.Configuration;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /** Commands for helping the user */

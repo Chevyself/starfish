@@ -1,12 +1,12 @@
 package com.starfishst.bot.tickets.type;
 
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.bot.listeners.questions.QuestionTicketListener;
 import com.starfishst.bot.objects.responsive.type.ticket.TicketCreatorResponsiveMessage;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.core.fallback.Fallback;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;

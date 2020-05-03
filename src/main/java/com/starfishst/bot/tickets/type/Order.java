@@ -1,6 +1,5 @@
 package com.starfishst.bot.tickets.type;
 
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.exception.TicketCreationException;
 import com.starfishst.bot.objects.freelancers.Freelancer;
@@ -12,6 +11,7 @@ import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Messages;
+import com.starfishst.core.fallback.Fallback;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;

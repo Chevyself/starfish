@@ -1,5 +1,8 @@
 package com.starfishst.bot.commands;
 
+import com.starfishst.bot.config.DiscordConfiguration;
+import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.util.Discord;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
@@ -7,9 +10,6 @@ import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.core.utils.Lots;
-import com.starfishst.bot.config.DiscordConfiguration;
-import com.starfishst.bot.config.language.Lang;
-import com.starfishst.bot.util.Discord;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

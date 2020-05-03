@@ -1,7 +1,5 @@
 package com.starfishst.bot.listeners.questions;
 
-import com.starfishst.core.fallback.Fallback;
-import com.starfishst.core.utils.Lots;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.config.questions.QuestionsHandler;
@@ -16,6 +14,8 @@ import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.type.QuestionsTicket;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
+import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.Lots;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

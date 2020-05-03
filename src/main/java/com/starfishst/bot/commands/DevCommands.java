@@ -1,11 +1,11 @@
 package com.starfishst.bot.commands;
 
+import com.starfishst.bot.Main;
+import com.starfishst.bot.util.Console;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.fallback.Fallback;
-import com.starfishst.bot.Main;
-import com.starfishst.bot.util.Console;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;

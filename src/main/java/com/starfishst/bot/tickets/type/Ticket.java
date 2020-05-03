@@ -1,8 +1,5 @@
 package com.starfishst.bot.tickets.type;
 
-import com.starfishst.core.fallback.Fallback;
-import com.starfishst.core.utils.cache.Cache;
-import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.bot.Main;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.DiscordConfiguration;
@@ -15,6 +12,9 @@ import com.starfishst.bot.tickets.transcript.TicketTranscript;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.cache.Cache;
+import com.starfishst.core.utils.cache.Catchable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;

@@ -1,10 +1,10 @@
 package com.starfishst.bot.listeners;
 
-import com.starfishst.core.utils.Atomic;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.core.utils.Atomic;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Category;

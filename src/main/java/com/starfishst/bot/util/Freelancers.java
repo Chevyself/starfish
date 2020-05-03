@@ -1,10 +1,10 @@
 package com.starfishst.bot.util;
 
-import com.starfishst.core.utils.Atomic;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.objects.freelancers.Freelancer;
 import com.starfishst.bot.objects.questions.Answer;
 import com.starfishst.bot.objects.questions.RoleAnswer;
+import com.starfishst.core.utils.Atomic;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.NotNull;

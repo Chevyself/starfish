@@ -1,13 +1,5 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Optional;
-import com.starfishst.commands.annotations.Required;
-import com.starfishst.commands.result.Result;
-import com.starfishst.commands.result.ResultType;
-import com.starfishst.commands.utils.embeds.EmbedQuery;
-import com.starfishst.core.objects.JoinedStrings;
-import com.starfishst.core.utils.Strings;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.objects.invoicing.Fee;
@@ -23,6 +15,14 @@ import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.SimpleMath;
 import com.starfishst.bot.util.Tickets;
+import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Optional;
+import com.starfishst.commands.annotations.Required;
+import com.starfishst.commands.result.Result;
+import com.starfishst.commands.result.ResultType;
+import com.starfishst.commands.utils.embeds.EmbedQuery;
+import com.starfishst.core.objects.JoinedStrings;
+import com.starfishst.core.utils.Strings;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

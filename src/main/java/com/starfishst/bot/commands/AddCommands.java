@@ -1,8 +1,5 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.result.Result;
-import com.starfishst.commands.result.ResultType;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.exception.FreelancerJoinTicketException;
@@ -14,6 +11,9 @@ import com.starfishst.bot.tickets.type.FreelancingTicket;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Messages;
+import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.result.Result;
+import com.starfishst.commands.result.ResultType;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;

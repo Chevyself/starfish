@@ -1,11 +1,11 @@
 package com.starfishst.bot.config.language;
 
+import com.starfishst.bot.Main;
 import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.messages.MessagesProvider;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.Maps;
 import com.starfishst.core.utils.time.Time;
-import com.starfishst.bot.Main;
 import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
 
