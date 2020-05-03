@@ -1,22 +1,10 @@
 {
   "questions": [
     {
-      "title": "Whats your name?",
-      "simple": "name",
-      "description": "",
-      "limit": 50
-    },
-    {
-      "title": "Whats your email?",
-      "simple": "email",
-      "description": "",
-      "limit": 50
-    },
-    {
-      "title": "Whats your problem?",
-      "simple": "problem",
-      "description": "",
-      "limit": 50
+      "title": "Please tell us what do you need",
+      "description": "We can help you with anything! \n Please describe what you need so manager can help you soon",
+      "simple": "question",
+      "limit": 2000
     }
   ]
 }

@@ -8,7 +8,7 @@
   "total": 0,
   "limitOfQuotes": 2,
   "openTicketsByUserLimit": 2,
-  "toUnload": "3m",
+  "toUnload": "10m",
   "toUnloadFreelancer": "10m",
   "inactiveTime": "2w",
   "timeToFinishInactiveTest": "24h",
@@ -25,7 +25,7 @@
   ],
   "fees": [
     {
-      "description": "A fee that applies +100$ and +0.03 of the price when it is from 5$ to 10$",
+      "description": "A fee that applies +10$ and +0.03 of the price when it is from 5$ to 10$",
       "addition": 100,
       "percentage": 0.03,
       "min": 5.0,

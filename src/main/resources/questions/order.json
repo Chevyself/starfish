@@ -1,47 +1,35 @@
 {
   "questions": [
     {
-      "title": "Whats your name?",
-      "simple": "name",
-      "description": "",
-      "limit": 50
+      "title": "Step #1 Please enter a small title of what you need",
+      "description": "**Example**: Spawn, Discord bot, server set-up, etc.",
+      "limit": 100,
+      "simple": "title"
     },
     {
-      "title": "Whats your email?",
-      "simple": "email",
-      "description": "How can we contact you besides Discord?",
-      "limit": 50
+      "title": "Step #2 Please enter a description",
+      "description": "Give a full description of the product or service that you need. \n You can also **link** documents in case your description is too long",
+      "limit": 1000,
+      "simple": "description"
     },
     {
-      "title": "What do you need?",
-      "simple": "description",
-      "description": "Tell us about your project (You can link documents if your description is too long)",
-      "limit": 1000
-    },
-    {
-      "title": "Tag the roles for the work",
-      "simple": "roles",
-      "description": "You can tag %roles% only 2 of them!",
+      "title": "Step #3 Please mention the roles that you wish to hire, please tag a maximum of %limit%",
+      "description": "You can tag these roles: %roles%",
+      "role": "freelancers",
       "limit": 2,
-      "role": "freelancers"
+      "simple": "mention"
     },
     {
-      "title": "Whats your budget?",
+      "title": "Step #4 Whats the budget for this project?",
+      "description": "**Example:** 30$, 60$, 100$, etc \n In case that you are not sure, type `quote` to receive offers from the freelancers",
       "simple": "budget",
-      "description": "If you are not certain yet, you can type \u0027quote\u0027 to receive them",
-      "limit": 50
+      "limit": 200
     },
     {
-      "title": "Whats your time-frame?",
-      "simple": "time",
-      "description": "",
-      "limit": 10
-    },
-    {
-      "title": "Where did you find us?",
-      "simple": "find",
-      "description": "",
-      "limit": 1000
+      "title": "Step #5 How fast do you need the job done?",
+      "description": "**Example:** ASAP, 30 days, a week, etc",
+      "simple": "time-frame",
+      "limit": 100
     }
   ]
 }

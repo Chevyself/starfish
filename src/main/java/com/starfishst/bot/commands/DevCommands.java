@@ -1,15 +1,24 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.bot.Main;
+import com.starfishst.bot.config.DiscordConfiguration;
+import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.exception.DiscordManipulationException;
+import com.starfishst.bot.objects.responsive.type.verification.VerificationResponsiveMessage;
 import com.starfishst.bot.util.Console;
+import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.fallback.Fallback;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import com.starfishst.core.objects.JoinedStrings;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 /**
  * Developer commands are not only used for 'debug'. They also control some aspects of the bot like
@@ -52,11 +61,11 @@ public class DevCommands {
     return new Result();
   }
 
-  /*
   /**
    * Create a verification message
    *
    * @return a new verification message in the channel executed
+   */
   @Command(
       aliases = {"verificationmsg", "vmsg"},
       description = "Creates a verification message",
@@ -68,9 +77,7 @@ public class DevCommands {
             "VERIFICATION_MESSAGE_TITLE", "VERIFICATION_MESSAGE_DESCRIPTION", null, null),
         VerificationResponsiveMessage::new);
   }
-   */
 
-  /*
   /**
    * Sends an announcement to the announcements channel
    *
@@ -78,7 +85,7 @@ public class DevCommands {
    * @return a successful result if the user uses the command correctly
    * @throws DiscordManipulationException in case that the channel doesn't exist and while trying to
    *     create it goes wrong
-
+   */
   @Command(
       aliases = "announce",
       description = "Sends a message to the announce channel",
@@ -103,6 +110,5 @@ public class DevCommands {
               "You must split the title and the description using '-d' to start the description"));
     }
   }
-   */
 
 }

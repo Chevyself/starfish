@@ -1,59 +1,47 @@
 {
   "questions": [
     {
-      "title": "Whats your name?",
-      "simple": "name",
-      "description": "",
-      "limit": 50
-    },
-    {
-      "title": "What\u0027s your email?",
-      "simple": "email",
-      "description": "",
-      "limit": 50
-    },
-    {
-      "title": "What role are you applying to?",
+      "title": "What position are you applying for?",
+      "description": "Please mention the roles which you are applying for: \n %roles%",
       "simple": "applying",
-      "description": "You can apply to %roles%",
-      "limit": 2,
-      "role": "toApply"
+      "limit": 5,
+      "role": "freelancers"
     },
     {
-      "title": "Tell us about you",
-      "simple": "about",
+      "title": "Do you have past experience with service teams?",
       "description": "",
-      "limit": 50
+      "simple": "experience",
+      "limit": 1000
     },
     {
-      "title": "Whats your time zone?",
-      "simple": "timezone",
+      "title": "What's your age?",
       "description": "",
-      "limit": 50
+      "simple": "age",
+      "limit": 10
     },
     {
-      "title": "What languages do you speak?",
-      "simple": "languages",
-      "description": "",
-      "limit": 50
+      "title": "Do you have an McMarket account?",
+      "description": "If so, please link it",
+      "simple": "mc-account",
+      "limit": 100
     },
     {
-      "title": "Why should we choose you?",
-      "simple": "whyChoose",
+      "title": "How did you find Starfish Studios?",
       "description": "",
-      "limit": 50
+      "simple": "how-find",
+      "limit": 1000
     },
     {
-      "title": "Link us your portfolio",
-      "simple": "portfolio",
-      "description": "",
-      "limit": 50
+      "title": "Do you have a client vouchers/reputation page?",
+      "description": "If so, please link it",
+      "simple": "vouchers",
+      "limit": 200
     },
     {
-      "title": "Where did you find us?",
-      "simple": "find",
-      "description": "",
-      "limit": 50
+      "title": "What's next?",
+      "description": "Please wait while the management team looks over your application. \n Don't be in a hurry, it may take some time for a decision to be made. \n If the management team don't repply in a few days, feel free to @mention them (Please do not abuse). \n **Type anything to continue**",
+      "simple": "next",
+      "limit": 10
     }
   ]
 }

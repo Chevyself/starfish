@@ -2,20 +2,19 @@ package com.starfishst.bot.config;
 
 import com.starfishst.bot.listeners.questions.QuestionSendType;
 import com.starfishst.bot.objects.invoicing.Fee;
-import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.commands.ManagerOptions;
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
 import com.starfishst.simple.config.JsonConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** This class represents the 'config.json' as a java object */
 public class Configuration extends JsonConfiguration {
@@ -42,14 +41,6 @@ public class Configuration extends JsonConfiguration {
   @NotNull private final AutoSaveConfiguration autoSave;
   /** The times to announce that the ticket is going to be deleted (when is creating) */
   @NotNull private final List<Time> toAnnounce;
-  /** The questions for applies tickets */
-  @NotNull private final List<Question> applyQuestions;
-  /** The questions for orders tickets */
-  @NotNull private final List<Question> orderQuestions;
-  /** The questions for support tickets */
-  @NotNull private final List<Question> supportQuestions;
-  /** The questions for product tickets */
-  @NotNull private final List<Question> productQuestions;
   /** The list of responsive messages */
   @NotNull private final List<ResponsiveMessage> responsiveMessages;
   /** The list of fees */
@@ -80,10 +71,6 @@ public class Configuration extends JsonConfiguration {
     this.timeToFinishInactiveTest = new Time(1, Unit.DAYS);
     this.autoSave = new AutoSaveConfiguration(false, new Time(5, Unit.MINUTES));
     this.toAnnounce = new ArrayList<>();
-    this.applyQuestions = new ArrayList<>();
-    this.orderQuestions = new ArrayList<>();
-    this.supportQuestions = new ArrayList<>();
-    this.productQuestions = new ArrayList<>();
     this.responsiveMessages = new ArrayList<>();
     this.fees = new ArrayList<>();
     this.payments = new PaymentsConfiguration();
@@ -117,33 +104,6 @@ public class Configuration extends JsonConfiguration {
   }
 
   /**
-   * Get the list of questions for certain ticket type
-   *
-   * @param type the ticket type looking for questions
-   * @return the type looking for questions
-   * @throws IllegalArgumentException if the type that requests questions does not have any
-   */
-  @NotNull
-  @Deprecated
-  public List<Question> getQuestions(@NotNull TicketType type) {
-    switch (type) {
-      case APPLY:
-        return getApplyQuestions();
-      case ORDER:
-      case QUOTE:
-        return getOrderQuestions();
-      case SUPPORT:
-        return getSupportQuestions();
-      case PRODUCT:
-        return getProductQuestions();
-      default:
-        String error = type + " is not a valid type for questions";
-        Fallback.addError(error);
-        throw new IllegalArgumentException(error);
-    }
-  }
-
-  /**
    * Get the time to finish an inactive test
    *
    * @return the time to finish an inactive test
@@ -172,16 +132,6 @@ public class Configuration extends JsonConfiguration {
   @NotNull
   public String getToken() {
     return token;
-  }
-
-  /**
-   * Get the questions for orders
-   *
-   * @return the questions for orders
-   */
-  @NotNull
-  public List<Question> getOrderQuestions() {
-    return orderQuestions;
   }
 
   /**
@@ -279,26 +229,6 @@ public class Configuration extends JsonConfiguration {
   }
 
   /**
-   * Get the questions for applications
-   *
-   * @return the questions for applications
-   */
-  @NotNull
-  public List<Question> getApplyQuestions() {
-    return applyQuestions;
-  }
-
-  /**
-   * Get the questions for support
-   *
-   * @return the questions for support
-   */
-  @NotNull
-  public List<Question> getSupportQuestions() {
-    return supportQuestions;
-  }
-
-  /**
    * Get the time to start an inactive test
    *
    * @return the time to start an inactive test
@@ -306,16 +236,6 @@ public class Configuration extends JsonConfiguration {
   @NotNull
   public Time getInactiveTime() {
     return inactiveTime;
-  }
-
-  /**
-   * Get the questions for products
-   *
-   * @return the questions for products
-   */
-  @NotNull
-  private List<Question> getProductQuestions() {
-    return productQuestions;
   }
 
   /**

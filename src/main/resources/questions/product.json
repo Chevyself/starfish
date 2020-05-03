@@ -1,10 +1,28 @@
 {
   "questions": [
     {
-      "title": "What are you selling?",
-      "simple": "selling",
-      "description": "Please describe what you are selling",
+      "title": "Step #1: What's the title of your product?",
+      "description": "The title of what you are selling. \n Maximum characters: %limit%",
+      "simple": "title",
       "limit": 50
+    },
+    {
+      "title": "Step #2: What's the description of your product?",
+      "description": "Please describe your product. \n Maximum characters: %limit%",
+      "simple": "description",
+      "limit": 1000
+    },
+    {
+      "title": "Step #3: What's the price of your product?",
+      "description": "Please describe your product. \n Maximum characters: %limit%",
+      "simple": "price",
+      "limit": 50
+    },
+    {
+      "title": "Step #4: Please add an image to your product",
+      "description": "The URL must end in an image format. \n **Example**: .png, .jpeg, etc",
+      "simple": "image",
+      "limit": 1000
     }
   ]
 }
