@@ -385,6 +385,42 @@ public class MongoTicketLoader implements TicketLoader {
   }
 
   /**
+   * Get a ticket from the database using its id. This is used in case it is not found in the cache
+   *
+   * @param paymentId the id of the payment
+   * @return the ticket if found else null
+   */
+  @Nullable
+  private Ticket getTicketByPaymentFromDatabase(String paymentId) {
+    Document query = new Document("payments", paymentId);
+    Document document = this.tickets.find(query).first();
+    if (document != null) {
+      return getTicketFromDocument(document);
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public @Nullable Ticket getTicketByPayment(String paymentId) {
+    return (Ticket)
+        Cache.getCache().stream()
+            .filter(
+                catchable -> {
+                  if (catchable instanceof Ticket) {
+                    for (String payment : ((Ticket) catchable).getPayments()) {
+                      if (payment.equals(paymentId)) {
+                        return true;
+                      }
+                    }
+                  }
+                  return false;
+                })
+            .findFirst()
+            .orElseGet(() -> getTicketByPaymentFromDatabase(paymentId));
+  }
+
+  /**
    * Get a product using its message from the tickets collection
    *
    * @param id the message id

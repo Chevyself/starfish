@@ -9,6 +9,8 @@ import com.starfishst.bot.commands.ModerationCommands;
 import com.starfishst.bot.commands.RemoveCommands;
 import com.starfishst.bot.commands.SetCommand;
 import com.starfishst.bot.commands.TicketsCommand;
+import com.starfishst.bot.commands.invoices.EnhancedInvoice;
+import com.starfishst.bot.commands.invoices.InvoiceCommand;
 import com.starfishst.bot.commands.provider.AllowedTicketCloserCheckerProvider;
 import com.starfishst.bot.commands.provider.AllowedTicketManagerCheckerProvider;
 import com.starfishst.bot.commands.provider.FreelancerProvider;
@@ -34,6 +36,7 @@ import com.starfishst.bot.listeners.TicketTranscriptListener;
 import com.starfishst.bot.listeners.WelcomeListener;
 import com.starfishst.bot.listeners.questions.QuestionTicketListener;
 import com.starfishst.bot.objects.invoicing.Fee;
+import com.starfishst.bot.objects.invoicing.Payments;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.tasks.AutoSave;
@@ -266,6 +269,17 @@ public class Main {
       commandManager.registerCommand(new SetCommand());
       commandManager.registerCommand(new TicketsCommand());
       commandManager.registerCommand(new FallbackCommands());
+      if (configuration.getPayments().isEnable()) {
+        try {
+          Payments.initialize();
+          commandManager.registerCommand(new EnhancedInvoice());
+        } catch (IOException e) {
+          Fallback.addError(e.getMessage());
+        }
+      } else {
+        commandManager.registerCommand(new InvoiceCommand());
+      }
+
     } else {
       Fallback.addError(
           "Could not setup commands because JDA or the configuration were not setup properly");

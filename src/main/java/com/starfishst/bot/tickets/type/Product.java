@@ -11,7 +11,9 @@ import com.starfishst.bot.tickets.loader.TicketLoader;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Validate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bson.Document;
@@ -35,7 +37,7 @@ public class Product extends QuestionsTicket {
    * @param channel the channel where the ticket was created
    */
   public Product(long id, @Nullable User customer, @Nullable TextChannel channel) {
-    this(id, customer, TicketStatus.CREATING, channel, new HashMap<>(), null);
+    this(id, customer, TicketStatus.CREATING, channel, new HashMap<>(), null, new ArrayList<>());
   }
 
   /**
@@ -47,6 +49,7 @@ public class Product extends QuestionsTicket {
    * @param channel the channel of the ticket
    * @param details the details given by the customer
    * @param message the message that the product is listening to
+   * @param payments the payments of the ticket
    */
   public Product(
       long id,
@@ -54,8 +57,9 @@ public class Product extends QuestionsTicket {
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
       @NotNull HashMap<String, Answer> details,
-      @Nullable ProductShopResponsiveMessage message) {
-    super(id, user, status, channel, details);
+      @Nullable ProductShopResponsiveMessage message,
+      List<String> payments) {
+    super(id, user, status, channel, details, payments);
     this.message = message;
   }
 

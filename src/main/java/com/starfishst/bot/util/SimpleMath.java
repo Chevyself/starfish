@@ -13,6 +13,29 @@ import org.jetbrains.annotations.NotNull;
 public class SimpleMath {
 
   /**
+   * Get the total in a string "$$.$$"
+   *
+   * @param subtotal the subtotal to get the total
+   * @param toApply the fees to apply
+   * @return the total formatted as string
+   */
+  @NotNull
+  public static String getTotalFormatted(double subtotal, @NotNull List<Fee> toApply) {
+    return twoDecimalsFormat(getTotal(subtotal, toApply));
+  }
+
+  /**
+   * Get a two decimal format from a double
+   *
+   * @param toFormat the double to format
+   * @return the double formatted as string
+   */
+  @NotNull
+  public static String twoDecimalsFormat(double toFormat) {
+    return String.format("%.02f", toFormat);
+  }
+
+  /**
    * Calculates the total of a subtotal applying fees
    *
    * @param subtotal the subtotal
@@ -21,7 +44,7 @@ public class SimpleMath {
    */
   public static double getTotal(double subtotal, @NotNull List<Fee> toApply) {
     for (Fee fee : toApply) {
-      subtotal += fee.apply(subtotal);
+      subtotal = fee.apply(subtotal);
     }
     return subtotal;
   }

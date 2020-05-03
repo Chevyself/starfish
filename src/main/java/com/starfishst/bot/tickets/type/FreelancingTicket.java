@@ -11,6 +11,7 @@ import com.starfishst.bot.util.Freelancers;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import java.util.HashMap;
+import java.util.List;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -34,6 +35,7 @@ public class FreelancingTicket extends QuestionsTicket {
    * @param channel the channel of the ticket
    * @param answers the answers provided by the ticket
    * @param freelancer the freelancer in charge of the ticket
+   * @param payments the payments of the ticket
    */
   protected FreelancingTicket(
       long id,
@@ -41,8 +43,9 @@ public class FreelancingTicket extends QuestionsTicket {
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
       @NotNull HashMap<String, Answer> answers,
-      @Nullable Freelancer freelancer) {
-    super(id, customer, status, channel, answers);
+      @Nullable Freelancer freelancer,
+      @NotNull List<String> payments) {
+    super(id, customer, status, channel, answers, payments);
     this.freelancer = freelancer;
   }
 

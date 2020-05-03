@@ -1,8 +1,6 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.language.Lang;
-import com.starfishst.bot.objects.invoicing.Fee;
 import com.starfishst.bot.objects.management.AllowedTicketCloserChecker;
 import com.starfishst.bot.objects.management.AllowedTicketManagerChecker;
 import com.starfishst.bot.objects.responsive.type.archive.ArchiveResponsiveMessage;
@@ -13,20 +11,14 @@ import com.starfishst.bot.tickets.loader.TicketLoader;
 import com.starfishst.bot.tickets.type.QuestionsTicket;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
-import com.starfishst.bot.util.SimpleMath;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Optional;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
-import com.starfishst.commands.utils.embeds.EmbedQuery;
-import com.starfishst.core.objects.JoinedStrings;
-import com.starfishst.core.utils.Strings;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -116,53 +108,6 @@ public class TicketsCommand {
     } else {
       return new Result(ResultType.USAGE, Lang.get("MENTION_TICKET_OR_CHANNEL"));
     }
-  }
-
-  /**
-   * Creates an invoice embed
-   *
-   * @param checker the check to see if the checker is allowed to create invoices
-   * @param channel the channel to generate the invoice
-   * @param subtotal the subtotal of the service
-   * @param strings the service
-   * @return a successful result sending the invoice
-   */
-  @Command(aliases = "invoice", description = "Generates an invoice")
-  public Result invoice(
-      AllowedTicketManagerChecker checker,
-      TextChannel channel,
-      @Required(name = "subtotal", description = "The subtotal of the service") double subtotal,
-      @Required(name = "service", description = "The service applying") JoinedStrings strings) {
-    List<Fee> applyingFees = Configuration.getInstance().getApplyingFees(subtotal);
-    double total = SimpleMath.getTotal(subtotal, applyingFees);
-    Ticket ticket = TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());
-    HashMap<String, String> placeholders = new HashMap<>();
-    placeholders.put("subtotal", String.format("%.02f", subtotal));
-    placeholders.put("total", String.format("%.02f", total));
-    placeholders.put("service", strings.getString());
-    if (ticket != null) {
-      placeholders.putAll(Tickets.getPlaceholders(ticket));
-    }
-    EmbedBuilder builder =
-        Messages.create("INVOICE_TITLE", "INVOICE_DESCRIPTION", placeholders, placeholders)
-            .getEmbedBuilder();
-
-    applyingFees.forEach(
-        fee -> {
-          StringBuilder stringBuilder = Strings.getBuilder();
-          HashMap<String, String> feePlaceholders = new HashMap<>();
-          feePlaceholders.put("addition", String.valueOf(fee.getAddition()));
-          feePlaceholders.put("percentage", String.valueOf(fee.getPercentage()));
-          if (fee.getAddition() != 0) {
-            stringBuilder.append(Lang.get("FEE_ADDITION", feePlaceholders));
-          }
-          if (fee.getPercentage() != 0) {
-            stringBuilder.append(Lang.get("PERCENTAGE", feePlaceholders));
-          }
-          builder.addField(fee.getDescription(), stringBuilder.toString(), false);
-        });
-
-    return new Result(ResultType.GENERIC, new EmbedQuery(builder));
   }
 
   /**

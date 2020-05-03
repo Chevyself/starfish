@@ -17,9 +17,11 @@ import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.Catchable;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -44,6 +46,8 @@ public abstract class Ticket extends Catchable {
   @Nullable protected TextChannel channel;
   /** The status of the ticket */
   @NotNull private TicketStatus status;
+  /** A list of payments id */
+  @NotNull private final List<String> payments;
 
   /**
    * Create a ticket instance
@@ -52,14 +56,20 @@ public abstract class Ticket extends Catchable {
    * @param user the user owner of the ticket
    * @param status the status of the ticket
    * @param channel the channel where the ticket is operating
+   * @param payments the payments of the ticket
    */
   protected Ticket(
-      long id, @Nullable User user, @NotNull TicketStatus status, @Nullable TextChannel channel) {
+      long id,
+      @Nullable User user,
+      @NotNull TicketStatus status,
+      @Nullable TextChannel channel,
+      @NotNull List<String> payments) {
     super(Configuration.getInstance().getToUnload());
     this.id = id;
     this.user = user;
     this.status = status;
     this.channel = channel;
+    this.payments = payments;
   }
 
   /** When the ticket is created this will be executed */
@@ -77,6 +87,17 @@ public abstract class Ticket extends Catchable {
       status = TicketStatus.CLOSED;
     }
     TicketManager.getInstance().getLoader().saveTicket(this);
+  }
+
+  /**
+   * Send a message to the ticket channel
+   *
+   * @param message the message to send
+   */
+  public void sendMessage(Message message) {
+    if (channel != null) {
+      channel.sendMessage(message).queue();
+    }
   }
 
   /**
@@ -248,6 +269,7 @@ public abstract class Ticket extends Catchable {
     document.append("status", status);
     document.append("type", getType());
     if (channel != null) document.append("channel", channel);
+    if (!payments.isEmpty()) document.append("payments", payments);
     return document;
   }
 
@@ -310,6 +332,16 @@ public abstract class Ticket extends Catchable {
                 }
               }
             });
+  }
+
+  /**
+   * Get the id of ticket payments
+   *
+   * @return the payments
+   */
+  @NotNull
+  public List<String> getPayments() {
+    return payments;
   }
 
   @Override

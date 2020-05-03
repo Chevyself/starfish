@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <build>
+        <finalName>${project.artifactId}-${git.commit.id.describe-short}</finalName>
         <plugins>
             <!-- Maven java version plugin -->
             <plugin>
@@ -20,22 +21,11 @@
                     <target>8</target>
                 </configuration>
             </plugin>
-            <!-- Maven java jar plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.starfishst.bot.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
             <!-- Maven java formatter plugin (Google format) -->
             <plugin>
                 <artifactId>fmt-maven-plugin</artifactId>
+                <groupId>com.coveo</groupId>
+                <version>2.9</version>
                 <executions>
                     <execution>
                         <goals>
@@ -43,24 +33,24 @@
                         </goals>
                     </execution>
                 </executions>
-                <groupId>com.coveo</groupId>
-                <version>2.9</version>
+                <configuration>
+                    <style>google</style>
+                </configuration>
             </plugin>
-            <!-- Maven shade plugin -->
+            <!-- Spring boot -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.3</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.2.6.RELEASE</version>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>com.starfishst.bot.Main</mainClass>
+                </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>repackage</goal>
                         </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>${project.artifactId}-${git.commit.id.describe-short}</finalName>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -142,8 +132,7 @@
             <artifactId>mongo-java-driver</artifactId>
             <version>3.12.3</version>
         </dependency>
-        <!-- Tests
-        <!- Logger
+        <!-- Logger -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -154,7 +143,7 @@
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
-        <!- Spring
+        <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -165,12 +154,12 @@
             <artifactId>spring-core</artifactId>
             <version>5.2.5.RELEASE</version>
         </dependency>
-        <!- PayPal
+        <!-- PayPal -->
         <dependency>
             <groupId>com.paypal.sdk</groupId>
             <artifactId>rest-api-sdk</artifactId>
             <version>LATEST</version>
-        </dependency> -->
+        </dependency>
     </dependencies>
 
     <properties>
