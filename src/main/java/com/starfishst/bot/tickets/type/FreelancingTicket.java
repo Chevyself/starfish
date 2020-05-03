@@ -119,9 +119,9 @@ public class FreelancingTicket extends QuestionsTicket {
                 placeholders)
             .send(channel);
         Discord.disallow(channel, this.freelancer.getMember());
+        this.freelancer = null;
         return false;
       }
-      this.freelancer = null;
     }
     refresh();
     return false;
