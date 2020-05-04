@@ -40,6 +40,7 @@ public class Fee {
    * @param subtotal the subtotal to apply
    * @return the total with the fee applied
    */
+  @Deprecated
   public double apply(double subtotal) {
     return getApply(subtotal) + subtotal;
   }
