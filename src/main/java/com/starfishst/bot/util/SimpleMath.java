@@ -43,10 +43,11 @@ public class SimpleMath {
    * @return the total of the operation
    */
   public static double getTotal(double subtotal, @NotNull List<Fee> toApply) {
+    double total = subtotal;
     for (Fee fee : toApply) {
-      subtotal = fee.apply(subtotal);
+      total += fee.getApply(subtotal);
     }
-    return subtotal;
+    return total;
   }
 
   /**
