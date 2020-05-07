@@ -151,6 +151,7 @@ public class FreelancerCommands {
               suggestions = "false")
           boolean removeRoles)
       throws DiscordManipulationException {
+    HashMap<String, String> placeholders = Freelancers.getPlaceholders(freelancer);
     TicketManager.getInstance().getLoader().demoteFreelancer(freelancer);
     if (removeRoles && freelancer.getMember() != null) {
       List<Role> roles = new ArrayList<>(freelancer.getMember().getRoles());
@@ -166,10 +167,7 @@ public class FreelancerCommands {
             }
           });
     }
-    return new Result(
-        ResultType.GENERIC,
-        Messages.create("FREELANCER_DEMOTED_TITLE", "FREELANCER_DEMOTED_DESCRIPTION", null, null),
-        msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
+    return new Result(Lang.get("FREELANCER_DEMOTED", placeholders), msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
   }
 
   /**

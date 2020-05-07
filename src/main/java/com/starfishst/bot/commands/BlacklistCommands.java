@@ -31,7 +31,7 @@ public class BlacklistCommands {
    * @throws DiscordManipulationException if the guild has not been set while adding the blacklist
    *     roles
    */
-  @Command(aliases = "blacklist", description = "Black list an user from opening tickets")
+  @Command(aliases = "blacklist", description = "Blacklist an user from opening tickets")
   @Parent
   public Result blacklist(
       @Required(name = "user", description = "The user to blacklist") Member user)
@@ -58,23 +58,27 @@ public class BlacklistCommands {
       aliases = "list",
       description = "Get the list of user that are inside the blacklist",
       permission = Permission.ADMINISTRATOR)
-  public Result list(@Optional(name = "page", description = "The page to see in the list") int page)
+  public Result list(@Optional(name = "page", description = "The page to see in the list", suggestions = "1") int page)
       throws DiscordManipulationException {
     List<Member> members =
         DiscordConfiguration.getInstance().getGuild().getMembersWithRoles(getBlacklistRoles());
-    Pagination<Member> pagination = new Pagination<>(members);
-    HashMap<String, String> placeholders = new HashMap<>();
-    int limit = 10;
-    int maxPage = pagination.maxPage(limit);
-    placeholders.put("maxPage", String.valueOf(maxPage));
-    placeholders.put("page", String.valueOf(page));
-    if (page < 1 || page > maxPage) {
-      return new Result(ResultType.USAGE, Lang.get("WRONG_PAGE", placeholders));
+    if (!members.isEmpty()) {
+      Pagination<Member> pagination = new Pagination<>(members);
+      HashMap<String, String> placeholders = new HashMap<>();
+      int limit = 10;
+      int maxPage = pagination.maxPage(limit);
+      placeholders.put("maxPage", String.valueOf(maxPage));
+      placeholders.put("page", String.valueOf(page));
+      if (page < 1 || page > maxPage) {
+        return new Result(ResultType.USAGE, Lang.get("WRONG_PAGE", placeholders));
+      } else {
+        placeholders.put("list", Lots.pretty(Discord.getAsMention(pagination.getPage(page, limit))));
+        return new Result(
+                Lang.get("BLACKLIST_LIST", placeholders),
+                msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+      }
     } else {
-      placeholders.put("list", Lots.pretty(Discord.getAsMention(pagination.getPage(page, limit))));
-      return new Result(
-          Lang.get("BLACKLIST_LIST", placeholders),
-          msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+      return new Result(Lang.get("BLACKLIST_EMPTY"));
     }
   }
 
@@ -98,7 +102,7 @@ public class BlacklistCommands {
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("user", user.getAsMention());
     if (!list.contains(user)) {
-      return new Result(ResultType.ERROR, Lang.get("USER_NOT_BLACKLISTED"));
+      return new Result(ResultType.ERROR, Lang.get("USER_NOT_BLACKLISTED", placeholders));
     } else {
       Discord.removeRoles(user, blacklistRoles);
       return new Result(
