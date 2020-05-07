@@ -176,11 +176,11 @@ public class Payments implements ErrorController {
             PaymentExecution execution = new PaymentExecution();
             execution.setPayerId(payerId);
             payment.execute(getContext(), execution);
+            return Strings.buildMessage(pages.get("confirm"), Tickets.getPlaceholders(ticket));
           } else {
             return Strings.buildMessage(
                 pages.get("error"), Maps.singleton("error", Lang.get("PAYMENT_UNPAID")));
           }
-          return Strings.buildMessage(pages.get("confirm"), Tickets.getPlaceholders(ticket));
         } else {
           return Strings.buildMessage(
               pages.get("returnError"), Maps.singleton("error", Lang.get("TICKET_NULL")));
