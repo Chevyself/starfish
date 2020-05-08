@@ -167,7 +167,9 @@ public class FreelancerCommands {
             }
           });
     }
-    return new Result(Lang.get("FREELANCER_DEMOTED", placeholders), msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+    return new Result(
+        Lang.get("FREELANCER_DEMOTED", placeholders),
+        msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
   }
 
   /**

@@ -195,6 +195,11 @@ public class Freelancer extends Catchable {
   }
 
   @Override
+  public String toString() {
+    return "Freelancer{" + "id=" + id + ", portfolio=" + portfolio + ", rating=" + rating + '}';
+  }
+
+  @Override
   public boolean equals(Object object) {
     if (this == object) return true;
     if (object == null || getClass() != object.getClass()) return false;

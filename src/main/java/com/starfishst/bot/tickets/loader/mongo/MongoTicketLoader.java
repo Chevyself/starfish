@@ -506,4 +506,14 @@ public class MongoTicketLoader implements TicketLoader {
   public MongoClient getClient() {
     return client;
   }
+
+  /**
+   * Get the database that the loader is using
+   *
+   * @return the database that the loader is using
+   */
+  @NotNull
+  public MongoDatabase getDatabase() {
+    return database;
+  }
 }

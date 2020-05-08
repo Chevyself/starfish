@@ -144,7 +144,6 @@ public class Discord {
    * @param list the list of ids
    * @return the list of found roles
    */
-  @Deprecated
   @NotNull
   public static List<Role> getRoles(@NotNull List<Long> list) {
     List<Role> roles = new ArrayList<>();

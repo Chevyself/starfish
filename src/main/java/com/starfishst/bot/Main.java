@@ -2,6 +2,7 @@ package com.starfishst.bot;
 
 import com.starfishst.bot.commands.AddCommands;
 import com.starfishst.bot.commands.BlacklistCommands;
+import com.starfishst.bot.commands.CopyCommands;
 import com.starfishst.bot.commands.DevCommands;
 import com.starfishst.bot.commands.FreelancerCommands;
 import com.starfishst.bot.commands.HelpCommands;
@@ -127,7 +128,7 @@ public class Main {
   }
 
   /** Starts the tasks that will be running in the bot */
-  private static void startTasks() {
+  public static void startTasks() {
     Console.info("Creating tasks");
     tasks.add(new InactiveCheck());
     if (configuration != null && configuration.getAutoSave().isEnable()) {
@@ -269,6 +270,7 @@ public class Main {
       commandManager.registerCommand(new SetCommand());
       commandManager.registerCommand(new TicketsCommand());
       commandManager.registerCommand(new FallbackCommands());
+      commandManager.registerCommand(new CopyCommands());
       if (configuration.getPayments().isEnable()) {
         try {
           Payments.initialize();
@@ -436,7 +438,16 @@ public class Main {
    *
    * @return true if stopping
    */
-  public static boolean isStoppig() {
+  public static boolean isStopping() {
     return stoppig;
+  }
+
+  /**
+   * Get the tasks that the bot is running
+   *
+   * @return the list of tasks
+   */
+  public static List<TimerTask> getTasks() {
+    return tasks;
   }
 }
