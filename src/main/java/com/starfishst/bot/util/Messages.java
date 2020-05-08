@@ -207,7 +207,7 @@ public class Messages {
    */
   @Nullable
   private static String getImageUrl(@NotNull QuestionsTicket ticket) {
-    if (ticket instanceof FreelancingTicket){
+    if (ticket instanceof FreelancingTicket) {
       return Main.getCommandManager().getMessagesProvider().thumbnailUrl();
     } else {
       return ticket.getUser() == null ? null : ticket.getUser().getAvatarUrl();

@@ -26,6 +26,7 @@ import com.starfishst.bot.util.Console;
 import com.starfishst.bot.util.Discord;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -110,7 +111,7 @@ public class CopyLegacyProcess {
       TicketStatus status,
       TextChannel channel,
       User customer,
-      HashMap<String, Answer> details,
+      LinkedHashMap<String, Answer> details,
       Freelancer freelancer) {
     Ticket ticket;
     if (typeName.equalsIgnoreCase("apply")) {
@@ -185,8 +186,8 @@ public class CopyLegacyProcess {
    * @return the details
    */
   @NotNull
-  private HashMap<String, Answer> getDetails(@NotNull Document document) {
-    HashMap<String, Answer> details = new HashMap<>();
+  private LinkedHashMap<String, Answer> getDetails(@NotNull Document document) {
+    LinkedHashMap<String, Answer> details = new LinkedHashMap<>();
     if (document.get("details") != null) {
       Document detailsDocument = document.get("details", Document.class);
       detailsDocument.forEach(
@@ -272,7 +273,7 @@ public class CopyLegacyProcess {
         }
         long id = document.getLong("id");
         User customer = getCustomer(document);
-        HashMap<String, Answer> details = getDetails(document);
+        LinkedHashMap<String, Answer> details = getDetails(document);
         Freelancer freelancer = getFreelancer(document);
         TicketStatus status = TicketStatus.OPEN;
         TextChannel channel = Discord.getTextChannel(document.getLong("channel"));

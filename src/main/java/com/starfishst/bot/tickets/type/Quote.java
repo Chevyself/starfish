@@ -10,7 +10,7 @@ import com.starfishst.bot.util.Messages;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Atomic;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -63,7 +63,7 @@ public class Quote extends FreelancingTicket {
       @Nullable User user,
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
-      @NotNull HashMap<String, Answer> details,
+      @NotNull LinkedHashMap<String, Answer> details,
       @Nullable Freelancer freelancer,
       @NotNull List<Offer> offers,
       @NotNull List<String> payments) {

@@ -3,7 +3,7 @@ package com.starfishst.bot.tickets.type;
 import com.starfishst.bot.objects.questions.Answer;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -28,7 +28,7 @@ public class Report extends QuestionsTicket {
       @Nullable User customer,
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
-      @NotNull HashMap<String, Answer> answers,
+      @NotNull LinkedHashMap<String, Answer> answers,
       @NotNull List<String> payments) {
     super(id, customer, status, channel, answers, payments);
   }

@@ -14,7 +14,7 @@ import com.starfishst.bot.util.Messages;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Strings;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -46,7 +46,7 @@ public class Order extends FreelancingTicket {
       @Nullable User user,
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
-      @NotNull HashMap<String, Answer> details,
+      @NotNull LinkedHashMap<String, Answer> details,
       @Nullable Freelancer freelancer,
       @Nullable OrderClaimingResponsiveMessage message,
       @NotNull List<String> payments) {
@@ -67,7 +67,7 @@ public class Order extends FreelancingTicket {
         customer,
         TicketStatus.CREATING,
         channel,
-        new HashMap<>(),
+        new LinkedHashMap<>(),
         null,
         null,
         new ArrayList<>());
