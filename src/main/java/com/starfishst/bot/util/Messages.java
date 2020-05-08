@@ -185,17 +185,33 @@ public class Messages {
     ManagerOptions options = Main.getCommandManager().getManagerOptions();
     Color color = ResultType.GENERIC.getColor(options);
     LinkedHashMap<String, String> fields = Tickets.getFields(ticket);
+    String imageUrl = getImageUrl(ticket);
     EmbedQuery embed =
         EmbedFactory.newEmbed(
             Lang.get("TICKET_ANNOUNCE_TITLE", placeholders),
             Lang.get("TICKET_ANNOUNCE_DESCRIPTION", placeholders),
-            ticket.getUser() == null ? null : ticket.getUser().getAvatarUrl(),
+            imageUrl,
             null,
             Lang.get("FOOTER"),
             color,
             fields,
             true);
     return new EmbedQuery(embed.getEmbedBuilder());
+  }
+
+  /**
+   * Get the image url from a ticket
+   *
+   * @param ticket the ticket to get the image for
+   * @return the image url or null if it may not have one
+   */
+  @Nullable
+  private static String getImageUrl(@NotNull QuestionsTicket ticket) {
+    if (ticket instanceof FreelancingTicket) {
+      return Main.getCommandManager().getMessagesProvider().thumbnailUrl();
+    } else {
+      return ticket.getUser() == null ? null : ticket.getUser().getAvatarUrl();
+    }
   }
 
   /**

@@ -14,7 +14,7 @@ import com.starfishst.commands.utils.embeds.EmbedQuery;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Validate;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -40,7 +40,14 @@ public class Product extends QuestionsTicket {
    * @param channel the channel where the ticket was created
    */
   public Product(long id, @Nullable User customer, @Nullable TextChannel channel) {
-    this(id, customer, TicketStatus.CREATING, channel, new HashMap<>(), null, new ArrayList<>());
+    this(
+        id,
+        customer,
+        TicketStatus.CREATING,
+        channel,
+        new LinkedHashMap<>(),
+        null,
+        new ArrayList<>());
   }
 
   /**
@@ -59,7 +66,7 @@ public class Product extends QuestionsTicket {
       @Nullable User user,
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
-      @NotNull HashMap<String, Answer> details,
+      @NotNull LinkedHashMap<String, Answer> details,
       @Nullable ProductShopResponsiveMessage message,
       List<String> payments) {
     super(id, user, status, channel, details, payments);

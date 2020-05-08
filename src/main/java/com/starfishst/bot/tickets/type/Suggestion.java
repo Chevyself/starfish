@@ -9,6 +9,7 @@ import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.core.fallback.Fallback;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -33,7 +34,7 @@ public class Suggestion extends QuestionsTicket {
       @Nullable User customer,
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
-      @NotNull HashMap<String, Answer> answers,
+      @NotNull LinkedHashMap<String, Answer> answers,
       List<String> payments) {
     super(id, customer, status, channel, answers, payments);
   }

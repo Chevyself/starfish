@@ -7,7 +7,7 @@ import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.util.Messages;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class QuestionsTicket extends Ticket {
 
   /** The HashMap of the question simple and the answer */
-  @NotNull private final HashMap<String, Answer> answers;
+  @NotNull private final LinkedHashMap<String, Answer> answers;
   /** The current question that the ticket is on */
   private int current = 0;
 
@@ -41,7 +41,7 @@ public class QuestionsTicket extends Ticket {
       @Nullable User customer,
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
-      @NotNull HashMap<String, Answer> answers,
+      @NotNull LinkedHashMap<String, Answer> answers,
       List<String> payments) {
     super(id, customer, status, channel, payments);
     this.answers = answers;
@@ -55,7 +55,7 @@ public class QuestionsTicket extends Ticket {
    * @param channel the channel where the ticket was created
    */
   public QuestionsTicket(long id, @Nullable User customer, @Nullable TextChannel channel) {
-    this(id, customer, TicketStatus.CREATING, channel, new HashMap<>(), new ArrayList<>());
+    this(id, customer, TicketStatus.CREATING, channel, new LinkedHashMap<>(), new ArrayList<>());
   }
 
   /**
@@ -93,7 +93,7 @@ public class QuestionsTicket extends Ticket {
    * @return the map of answers/details
    */
   @NotNull
-  public HashMap<String, Answer> getAnswers() {
+  public LinkedHashMap<String, Answer> getAnswers() {
     return answers;
   }
 

@@ -11,6 +11,7 @@ import com.starfishst.bot.util.Freelancers;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -42,7 +43,7 @@ public class FreelancingTicket extends QuestionsTicket {
       @Nullable User customer,
       @NotNull TicketStatus status,
       @Nullable TextChannel channel,
-      @NotNull HashMap<String, Answer> answers,
+      @NotNull LinkedHashMap<String, Answer> answers,
       @Nullable Freelancer freelancer,
       @NotNull List<String> payments) {
     super(id, customer, status, channel, answers, payments);

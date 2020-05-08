@@ -21,7 +21,7 @@ import com.starfishst.bot.tickets.type.Support;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.tickets.type.TicketCreator;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -49,7 +49,7 @@ public class TicketCodec implements Codec<Ticket> {
     TicketStatus status = null;
     TicketType type = null;
     TextChannel channel = null;
-    HashMap<String, Answer> details = new HashMap<>();
+    LinkedHashMap<String, Answer> details = new LinkedHashMap<>();
     Freelancer freelancer = null;
     ResponsiveMessage message = null;
     List<Offer> offers = new ArrayList<>();
