@@ -16,12 +16,12 @@ import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Exclude;
 import com.starfishst.commands.annotations.Optional;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -67,15 +67,13 @@ public class TicketsCommand {
    * @param id the id of the ticket looking for info
    * @return the information of a ticket if it exists
    */
+  @Exclude
   @Command(aliases = "info", description = "Gives you the info about a Ticket")
   public Result info(
       @Required(name = "id", description = "The id of the ticket to get information") long id) {
     Ticket ticket = TicketManager.getInstance().getLoader().getTicket(id);
     if (ticket != null) {
-      return new Result(
-          ResultType.GENERIC,
-          Messages.info(ticket),
-          msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
+      return new Result(ResultType.GENERIC, Messages.info(ticket));
     } else {
       return new Result(ResultType.ERROR, "Ticket not found");
     }
@@ -174,6 +172,7 @@ public class TicketsCommand {
    * @param checker to check if the user can create one
    * @return the created panel
    */
+  @Exclude
   @Command(
       aliases = {"ticketpanel", "tp"},
       description = "Creates a ticket creator panel")

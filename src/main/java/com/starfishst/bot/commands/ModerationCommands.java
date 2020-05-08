@@ -48,9 +48,7 @@ public class ModerationCommands {
       return new Result(ResultType.ERROR, Lang.get("USER_ALREADY_MUTED", placeholders));
     } else {
       configuration.mute(user.getUser());
-      return new Result(
-          Lang.get("USER_HAS_BEEN_MUTED", placeholders),
-          msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+      return new Result(Lang.get("USER_HAS_BEEN_MUTED", placeholders));
     }
   }
 
@@ -70,9 +68,7 @@ public class ModerationCommands {
     PunishmentsConfiguration configuration = PunishmentsConfiguration.getInstance();
     if (configuration.isMuted(user.getUser())) {
       configuration.unmute(user.getUser());
-      return new Result(
-          Lang.get("USER_UNMUTED", placeholders),
-          msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+      return new Result(Lang.get("USER_UNMUTED", placeholders));
     } else {
       return new Result(ResultType.ERROR, Lang.get("USER_NOT_MUTED", placeholders));
     }
@@ -155,8 +151,7 @@ public class ModerationCommands {
             .getHistory()
             .retrievePast(amount)
             .queue(messages -> messages.forEach(message -> message.delete().queue()));
-        return new Result(
-            Lang.get("MESSAGES_CLEARED"), msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+        return new Result(Lang.get("MESSAGES_CLEARED"));
       }
     }
   }

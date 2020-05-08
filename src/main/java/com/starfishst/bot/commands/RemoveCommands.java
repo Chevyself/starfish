@@ -14,7 +14,6 @@ import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
-import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -57,8 +56,7 @@ public class RemoveCommands {
       }
 
       Discord.disallow(channel, message.getMentionedMembers());
-      return new Result(
-          Lang.get("MEMBERS_REMOVED"), msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+      return new Result(Lang.get("MEMBERS_REMOVED"));
     }
   }
 }

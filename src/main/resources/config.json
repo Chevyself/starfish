@@ -48,8 +48,9 @@
     "deleteCommands": false,
     "embedMessages": true,
     "deleteErrors": true,
-    "deleteTime": 15,
-    "deleteUnit": "SECONDS",
+    "toDeleteErrors": "15s",
+    "deleteSuccess": true,
+    "toDeleteSuccess": "15s",
     "success": "#ffaa00",
     "error": "#b30000"
   },

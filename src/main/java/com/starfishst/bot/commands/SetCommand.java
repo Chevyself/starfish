@@ -12,7 +12,6 @@ import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.core.utils.Lots;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -60,8 +59,7 @@ public class SetCommand {
       @Required(name = "message", description = "The message to set in the key")
           JoinedStrings strings) {
     Lang.set(key, strings.getString());
-    return new Result(
-        "The new message has been set", msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+    return new Result("The new message has been set");
   }
 
   /**
@@ -88,9 +86,7 @@ public class SetCommand {
       placeholders.put("roles", Lots.pretty(Discord.getAsMention(roles)));
       placeholders.put("key", key);
 
-      return new Result(
-          Lang.get("ROLES_UPDATED", placeholders),
-          msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+      return new Result(Lang.get("ROLES_UPDATED", placeholders));
     }
   }
 
@@ -114,9 +110,7 @@ public class SetCommand {
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("key", key);
     placeholders.put("keys", Lots.pretty(list));
-    return new Result(
-        Lang.get("KEY_SET_TO_ROLES", placeholders),
-        msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+    return new Result(Lang.get("KEY_SET_TO_ROLES", placeholders));
   }
 
   /**
@@ -144,9 +138,7 @@ public class SetCommand {
 
       placeholders.put("category", parent.getName());
       placeholders.put("key", key);
-      return new Result(
-          Lang.get("CATEGORY_UPDATED", placeholders),
-          msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+      return new Result(Lang.get("CATEGORY_UPDATED", placeholders));
     }
   }
 
@@ -169,8 +161,6 @@ public class SetCommand {
     placeholders.put("channel", channel.getAsMention());
     placeholders.put("key", key);
     DiscordConfiguration.getInstance().setChannelByKey(key, channel);
-    return new Result(
-        Lang.get("CHANNEL_UPDATED", placeholders),
-        msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+    return new Result(Lang.get("CHANNEL_UPDATED", placeholders));
   }
 }

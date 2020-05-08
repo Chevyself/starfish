@@ -10,6 +10,7 @@ import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.SimpleMath;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Exclude;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
@@ -58,6 +59,7 @@ public class InvoiceCommand {
    * @param strings the service
    * @return a successful result sending the invoice
    */
+  @Exclude
   @Command(aliases = "invoice", description = "Generates an invoice")
   public Result invoice(
       AllowedTicketManagerChecker checker,
