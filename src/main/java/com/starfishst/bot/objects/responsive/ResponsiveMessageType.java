@@ -22,5 +22,7 @@ public enum ResponsiveMessageType {
   /** The message sent to confirm a suggestion */
   SUGGESTION_CONFIRM,
   /** The verification for when a player joins the server */
-  JOIN_VERIFICATION
+  JOIN_VERIFICATION,
+  /** The message that gives the unicode of the reacted message */
+  UNICODE_GIVER
 }

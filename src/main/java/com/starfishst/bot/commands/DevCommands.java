@@ -4,6 +4,7 @@ import com.starfishst.bot.Main;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
+import com.starfishst.bot.objects.responsive.type.unicode.UnicodeGiverResponsiveMessage;
 import com.starfishst.bot.objects.responsive.type.verification.VerificationResponsiveMessage;
 import com.starfishst.bot.util.Console;
 import com.starfishst.bot.util.Messages;
@@ -108,5 +109,20 @@ public class DevCommands {
           Lang.get(
               "You must split the title and the description using '-d' to start the description"));
     }
+  }
+
+  /**
+   * Create an unicode giver message
+   *
+   * @return the message that is used as unicode giver
+   */
+  @Command(
+      aliases = "unicodeGiver",
+      description = "Creates an unicode giver",
+      permission = Permission.ADMINISTRATOR)
+  public Result unicodeGiver() {
+    return new Result(
+        Messages.create("UNICODE_GIVER_TITLE", "UNICODE_GIVER_DESCRIPTION", null, null),
+        UnicodeGiverResponsiveMessage::new);
   }
 }

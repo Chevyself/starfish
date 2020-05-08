@@ -21,7 +21,7 @@ public class ResponsiveMessage {
   /** The id of the message that this will be listening to */
   private final long id;
   /** The list of reactions to listen to */
-  @NotNull private final List<ReactionResponse> reactions;
+  @NotNull protected final List<ReactionResponse> reactions;
 
   /**
    * The primary constructor
@@ -124,6 +124,15 @@ public class ResponsiveMessage {
     int result = type.hashCode();
     result = 31 * result + (int) (id ^ (id >>> 32));
     return result;
+  }
+
+  /**
+   * Add a reaction response to the list
+   *
+   * @param response the reaction response to add
+   */
+  public void addReactionResponse(@NotNull ReactionResponse response) {
+    reactions.add(response);
   }
 
   @Override

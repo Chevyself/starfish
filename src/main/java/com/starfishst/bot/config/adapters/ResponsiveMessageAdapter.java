@@ -13,6 +13,7 @@ import com.starfishst.bot.objects.responsive.type.archive.ArchiveResponsiveMessa
 import com.starfishst.bot.objects.responsive.type.freelancer.ReviewFreelancer;
 import com.starfishst.bot.objects.responsive.type.inactive.InactiveCheckResponsiveMessage;
 import com.starfishst.bot.objects.responsive.type.panel.TicketPanel;
+import com.starfishst.bot.objects.responsive.type.unicode.UnicodeGiverResponsiveMessage;
 import com.starfishst.bot.objects.responsive.type.verification.VerificationResponsiveMessage;
 import com.starfishst.simple.Lots;
 import java.awt.*;
@@ -52,6 +53,8 @@ public class ResponsiveMessageAdapter
         return new VerificationResponsiveMessage(id);
       case TICKET_PANEL:
         return new TicketPanel(id);
+      case UNICODE_GIVER:
+        return new UnicodeGiverResponsiveMessage(id);
     }
     return null;
   }
