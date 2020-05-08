@@ -9,6 +9,7 @@ import com.starfishst.bot.objects.responsive.type.verification.VerificationRespo
 import com.starfishst.bot.util.Console;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Exclude;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
@@ -66,6 +67,7 @@ public class DevCommands {
    *
    * @return a new verification message in the channel executed
    */
+  @Exclude
   @Command(
       aliases = {"verificationmsg", "vmsg"},
       description = "Creates a verification message",
@@ -101,8 +103,7 @@ public class DevCommands {
       String title = split[0];
       String description = split[1];
       Messages.create(title, description).send(announcements);
-      return new Result(
-          Lang.get("ANNOUNCEMENT_SENT"), msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+      return new Result(Lang.get("ANNOUNCEMENT_SENT"));
     } else {
       return new Result(
           ResultType.USAGE,
@@ -116,6 +117,7 @@ public class DevCommands {
    *
    * @return the message that is used as unicode giver
    */
+  @Exclude
   @Command(
       aliases = "unicodeGiver",
       description = "Creates an unicode giver",

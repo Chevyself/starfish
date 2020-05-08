@@ -5,6 +5,7 @@ import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Exclude;
 import com.starfishst.commands.annotations.Optional;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
@@ -54,6 +55,7 @@ public class BlacklistCommands {
    * @return the users inside the blacklist
    * @throws DiscordManipulationException in case that we cannot get the roles
    */
+  @Exclude
   @Command(
       aliases = "list",
       description = "Get the list of user that are inside the blacklist",
@@ -108,9 +110,7 @@ public class BlacklistCommands {
       return new Result(ResultType.ERROR, Lang.get("USER_NOT_BLACKLISTED", placeholders));
     } else {
       Discord.removeRoles(user, blacklistRoles);
-      return new Result(
-          Lang.get("USER_BLACKLIST_REMOVED", placeholders),
-          msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+      return new Result(Lang.get("USER_BLACKLIST_REMOVED", placeholders));
     }
   }
 

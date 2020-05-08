@@ -5,6 +5,7 @@ import com.starfishst.bot.legacy.CopyLegacyProcess;
 import com.starfishst.bot.legacy.CopyLegacyProcessResult;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Exclude;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
@@ -51,6 +52,7 @@ public class CopyCommands {
    *
    * @return the result of the process
    */
+  @Exclude
   @Command(
       aliases = "result",
       description = "Gives the result of the process",

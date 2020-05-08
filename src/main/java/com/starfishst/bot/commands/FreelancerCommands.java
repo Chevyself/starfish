@@ -23,6 +23,7 @@ import com.starfishst.bot.util.Freelancers;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.commands.annotations.Command;
+import com.starfishst.commands.annotations.Exclude;
 import com.starfishst.commands.annotations.Optional;
 import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
@@ -63,9 +64,7 @@ public class FreelancerCommands {
       return new Result(ResultType.USAGE, member.getAsMention() + " is already a freelancer!");
     } else {
       new Freelancer(new ArrayList<>(), new HashMap<>(), member.getIdLong());
-      return new Result(
-          member.getAsMention() + " has been promoted to freelancer",
-          msg -> msg.delete().queueAfter(5, TimeUnit.SECONDS));
+      return new Result(member.getAsMention() + " has been promoted to freelancer");
     }
   }
 
@@ -167,9 +166,7 @@ public class FreelancerCommands {
             }
           });
     }
-    return new Result(
-        Lang.get("FREELANCER_DEMOTED", placeholders),
-        msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+    return new Result(Lang.get("FREELANCER_DEMOTED", placeholders));
   }
 
   /**
@@ -292,6 +289,7 @@ public class FreelancerCommands {
    * @param freelancer the freelancer to get info from
    * @return the message with information about the freelancer
    */
+  @Exclude
   @Command(
       aliases = {"freelancerinfo", "fi"},
       description = "See the freelancer info")
@@ -324,8 +322,7 @@ public class FreelancerCommands {
       return new Result(
           ResultType.GENERIC,
           Messages.create(
-              "PRODUCT_CREATED_TITLE", "PRODUCT_CREATED_DESCRIPTION", placeholders, placeholders),
-          msg -> msg.delete().queueAfter(10, TimeUnit.SECONDS));
+              "PRODUCT_CREATED_TITLE", "PRODUCT_CREATED_DESCRIPTION", placeholders, placeholders));
     } else {
       return new Result(
           ResultType.UNKNOWN, "This should not have happened freelancer member is null!");

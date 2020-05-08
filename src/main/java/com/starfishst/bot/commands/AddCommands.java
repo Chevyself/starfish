@@ -14,7 +14,6 @@ import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
-import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -55,8 +54,7 @@ public class AddCommands {
       }
 
       Discord.allow(channel, message.getMentionedMembers(), Discord.ALLOWED);
-      return new Result(
-          Lang.get("MEMBERS_ADDED"), msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+      return new Result(Lang.get("MEMBERS_ADDED"));
     }
   }
 }
