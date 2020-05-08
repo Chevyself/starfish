@@ -165,7 +165,7 @@ public abstract class Ticket extends Catchable {
   public void setStatus(@NotNull TicketStatus status) {
     this.status = status;
     if (status == TicketStatus.CLOSED) {
-      if (Main.isStoppig()) {
+      if (Main.isStopping()) {
         close(true);
       } else {
         close(false);

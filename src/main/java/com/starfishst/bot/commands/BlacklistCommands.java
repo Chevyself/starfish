@@ -58,7 +58,9 @@ public class BlacklistCommands {
       aliases = "list",
       description = "Get the list of user that are inside the blacklist",
       permission = Permission.ADMINISTRATOR)
-  public Result list(@Optional(name = "page", description = "The page to see in the list", suggestions = "1") int page)
+  public Result list(
+      @Optional(name = "page", description = "The page to see in the list", suggestions = "1")
+          int page)
       throws DiscordManipulationException {
     List<Member> members =
         DiscordConfiguration.getInstance().getGuild().getMembersWithRoles(getBlacklistRoles());
@@ -72,10 +74,11 @@ public class BlacklistCommands {
       if (page < 1 || page > maxPage) {
         return new Result(ResultType.USAGE, Lang.get("WRONG_PAGE", placeholders));
       } else {
-        placeholders.put("list", Lots.pretty(Discord.getAsMention(pagination.getPage(page, limit))));
+        placeholders.put(
+            "list", Lots.pretty(Discord.getAsMention(pagination.getPage(page, limit))));
         return new Result(
-                Lang.get("BLACKLIST_LIST", placeholders),
-                msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
+            Lang.get("BLACKLIST_LIST", placeholders),
+            msg -> msg.delete().queueAfter(15, TimeUnit.SECONDS));
       }
     } else {
       return new Result(Lang.get("BLACKLIST_EMPTY"));
