@@ -7,11 +7,10 @@ import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.core.fallback.Fallback;
+import com.starfishst.core.utils.Strings;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-
-import com.starfishst.core.utils.Strings;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
@@ -57,10 +56,14 @@ public class TicketTranscriptListener {
     StringBuilder builder = Strings.getBuilder();
     Message message = event.getMessage();
     builder.append(message.getContentRaw()).append(" ");
-    event.getMessage().getEmbeds().forEach(embed -> {
-      builder.append(embed.getTitle()).append(" ");
-      builder.append(embed.getDescription()).append(" ");
-    });
+    event
+        .getMessage()
+        .getEmbeds()
+        .forEach(
+            embed -> {
+              builder.append(embed.getTitle()).append(" ");
+              builder.append(embed.getDescription()).append(" ");
+            });
     placeholders.put("message", builder.toString());
     return placeholders;
   }

@@ -6,11 +6,10 @@ import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Console;
 import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.files.FileUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /** Handles everything that has to do with questions configuration */
 public class QuestionsHandler {
