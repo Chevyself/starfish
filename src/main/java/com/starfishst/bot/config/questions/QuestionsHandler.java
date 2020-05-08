@@ -3,12 +3,14 @@ package com.starfishst.bot.config.questions;
 import com.starfishst.bot.exception.QuestionsInitException;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.bot.util.Console;
 import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.files.FileUtils;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 
 /** Handles everything that has to do with questions configuration */
 public class QuestionsHandler {
@@ -18,7 +20,9 @@ public class QuestionsHandler {
 
   static {
     try {
+      Console.info("Starting questions handler");
       instance = new QuestionsHandler();
+      Console.info("Finished loading questions handler");
     } catch (IOException e) {
       throw new QuestionsInitException();
     }
@@ -43,11 +47,17 @@ public class QuestionsHandler {
    * @throws IOException in case that the file of some of the questions could not be initialized
    */
   public QuestionsHandler() throws IOException {
+    Console.info("Loading product questions");
     this.product = JsonConfiguration.getInstance(getFile("product"), QuestionsConfiguration.class);
+    Console.info("Loading apply questions");
     this.apply = JsonConfiguration.getInstance(getFile("apply"), QuestionsConfiguration.class);
+    Console.info("Loading support questions");
     this.support = JsonConfiguration.getInstance(getFile("support"), QuestionsConfiguration.class);
+    Console.info("Loading order questions");
     this.order = JsonConfiguration.getInstance(getFile("order"), QuestionsConfiguration.class);
+    Console.info("Loading report questions");
     this.report = JsonConfiguration.getInstance(getFile("report"), QuestionsConfiguration.class);
+    Console.info("Loading suggestion questions");
     this.suggestion =
         JsonConfiguration.getInstance(getFile("suggestion"), QuestionsConfiguration.class);
   }
@@ -73,6 +83,7 @@ public class QuestionsHandler {
    */
   @NotNull
   public List<Question> getQuestions(@NotNull TicketType type) {
+    System.out.println("Getting question for " + type);
     switch (type) {
       case APPLY:
         return apply.getQuestions();
@@ -100,6 +111,7 @@ public class QuestionsHandler {
    */
   @NotNull
   public static QuestionsHandler getInstance() {
+    System.out.println(instance + " question handler");
     return instance;
   }
 }

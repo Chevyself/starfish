@@ -10,6 +10,9 @@ import com.starfishst.core.fallback.Fallback;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+
+import com.starfishst.core.utils.Strings;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +54,14 @@ public class TicketTranscriptListener {
     HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
     placeholders.put("sender", event.getAuthor().getAsTag());
     placeholders.put("senderId", String.valueOf(event.getAuthor().getIdLong()));
-    placeholders.put("message", event.getMessage().getContentRaw());
+    StringBuilder builder = Strings.getBuilder();
+    Message message = event.getMessage();
+    builder.append(message.getContentRaw()).append(" ");
+    event.getMessage().getEmbeds().forEach(embed -> {
+      builder.append(embed.getTitle()).append(" ");
+      builder.append(embed.getDescription()).append(" ");
+    });
+    placeholders.put("message", builder.toString());
     return placeholders;
   }
 }

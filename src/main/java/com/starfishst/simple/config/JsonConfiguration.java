@@ -23,6 +23,7 @@ public class JsonConfiguration {
    * @return a new instance
    * @throws FileNotFoundException in case that the file provided doesn't exist
    */
+  @NotNull
   public static <T extends JsonConfiguration> T getInstance(@NotNull File file, Class<T> clazz)
       throws FileNotFoundException {
     T config = GsonProvider.GSON.fromJson(FileUtils.getReader(file), clazz);
@@ -39,6 +40,7 @@ public class JsonConfiguration {
    * @return a new instance
    * @throws FileNotFoundException in case that the file provided doesn't exist
    */
+  @NotNull
   public static <T extends JsonConfiguration> T getInstance(@NotNull String name, Class<T> clazz)
       throws IOException {
     return getInstance(FileUtils.getFileOrResource(name), clazz);
