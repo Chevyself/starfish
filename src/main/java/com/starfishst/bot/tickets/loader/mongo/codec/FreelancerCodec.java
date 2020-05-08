@@ -31,7 +31,7 @@ public class FreelancerCodec implements Codec<Freelancer> {
       } else if (fieldName.equalsIgnoreCase("portfolio")) {
         reader.readStartArray();
         while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
-          portfolio.add(reader.readName());
+          portfolio.add(reader.readString());
         }
         reader.readEndArray();
       } else if (fieldName.equalsIgnoreCase("rating")) {
