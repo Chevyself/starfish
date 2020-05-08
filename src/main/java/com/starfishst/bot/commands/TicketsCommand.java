@@ -1,12 +1,15 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.exception.DiscordManipulationException;
+import com.starfishst.bot.exception.TicketCreationException;
 import com.starfishst.bot.objects.management.AllowedTicketCloserChecker;
 import com.starfishst.bot.objects.management.AllowedTicketManagerChecker;
 import com.starfishst.bot.objects.responsive.type.archive.ArchiveResponsiveMessage;
 import com.starfishst.bot.objects.responsive.type.panel.TicketPanel;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.TicketStatus;
+import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.tickets.loader.TicketLoader;
 import com.starfishst.bot.tickets.type.QuestionsTicket;
 import com.starfishst.bot.tickets.type.Ticket;
@@ -19,6 +22,7 @@ import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -30,30 +34,32 @@ import net.dv8tion.jda.api.entities.TextChannel;
  */
 public class TicketsCommand {
 
-  /*
   /**
    * Creates a new ticket
    *
    * @param member the member creating the ticket
+   * @param channel the channel that the ticket is going to be created
    * @return a successful result if the ticket was created
    * @throws DiscordManipulationException in case something related to Discord goes wrong. For
    *     example: if a category could not be created
    * @throws TicketCreationException in case something related to database or usage goes wrong
+   */
   @Command(aliases = "new", description = "Creates a new ticket", time = "10m")
   public Result newCommand(Member member, TextChannel channel)
       throws DiscordManipulationException, TicketCreationException {
-    Ticket ticketByChannel = Main.getManager().getLoader().getTicketByChannel(channel.getIdLong());
+    Ticket ticketByChannel =
+        TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());
     if (ticketByChannel != null) {
       return new Result(ResultType.USAGE, Lang.get("NOT_IN_TICKET_CHANNEL"));
     }
-    Ticket ticket = Main.getManager().createTicket(TicketType.TICKET_CREATOR, member, null);
+    Ticket ticket =
+        TicketManager.getInstance().createTicket(TicketType.TICKET_CREATOR, member, null);
     if (ticket.getChannel() != null) {
       return new Result("Ticket created in " + ticket.getChannel().getAsMention());
     } else {
       return new Result("Ticket created... waiting for channel");
     }
   }
-   */
 
   /**
    * Gives information about a ticket

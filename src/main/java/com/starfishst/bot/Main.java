@@ -16,6 +16,7 @@ import com.starfishst.bot.commands.provider.AllowedTicketCloserCheckerProvider;
 import com.starfishst.bot.commands.provider.AllowedTicketManagerCheckerProvider;
 import com.starfishst.bot.commands.provider.FreelancerProvider;
 import com.starfishst.bot.commands.provider.FreelancerSenderProvider;
+import com.starfishst.bot.config.BotInfoConfiguration;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.config.MongoConfiguration;
@@ -111,6 +112,7 @@ public class Main {
   public static void main(String[] args) {
     System.out.println("This messages wont be saved in the log file");
     Console.info("From now the messages will be saved in the log file");
+    printInformation();
     Thread.setDefaultUncaughtExceptionHandler(
         new LoggerUncaughtExceptionHandler(Console.getLogger()));
     setupConfiguration();
@@ -125,6 +127,16 @@ public class Main {
           "There was some errors while enabling the bot \n Run 'errors' in console to get a list of them or 'exit' to end the program");
     }
     Console.info("Bot is up and running");
+  }
+
+  /** Prints the bot build information */
+  private static void printInformation() {
+    try {
+      BotInfoConfiguration botInfoConfiguration = new BotInfoConfiguration();
+      Console.info("Bot build: " + botInfoConfiguration.getGitHash());
+    } catch (IOException e) {
+      Console.info("Bot info could not be provided");
+    }
   }
 
   /** Starts the tasks that will be running in the bot */

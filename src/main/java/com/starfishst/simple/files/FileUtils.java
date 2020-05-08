@@ -37,6 +37,21 @@ public class FileUtils {
   }
 
   /**
+   * Get a resource as a file
+   *
+   * @param prefix the prefix of the file name
+   * @param suffix the suffix of the file name
+   * @return the file
+   * @throws IOException in case the creation of the temporal file goes wrong
+   */
+  public static File getResourceAsFile(@NotNull String prefix, @NotNull String suffix)
+      throws IOException {
+    File tempFile = File.createTempFile(prefix, suffix);
+    tempFile.deleteOnExit();
+    return tempFile;
+  }
+
+  /**
    * Gets the current working directory
    *
    * @return the current working directory
