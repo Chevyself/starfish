@@ -10,9 +10,10 @@ import com.starfishst.bot.util.Console;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Exclude;
-import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
+import com.starfishst.core.annotations.Multiple;
+import com.starfishst.core.annotations.Required;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.objects.JoinedStrings;
 import java.io.IOException;
@@ -93,7 +94,8 @@ public class DevCommands {
       description = "Sends a message to the announce channel",
       permission = Permission.ADMINISTRATOR)
   public Result announce(
-      @Required(name = "message", description = "The message to announce") JoinedStrings strings)
+      @Required(name = "message", description = "The message to announce") @Multiple
+          JoinedStrings strings)
       throws DiscordManipulationException {
     String string = strings.getString();
     if (string.contains("-d")) {

@@ -8,10 +8,11 @@ import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Optional;
-import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
+import com.starfishst.core.annotations.Multiple;
+import com.starfishst.core.annotations.Optional;
+import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,7 @@ public class ModerationCommands {
               name = "reason",
               description = "The reason to mute the user",
               suggestions = "No reason")
+          @Multiple
           JoinedStrings reason) {
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("user", user.getEffectiveName());
@@ -93,7 +95,8 @@ public class ModerationCommands {
               name = "days",
               description = "Delete the messages sent by the user based on the number of days")
           int days,
-      @Required(name = "reason", description = "The reason of the ban") JoinedStrings reason)
+      @Required(name = "reason", description = "The reason of the ban") @Multiple
+          JoinedStrings reason)
       throws DiscordManipulationException {
     DiscordConfiguration.getInstance().getGuild().ban(user, days, reason.getString()).queue();
     HashMap<String, String> placeholders = new HashMap<>();

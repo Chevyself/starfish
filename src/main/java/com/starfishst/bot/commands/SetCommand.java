@@ -4,10 +4,11 @@ import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
+import com.starfishst.core.annotations.Multiple;
 import com.starfishst.core.annotations.Parent;
+import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.core.utils.Lots;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class SetCommand {
       permission = Permission.ADMINISTRATOR)
   public Result lang(
       @Required(name = "key", description = "The key to change in the file") String key,
-      @Required(name = "message", description = "The message to set in the key")
+      @Required(name = "message", description = "The message to set in the key") @Multiple
           JoinedStrings strings) {
     Lang.set(key, strings.getString());
     return new Result("The new message has been set");
@@ -103,7 +104,7 @@ public class SetCommand {
       permission = Permission.ADMINISTRATOR)
   public Result rolesKeys(
       @Required(name = "key", description = "The key to set the other role keys") String key,
-      @Required(name = "keys", description = "The keys to set") JoinedStrings keys) {
+      @Required(name = "keys", description = "The keys to set") @Multiple JoinedStrings keys) {
     HashMap<String, List<String>> roleKeyMap = DiscordConfiguration.getInstance().getRoleKeyMap();
     List<String> list = Lots.list(keys.getStrings());
     roleKeyMap.put(key, list);

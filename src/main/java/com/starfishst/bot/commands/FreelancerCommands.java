@@ -24,10 +24,11 @@ import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Exclude;
-import com.starfishst.commands.annotations.Optional;
-import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
+import com.starfishst.core.annotations.Multiple;
+import com.starfishst.core.annotations.Optional;
+import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.core.utils.Atomic;
 import com.starfishst.core.utils.Lots;
@@ -339,7 +340,8 @@ public class FreelancerCommands {
   @Command(aliases = "portfolio", description = "Let's a freelancer edit their portfolio")
   public Result portfolio(
       Freelancer freelancer,
-      @Required(name = "portfolio", description = "The portfolio to set") JoinedStrings strings) {
+      @Required(name = "portfolio", description = "The portfolio to set") @Multiple
+          JoinedStrings strings) {
     List<String> portfolio = new ArrayList<>(Arrays.asList(strings.getString().split(", ")));
     freelancer.setPortfolio(portfolio);
     return new Result(

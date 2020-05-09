@@ -6,10 +6,10 @@ import com.starfishst.bot.legacy.CopyLegacyProcessResult;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Exclude;
-import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.annotations.Parent;
+import com.starfishst.core.annotations.Required;
 import net.dv8tion.jda.api.Permission;
 import org.jetbrains.annotations.Nullable;
 

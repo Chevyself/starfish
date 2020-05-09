@@ -48,7 +48,7 @@ import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.bot.util.Console;
 import com.starfishst.commands.CommandManager;
 import com.starfishst.commands.commands.FallbackCommands;
-import com.starfishst.core.ICommandManager;
+import com.starfishst.commands.providers.registry.ImplProvidersRegistry;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Strings;
 import com.starfishst.core.utils.Validate;
@@ -59,7 +59,7 @@ import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
 import com.starfishst.simple.logging.LoggerUncaughtExceptionHandler;
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -265,10 +265,11 @@ public class Main {
   private static void setupCommands() {
     Console.info("Setting up commands");
     if (jda != null && configuration != null) {
-      ICommandManager.addProvider(new AllowedTicketManagerCheckerProvider());
-      ICommandManager.addProvider(new AllowedTicketCloserCheckerProvider());
-      ICommandManager.addProvider(new FreelancerProvider());
-      ICommandManager.addProvider(new FreelancerSenderProvider());
+      ImplProvidersRegistry registry = ImplProvidersRegistry.getInstance();
+      registry.addProvider(new AllowedTicketManagerCheckerProvider());
+      registry.addProvider(new AllowedTicketCloserCheckerProvider());
+      registry.addProvider(new FreelancerProvider());
+      registry.addProvider(new FreelancerSenderProvider());
       commandManager =
           new CommandManager(
               jda, configuration.getPrefix(), configuration.getCommands(), Lang.getProvider());

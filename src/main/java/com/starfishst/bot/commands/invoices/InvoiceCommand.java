@@ -11,10 +11,11 @@ import com.starfishst.bot.util.SimpleMath;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Exclude;
-import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedQuery;
+import com.starfishst.core.annotations.Multiple;
+import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.core.utils.Strings;
 import java.util.HashMap;
@@ -65,7 +66,8 @@ public class InvoiceCommand {
       AllowedTicketManagerChecker checker,
       TextChannel channel,
       @Required(name = "subtotal", description = "The subtotal of the service") double subtotal,
-      @Required(name = "service", description = "The service applying") JoinedStrings strings) {
+      @Required(name = "service", description = "The service applying") @Multiple
+          JoinedStrings strings) {
     List<Fee> applyingFees = Configuration.getInstance().getApplyingFees(subtotal);
     double total = SimpleMath.getTotal(subtotal, applyingFees);
     Ticket ticket = TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());

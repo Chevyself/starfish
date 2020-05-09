@@ -16,10 +16,11 @@ import com.starfishst.bot.util.SimpleMath;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Exclude;
-import com.starfishst.commands.annotations.Required;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedQuery;
+import com.starfishst.core.annotations.Multiple;
+import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +46,8 @@ public class EnhancedInvoice {
       AllowedTicketManagerChecker checker,
       TextChannel channel,
       @Required(name = "subtotal", description = "The subtotal of the service") double subtotal,
-      @Required(name = "service", description = "The service applying") JoinedStrings service)
+      @Required(name = "service", description = "The service applying") @Multiple
+          JoinedStrings service)
       throws PayPalRESTException {
     Ticket ticket = TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());
     if (ticket != null) {

@@ -4,7 +4,7 @@ import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.objects.freelancers.Freelancer;
 import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.commands.context.CommandContext;
-import com.starfishst.core.ICommandManager;
+import com.starfishst.commands.providers.registry.ImplProvidersRegistry;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.core.providers.type.IArgumentProvider;
 import java.util.HashMap;
@@ -26,8 +26,7 @@ public class FreelancerProvider implements IArgumentProvider<Freelancer, Command
   @Override
   public Freelancer fromString(@NotNull String s, @NotNull CommandContext context)
       throws ArgumentProviderException {
-    IArgumentProvider<?, CommandContext> provider = ICommandManager.getNormalProvider(Member.class);
-    Object object = provider.fromString(s, context);
+    Object object = ImplProvidersRegistry.getInstance().fromString(s, Member.class, context);
     if (object instanceof Member) {
       Member member = (Member) object;
       Freelancer freelancer =
