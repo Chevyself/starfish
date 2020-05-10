@@ -17,6 +17,7 @@ import com.starfishst.core.utils.Maps;
 import com.starfishst.core.utils.Strings;
 import com.starfishst.simple.files.FileUtils;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +25,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-import javax.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,6 +32,7 @@ import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfigurat
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -80,6 +81,43 @@ public class Payments implements ErrorController {
     pages.put("confirm", getPage("confirm"));
     pages.put("error", getPage("error"));
     pages.put("not-found", getPage("not-found"));
+    pages.put("index", getPage("index"));
+    registerExtraPages();
+  }
+
+  /**
+   * Registers the extra pages that are inside the directory ./pages/
+   *
+   * @throws IOException in case a file could not be loaded
+   */
+  private static void registerExtraPages() throws IOException {
+    File pageDirectory =
+        FileUtils.getFile(FileUtils.getCurrentDirectory() + File.separator + "page");
+    if (pageDirectory.exists() && pageDirectory.isDirectory()) {
+      File[] files = pageDirectory.listFiles();
+      if (files != null) {
+        for (File file : files) {
+          String name = file.getName().toLowerCase();
+          if (name.endsWith(".html")) {
+            name = name.replace(".html", "");
+            if (isNotIgnored(name)) {
+              pages.put(name, getPage(name));
+              Console.info(name + ".html has also been registered");
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Checks if a page should be registered
+   *
+   * @param name the name of the page
+   * @return true if it should be registered
+   */
+  private static boolean isNotIgnored(@NotNull String name) {
+    return !pages.containsKey(name);
   }
 
   /**
@@ -116,7 +154,8 @@ public class Payments implements ErrorController {
    */
   @NotNull
   public static String getPage(@NotNull String name) throws IOException {
-    InputStream stream = new FileInputStream(FileUtils.getFileOrResource("page/" + name + ".html"));
+    InputStream stream =
+        new FileInputStream(FileUtils.getFileOrResource("page" + File.separator + name + ".html"));
     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
     StringBuilder builder = Strings.getBuilder();
     while (reader.ready()) {
@@ -210,12 +249,37 @@ public class Payments implements ErrorController {
   /**
    * In case of an error this page will be shown
    *
-   * @param request the request that committed an error
    * @return the html response
    */
   @GetMapping("/error")
-  public String error(HttpServletRequest request) {
+  public String error() {
     return pages.get("not-found");
+  }
+
+  /**
+   * Get a custom page
+   *
+   * @param name of the custom page
+   * @return the page if found else {@link #error()}
+   */
+  @GetMapping("/{name}")
+  public String custom(@PathVariable String name) {
+    name = name.toLowerCase();
+    if (pages.containsKey(name)) {
+      return pages.get(name);
+    } else {
+      return error();
+    }
+  }
+
+  /**
+   * The mapping for the landing page
+   *
+   * @return the landing page
+   */
+  @GetMapping("/")
+  public String index() {
+    return pages.get("index");
   }
 
   /**
