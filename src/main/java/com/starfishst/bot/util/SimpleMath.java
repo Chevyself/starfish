@@ -32,7 +32,7 @@ public class SimpleMath {
    */
   @NotNull
   public static String twoDecimalsFormat(double toFormat) {
-    return String.format("%.02f", toFormat);
+    return String.format("%.2f", toFormat);
   }
 
   /**
