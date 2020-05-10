@@ -70,7 +70,7 @@ public class QuestionsHandler {
    */
   @NotNull
   public static File getFile(@NotNull String name) throws IOException {
-    return FileUtils.getFileOrResource("questions/" + name + ".json");
+    return FileUtils.getFileOrResource("questions" + File.separator + name + ".json");
   }
 
   /**

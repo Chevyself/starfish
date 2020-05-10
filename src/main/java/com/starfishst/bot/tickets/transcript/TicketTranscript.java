@@ -32,7 +32,7 @@ public class TicketTranscript extends Catchable {
   public TicketTranscript(@NotNull Ticket ticket) throws IOException {
     super(new Time(30, Unit.MINUTES));
     this.ticket = ticket;
-    this.url = FileUtils.getCurrentDirectory() + "\\transcripts\\";
+    this.url = FileUtils.getCurrentDirectory() + File.separator + "transcripts" + File.separator;
     File logsDirectory = new File(url);
     if (!logsDirectory.exists()) {
       if (!logsDirectory.mkdir()) {

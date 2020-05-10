@@ -56,7 +56,6 @@ import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.Catchable;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.simple.config.JsonConfiguration;
-import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.gson.GsonProvider;
 import com.starfishst.simple.logging.LoggerUncaughtExceptionHandler;
 import java.awt.*;
@@ -171,9 +170,7 @@ public class Main {
       GsonProvider.addAdapter(Time.class, new TimeAdapter());
       GsonProvider.addAdapter(User.class, new UserAdapter());
       GsonProvider.refresh();
-      configuration =
-          JsonConfiguration.getInstance(
-              FileUtils.getFileOrResource("config.json"), Configuration.class);
+      configuration = JsonConfiguration.getInstance("config.json", Configuration.class);
       Console.info("Configuration setup has been completed");
     } catch (IOException e) {
       Console.log(Level.SEVERE, e);
@@ -460,6 +457,7 @@ public class Main {
    *
    * @return the list of tasks
    */
+  @NotNull
   public static List<TimerTask> getTasks() {
     return tasks;
   }

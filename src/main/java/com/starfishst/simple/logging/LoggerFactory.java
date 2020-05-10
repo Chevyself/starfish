@@ -46,7 +46,7 @@ public class LoggerFactory {
   @NotNull
   public static FileHandler getFileHandler(@NotNull Formatter formatter, @Nullable String url)
       throws IOException {
-    String path = FileUtils.getCurrentDirectory() + "\\logs\\";
+    String path = FileUtils.getCurrentDirectory() + File.separator + "logs" + File.separator;
     File logsDirectory = new File(path);
     if (!logsDirectory.exists()) {
       if (!logsDirectory.mkdir()) {
