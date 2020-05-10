@@ -23,6 +23,7 @@ public class WelcomeListener {
       TextChannel channel =
           DiscordConfiguration.getInstance().getChannelByKey(Lang.get("CHANNEL_NAME_WELCOME"));
       HashMap<String, String> placeholders = new HashMap<>();
+      placeholders.put("username", event.getMember().getEffectiveName());
       placeholders.put("user", event.getMember().getAsMention());
       Messages.create(
               "WELCOME_MESSAGE_TITLE", "WELCOME_MESSAGE_DESCRIPTION", placeholders, placeholders)
