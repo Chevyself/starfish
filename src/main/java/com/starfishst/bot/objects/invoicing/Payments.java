@@ -35,6 +35,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * This class handles all the requests made to the server from PayPal
@@ -44,7 +47,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @RestController
-public class Payments implements ErrorController {
+@org.springframework.context.annotation.Configuration
+@EnableWebMvc
+public class Payments implements ErrorController, WebMvcConfigurer {
 
   /** The pages and their html */
   @NotNull private static final HashMap<String, String> pages = new HashMap<>();
@@ -296,5 +301,19 @@ public class Payments implements ErrorController {
   @Override
   public String getErrorPath() {
     return "/error";
+  }
+
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry
+        .addResourceHandler("/files/**")
+        .addResourceLocations(
+            "file:"
+                + FileUtils.getCurrentDirectory()
+                + File.separator
+                + "page"
+                + File.separator
+                + "files"
+                + File.separator);
   }
 }
