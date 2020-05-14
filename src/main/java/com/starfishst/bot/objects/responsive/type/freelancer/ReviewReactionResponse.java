@@ -54,7 +54,7 @@ public abstract class ReviewReactionResponse implements ReactionResponse {
           ResponsiveMessage responsiveMessage =
               Configuration.getInstance().getResponsiveMessage(event.getMessageIdLong());
           if (responsiveMessage != null) {
-            Configuration.getInstance().removeResponsiveMessage(responsiveMessage);
+            responsiveMessage.remove();
           }
         }
       }

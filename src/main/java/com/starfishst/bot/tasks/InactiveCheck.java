@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +42,7 @@ public class InactiveCheck extends TimerTask {
             .filter(
                 responsiveMessage ->
                     responsiveMessage instanceof InactiveCheckResponsiveMessage
-                        && ((InactiveCheckResponsiveMessage) responsiveMessage).getTicket()
+                        && ((InactiveCheckResponsiveMessage) responsiveMessage).getTicketId()
                             == ticketId)
             .findFirst()
             .orElse(null);
@@ -50,32 +51,33 @@ public class InactiveCheck extends TimerTask {
   @Override
   public void run() {
     try {
+      Configuration config = Configuration.getInstance();
       DiscordConfiguration discConfig = DiscordConfiguration.getInstance();
-      discConfig
-          .getGuild()
+      Guild guild = discConfig.getGuild();
+      guild
           .getTextChannels()
           .forEach(
               channel -> {
-                Ticket ticket =
-                    TicketManager.getInstance().getLoader().getTicketByChannel(channel.getIdLong());
-                if (ticket != null && ticket.getStatus() == TicketStatus.OPEN) {
-                  InactiveCheckResponsiveMessage responsiveMessage =
-                      getResponsiveMessage(ticket.getId());
-                  Configuration config = Configuration.getInstance();
-                  HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
-                  if (responsiveMessage == null) {
-                    // If the message is null check if you are able to create one
-                    channel
-                        .getHistory()
-                        .retrievePast(1)
-                        .queue(
-                            messages ->
-                                messages.forEach(
-                                    message -> {
-                                      if (message
-                                          .getTimeCreated()
-                                          .isBefore(
-                                              config.getInactiveTime().previousDateOffset())) {
+                channel
+                    .getHistory()
+                    .retrievePast(1)
+                    .queue(
+                        messages ->
+                            messages.forEach(
+                                message -> {
+                                  if (message
+                                      .getTimeCreated()
+                                      .isBefore(config.getInactiveTime().previousDateOffset())) {
+                                    Ticket ticket =
+                                        TicketManager.getInstance()
+                                            .getLoader()
+                                            .getTicketByChannel(channel.getIdLong());
+                                    if (ticket != null && ticket.getStatus() == TicketStatus.OPEN) {
+                                      HashMap<String, String> placeholders =
+                                          Tickets.getPlaceholders(ticket);
+                                      InactiveCheckResponsiveMessage responsiveMessage =
+                                          getResponsiveMessage(ticket.getId());
+                                      if (responsiveMessage == null) {
                                         Messages.create(
                                                 "INACTIVITY_CHECK_TITLE",
                                                 "INACTIVITY_CHECK_DESCRIPTION",
@@ -91,53 +93,58 @@ public class InactiveCheck extends TimerTask {
                                                         new ArrayList<>(),
                                                         false));
                                       }
-                                    }));
-                  } else {
-                    if (!responsiveMessage.isFinished()
-                        && responsiveMessage
-                            .getCreatedAtDate()
-                            .isBefore(config.getTimeToFinishInactiveTest().previousDate())) {
-                      responsiveMessage.finish();
-
-                      List<Member> notReacted = new ArrayList<>();
-                      channel
-                          .getPermissionOverrides()
-                          .forEach(
-                              permissionOverride -> {
-                                if (permissionOverride.getMember() != null) {
-                                  notReacted.add(permissionOverride.getMember());
-                                }
-                              });
-
-                      try {
-                        placeholders.put(
-                            "notReacted", Lots.pretty(Discord.getAsMention(notReacted)));
-                        discConfig
-                            .getGuild()
-                            .getMembersWithRoles(
-                                discConfig.getRolesByKeys(
-                                    discConfig.getRolesKeys("sendInactiveCheck")))
-                            .forEach(
-                                member -> {
-                                  System.out.println(member.getUser());
-                                  member
-                                      .getUser()
-                                      .openPrivateChannel()
-                                      .queue(
-                                          privateChannel ->
-                                              Messages.create(
-                                                      "INACTIVITY_CHECK_RESULT_TITLE",
-                                                      "INACTIVITY_CHECK_RESULT_DESCRIPTION",
-                                                      placeholders,
-                                                      placeholders)
-                                                  .send(privateChannel));
-                                });
-                      } catch (DiscordManipulationException e) {
-                        Messages.error(e.getMessage()).send(channel);
-                      }
-                    }
-                  }
-                }
+                                    }
+                                  }
+                                }));
+                config
+                    .getResponsiveMessages()
+                    .forEach(
+                        message -> {
+                          if (message instanceof InactiveCheckResponsiveMessage) {
+                            InactiveCheckResponsiveMessage responsiveMessage =
+                                (InactiveCheckResponsiveMessage) message;
+                            if (!responsiveMessage.isFinished()
+                                && responsiveMessage
+                                    .getCreatedAtDate()
+                                    .isBefore(
+                                        config.getTimeToFinishInactiveTest().previousDate())) {
+                              responsiveMessage.finish();
+                              if (responsiveMessage.getTicket() != null) {
+                                HashMap<String, String> placeholders =
+                                    Tickets.getPlaceholders(responsiveMessage.getTicket());
+                                List<Member> notReacted = new ArrayList<>();
+                                channel
+                                    .getPermissionOverrides()
+                                    .forEach(
+                                        permissionOverride -> {
+                                          if (permissionOverride.getMember() != null) {
+                                            notReacted.add(permissionOverride.getMember());
+                                          }
+                                        });
+                                placeholders.put(
+                                    "notReacted", Lots.pretty(Discord.getAsMention(notReacted)));
+                                guild
+                                    .getMembersWithRoles(
+                                        discConfig.getRolesByKeys(
+                                            discConfig.getRolesKeys("sendInactiveCheck")))
+                                    .forEach(
+                                        member ->
+                                            member
+                                                .getUser()
+                                                .openPrivateChannel()
+                                                .queue(
+                                                    privateChannel ->
+                                                        Messages.create(
+                                                                "INACTIVITY_CHECK_RESULT_TITLE",
+                                                                "INACTIVITY_CHECK_RESULT_DESCRIPTION",
+                                                                placeholders,
+                                                                placeholders)
+                                                            .send(privateChannel)));
+                              }
+                              responsiveMessage.remove();
+                            }
+                          }
+                        });
               });
     } catch (DiscordManipulationException ignored) {
 

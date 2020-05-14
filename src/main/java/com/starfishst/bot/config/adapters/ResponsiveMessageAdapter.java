@@ -75,7 +75,7 @@ public class ResponsiveMessageAdapter
             (InactiveCheckResponsiveMessage) responsiveMessage;
         object.addProperty("createdAt", checkResponsiveMessage.getCreatedAt());
         object.addProperty("finished", checkResponsiveMessage.isFinished());
-        object.addProperty("ticket", checkResponsiveMessage.getTicket());
+        object.addProperty("ticket", checkResponsiveMessage.getTicketId());
         object.add("reacted", context.serialize(checkResponsiveMessage.getReacted()));
 
         break;

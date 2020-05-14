@@ -3,6 +3,8 @@ package com.starfishst.bot.objects.responsive.type.inactive;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.objects.responsive.ResponsiveMessageType;
+import com.starfishst.bot.tickets.TicketManager;
+import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Unicode;
 import com.starfishst.core.utils.time.TimeUtils;
 import com.starfishst.simple.Lots;
@@ -11,6 +13,7 @@ import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** This is the message send when an inactivity check starts */
 public class InactiveCheckResponsiveMessage extends ResponsiveMessage {
@@ -114,7 +117,7 @@ public class InactiveCheckResponsiveMessage extends ResponsiveMessage {
    *
    * @return the id of the ticket that is inactive
    */
-  public long getTicket() {
+  public long getTicketId() {
     return ticket;
   }
 
@@ -134,5 +137,15 @@ public class InactiveCheckResponsiveMessage extends ResponsiveMessage {
    */
   public boolean isFinished() {
     return finished;
+  }
+
+  /**
+   * Get the ticket using {@link #ticket}
+   *
+   * @return the ticket that matches the id
+   */
+  @Nullable
+  public Ticket getTicket() {
+    return TicketManager.getInstance().getLoader().getTicket(ticket);
   }
 }
