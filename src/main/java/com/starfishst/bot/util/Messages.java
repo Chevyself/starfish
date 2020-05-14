@@ -299,4 +299,26 @@ public class Messages {
       fields.put(Lang.get("FREELANCER"), user == null ? "Null" : user.getAsMention());
     }
   }
+
+  /**
+   * Create a message to tell freelancers that {@link FreelancingTicket} is claimed
+   *
+   * @param ticket the ticket that is now claimed
+   * @param titleKey the key of the title of the embed
+   * @param descriptionKey the key of the description of the embed
+   * @return the message query
+   */
+  public static MessageQuery claimed(
+      @NotNull QuestionsTicket ticket, String titleKey, String descriptionKey) {
+    MessageBuilder builder = MessagesFactory.getMessageBuilder();
+    ManagerOptions options = Main.getCommandManager().getManagerOptions();
+    Color color = ResultType.GENERIC.getColor(options);
+    HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
+    appendRoleTags(ticket, builder);
+    EmbedBuilder embedBuilder = announceEmbed(ticket).getEmbedBuilder();
+    embedBuilder.setTitle(Lang.get(titleKey, placeholders));
+    embedBuilder.setDescription(Lang.get(descriptionKey, placeholders));
+    embedBuilder.setColor(color);
+    return new MessageQuery(builder.setEmbed(embedBuilder.build()));
+  }
 }

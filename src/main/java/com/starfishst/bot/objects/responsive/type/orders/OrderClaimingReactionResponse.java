@@ -10,6 +10,7 @@ import com.starfishst.bot.tickets.loader.TicketLoader;
 import com.starfishst.bot.tickets.type.Order;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Unicode;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,10 +30,16 @@ public class OrderClaimingReactionResponse implements ReactionResponse {
     if (order != null && freelancer != null) {
       try {
         if (order.setFreelancer(freelancer)) {
-          event
-              .getChannel()
+          TextChannel channel = event.getChannel();
+          channel
               .removeReactionById(
                   event.getMessageIdLong(), getUnicode(), event.getJDA().getSelfUser())
+              .queue();
+          channel
+              .editMessageById(
+                  event.getMessageIdLong(),
+                  Messages.claimed(order, "ORDER_CLAIMED_TITLE", "ORDER_CLAIMED_DESCRIPTION")
+                      .getMessage())
               .queue();
         }
       } catch (FreelancerJoinTicketException | DiscordManipulationException e) {
