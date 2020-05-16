@@ -124,6 +124,7 @@ public class QuestionTicketListener {
             questionsTicket.refresh().onDone();
           } else {
             questionsTicket.refresh();
+            question = questions.get(questionsTicket.getCurrent());
             if (question instanceof QuestionInformation) {
               Messages.create(question.getBuiltTitle(), question.getBuiltDescription())
                   .send(event.getChannel());

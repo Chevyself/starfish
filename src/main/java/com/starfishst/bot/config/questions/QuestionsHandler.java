@@ -82,7 +82,6 @@ public class QuestionsHandler {
    */
   @NotNull
   public List<Question> getQuestions(@NotNull TicketType type) {
-    System.out.println("Getting question for " + type);
     switch (type) {
       case APPLY:
         return apply.getQuestions();
@@ -109,7 +108,6 @@ public class QuestionsHandler {
    */
   @NotNull
   public static QuestionsHandler getInstance() {
-    System.out.println(instance + " question handler");
     return instance;
   }
 }
