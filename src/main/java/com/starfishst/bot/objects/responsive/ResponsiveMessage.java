@@ -135,6 +135,11 @@ public class ResponsiveMessage {
     reactions.add(response);
   }
 
+  /** Removes a responsive message from the config */
+  public void remove() {
+    Configuration.getInstance().removeResponsiveMessage(this);
+  }
+
   @Override
   public String toString() {
     return "ResponsiveMessage{" + "type=" + type + ", id=" + id + '}';

@@ -10,6 +10,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.objects.questions.QuestionImage;
+import com.starfishst.bot.objects.questions.QuestionInformation;
 import com.starfishst.bot.objects.questions.QuestionRole;
 import com.starfishst.core.utils.Validate;
 import java.lang.reflect.Type;
@@ -56,7 +57,9 @@ public class QuestionAdapter implements JsonDeserializer<Question>, JsonSerializ
                 "Questions must have a limit. In: " + object)
             .getAsInt();
 
-    if (simple.toLowerCase().startsWith("image")) {
+    if (simple.toLowerCase().startsWith("info")) {
+      return new QuestionInformation(title, simple, description, limit);
+    } else if (simple.toLowerCase().startsWith("image")) {
       return new QuestionImage(title, simple, description, limit);
     } else if (object.get("role") != null) {
       return new QuestionRole(title, simple, description, object.get("role").getAsString(), limit);

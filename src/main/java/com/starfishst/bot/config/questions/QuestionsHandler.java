@@ -82,7 +82,6 @@ public class QuestionsHandler {
    */
   @NotNull
   public List<Question> getQuestions(@NotNull TicketType type) {
-    System.out.println("Getting question for " + type);
     switch (type) {
       case APPLY:
         return apply.getQuestions();
@@ -98,8 +97,7 @@ public class QuestionsHandler {
       case SUGGESTION:
         return suggestion.getQuestions();
       default:
-        String error = type + " is not a valid type for questions";
-        throw new IllegalArgumentException(error);
+        throw new IllegalArgumentException(type + " is not a valid type for questions");
     }
   }
 
@@ -110,7 +108,6 @@ public class QuestionsHandler {
    */
   @NotNull
   public static QuestionsHandler getInstance() {
-    System.out.println(instance + " question handler");
     return instance;
   }
 }
