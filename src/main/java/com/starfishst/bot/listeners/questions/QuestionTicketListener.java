@@ -8,6 +8,7 @@ import com.starfishst.bot.objects.questions.Answer;
 import com.starfishst.bot.objects.questions.ImageAnswer;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.objects.questions.QuestionImage;
+import com.starfishst.bot.objects.questions.QuestionInformation;
 import com.starfishst.bot.objects.questions.QuestionRole;
 import com.starfishst.bot.objects.questions.RoleAnswer;
 import com.starfishst.bot.objects.questions.StringAnswer;
@@ -123,14 +124,23 @@ public class QuestionTicketListener {
             questionsTicket.refresh().onDone();
           } else {
             questionsTicket.refresh();
-            question = questions.get(questionsTicket.getCurrent());
-            sendNextMessage(
-                questionsTicket.getId(),
-                event.getChannel(),
-                Messages.create(question.getBuiltTitle(), question.getBuiltDescription())
-                    .getAsMessageQuery()
-                    .getMessage(),
-                null);
+            if (question instanceof QuestionInformation) {
+              Messages.create(question.getBuiltTitle(), question.getBuiltDescription())
+                  .send(event.getChannel());
+              questionsTicket.setCurrent(questionsTicket.getCurrent() + 1);
+            }
+            if (questionsTicket.getCurrent() >= questions.size()) {
+              questionsTicket.refresh().onDone();
+            } else {
+              question = questions.get(questionsTicket.getCurrent());
+              sendNextMessage(
+                  questionsTicket.getId(),
+                  event.getChannel(),
+                  Messages.create(question.getBuiltTitle(), question.getBuiltDescription())
+                      .getAsMessageQuery()
+                      .getMessage(),
+                  null);
+            }
           }
         }
       } else {

@@ -98,8 +98,7 @@ public class QuestionsHandler {
       case SUGGESTION:
         return suggestion.getQuestions();
       default:
-        String error = type + " is not a valid type for questions";
-        throw new IllegalArgumentException(error);
+        throw new IllegalArgumentException(type + " is not a valid type for questions");
     }
   }
 
