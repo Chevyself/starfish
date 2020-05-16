@@ -80,121 +80,123 @@ public class InactiveCheck extends TimerTask {
       Configuration config = Configuration.getInstance();
       DiscordConfiguration discConfig = DiscordConfiguration.getInstance();
       Guild guild = discConfig.getGuild();
-      guild
-          .getTextChannels()
+      guild.getTextChannels().stream()
+          .filter(channel -> !isIgnored(channel))
           .forEach(
-              channel -> {
-                if (isIgnored(channel)) return;
-                channel
-                    .getHistory()
-                    .retrievePast(1)
-                    .queue(
-                        messages ->
-                            messages.forEach(
-                                message -> {
-                                  if (message
-                                      .getTimeCreated()
-                                      .isBefore(config.getInactiveTime().previousDateOffset())) {
-                                    Ticket ticket =
-                                        TicketManager.getInstance()
-                                            .getLoader()
-                                            .getTicketByChannel(channel.getIdLong());
-                                    if (ticket != null && ticket.getStatus() == TicketStatus.OPEN) {
-                                      HashMap<String, String> placeholders =
-                                          Tickets.getPlaceholders(ticket);
-                                      InactiveCheckResponsiveMessage responsiveMessage =
-                                          getResponsiveMessage(ticket.getId());
-                                      if (responsiveMessage == null) {
-                                        Messages.create(
-                                                "INACTIVITY_CHECK_TITLE",
-                                                "INACTIVITY_CHECK_DESCRIPTION",
-                                                placeholders,
-                                                placeholders)
-                                            .send(
-                                                channel,
-                                                msg ->
-                                                    new InactiveCheckResponsiveMessage(
-                                                        msg,
-                                                        System.currentTimeMillis(),
-                                                        ticket.getId(),
-                                                        new ArrayList<>(),
-                                                        false));
+              channel ->
+                  channel
+                      .getHistory()
+                      .retrievePast(1)
+                      .queue(
+                          messages ->
+                              messages.forEach(
+                                  message -> {
+                                    if (message
+                                        .getTimeCreated()
+                                        .isBefore(config.getInactiveTime().previousDateOffset())) {
+                                      Ticket ticket =
+                                          TicketManager.getInstance()
+                                              .getLoader()
+                                              .getTicketByChannel(channel.getIdLong());
+                                      if (ticket != null
+                                          && ticket.getStatus() == TicketStatus.OPEN) {
+                                        HashMap<String, String> placeholders =
+                                            Tickets.getPlaceholders(ticket);
+                                        InactiveCheckResponsiveMessage responsiveMessage =
+                                            getResponsiveMessage(ticket.getId());
+                                        if (responsiveMessage == null) {
+                                          Messages.create(
+                                                  "INACTIVITY_CHECK_TITLE",
+                                                  "INACTIVITY_CHECK_DESCRIPTION",
+                                                  placeholders,
+                                                  placeholders)
+                                              .send(
+                                                  channel,
+                                                  msg ->
+                                                      new InactiveCheckResponsiveMessage(
+                                                          msg,
+                                                          System.currentTimeMillis(),
+                                                          ticket.getId(),
+                                                          new ArrayList<>(),
+                                                          false));
+                                        }
+                                      } else if (ticket != null
+                                          && ticket.getStatus() != TicketStatus.OPEN) {
+                                        new IgnoredChannel(
+                                            config.getInactiveTime(), channel.getIdLong());
+                                      } else {
+                                        new IgnoredChannel(
+                                            new Time(2, Unit.YEARS), channel.getIdLong());
                                       }
-                                    } else if (ticket != null) {
-                                      new IgnoredChannel(
-                                          config.getInactiveTime(), channel.getIdLong());
                                     } else {
-                                      new IgnoredChannel(
-                                          new Time(2, Unit.YEARS), channel.getIdLong());
+                                      Ticket ticket =
+                                          TicketManager.getInstance()
+                                              .getLoader()
+                                              .getTicketByChannel(channel.getIdLong());
+                                      if (ticket != null) {
+                                        new IgnoredChannel(
+                                            config
+                                                .getInactiveTime()
+                                                .sustract(
+                                                    TimeUtils.getTimeFromToday(
+                                                        message.getTimeCreated())),
+                                            channel.getIdLong());
+                                      } else {
+                                        new IgnoredChannel(
+                                            new Time(2, Unit.YEARS), channel.getIdLong());
+                                      }
                                     }
-                                  } else {
-                                    Ticket ticket =
-                                        TicketManager.getInstance()
-                                            .getLoader()
-                                            .getTicketByChannel(channel.getIdLong());
-                                    if (ticket != null) {
-                                      new IgnoredChannel(
-                                          config
-                                              .getInactiveTime()
-                                              .sustract(
-                                                  TimeUtils.getTimeFromToday(
-                                                      message.getTimeCreated())),
-                                          channel.getIdLong());
-                                    } else {
-                                      new IgnoredChannel(
-                                          new Time(2, Unit.YEARS), channel.getIdLong());
-                                    }
+                                  })));
+      config
+          .getResponsiveMessages()
+          .forEach(
+              message -> {
+                if (message instanceof InactiveCheckResponsiveMessage) {
+                  InactiveCheckResponsiveMessage responsiveMessage =
+                      (InactiveCheckResponsiveMessage) message;
+                  if (!responsiveMessage.isFinished()
+                      && responsiveMessage
+                          .getCreatedAtDate()
+                          .isBefore(config.getTimeToFinishInactiveTest().previousDate())) {
+                    responsiveMessage.finish();
+                    Ticket ticket = responsiveMessage.getTicket();
+                    if (ticket != null) {
+                      TextChannel channel = ticket.getChannel();
+                      if (channel != null) {
+                        HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
+                        List<Member> notReacted = new ArrayList<>();
+                        channel
+                            .getPermissionOverrides()
+                            .forEach(
+                                permissionOverride -> {
+                                  if (permissionOverride.getMember() != null) {
+                                    notReacted.add(permissionOverride.getMember());
                                   }
-                                }));
-                config
-                    .getResponsiveMessages()
-                    .forEach(
-                        message -> {
-                          if (message instanceof InactiveCheckResponsiveMessage) {
-                            InactiveCheckResponsiveMessage responsiveMessage =
-                                (InactiveCheckResponsiveMessage) message;
-                            if (!responsiveMessage.isFinished()
-                                && responsiveMessage
-                                    .getCreatedAtDate()
-                                    .isBefore(
-                                        config.getTimeToFinishInactiveTest().previousDate())) {
-                              responsiveMessage.finish();
-                              if (responsiveMessage.getTicket() != null) {
-                                HashMap<String, String> placeholders =
-                                    Tickets.getPlaceholders(responsiveMessage.getTicket());
-                                List<Member> notReacted = new ArrayList<>();
-                                channel
-                                    .getPermissionOverrides()
-                                    .forEach(
-                                        permissionOverride -> {
-                                          if (permissionOverride.getMember() != null) {
-                                            notReacted.add(permissionOverride.getMember());
-                                          }
-                                        });
-                                placeholders.put(
-                                    "notReacted", Lots.pretty(Discord.getAsMention(notReacted)));
-                                guild
-                                    .getMembersWithRoles(
-                                        discConfig.getRolesByKeys(
-                                            discConfig.getRolesKeys("sendInactiveCheck")))
-                                    .forEach(
-                                        member ->
-                                            member
-                                                .getUser()
-                                                .openPrivateChannel()
-                                                .queue(
-                                                    privateChannel ->
-                                                        Messages.create(
-                                                                "INACTIVITY_CHECK_RESULT_TITLE",
-                                                                "INACTIVITY_CHECK_RESULT_DESCRIPTION",
-                                                                placeholders,
-                                                                placeholders)
-                                                            .send(privateChannel)));
-                              }
-                              responsiveMessage.remove();
-                            }
-                          }
-                        });
+                                });
+                        placeholders.put(
+                            "notReacted", Lots.pretty(Discord.getAsMention(notReacted)));
+                        guild
+                            .getMembersWithRoles(
+                                discConfig.getRolesByKeys(
+                                    discConfig.getRolesKeys("sendInactiveCheck")))
+                            .forEach(
+                                member ->
+                                    member
+                                        .getUser()
+                                        .openPrivateChannel()
+                                        .queue(
+                                            privateChannel ->
+                                                Messages.create(
+                                                        "INACTIVITY_CHECK_RESULT_TITLE",
+                                                        "INACTIVITY_CHECK_RESULT_DESCRIPTION",
+                                                        placeholders,
+                                                        placeholders)
+                                                    .send(privateChannel)));
+                      }
+                    }
+                    responsiveMessage.remove();
+                  }
+                }
               });
     } catch (DiscordManipulationException ignored) {
 
@@ -228,9 +230,7 @@ public class InactiveCheck extends TimerTask {
     }
 
     @Override
-    public void onSecondsPassed() {
-      // Ignored
-    }
+    public void onSecondsPassed() {}
 
     @Override
     public void onRemove() {
