@@ -37,4 +37,4 @@ We use [Maven](https://maven.apache.org/) to manage the dependencies.
 **Optional (for automatic payments)**
 
 * Domain name
-*SSL Certificate in PKCS12 format
+* SSL Certificate in PKCS12 format
