@@ -27,3 +27,14 @@ We use [Maven](https://maven.apache.org/) to manage the dependencies.
   * Version: **2.2.6**
   * Documentation: [Website](https://spring.io/projects/spring-boot)
   * In case that the user doesn't want to use automatic payments it is not required
+  
+### Hosting requirements
+
+* Java 8
+* Mongo database
+* Discord application token
+
+**Optional (for automatic payments)**
+
+* Domain name
+*SSL Certificate in PKCS12 format
