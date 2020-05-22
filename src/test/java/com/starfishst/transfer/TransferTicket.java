@@ -30,8 +30,8 @@ public class TransferTicket {
 
     MongoTicketLoader loader =
         new MongoTicketLoader(
-            "mongodb+srv://Chevy:1004133609@starfish-ig1ce.mongodb.net/test?retryWrites=true&w=majority",
-            "Starfish-3-Test");
+            "-",
+            "-");
     loader.getDatabase().getCollection("tickets").insertOne(document);
     System.out.println("end");
   }
