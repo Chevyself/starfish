@@ -39,6 +39,12 @@ public class CustomFormatter extends Formatter {
       for (StackTraceElement element : record.getThrown().getStackTrace()) {
         builder.append(element.toString()).append("\n");
       }
+      if (record.getThrown().getCause() != null) {
+        builder.append(record.getThrown().getCause().getMessage()).append("\n");
+      }
+      for (StackTraceElement element : record.getThrown().getCause().getStackTrace()) {
+        builder.append(element.toString()).append("\n");
+      }
       placeholders.put("message", record.getThrown().getMessage());
       placeholders.put("stack", builder.toString());
     }
