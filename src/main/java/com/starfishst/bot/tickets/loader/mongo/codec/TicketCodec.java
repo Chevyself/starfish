@@ -12,6 +12,7 @@ import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.bot.tickets.type.Apply;
 import com.starfishst.bot.tickets.type.CheckOut;
+import com.starfishst.bot.tickets.type.EmptyTicket;
 import com.starfishst.bot.tickets.type.Order;
 import com.starfishst.bot.tickets.type.Product;
 import com.starfishst.bot.tickets.type.Quote;
@@ -142,6 +143,8 @@ public class TicketCodec implements Codec<Ticket> {
         return new Suggestion(id, user, status, channel, details, payments);
       case REPORT:
         return new Report(id, user, status, channel, details, payments);
+      case TICKET:
+        return new EmptyTicket(id, user, status, channel, payments);
       default:
         throw new IllegalArgumentException(type + " is not a valid type");
     }

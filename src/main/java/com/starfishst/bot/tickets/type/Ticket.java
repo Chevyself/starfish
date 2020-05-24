@@ -82,7 +82,7 @@ public abstract class Ticket extends Catchable {
    * Saves the ticket into the database. If the channel of the ticket is deleted it will be
    * considered as a trash ticket and will be given the {@link TicketStatus#CLOSED}
    */
-  private void save() {
+  public void save() {
     if (channel == null && status == TicketStatus.OPEN) {
       status = TicketStatus.CLOSED;
     }

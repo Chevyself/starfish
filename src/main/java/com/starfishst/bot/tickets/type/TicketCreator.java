@@ -2,6 +2,7 @@ package com.starfishst.bot.tickets.type;
 
 import com.starfishst.bot.listeners.questions.QuestionTicketListener;
 import com.starfishst.bot.objects.responsive.type.ticket.TicketCreatorResponsiveMessage;
+import com.starfishst.bot.tickets.TicketManager;
 import com.starfishst.bot.tickets.TicketStatus;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Messages;
@@ -64,6 +65,15 @@ public class TicketCreator extends Ticket {
                 + (this.channel == null));
       }
     }
+  }
+
+  @Override
+  public void save() {
+    TicketManager.getInstance()
+        .getLoader()
+        .saveTicket(
+            new EmptyTicket(
+                this.id, this.user, TicketStatus.CLOSED, this.channel, this.getPayments()));
   }
 
   @Override
