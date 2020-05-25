@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -27,7 +26,7 @@ public class FileUtils {
    * @throws FileNotFoundException if the file is not found
    */
   @NotNull
-  public static File getFile(String url) throws FileNotFoundException {
+  public static File getFile(@NotNull String url) throws FileNotFoundException {
     final File file = new File(url);
     if (file.exists()) {
       return file;
@@ -121,7 +120,7 @@ public class FileUtils {
    * @throws FileNotFoundException if the file is not null
    */
   @NotNull
-  public static Reader getReader(@NotNull File file) throws FileNotFoundException {
+  public static BufferedReader getReader(@NotNull File file) throws FileNotFoundException {
     return new BufferedReader(new FileReader(file));
   }
 }
