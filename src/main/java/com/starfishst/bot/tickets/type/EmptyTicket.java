@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/** This is a ticket that was not created/completed */
 public class EmptyTicket extends Ticket {
 
   /**

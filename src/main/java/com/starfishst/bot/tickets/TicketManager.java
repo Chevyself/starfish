@@ -150,7 +150,10 @@ public class TicketManager {
     List<Ticket> tickets =
         Tickets.getTicketsMatchingStatus(
             loader.getTickets(creator.getUser()), TicketStatus.OPEN, TicketStatus.CREATING);
-    if (parent != null && parent.getType() == TicketType.TICKET_CREATOR) {
+    if (parent != null && parent.getType() == TicketType.TICKET_CREATOR
+        || parent != null
+            && parent.getType() == TicketType.ORDER
+            && parent.getStatus() == TicketStatus.CREATING) {
       tickets.remove(parent);
     }
     if (tickets.size() >= (Configuration.getInstance().getOpenTicketsByUserLimit())) {

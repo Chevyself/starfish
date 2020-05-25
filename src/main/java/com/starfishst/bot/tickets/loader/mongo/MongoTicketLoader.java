@@ -169,7 +169,7 @@ public class MongoTicketLoader implements TicketLoader {
    * @return the ticket built from the document
    */
   @NotNull
-  private Ticket getTicketFromDocument(@NotNull Document document) {
+  public Ticket getTicketFromDocument(@NotNull Document document) {
     Codec<Ticket> codec = getCodecRegistry().get(Ticket.class);
     BsonReader reader = new JsonReader(document.toJson());
     return codec.decode(reader, DecoderContext.builder().build());

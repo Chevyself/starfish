@@ -36,9 +36,27 @@ import org.bson.codecs.Codec;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.jetbrains.annotations.NotNull;
 
 /** Decode and encode {@link Ticket} for mongo */
 public class TicketCodec implements Codec<Ticket> {
+
+  /**
+   * Get a long from either numeric type
+   *
+   * @param reader the reader to get the long from
+   * @return the read long
+   */
+  public long getLongFrom32or64(@NotNull BsonReader reader) {
+    BsonType type = reader.getCurrentBsonType();
+    if (type == BsonType.INT32) {
+      return reader.readInt32();
+    } else if (type == BsonType.INT64) {
+      return reader.readInt64();
+    } else {
+      throw new IllegalArgumentException(type + " cannot be used to get longs!");
+    }
+  }
 
   @Override
   public Ticket decode(BsonReader reader, DecoderContext context) {
@@ -60,7 +78,7 @@ public class TicketCodec implements Codec<Ticket> {
     while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
       String fieldName = reader.readName();
       if (fieldName.equalsIgnoreCase("id")) {
-        id = reader.readInt64();
+        id = getLongFrom32or64(reader);
       } else if (fieldName.equalsIgnoreCase("user")) {
         user = context.decodeWithChildContext(codecRegistry.get(UserImpl.class), reader);
       } else if (fieldName.equalsIgnoreCase("status")) {

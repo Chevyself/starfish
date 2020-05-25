@@ -8,6 +8,7 @@ import com.starfishst.bot.commands.FreelancerCommands;
 import com.starfishst.bot.commands.HelpCommands;
 import com.starfishst.bot.commands.ModerationCommands;
 import com.starfishst.bot.commands.RemoveCommands;
+import com.starfishst.bot.commands.ScanCommand;
 import com.starfishst.bot.commands.SetCommand;
 import com.starfishst.bot.commands.TicketsCommand;
 import com.starfishst.bot.commands.invoices.EnhancedInvoice;
@@ -99,7 +100,7 @@ public class Main {
   /** The command manager for command listening */
   @Nullable private static CommandManager commandManager;
   /** If the ticket is stopping it will be true */
-  private static boolean stoppig = false;
+  private static boolean stopping = false;
   /** The tasks that are running in the bot */
   @NotNull private static final List<TimerTask> tasks = new ArrayList<>();
 
@@ -109,6 +110,11 @@ public class Main {
    * @param args there's no args which can be used to start the bot
    */
   public static void main(String[] args) {
+    String javaVer = System.getProperty("java.version");
+    if (!javaVer.startsWith("1.8")) {
+      System.out.println("Please run the bot in java 8. You are running in java " + javaVer);
+      System.exit(0);
+    }
     System.out.println("This messages wont be saved in the log file");
     Console.info("From now the messages will be saved in the log file");
     printInformation();
@@ -281,6 +287,7 @@ public class Main {
       commandManager.registerCommand(new TicketsCommand());
       commandManager.registerCommand(new FallbackCommands());
       commandManager.registerCommand(new CopyCommands());
+      commandManager.registerCommand(new ScanCommand(TicketManager.getInstance()));
       if (configuration.getPayments().isEnable()) {
         try {
           Payments.initialize();
@@ -354,7 +361,7 @@ public class Main {
   /** Stops the bot while saving the config */
   public static void stop() {
     try {
-      stoppig = true;
+      stopping = true;
       tasks.forEach(TimerTask::cancel);
       Console.info("Cleaning cache");
       Cache.getCache().forEach(Catchable::onRemove);
@@ -449,7 +456,7 @@ public class Main {
    * @return true if stopping
    */
   public static boolean isStopping() {
-    return stoppig;
+    return stopping;
   }
 
   /**
