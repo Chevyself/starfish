@@ -7,32 +7,38 @@ import com.starfishst.simple.Lots;
 import java.util.HashMap;
 import org.bson.Document;
 
+/**
+ * Creates a new ticket (Probably missing ticket)
+ */
 public class TransferTicket {
 
+  /**
+   * Main java
+   *
+   * @param args no ags
+   */
   public static void main(String[] args) {
     long id = 1211;
     long user = 423991301764153355L;
     TicketStatus status = TicketStatus.OPEN;
     TicketType type = TicketType.ORDER;
     HashMap<String, Object> details = new HashMap<>();
-    details.put("title", "Spawn");
+    details.put("title", "");
     details.put(
         "description",
-        " I need a builder to create a magical themed spawn with a medieval taste to it.");
-    details.put("roles", Lots.list(565632754318966785L));
-    details.put("budget", "40$");
-    details.put("time-frame", "ASAP");
+        "");
+    details.put("roles", Lots.list());
+    details.put("budget", "");
+    details.put("time-frame", "");
     Document document = new Document("id", id);
     document.put("user", user);
     document.put("status", status.toString());
     document.put("type", type.toString());
     document.put("details", details);
 
-    MongoTicketLoader loader =
-        new MongoTicketLoader(
-            "-",
-            "-");
+    MongoTicketLoader loader = new MongoTicketLoader("-", "-");
     loader.getDatabase().getCollection("tickets").insertOne(document);
     System.out.println("end");
   }
+
 }
