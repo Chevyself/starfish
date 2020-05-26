@@ -26,6 +26,7 @@ import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Exclude;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
+import com.starfishst.commands.utils.message.MessageQuery;
 import com.starfishst.core.annotations.Multiple;
 import com.starfishst.core.annotations.Optional;
 import com.starfishst.core.annotations.Required;
@@ -37,6 +38,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -204,8 +206,15 @@ public class FreelancerCommands {
             if (((Quote) ticket).countOffers(freelancer) < limit) {
               placeholders.put("offer", String.valueOf(quote));
               placeholders.put("quote", String.valueOf(quote));
-              Messages.create(
-                      "NEW_OFFER_TITLE", "NEW_OFFER_DESCRIPTION", placeholders, placeholders)
+              MessageBuilder builder =
+                  Messages.create(
+                          "NEW_OFFER_TITLE", "NEW_OFFER_DESCRIPTION", placeholders, placeholders)
+                      .getAsMessageQuery()
+                      .getBuilder();
+              if (ticket.getUser() != null) {
+                builder.append(ticket.getMember());
+              }
+              new MessageQuery(builder)
                   .send(
                       ticket.getChannel(),
                       msg ->
