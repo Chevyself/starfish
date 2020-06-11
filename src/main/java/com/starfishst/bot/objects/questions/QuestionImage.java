@@ -2,7 +2,7 @@ package com.starfishst.bot.objects.questions;
 
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.exception.TicketCreationException;
-import com.starfishst.core.utils.Maps;
+import com.starfishst.core.utils.maps.Maps;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.jetbrains.annotations.NotNull;
 

@@ -4,7 +4,7 @@ import com.starfishst.bot.Main;
 import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.messages.MessagesProvider;
 import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.utils.Maps;
+import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.core.utils.time.Time;
 import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
@@ -95,6 +95,11 @@ public class LangMessagesProvider implements MessagesProvider {
     placeHolders.put("description", s1);
     placeHolders.put("position", String.valueOf(i));
     return Lang.get("MISSING_ARGUMENT", placeHolders);
+  }
+
+  @Override
+  public @NotNull String invalidNumber(@NotNull String s, @NotNull CommandContext commandContext) {
+    return Lang.get("INVALID_NUMBER", Maps.singleton("string", s));
   }
 
   @Override

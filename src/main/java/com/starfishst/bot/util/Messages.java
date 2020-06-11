@@ -9,6 +9,7 @@ import com.starfishst.bot.objects.questions.RoleAnswer;
 import com.starfishst.bot.tickets.type.Apply;
 import com.starfishst.bot.tickets.type.FreelancingTicket;
 import com.starfishst.bot.tickets.type.QuestionsTicket;
+import com.starfishst.bot.tickets.type.Quote;
 import com.starfishst.bot.tickets.type.Report;
 import com.starfishst.bot.tickets.type.Support;
 import com.starfishst.bot.tickets.type.Ticket;
@@ -21,6 +22,7 @@ import com.starfishst.commands.utils.embeds.EmbedQuery;
 import com.starfishst.commands.utils.message.MessageQuery;
 import com.starfishst.commands.utils.message.MessagesFactory;
 import com.starfishst.core.utils.Lots;
+import com.starfishst.core.utils.Strings;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -186,17 +188,38 @@ public class Messages {
     Color color = ResultType.GENERIC.getColor(options);
     LinkedHashMap<String, String> fields = Tickets.getFields(ticket);
     String imageUrl = getImageUrl(ticket);
+    String footer = getAnnounceFooter(ticket);
     EmbedQuery embed =
         EmbedFactory.newEmbed(
             Lang.get("TICKET_ANNOUNCE_TITLE", placeholders),
             Lang.get("TICKET_ANNOUNCE_DESCRIPTION", placeholders),
             imageUrl,
             null,
-            Lang.get("FOOTER"),
+            footer,
             color,
             fields,
             true);
     return new EmbedQuery(embed.getEmbedBuilder());
+  }
+
+  /**
+   * Get the footer that is used in the announcement of a ticket
+   *
+   * @param ticket the ticket that is being announced
+   * @return the footer
+   */
+  private static String getAnnounceFooter(QuestionsTicket ticket) {
+    String init = Lang.get("FOOTER");
+    if (ticket instanceof Quote) {
+      StringBuilder builder = Strings.getBuilder().append(init);
+      String tip = Lang.get("QUOTE_TIP", Tickets.getPlaceholders(ticket));
+      if (!tip.isEmpty()) {
+        builder.append(tip);
+      }
+      return builder.toString();
+    } else {
+      return init;
+    }
   }
 
   /**

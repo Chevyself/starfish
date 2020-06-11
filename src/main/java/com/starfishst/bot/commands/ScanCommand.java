@@ -15,7 +15,7 @@ import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.Maps;
+import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.simple.Async;
 import java.util.ArrayList;
 import java.util.HashMap;

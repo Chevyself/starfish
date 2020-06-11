@@ -177,15 +177,19 @@ public class FreelancerCommands {
    *
    * @param freelancer the freelancer sending the quote
    * @param id the id of the quote
-   * @param quote the offer that the freelancer is sending
+   * @param strings the offer that the freelancer is sending
    * @return successful result if the quote is send ok
    */
-  @Command(aliases = "quote", description = "Sends a quote to an order")
+  @Command(
+      aliases = {"quote", "offer"},
+      description = "Sends a quote to an order")
   public Result quote(
       Freelancer freelancer,
       @Required(name = "id", description = "The id of the ticket") long id,
-      @Required(name = "quote", description = "The quote to send to the order") double quote) {
+      @Required(name = "quote", description = "The quote to send to the order") @Multiple
+          JoinedStrings strings) {
     Ticket ticket = TicketManager.getInstance().getLoader().getTicket(id);
+    String quote = strings.getString();
     if (!(ticket instanceof Quote)) {
       if (ticket != null) {
         return new Result(
@@ -204,8 +208,8 @@ public class FreelancerCommands {
             long limit = Configuration.getInstance().getLimitOfQuotes();
             HashMap<String, String> placeholders = Freelancers.getPlaceholders(freelancer);
             if (((Quote) ticket).countOffers(freelancer) < limit) {
-              placeholders.put("offer", String.valueOf(quote));
-              placeholders.put("quote", String.valueOf(quote));
+              placeholders.put("offer", quote);
+              placeholders.put("quote", quote);
               MessageBuilder builder =
                   Messages.create(
                           "NEW_OFFER_TITLE", "NEW_OFFER_DESCRIPTION", placeholders, placeholders)
@@ -221,9 +225,7 @@ public class FreelancerCommands {
                           ((Quote) ticket)
                               .addOffer(
                                   new Offer(
-                                      freelancer,
-                                      String.valueOf(quote),
-                                      new OfferAcceptResponsiveMessage(msg))));
+                                      freelancer, quote, new OfferAcceptResponsiveMessage(msg))));
               return new Result(
                   ResultType.GENERIC, Lang.get("OFFER_SENT", Tickets.getPlaceholders(ticket)));
             } else {
