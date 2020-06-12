@@ -1,0 +1,6 @@
+{
+  "name": "Test",
+  "version": "1.0.0",
+  "description": "A test addon",
+  "main": "com.starfishst.test.TestAddon"
+}
