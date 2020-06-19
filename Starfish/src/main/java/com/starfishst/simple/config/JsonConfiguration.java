@@ -1,9 +1,10 @@
 package com.starfishst.simple.config;
 
-import com.starfishst.simple.files.FileUtils;
+import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.simple.gson.GsonProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,9 +26,11 @@ public class JsonConfiguration {
    */
   @NotNull
   public static <T extends JsonConfiguration> T getInstance(@NotNull File file, Class<T> clazz)
-      throws FileNotFoundException {
-    T config = GsonProvider.GSON.fromJson(FileUtils.getReader(file), clazz);
+      throws IOException {
+    FileReader reader = CoreFiles.getReader(file);
+    T config = GsonProvider.GSON.fromJson(reader, clazz);
     config.setFile(file);
+    reader.close();
     return config;
   }
 
@@ -43,7 +46,7 @@ public class JsonConfiguration {
   @NotNull
   public static <T extends JsonConfiguration> T getInstance(@NotNull String name, Class<T> clazz)
       throws IOException {
-    return getInstance(FileUtils.getFileOrResource(name), clazz);
+    return getInstance(CoreFiles.getFileOrResource(CoreFiles.currentDirectory(), name), clazz);
   }
 
   /**

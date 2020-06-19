@@ -7,26 +7,6 @@ import org.jetbrains.annotations.NotNull;
 /** Methods for unicode usage */
 public class Unicode {
 
-  /** The unicode of :white_check_mark: */
-  @Deprecated @NotNull public static final String WHITE_CHECK_MARK = "U+2705";
-  /** The unicode of :hammer: */
-  @Deprecated @NotNull public static final String HAMMER = "U+1F528";
-  /** The unicode of :pencil: */
-  @Deprecated @NotNull public static final String MEMO = "U+1F4DD";
-  /** The unicode of :ticket: */
-  @Deprecated @NotNull public static final String TICKET = "U+1F3AB";
-
-  /** Unicode of :1: */
-  @Deprecated @NotNull public static final String ONE = "U+31U+20E3";
-  /** Unicode of :2: */
-  @Deprecated @NotNull public static final String TWO = "U+32U+20E3";
-  /** Unicode of :3: */
-  @Deprecated @NotNull public static final String THREE = "U+33U+20E3";
-  /** Unicode of :4: */
-  @Deprecated @NotNull public static final String FOUR = "U+34U+20E3";
-  /** Unicode of :5: */
-  @Deprecated @NotNull public static final String FIVE = "U+35U+20E3";
-
   /**
    * From a reaction event get the unicode of the emoji
    *

@@ -45,7 +45,6 @@ public class Console {
    *
    * @param msg the message to log
    */
-  @Deprecated
   public static void severe(String msg) {
     logger.severe(msg);
   }

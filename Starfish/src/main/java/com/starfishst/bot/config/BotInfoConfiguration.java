@@ -1,6 +1,6 @@
 package com.starfishst.bot.config;
 
-import com.starfishst.simple.files.FileUtils;
+import com.starfishst.core.utils.files.CoreFiles;
 import java.io.IOException;
 import java.util.Properties;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ public class BotInfoConfiguration {
    */
   public BotInfoConfiguration() throws IOException {
     properties = new Properties();
-    properties.load(FileUtils.getResource("bot-info.properties"));
+    properties.load(CoreFiles.getResource("bot-info.properties"));
   }
 
   /**

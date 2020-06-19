@@ -1,7 +1,7 @@
 package com.starfishst.simple.logging;
 
+import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.core.utils.time.TimeUtils;
-import com.starfishst.simple.files.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -46,7 +46,7 @@ public class LoggerFactory {
   @NotNull
   public static FileHandler getFileHandler(@NotNull Formatter formatter, @Nullable String url)
       throws IOException {
-    String path = FileUtils.getCurrentDirectory() + File.separator + "logs" + File.separator;
+    String path = CoreFiles.currentDirectory() + File.separator + "logs" + File.separator;
     File logsDirectory = new File(path);
     if (!logsDirectory.exists()) {
       if (!logsDirectory.mkdir()) {

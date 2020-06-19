@@ -4,8 +4,8 @@ import com.starfishst.bot.exception.QuestionsInitException;
 import com.starfishst.bot.objects.questions.Question;
 import com.starfishst.bot.tickets.TicketType;
 import com.starfishst.bot.util.Console;
+import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.simple.config.JsonConfiguration;
-import com.starfishst.simple.files.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -70,7 +70,7 @@ public class QuestionsHandler {
    */
   @NotNull
   public static File getFile(@NotNull String name) throws IOException {
-    return FileUtils.getFileOrResource("questions" + File.separator + name + ".json");
+    return CoreFiles.getFileOrResource("questions" + File.separator + name + ".json");
   }
 
   /**

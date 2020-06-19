@@ -137,7 +137,7 @@ public class InactiveCheck extends TimerTask {
                                         new IgnoredChannel(
                                             config
                                                 .getInactiveTime()
-                                                .sustract(
+                                                .subtract(
                                                     TimeUtils.getTimeFromToday(
                                                         message.getTimeCreated())),
                                             channel.getIdLong());

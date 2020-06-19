@@ -3,9 +3,9 @@ package com.starfishst.bot.tickets.transcript;
 import com.starfishst.bot.config.language.Lang;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.core.utils.cache.Catchable;
+import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
-import com.starfishst.simple.files.FileUtils;
 import com.starfishst.simple.logging.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class TicketTranscript extends Catchable {
   public TicketTranscript(@NotNull Ticket ticket) throws IOException {
     super(new Time(30, Unit.MINUTES));
     this.ticket = ticket;
-    this.url = FileUtils.getCurrentDirectory() + File.separator + "transcripts" + File.separator;
+    this.url = CoreFiles.currentDirectory() + File.separator + "transcripts" + File.separator;
     File logsDirectory = new File(url);
     if (!logsDirectory.exists()) {
       if (!logsDirectory.mkdir()) {
@@ -72,7 +72,7 @@ public class TicketTranscript extends Catchable {
    */
   @NotNull
   public File getFile() throws IOException {
-    return FileUtils.getFile(url);
+    return CoreFiles.getOrCreate(url);
   }
 
   @Override

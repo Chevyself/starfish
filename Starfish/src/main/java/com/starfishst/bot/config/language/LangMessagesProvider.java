@@ -103,6 +103,11 @@ public class LangMessagesProvider implements MessagesProvider {
   }
 
   @Override
+  public @NotNull String emptyDouble(@NotNull CommandContext commandContext) {
+    return Lang.get("INVALID-DOUBLE-EMPTY");
+  }
+
+  @Override
   public @NotNull String thumbnailUrl() {
     String thumbnail = Lang.get("THUMBNAIL");
     if (thumbnail.isEmpty() || thumbnail.equalsIgnoreCase("bot")) {

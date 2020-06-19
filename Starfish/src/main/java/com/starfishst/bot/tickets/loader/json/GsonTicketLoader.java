@@ -7,7 +7,7 @@ import com.starfishst.bot.tickets.type.Product;
 import com.starfishst.bot.tickets.type.Quote;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.core.utils.cache.Cache;
-import com.starfishst.simple.files.FileUtils;
+import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.simple.gson.GsonProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,7 +24,7 @@ public class GsonTicketLoader implements TicketLoader {
 
   @NotNull
   private final String path =
-      FileUtils.getCurrentDirectory() + File.separator + "tickets" + File.separator;
+      CoreFiles.currentDirectory() + File.separator + "tickets" + File.separator;
 
   /**
    * Gets a ticket from the stored json files
@@ -35,8 +35,10 @@ public class GsonTicketLoader implements TicketLoader {
   @Nullable
   private Ticket getTicketFromDatabase(long id) {
     try {
-      Reader reader = FileUtils.getReader(getTicketFile(id));
-      return GsonProvider.GSON.fromJson(reader, Ticket.class);
+      Reader reader = CoreFiles.getReader(getTicketFile(id));
+      Ticket ticket = GsonProvider.GSON.fromJson(reader, Ticket.class);
+      reader.close();
+      return ticket;
     } catch (IOException e) {
       return null;
     }

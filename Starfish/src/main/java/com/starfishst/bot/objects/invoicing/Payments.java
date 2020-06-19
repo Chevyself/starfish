@@ -14,8 +14,8 @@ import com.starfishst.bot.util.Console;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.core.utils.Strings;
+import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.core.utils.maps.Maps;
-import com.starfishst.simple.files.FileUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -96,8 +96,7 @@ public class Payments implements ErrorController, WebMvcConfigurer {
    * @throws IOException in case a file could not be loaded
    */
   private static void registerExtraPages() throws IOException {
-    File pageDirectory =
-        FileUtils.getFile(FileUtils.getCurrentDirectory() + File.separator + "page");
+    File pageDirectory = CoreFiles.getFile(CoreFiles.currentDirectory() + File.separator + "page");
     if (pageDirectory.exists() && pageDirectory.isDirectory()) {
       File[] files = pageDirectory.listFiles();
       if (files != null) {
@@ -160,7 +159,7 @@ public class Payments implements ErrorController, WebMvcConfigurer {
   @NotNull
   public static String getPage(@NotNull String name) throws IOException {
     InputStream stream =
-        new FileInputStream(FileUtils.getFileOrResource("page" + File.separator + name + ".html"));
+        new FileInputStream(CoreFiles.getFileOrResource("page" + File.separator + name + ".html"));
     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
     StringBuilder builder = Strings.getBuilder();
     while (reader.ready()) {
@@ -309,7 +308,7 @@ public class Payments implements ErrorController, WebMvcConfigurer {
         .addResourceHandler("/files/**")
         .addResourceLocations(
             "file:"
-                + FileUtils.getCurrentDirectory()
+                + CoreFiles.currentDirectory()
                 + File.separator
                 + "page"
                 + File.separator

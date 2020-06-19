@@ -1,6 +1,6 @@
 package com.starfishst.simple.config;
 
-import com.starfishst.simple.files.FileUtils;
+import com.starfishst.core.utils.files.CoreFiles;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,7 +28,7 @@ public class PropertiesConfiguration {
    */
   public PropertiesConfiguration(@NotNull String name, boolean copyDefaults) throws IOException {
     fileName = name;
-    file = FileUtils.getFileOrResource(name);
+    file = CoreFiles.getFileOrResource(CoreFiles.currentDirectory(), name);
     properties = new Properties();
     properties.load(new FileInputStream(file));
 
@@ -44,7 +44,7 @@ public class PropertiesConfiguration {
    */
   private void copyDefaults() throws IOException {
     final Properties properties = new Properties();
-    properties.load(FileUtils.getResource(this.fileName));
+    properties.load(CoreFiles.getResource(this.fileName));
     properties
         .stringPropertyNames()
         .forEach(

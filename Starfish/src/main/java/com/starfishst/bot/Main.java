@@ -1,6 +1,8 @@
 package com.starfishst.bot;
 
+import com.starfishst.bot.addons.AddonLoader;
 import com.starfishst.bot.commands.AddCommands;
+import com.starfishst.bot.commands.AddonsCommands;
 import com.starfishst.bot.commands.BlacklistCommands;
 import com.starfishst.bot.commands.CopyCommands;
 import com.starfishst.bot.commands.DevCommands;
@@ -55,11 +57,13 @@ import com.starfishst.core.utils.Strings;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.Catchable;
+import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.simple.config.JsonConfiguration;
 import com.starfishst.simple.gson.GsonProvider;
 import com.starfishst.simple.logging.LoggerUncaughtExceptionHandler;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,9 +87,6 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The main class of the bot! This bot allows you to make your discord server to become a service!
  * Allow people to create tickets you can also have freelancers and sell stuff!
- *
- * @author Chevy
- * @version 1.0.0
  */
 public class Main {
 
@@ -97,6 +98,8 @@ public class Main {
   @Nullable private static DiscordConfiguration discConfiguration;
   /** The JDA instance for discord manipulation */
   @Nullable private static JDA jda;
+  /** The addon loader instance */
+  @Nullable private static AddonLoader loader;
   /** The ticket manager for ticket handling */
   @Nullable private static TicketManager manager;
   /** The command manager for command listening */
@@ -110,11 +113,7 @@ public class Main {
    * @param args there's no args which can be used to start the bot
    */
   public static void main(String[] args) {
-    String javaVer = System.getProperty("java.version");
-    if (!javaVer.startsWith("1.8")) {
-      System.out.println("Please run the bot in java 8. You are running in java " + javaVer);
-      System.exit(0);
-    }
+    checkJavaMethod();
     System.out.println("This messages wont be saved in the log file");
     Console.info("From now the messages will be saved in the log file");
     printInformation();
@@ -122,6 +121,7 @@ public class Main {
         new LoggerUncaughtExceptionHandler(Console.getLogger()));
     setupConfiguration();
     setupJDA();
+    setupAddons();
     setupDiscordConfig();
     setupTicketManager();
     setupCommands();
@@ -132,6 +132,29 @@ public class Main {
           "There was some errors while enabling the bot \n Run 'errors' in console to get a list of them or 'exit' to end the program");
     }
     Console.info("Bot is up and running");
+  }
+
+  /** Loads the addons */
+  private static void setupAddons() {
+    Console.info("Loading addons");
+    File addonsDirectory =
+        new File(CoreFiles.validatePath(CoreFiles.currentDirectory() + "/addons"));
+    try {
+      loader = new AddonLoader(addonsDirectory);
+      loader.load();
+    } catch (IOException e) {
+      Fallback.addError("Addons could not be loaded");
+      e.printStackTrace();
+    }
+  }
+
+  /** Checks that the bot is running in a java 8 environment */
+  private static void checkJavaMethod() {
+    String javaVer = System.getProperty("java.version");
+    if (!javaVer.startsWith("1.8")) {
+      System.out.println("Please run the bot in java 8. You are running in java " + javaVer);
+      System.exit(0);
+    }
   }
 
   /** Prints the bot build information */
@@ -288,6 +311,9 @@ public class Main {
       commandManager.registerCommand(new FallbackCommands());
       commandManager.registerCommand(new CopyCommands());
       commandManager.registerCommand(new ScanCommand(TicketManager.getInstance()));
+      if (loader != null) {
+        commandManager.registerCommand(new AddonsCommands(loader));
+      }
       if (configuration.getPayments().isEnable()) {
         try {
           Payments.initialize();
@@ -362,6 +388,10 @@ public class Main {
   public static void stop() {
     try {
       stopping = true;
+      Console.info("Saving modules");
+      if (loader != null) {
+        loader.unload();
+      }
       tasks.forEach(TimerTask::cancel);
       Console.info("Cleaning cache");
       Cache.getCache().forEach(Catchable::onRemove);
