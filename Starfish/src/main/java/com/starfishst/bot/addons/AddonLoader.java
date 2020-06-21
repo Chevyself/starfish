@@ -27,13 +27,13 @@ public class AddonLoader {
    * @throws IOException if the directory could not be created
    */
   public AddonLoader(@NotNull File directory) throws IOException {
-    if (!directory.isDirectory()) {
-      throw new IllegalArgumentException(directory + " is not a directory!");
-    }
     if (!directory.exists()) {
       if (!directory.mkdir()) {
         throw new IOException(directory.getName() + " could not be created!");
       }
+    }
+    if (!directory.isDirectory()) {
+      throw new IllegalArgumentException(directory + " is not a directory!");
     }
     this.directory = directory;
     this.parentLoader = this.getClass().getClassLoader();
@@ -49,12 +49,23 @@ public class AddonLoader {
           try {
             AddonClassLoader addonLoader = new AddonClassLoader(file, parentLoader);
             AddonInformation info = addonLoader.getInfo();
-            Class<?> clazz = Class.forName(info.getMain());
-            Class<? extends Addon> addonClass = clazz.asSubclass(Addon.class);
-            Addon addon = addonClass.getConstructor().newInstance();
-            addon.setInformation(info);
-            addon.onEnable();
-            loaded.add(addon);
+            Class<?> clazz = Class.forName(info.getMain(), true, addonLoader);
+            Object addonObj = clazz.getConstructor().newInstance();
+            System.out.println(addonObj.getClass().getSuperclass().getName());
+            if (addonObj instanceof Addon) {
+              Addon addon = (Addon) addonObj;
+              addon.setInformation(info);
+              addon.onEnable();
+              loaded.add(addon);
+            } else {
+              Console.severe(
+                  "Failed to load "
+                      + info.getName()
+                      + " main class( "
+                      + clazz
+                      + ") does not extend "
+                      + Addon.class);
+            }
           } catch (IOException
               | ClassNotFoundException
               | NoSuchMethodException
