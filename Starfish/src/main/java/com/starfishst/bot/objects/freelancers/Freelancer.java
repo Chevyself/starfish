@@ -85,10 +85,7 @@ public class Freelancer extends Catchable {
    * @param query the message query to send
    */
   public void sendMessage(@NotNull MessageQuery query) {
-    User user = getUser();
-    if (user != null) {
-      user.openPrivateChannel().queue(query::send);
-    }
+    this.sendMessage(query.getMessage());
   }
 
   /**

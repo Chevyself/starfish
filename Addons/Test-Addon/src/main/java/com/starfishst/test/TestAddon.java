@@ -1,8 +1,6 @@
 package com.starfishst.test;
 
-import com.starfishst.bot.addons.Addon;
-import com.starfishst.bot.addons.AddonInformation;
-import org.jetbrains.annotations.NotNull;
+import com.starfishst.api.addons.Addon;
 
 public class TestAddon extends Addon {
 

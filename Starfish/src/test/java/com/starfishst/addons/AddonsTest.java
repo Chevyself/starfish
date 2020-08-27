@@ -1,6 +1,6 @@
 package com.starfishst.addons;
 
-import com.starfishst.bot.addons.AddonInformation;
+import com.starfishst.api.addons.AddonInformation;
 import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.simple.gson.GsonProvider;
 import java.io.File;

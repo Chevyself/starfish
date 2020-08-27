@@ -1,4 +1,4 @@
-package com.starfishst.bot.addons;
+package com.starfishst.api.addons;
 
 import com.starfishst.bot.util.Console;
 import java.io.File;
@@ -100,13 +100,12 @@ public class AddonLoader {
    */
   @Nullable
   public Addon getAddonByName(@NotNull String name) {
-    return loaded.stream()
-        .filter(
-            addon ->
-                addon.getInformation() != null
-                    && addon.getInformation().getName().equalsIgnoreCase(name))
-        .findFirst()
-        .orElse(null);
+    for (Addon addon : this.loaded) {
+      if (addon.getInformation() != null && addon.getInformation().getName().equalsIgnoreCase(name)){
+        return addon;
+      }
+    }
+    return null;
   }
 
   /**

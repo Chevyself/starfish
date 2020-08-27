@@ -1,4 +1,4 @@
-package com.starfishst.bot.addons;
+package com.starfishst.api.addons;
 
 import com.starfishst.bot.util.Console;
 import org.jetbrains.annotations.Nullable;

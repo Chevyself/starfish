@@ -89,7 +89,8 @@ public class LangMessagesProvider implements MessagesProvider {
   }
 
   @Override
-  public @NotNull String missingArgument(@NotNull String s, @NotNull String s1, int i) {
+  public @NotNull String missingArgument(
+      @NotNull String s, @NotNull String s1, int i, @NotNull CommandContext context) {
     HashMap<String, String> placeHolders = new HashMap<>();
     placeHolders.put("name", s);
     placeHolders.put("description", s1);

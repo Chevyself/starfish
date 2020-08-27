@@ -1,6 +1,6 @@
 package com.starfishst.bot;
 
-import com.starfishst.bot.addons.AddonLoader;
+import com.starfishst.api.addons.AddonLoader;
 import com.starfishst.bot.commands.AddCommands;
 import com.starfishst.bot.commands.AddonsCommands;
 import com.starfishst.bot.commands.BlacklistCommands;
