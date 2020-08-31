@@ -134,6 +134,12 @@
             <artifactId>JDA-Command-Framework</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!--  Utilities-->
+        <dependency>
+            <groupId>com.starfishst.utils</groupId>
+            <artifactId>core-utils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
