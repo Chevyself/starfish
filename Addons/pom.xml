@@ -16,7 +16,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>Test-Addon</module>
     </modules>
 
 </project>

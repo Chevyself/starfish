@@ -101,7 +101,8 @@ public class AddonLoader {
   @Nullable
   public Addon getAddonByName(@NotNull String name) {
     for (Addon addon : this.loaded) {
-      if (addon.getInformation() != null && addon.getInformation().getName().equalsIgnoreCase(name)){
+      if (addon.getInformation() != null
+          && addon.getInformation().getName().equalsIgnoreCase(name)) {
         return addon;
       }
     }
