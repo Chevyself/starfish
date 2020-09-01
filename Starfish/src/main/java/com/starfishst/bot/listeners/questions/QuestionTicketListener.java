@@ -13,7 +13,7 @@ import com.starfishst.bot.objects.questions.QuestionRole;
 import com.starfishst.bot.objects.questions.RoleAnswer;
 import com.starfishst.bot.objects.questions.StringAnswer;
 import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.bot.tickets.type.QuestionsTicket;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Messages;

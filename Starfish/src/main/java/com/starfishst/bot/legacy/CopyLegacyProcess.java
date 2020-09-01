@@ -13,7 +13,7 @@ import com.starfishst.bot.objects.questions.StringAnswer;
 import com.starfishst.bot.objects.responsive.type.orders.OrderClaimingResponsiveMessage;
 import com.starfishst.bot.objects.responsive.type.product.ProductShopResponsiveMessage;
 import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.bot.tickets.type.Apply;
 import com.starfishst.bot.tickets.type.CheckOut;

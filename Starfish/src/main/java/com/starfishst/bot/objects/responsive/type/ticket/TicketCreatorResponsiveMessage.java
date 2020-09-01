@@ -4,7 +4,7 @@ import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.objects.responsive.ResponsiveMessageType;
-import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.api.tickets.TicketType;
 import com.starfishst.bot.tickets.type.TicketCreator;
 import java.util.ArrayList;
 import java.util.List;

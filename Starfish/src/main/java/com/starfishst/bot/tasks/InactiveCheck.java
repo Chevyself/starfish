@@ -5,7 +5,7 @@ import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.objects.responsive.type.inactive.InactiveCheckResponsiveMessage;
 import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Messages;

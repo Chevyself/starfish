@@ -5,7 +5,7 @@ import com.starfishst.bot.objects.freelancers.Offer;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.bot.tickets.loader.TicketLoader;
 import com.starfishst.bot.tickets.type.Order;
 import com.starfishst.bot.tickets.type.Product;

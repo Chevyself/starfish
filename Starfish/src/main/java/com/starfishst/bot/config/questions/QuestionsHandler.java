@@ -2,7 +2,7 @@ package com.starfishst.bot.config.questions;
 
 import com.starfishst.bot.exception.QuestionsInitException;
 import com.starfishst.bot.objects.questions.Question;
-import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.api.tickets.TicketType;
 import com.starfishst.bot.util.Console;
 import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.simple.config.JsonConfiguration;

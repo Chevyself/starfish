@@ -6,7 +6,7 @@ import com.starfishst.bot.exception.TicketCreationException;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.api.tickets.TicketType;
 import com.starfishst.bot.tickets.type.TicketCreator;
 import com.starfishst.bot.util.Messages;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;

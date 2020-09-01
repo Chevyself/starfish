@@ -5,7 +5,7 @@ import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.exception.FreelancerJoinTicketException;
 import com.starfishst.bot.objects.freelancers.Freelancer;
 import com.starfishst.bot.objects.questions.Answer;
-import com.starfishst.bot.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Freelancers;
 import com.starfishst.bot.util.Messages;

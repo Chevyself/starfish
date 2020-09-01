@@ -1,5 +1,7 @@
 package com.starfishst.bot.tickets;
 
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
 import com.starfishst.bot.config.Configuration;
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.config.language.Lang;
@@ -63,7 +65,7 @@ public class TicketManager {
    */
   @NotNull
   public Ticket createTicket(
-      @NotNull TicketType type, @NotNull Member creator, @Nullable Ticket parent)
+          @NotNull TicketType type, @NotNull Member creator, @Nullable Ticket parent)
       throws DiscordManipulationException, TicketCreationException {
     this.validateTicketType(type);
     this.validateUser(type, creator, parent);

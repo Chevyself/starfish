@@ -6,7 +6,7 @@ import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.objects.responsive.ResponsiveMessageType;
 import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.api.tickets.TicketType;
 import com.starfishst.bot.tickets.type.Product;
 import com.starfishst.bot.tickets.type.Ticket;
 import com.starfishst.bot.util.Messages;

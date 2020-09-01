@@ -1,8 +1,8 @@
 package com.starfishst.bot.tickets.type;
 
 import com.starfishst.bot.objects.questions.Answer;
-import com.starfishst.bot.tickets.TicketStatus;
-import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

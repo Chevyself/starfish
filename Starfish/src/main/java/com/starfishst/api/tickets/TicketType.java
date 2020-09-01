@@ -1,4 +1,4 @@
-package com.starfishst.bot.tickets;
+package com.starfishst.api.tickets;
 
 import com.starfishst.bot.config.DiscordConfiguration;
 import com.starfishst.bot.config.language.Lang;

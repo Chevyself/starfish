@@ -4,7 +4,7 @@ import com.starfishst.bot.config.questions.QuestionsHandler;
 import com.starfishst.bot.listeners.questions.QuestionTicketListener;
 import com.starfishst.bot.objects.questions.Answer;
 import com.starfishst.bot.objects.questions.Question;
-import com.starfishst.bot.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.bot.util.Messages;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

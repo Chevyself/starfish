@@ -13,7 +13,7 @@ import com.starfishst.bot.objects.questions.RoleAnswer;
 import com.starfishst.bot.objects.responsive.type.freelancer.ReviewFreelancer;
 import com.starfishst.bot.objects.responsive.type.quotes.OfferAcceptResponsiveMessage;
 import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.api.tickets.TicketType;
 import com.starfishst.bot.tickets.type.Apply;
 import com.starfishst.bot.tickets.type.FreelancingTicket;
 import com.starfishst.bot.tickets.type.Quote;

@@ -1,6 +1,6 @@
 package com.starfishst.bot.tickets.loader.mongo.codec;
 
-import com.starfishst.bot.tickets.TicketType;
+import com.starfishst.api.tickets.TicketType;
 import org.bson.BsonReader;
 import org.bson.BsonWriter;
 import org.bson.codecs.Codec;
