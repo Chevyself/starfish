@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+
+import com.starfishst.core.fallback.Fallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,11 +53,9 @@ public class AddonLoader {
             AddonClassLoader addonLoader = new AddonClassLoader(file, parentLoader);
             AddonInformation info = addonLoader.getInfo();
             Class<?> clazz = Class.forName(info.getMain(), true, addonLoader);
-            Object addonObj = clazz.getConstructor().newInstance();
-            System.out.println(addonObj.getClass().getSuperclass().getName());
+            Object addonObj = clazz.getConstructor(AddonInformation.class).newInstance(info);
             if (addonObj instanceof Addon) {
               Addon addon = (Addon) addonObj;
-              addon.setInformation(info);
               addon.onEnable();
               loaded.add(addon);
             } else {
@@ -72,8 +73,8 @@ public class AddonLoader {
               | IllegalAccessException
               | InstantiationException
               | InvocationTargetException e) {
-            Console.severe(file.getName() + " could not be loaded");
-            e.printStackTrace();
+            Fallback.addError("AddonLoader: Addon " + file.getName() + " could not be loaded");
+            Console.log(Level.SEVERE, e);
           }
         }
       }
@@ -82,14 +83,16 @@ public class AddonLoader {
 
   /** Unloads all the addons */
   public void unload() {
-    loaded.forEach(Addon::onDisable);
+    for (Addon addon : this.loaded) {
+      addon.onDisable();
+    }
     loaded.clear();
   }
 
   /** Loads all the addons */
   public void reload() {
-    unload();
-    load();
+    this.unload();
+    this.load();
   }
 
   /**
@@ -101,8 +104,7 @@ public class AddonLoader {
   @Nullable
   public Addon getAddonByName(@NotNull String name) {
     for (Addon addon : this.loaded) {
-      if (addon.getInformation() != null
-          && addon.getInformation().getName().equalsIgnoreCase(name)) {
+      if (addon.getInformation().getName().equalsIgnoreCase(name)) {
         return addon;
       }
     }
