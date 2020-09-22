@@ -1,5 +1,6 @@
 package com.starfishst.bot.objects.questions;
 
+import com.starfishst.bot.handlers.questions.QuestionImage;
 import org.jetbrains.annotations.NotNull;
 
 /** The answer for {@link QuestionImage} */

@@ -19,21 +19,21 @@ import com.starfishst.bot.commands.provider.AllowedTicketCloserCheckerProvider;
 import com.starfishst.bot.commands.provider.AllowedTicketManagerCheckerProvider;
 import com.starfishst.bot.commands.provider.FreelancerProvider;
 import com.starfishst.bot.commands.provider.FreelancerSenderProvider;
-import com.starfishst.bot.config.BotInfoConfiguration;
-import com.starfishst.bot.config.Configuration;
-import com.starfishst.bot.config.DiscordConfiguration;
-import com.starfishst.bot.config.MongoConfiguration;
-import com.starfishst.bot.config.adapters.CategoryAdapter;
-import com.starfishst.bot.config.adapters.ColorAdapter;
-import com.starfishst.bot.config.adapters.FeeAdapter;
-import com.starfishst.bot.config.adapters.GuildAdapter;
-import com.starfishst.bot.config.adapters.QuestionAdapter;
-import com.starfishst.bot.config.adapters.ResponsiveMessageAdapter;
-import com.starfishst.bot.config.adapters.RoleAdapter;
-import com.starfishst.bot.config.adapters.TextChannelAdapter;
-import com.starfishst.bot.config.adapters.TimeAdapter;
-import com.starfishst.bot.config.adapters.UserAdapter;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.BotInfoConfiguration;
+import com.starfishst.bot.oldconfig.Configuration;
+import com.starfishst.bot.oldconfig.DiscordConfiguration;
+import com.starfishst.bot.oldconfig.MongoConfiguration;
+import com.starfishst.bot.oldconfig.adapters.CategoryAdapter;
+import com.starfishst.bot.oldconfig.adapters.ColorAdapter;
+import com.starfishst.bot.oldconfig.adapters.FeeAdapter;
+import com.starfishst.bot.oldconfig.adapters.GuildAdapter;
+import com.starfishst.bot.oldconfig.adapters.QuestionAdapter;
+import com.starfishst.bot.oldconfig.adapters.ResponsiveMessageAdapter;
+import com.starfishst.bot.oldconfig.adapters.RoleAdapter;
+import com.starfishst.bot.oldconfig.adapters.TextChannelAdapter;
+import com.starfishst.bot.oldconfig.adapters.TimeAdapter;
+import com.starfishst.bot.oldconfig.adapters.UserAdapter;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.listeners.ConfigurationListener;
 import com.starfishst.bot.listeners.ModerationListener;
 import com.starfishst.bot.listeners.ResponsiveMessagesListener;
@@ -42,12 +42,10 @@ import com.starfishst.bot.listeners.WelcomeListener;
 import com.starfishst.bot.listeners.questions.QuestionTicketListener;
 import com.starfishst.bot.objects.invoicing.Fee;
 import com.starfishst.bot.objects.invoicing.Payments;
-import com.starfishst.bot.objects.questions.Question;
+import com.starfishst.bot.handlers.questions.Question;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.tasks.AutoSave;
-import com.starfishst.bot.tasks.InactiveCheck;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
+import com.starfishst.bot.oldtickets.TicketManager;
 import com.starfishst.bot.util.Console;
 import com.starfishst.commands.CommandManager;
 import com.starfishst.commands.commands.FallbackCommands;
@@ -88,6 +86,7 @@ import org.jetbrains.annotations.Nullable;
  * The main class of the bot! This bot allows you to make your discord server to become a service!
  * Allow people to create tickets you can also have freelancers and sell stuff!
  */
+@Deprecated
 public class Main {
 
   /** The tasks that are running in the bot */
@@ -269,17 +268,17 @@ public class Main {
   /** Setups the ticket manager. It needs of both JDA and configurations */
   private static void setupTicketManager() {
     if (configuration != null) {
-      Console.info("Setting up Ticket Manager");
+      Console.info("Setting up StarfishTicket Manager");
       MongoConfiguration mongo = configuration.getMongo();
       try {
         manager = new TicketManager(new MongoTicketLoader(mongo.getUri(), mongo.getDatabase()));
       } catch (Throwable e) {
         Console.log(Level.SEVERE, e);
-        Fallback.addError("Ticket manager could not be setup: " + e.getMessage());
+        Fallback.addError("StarfishTicket manager could not be setup: " + e.getMessage());
       }
     } else {
       Fallback.addError(
-          "Ticket Manager could not be setup because there's some errors in the configuration");
+          "StarfishTicket Manager could not be setup because there's some errors in the configuration");
     }
   }
 
@@ -447,7 +446,7 @@ public class Main {
   @Deprecated
   @NotNull
   public static TicketManager getManager() {
-    return Validate.notNull(manager, "Ticket Manager was not setup properly");
+    return Validate.notNull(manager, "StarfishTicket Manager was not setup properly");
   }
 
   /**

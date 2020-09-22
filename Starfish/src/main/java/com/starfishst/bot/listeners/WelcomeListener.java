@@ -1,7 +1,7 @@
 package com.starfishst.bot.listeners;
 
-import com.starfishst.bot.config.DiscordConfiguration;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.DiscordConfiguration;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.util.Messages;
 import java.util.HashMap;

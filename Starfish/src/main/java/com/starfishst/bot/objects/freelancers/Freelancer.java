@@ -1,10 +1,10 @@
 package com.starfishst.bot.objects.freelancers;
 
-import com.starfishst.bot.config.Configuration;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.Configuration;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.objects.questions.Answer;
-import com.starfishst.bot.tickets.TicketManager;
+import com.starfishst.bot.oldtickets.TicketManager;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.bot.util.Freelancers;
 import com.starfishst.bot.util.Maps;

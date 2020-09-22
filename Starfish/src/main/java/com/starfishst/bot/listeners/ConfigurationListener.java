@@ -1,9 +1,9 @@
 package com.starfishst.bot.listeners;
 
-import com.starfishst.bot.config.Configuration;
-import com.starfishst.bot.config.DiscordConfiguration;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.bot.oldconfig.Configuration;
+import com.starfishst.bot.oldconfig.DiscordConfiguration;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.bot.oldtickets.type.Ticket;
 import com.starfishst.core.utils.Atomic;
 import java.util.HashMap;
 import java.util.List;

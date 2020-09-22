@@ -1,9 +1,12 @@
 package com.starfishst.api.events;
 
+import com.starfishst.bot.Starfish;
+import com.starfishst.utils.events.Cancellable;
+
 /**
  * An starfish event that can be cancelled.
  */
-public interface StarfishCancellable {
+public interface StarfishCancellable extends Cancellable {
 
     /**
      * Call the event and get if it was cancelled. This will be called
@@ -12,8 +15,21 @@ public interface StarfishCancellable {
      * @return true if the event was cancelled
      */
     default boolean callAndGet() {
-        // TODO
-        return false;
+        return Starfish.getListenerManager().call(this);
     }
+
+    /**
+     * Get whether the event is cancelled
+     *
+     * @return true if the event is cancelled
+     */
+    boolean isCancelled();
+
+    /**
+     * Set whether the event must be cancelled
+     *
+     * @param bol the new value whether the event must be cancelled
+     */
+    void setCancelled(boolean bol);
 
 }

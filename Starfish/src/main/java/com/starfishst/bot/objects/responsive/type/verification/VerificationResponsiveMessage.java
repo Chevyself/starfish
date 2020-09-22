@@ -1,6 +1,6 @@
 package com.starfishst.bot.objects.responsive.type.verification;
 
-import com.starfishst.bot.config.DiscordConfiguration;
+import com.starfishst.bot.oldconfig.DiscordConfiguration;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;

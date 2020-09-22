@@ -1,7 +1,7 @@
 package com.starfishst.transfer;
 
 import com.mongodb.client.MongoCursor;
-import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
+import com.starfishst.bot.oldtickets.loader.mongo.MongoTicketLoader;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 

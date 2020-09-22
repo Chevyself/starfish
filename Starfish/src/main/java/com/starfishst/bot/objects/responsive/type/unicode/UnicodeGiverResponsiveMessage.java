@@ -1,6 +1,6 @@
 package com.starfishst.bot.objects.responsive.type.unicode;
 
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.objects.responsive.ResponsiveMessageType;

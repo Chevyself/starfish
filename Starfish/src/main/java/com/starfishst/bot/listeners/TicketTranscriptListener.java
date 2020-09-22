@@ -1,9 +1,9 @@
 package com.starfishst.bot.listeners;
 
-import com.starfishst.bot.config.language.Lang;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.transcript.TicketTranscript;
-import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.bot.oldconfig.language.Lang;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.bot.oldtickets.transcript.TicketTranscript;
+import com.starfishst.bot.oldtickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.core.fallback.Fallback;

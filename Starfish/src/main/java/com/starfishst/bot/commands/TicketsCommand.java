@@ -1,18 +1,18 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.exception.TicketCreationException;
 import com.starfishst.bot.objects.management.AllowedTicketCloserChecker;
 import com.starfishst.bot.objects.management.AllowedTicketManagerChecker;
 import com.starfishst.bot.objects.responsive.type.archive.ArchiveResponsiveMessage;
 import com.starfishst.bot.objects.responsive.type.panel.TicketPanel;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.api.tickets.TicketStatus;
-import com.starfishst.api.tickets.TicketType;
-import com.starfishst.bot.tickets.loader.TicketLoader;
-import com.starfishst.bot.tickets.type.QuestionsTicket;
-import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
+import com.starfishst.bot.oldtickets.loader.TicketLoader;
+import com.starfishst.bot.oldtickets.type.QuestionsTicket;
+import com.starfishst.bot.oldtickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.commands.annotations.Command;
@@ -55,9 +55,9 @@ public class TicketsCommand {
     Ticket ticket =
         TicketManager.getInstance().createTicket(TicketType.TICKET_CREATOR, member, null);
     if (ticket.getChannel() != null) {
-      return new Result("Ticket created in " + ticket.getChannel().getAsMention());
+      return new Result("StarfishTicket created in " + ticket.getChannel().getAsMention());
     } else {
-      return new Result("Ticket created... waiting for channel");
+      return new Result("StarfishTicket created... waiting for channel");
     }
   }
 
@@ -68,14 +68,14 @@ public class TicketsCommand {
    * @return the information of a ticket if it exists
    */
   @Exclude
-  @Command(aliases = "info", description = "Gives you the info about a Ticket")
+  @Command(aliases = "info", description = "Gives you the info about a StarfishTicket")
   public Result info(
       @Required(name = "id", description = "The id of the ticket to get information") long id) {
     Ticket ticket = TicketManager.getInstance().getLoader().getTicket(id);
     if (ticket != null) {
       return new Result(ResultType.GENERIC, Messages.info(ticket));
     } else {
-      return new Result(ResultType.ERROR, "Ticket not found");
+      return new Result(ResultType.ERROR, "StarfishTicket not found");
     }
   }
 
@@ -144,7 +144,7 @@ public class TicketsCommand {
    * @param message the message to get the channel of the ticket
    * @return a successful result if the ticket is closing
    */
-  @Command(aliases = "archive", description = "Archives a Ticket")
+  @Command(aliases = "archive", description = "Archives a StarfishTicket")
   public Result archive(AllowedTicketCloserChecker checker, Message message) {
     Ticket ticket =
         TicketManager.getInstance()

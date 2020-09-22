@@ -1,6 +1,6 @@
 package com.starfishst.bot.commands.provider;
 
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.objects.management.AllowedTicketCloserChecker;
 import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.context.GuildCommandContext;

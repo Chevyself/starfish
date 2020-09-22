@@ -1,21 +1,21 @@
 package com.starfishst.bot.listeners.questions;
 
-import com.starfishst.bot.config.Configuration;
-import com.starfishst.bot.config.language.Lang;
-import com.starfishst.bot.config.questions.QuestionsHandler;
+import com.starfishst.bot.oldconfig.Configuration;
+import com.starfishst.bot.oldconfig.language.Lang;
+import com.starfishst.bot.oldconfig.questions.QuestionsHandler;
 import com.starfishst.bot.exception.TicketCreationException;
 import com.starfishst.bot.objects.questions.Answer;
 import com.starfishst.bot.objects.questions.ImageAnswer;
-import com.starfishst.bot.objects.questions.Question;
-import com.starfishst.bot.objects.questions.QuestionImage;
-import com.starfishst.bot.objects.questions.QuestionInformation;
-import com.starfishst.bot.objects.questions.QuestionRole;
+import com.starfishst.bot.handlers.questions.Question;
+import com.starfishst.bot.handlers.questions.QuestionImage;
+import com.starfishst.bot.handlers.questions.QuestionInformation;
+import com.starfishst.bot.handlers.questions.QuestionRole;
 import com.starfishst.bot.objects.questions.RoleAnswer;
 import com.starfishst.bot.objects.questions.StringAnswer;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.api.tickets.TicketStatus;
-import com.starfishst.bot.tickets.type.QuestionsTicket;
-import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.bot.oldtickets.type.QuestionsTicket;
+import com.starfishst.bot.oldtickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Lots;
@@ -35,9 +35,9 @@ import org.jetbrains.annotations.Nullable;
 /** Listens to {@link QuestionsTicket} when tye are being created and the answers of the user */
 public class QuestionTicketListener {
 
-  /** The active messages map: <Ticket Id, Message Id> */
+  /** The active messages map: <StarfishTicket Id, Message Id> */
   @NotNull private static final HashMap<Long, Long> active = new HashMap<>();
-  /** The active messages sent by an user: <Ticket Id, Message Id> */
+  /** The active messages sent by an user: <StarfishTicket Id, Message Id> */
   @NotNull private static final HashMap<Long, Long> activeUserMessage = new HashMap<>();
 
   /**

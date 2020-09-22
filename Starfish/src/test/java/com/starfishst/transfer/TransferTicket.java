@@ -1,8 +1,8 @@
 package com.starfishst.transfer;
 
-import com.starfishst.api.tickets.TicketStatus;
-import com.starfishst.api.tickets.TicketType;
-import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
+import com.starfishst.bot.oldtickets.loader.mongo.MongoTicketLoader;
 import com.starfishst.simple.Lots;
 import java.util.HashMap;
 import org.bson.Document;

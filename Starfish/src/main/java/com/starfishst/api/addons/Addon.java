@@ -2,7 +2,6 @@ package com.starfishst.api.addons;
 
 import com.starfishst.bot.util.Console;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** Every addon should extend this in the main class */
 public class Addon {

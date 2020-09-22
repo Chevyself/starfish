@@ -1,7 +1,7 @@
 package com.starfishst.bot.objects.responsive.type.ticket;
 
-import com.starfishst.api.tickets.TicketType;
-import com.starfishst.bot.tickets.type.TicketCreator;
+import com.starfishst.api.data.tickets.TicketType;
+import com.starfishst.bot.oldtickets.type.TicketCreator;
 import com.starfishst.bot.util.Unicode;
 import org.jetbrains.annotations.NotNull;
 

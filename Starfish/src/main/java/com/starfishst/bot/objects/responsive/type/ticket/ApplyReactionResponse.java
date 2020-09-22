@@ -1,8 +1,8 @@
 package com.starfishst.bot.objects.responsive.type.ticket;
 
-import com.starfishst.bot.config.language.Lang;
-import com.starfishst.api.tickets.TicketType;
-import com.starfishst.bot.tickets.type.TicketCreator;
+import com.starfishst.bot.oldconfig.language.Lang;
+import com.starfishst.api.data.tickets.TicketType;
+import com.starfishst.bot.oldtickets.type.TicketCreator;
 import org.jetbrains.annotations.NotNull;
 
 /** The reaction response to create an apply ticket */

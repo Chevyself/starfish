@@ -1,6 +1,7 @@
 package com.starfishst.api.events;
 
 
+import com.starfishst.bot.Starfish;
 import com.starfishst.utils.events.Event;
 
 /**
@@ -9,10 +10,10 @@ import com.starfishst.utils.events.Event;
 public interface StarfishEvent extends Event {
 
     /**
-     *
+     * Calls the event from the {@link Starfish#getListenerManager()}
      */
     default void call() {
-        // TODO this must be called using the bot
+        Starfish.getListenerManager().call(this);
     }
 
 }

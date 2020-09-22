@@ -1,15 +1,15 @@
 package com.starfishst.bot.listeners;
 
-import com.starfishst.bot.config.Configuration;
+import com.starfishst.bot.oldconfig.Configuration;
 import com.starfishst.bot.objects.freelancers.Offer;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.api.tickets.TicketStatus;
-import com.starfishst.bot.tickets.loader.TicketLoader;
-import com.starfishst.bot.tickets.type.Order;
-import com.starfishst.bot.tickets.type.Product;
-import com.starfishst.bot.tickets.type.Quote;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.bot.oldtickets.loader.TicketLoader;
+import com.starfishst.bot.oldtickets.type.Order;
+import com.starfishst.bot.oldtickets.type.Product;
+import com.starfishst.bot.oldtickets.type.Quote;
 import com.starfishst.bot.util.Unicode;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;

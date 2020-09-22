@@ -1,7 +1,7 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.bot.Main;
-import com.starfishst.bot.config.Configuration;
+import com.starfishst.bot.oldconfig.Configuration;
 import com.starfishst.commands.ParentCommand;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;

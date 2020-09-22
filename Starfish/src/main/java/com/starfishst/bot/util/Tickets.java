@@ -1,15 +1,15 @@
 package com.starfishst.bot.util;
 
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.objects.freelancers.Freelancer;
 import com.starfishst.bot.objects.questions.ImageAnswer;
-import com.starfishst.bot.objects.questions.Question;
+import com.starfishst.bot.handlers.questions.Question;
 import com.starfishst.bot.objects.questions.RoleAnswer;
-import com.starfishst.api.tickets.TicketStatus;
-import com.starfishst.api.tickets.TicketType;
-import com.starfishst.bot.tickets.type.FreelancingTicket;
-import com.starfishst.bot.tickets.type.QuestionsTicket;
-import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
+import com.starfishst.bot.oldtickets.type.FreelancingTicket;
+import com.starfishst.bot.oldtickets.type.QuestionsTicket;
+import com.starfishst.bot.oldtickets.type.Ticket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;

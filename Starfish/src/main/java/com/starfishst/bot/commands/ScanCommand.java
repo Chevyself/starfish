@@ -1,14 +1,14 @@
 package com.starfishst.bot.commands;
 
 import com.mongodb.client.MongoCursor;
-import com.starfishst.bot.config.language.Lang;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.api.tickets.TicketStatus;
-import com.starfishst.api.tickets.TicketType;
-import com.starfishst.bot.tickets.loader.TicketLoader;
-import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
-import com.starfishst.bot.tickets.type.EmptyTicket;
-import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.bot.oldconfig.language.Lang;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
+import com.starfishst.bot.oldtickets.loader.TicketLoader;
+import com.starfishst.bot.oldtickets.loader.mongo.MongoTicketLoader;
+import com.starfishst.bot.oldtickets.type.EmptyTicket;
+import com.starfishst.bot.oldtickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;

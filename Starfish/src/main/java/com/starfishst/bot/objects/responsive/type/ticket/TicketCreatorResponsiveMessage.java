@@ -1,11 +1,11 @@
 package com.starfishst.bot.objects.responsive.type.ticket;
 
-import com.starfishst.bot.config.Configuration;
+import com.starfishst.bot.oldconfig.Configuration;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.objects.responsive.ResponsiveMessageType;
-import com.starfishst.api.tickets.TicketType;
-import com.starfishst.bot.tickets.type.TicketCreator;
+import com.starfishst.api.data.tickets.TicketType;
+import com.starfishst.bot.oldtickets.type.TicketCreator;
 import java.util.ArrayList;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message;

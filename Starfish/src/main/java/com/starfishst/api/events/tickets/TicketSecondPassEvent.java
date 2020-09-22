@@ -1,6 +1,6 @@
 package com.starfishst.api.events.tickets;
 
-import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.core.utils.time.Time;
 import org.jetbrains.annotations.NotNull;
 

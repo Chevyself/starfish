@@ -1,6 +1,6 @@
 package com.starfishst.transfer;
 
-import com.starfishst.bot.tickets.loader.mongo.MongoTicketLoader;
+import com.starfishst.bot.oldtickets.loader.mongo.MongoTicketLoader;
 import org.bson.Document;
 
 /** Update the channel of a ticket */

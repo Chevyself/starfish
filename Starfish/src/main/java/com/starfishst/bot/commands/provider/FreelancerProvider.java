@@ -1,8 +1,8 @@
 package com.starfishst.bot.commands.provider;
 
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.objects.freelancers.Freelancer;
-import com.starfishst.bot.tickets.TicketManager;
+import com.starfishst.bot.oldtickets.TicketManager;
 import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.providers.registry.ImplProvidersRegistry;
 import com.starfishst.core.exceptions.ArgumentProviderException;

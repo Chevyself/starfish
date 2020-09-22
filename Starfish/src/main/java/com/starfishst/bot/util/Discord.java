@@ -1,7 +1,7 @@
 package com.starfishst.bot.util;
 
 import com.starfishst.bot.Main;
-import com.starfishst.bot.config.DiscordConfiguration;
+import com.starfishst.bot.oldconfig.DiscordConfiguration;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.core.utils.Atomic;
 import com.starfishst.core.utils.Lots;

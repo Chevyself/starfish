@@ -1,11 +1,11 @@
 package com.starfishst.bot.objects.responsive.type.freelancer;
 
-import com.starfishst.bot.config.Configuration;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.Configuration;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.objects.freelancers.Freelancer;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
-import com.starfishst.bot.tickets.TicketManager;
+import com.starfishst.bot.oldtickets.TicketManager;
 import com.starfishst.bot.util.Freelancers;
 import com.starfishst.bot.util.Messages;
 import java.util.HashMap;

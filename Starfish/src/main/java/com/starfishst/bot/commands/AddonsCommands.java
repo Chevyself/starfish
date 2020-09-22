@@ -1,7 +1,7 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.api.addons.AddonLoader;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;
 import com.starfishst.core.utils.Lots;

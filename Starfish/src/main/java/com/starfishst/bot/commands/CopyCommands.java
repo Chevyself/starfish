@@ -3,7 +3,7 @@ package com.starfishst.bot.commands;
 import com.starfishst.bot.exception.CopyProcessException;
 import com.starfishst.bot.legacy.CopyLegacyProcess;
 import com.starfishst.bot.legacy.CopyLegacyProcessResult;
-import com.starfishst.bot.tickets.TicketManager;
+import com.starfishst.bot.oldtickets.TicketManager;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Exclude;
 import com.starfishst.commands.result.Result;

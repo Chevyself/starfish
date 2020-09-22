@@ -1,13 +1,13 @@
 package com.starfishst.bot.objects.responsive.type.orders;
 
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.exception.FreelancerJoinTicketException;
 import com.starfishst.bot.objects.freelancers.Freelancer;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.loader.TicketLoader;
-import com.starfishst.bot.tickets.type.Order;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.bot.oldtickets.loader.TicketLoader;
+import com.starfishst.bot.oldtickets.type.Order;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Unicode;
 import net.dv8tion.jda.api.entities.TextChannel;

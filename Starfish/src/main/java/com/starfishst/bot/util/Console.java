@@ -1,7 +1,7 @@
 package com.starfishst.bot.util;
 
 import com.starfishst.bot.Main;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.exception.LoggerInitException;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.simple.logging.LoggerFactory;

@@ -1,6 +1,6 @@
 package com.starfishst.bot.objects.management;
 
-import com.starfishst.bot.config.DiscordConfiguration;
+import com.starfishst.bot.oldconfig.DiscordConfiguration;
 import com.starfishst.bot.util.Discord;
 import net.dv8tion.jda.api.entities.Member;
 import org.jetbrains.annotations.NotNull;

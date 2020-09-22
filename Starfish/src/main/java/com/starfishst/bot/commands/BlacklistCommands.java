@@ -1,7 +1,7 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.bot.config.DiscordConfiguration;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.DiscordConfiguration;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.exception.DiscordManipulationException;
 import com.starfishst.bot.util.Discord;
 import com.starfishst.commands.annotations.Command;

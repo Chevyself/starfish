@@ -1,7 +1,7 @@
 package com.starfishst.api.events.tickets;
 
 import com.starfishst.api.events.StarfishEvent;
-import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.data.tickets.Ticket;
 import org.jetbrains.annotations.NotNull;
 
 /**

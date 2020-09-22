@@ -1,14 +1,14 @@
 package com.starfishst.bot.objects.responsive.type.archive;
 
-import com.starfishst.bot.config.Configuration;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.Configuration;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.objects.management.AllowedTicketCloserChecker;
 import com.starfishst.bot.objects.responsive.ReactionResponse;
 import com.starfishst.bot.objects.responsive.ResponsiveMessage;
 import com.starfishst.bot.objects.responsive.ResponsiveMessageType;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.api.tickets.TicketStatus;
-import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.bot.oldtickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.Tickets;
 import com.starfishst.bot.util.Unicode;

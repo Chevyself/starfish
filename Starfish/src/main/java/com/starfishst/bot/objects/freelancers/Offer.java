@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This class represents the offer that a {@link Freelancer} can send to a {@link
- * com.starfishst.bot.tickets.type.Quote}
+ * com.starfishst.bot.oldtickets.type.Quote}
  */
 public class Offer {
 

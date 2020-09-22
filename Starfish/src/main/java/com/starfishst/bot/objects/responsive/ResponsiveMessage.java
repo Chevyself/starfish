@@ -1,7 +1,7 @@
 package com.starfishst.bot.objects.responsive;
 
 import com.starfishst.bot.Main;
-import com.starfishst.bot.config.Configuration;
+import com.starfishst.bot.oldconfig.Configuration;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;

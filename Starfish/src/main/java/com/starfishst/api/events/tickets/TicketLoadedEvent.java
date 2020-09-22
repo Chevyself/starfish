@@ -1,6 +1,6 @@
 package com.starfishst.api.events.tickets;
 
-import com.starfishst.api.tickets.Ticket;
+import com.starfishst.bot.tickets.StarfishTicket;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,7 +12,7 @@ public class TicketLoadedEvent extends TicketEvent {
      *
      * @param ticket the ticket involved in the event
      */
-    public TicketLoadedEvent(@NotNull Ticket ticket) {
+    public TicketLoadedEvent(@NotNull StarfishTicket ticket) {
         super(ticket);
     }
 }

@@ -1,11 +1,11 @@
 package com.starfishst.bot.commands.invoices;
 
-import com.starfishst.bot.config.Configuration;
-import com.starfishst.bot.config.language.Lang;
+import com.starfishst.bot.oldconfig.Configuration;
+import com.starfishst.bot.oldconfig.language.Lang;
 import com.starfishst.bot.objects.invoicing.Fee;
 import com.starfishst.bot.objects.management.AllowedTicketManagerChecker;
-import com.starfishst.bot.tickets.TicketManager;
-import com.starfishst.bot.tickets.type.Ticket;
+import com.starfishst.bot.oldtickets.TicketManager;
+import com.starfishst.bot.oldtickets.type.Ticket;
 import com.starfishst.bot.util.Messages;
 import com.starfishst.bot.util.SimpleMath;
 import com.starfishst.bot.util.Tickets;
