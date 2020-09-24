@@ -1,14 +1,11 @@
 package com.starfishst.api.addons;
 
-import com.starfishst.bot.util.Console;
+import com.starfishst.core.fallback.Fallback;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-
-import com.starfishst.core.fallback.Fallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,13 +56,7 @@ public class AddonLoader {
               addon.onEnable();
               loaded.add(addon);
             } else {
-              Console.severe(
-                  "Failed to load "
-                      + info.getName()
-                      + " main class( "
-                      + clazz
-                      + ") does not extend "
-                      + Addon.class);
+
             }
           } catch (IOException
               | ClassNotFoundException
@@ -74,7 +65,6 @@ public class AddonLoader {
               | InstantiationException
               | InvocationTargetException e) {
             Fallback.addError("AddonLoader: Addon " + file.getName() + " could not be loaded");
-            Console.log(Level.SEVERE, e);
           }
         }
       }

@@ -7,123 +7,144 @@ import com.starfishst.bot.handlers.StarfishHandlerPreferences;
 import com.starfishst.commands.ManagerOptions;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
+import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
-/**
- * An implementation for {@link com.starfishst.api.configuration.Configuration}
- */
+/** An implementation for {@link com.starfishst.api.configuration.Configuration} */
 public class StarfishConfiguration implements Configuration {
 
-    /**
-     * The time to unload tickets
-     */
-    @SerializedName("ticket-unload")
-    @NotNull
-    private final Time ticketUnload;
-    /**
-     * The time to unload users
-     */
-    @SerializedName("users-unload")
-    @NotNull
-    private final Time usersUnload;
-    @NotNull
-    private final StarfishMongoConfiguration mongo;
-    @SerializedName("commands")
-    @NotNull
-    private final ManagerOptions options;
-    @NotNull
-    private final HashMap<String, StarfishHandlerPreferences> preferences;
-    private long total;
-    @SerializedName("quotes-limit")
-    private long quotesLimit;
-    @SerializedName("open-limit")
-    private long openLimit;
+  /** The time to unload tickets */
+  @SerializedName("ticket-unload")
+  @NotNull
+  private final Time ticketUnload;
+  /** The time to unload users */
+  @SerializedName("users-unload")
+  @NotNull
+  private final Time usersUnload;
 
-    /**
-     * This constructor is used for gson. Use {@link com.starfishst.core.fallback.Fallback} for a configuration with no constructor
-     */
-    @Deprecated
-    public StarfishConfiguration() {
-        this(0, 2, 2, new Time(25, Unit.MINUTES), new Time(25, Unit.MINUTES), new StarfishMongoConfiguration("", ""), new ManagerOptions(), new HashMap<>());
-    }
+  @NotNull private final StarfishMongoConfiguration mongo;
 
-    /**
-     * Create the starfish configuration
-     *
-     * @param total the total of tickets created
-     * @param quotesLimit the limit of quotes per freelancer in a ticket
-     * @param openLimit the limit of open tickets per user
-     * @param ticketUnload the time to unload a ticket
-     * @param usersUnload the time to unload users
-     * @param mongo the configuration for mongo
-     * @param options the options for commands
-     * @param preferences the preferences for handlers
-     */
-    public StarfishConfiguration(long total, long quotesLimit, long openLimit, @NotNull Time ticketUnload, @NotNull Time usersUnload, @NotNull StarfishMongoConfiguration mongo, @NotNull ManagerOptions options, @NotNull HashMap<String, StarfishHandlerPreferences> preferences) {
-        this.total = total;
-        this.quotesLimit = quotesLimit;
-        this.openLimit = openLimit;
-        this.ticketUnload = ticketUnload;
-        this.usersUnload = usersUnload;
-        this.mongo = mongo;
-        this.options = options;
-        this.preferences = preferences;
-    }
+  @SerializedName("commands")
+  @NotNull
+  private final ManagerOptions options;
 
-    /**
-     * Create the fallback starfish configuration
-     *
-     * @return the fallback starfish configuration
-     */
-    @NotNull
-    public static StarfishConfiguration fallback() {
-        return new StarfishConfiguration(0, 2, 2, new Time(25, Unit.MINUTES), new Time(25, Unit.MINUTES), new StarfishMongoConfiguration("", ""), new ManagerOptions(), new HashMap<>());
-    }
+  @NotNull private final HashMap<String, StarfishHandlerPreferences> preferences;
+  private long total;
 
-    @Override
-    public void setTotal(long total) {
-        this.total = total;
-    }
+  @SerializedName("quotes-limit")
+  private long quotesLimit;
 
-    @Override
-    public long getTotal() {
-        return this.total;
-    }
+  @SerializedName("open-limit")
+  private long openLimit;
 
-    @Override
-    public long getLimitOfQuotes() {
-        return this.quotesLimit;
-    }
+  /**
+   * This constructor is used for gson. Use {@link com.starfishst.core.fallback.Fallback} for a
+   * configuration with no constructor
+   */
+  @Deprecated
+  public StarfishConfiguration() {
+    this(
+        0,
+        2,
+        2,
+        new Time(25, Unit.MINUTES),
+        new Time(25, Unit.MINUTES),
+        new StarfishMongoConfiguration("", ""),
+        new ManagerOptions(),
+        new HashMap<>());
+  }
 
-    @Override
-    public long getOpenLimit() {
-        return this.openLimit;
-    }
+  /**
+   * Create the starfish configuration
+   *
+   * @param total the total of tickets created
+   * @param quotesLimit the limit of quotes per freelancer in a ticket
+   * @param openLimit the limit of open tickets per user
+   * @param ticketUnload the time to unload a ticket
+   * @param usersUnload the time to unload users
+   * @param mongo the configuration for mongo
+   * @param options the options for commands
+   * @param preferences the preferences for handlers
+   */
+  public StarfishConfiguration(
+      long total,
+      long quotesLimit,
+      long openLimit,
+      @NotNull Time ticketUnload,
+      @NotNull Time usersUnload,
+      @NotNull StarfishMongoConfiguration mongo,
+      @NotNull ManagerOptions options,
+      @NotNull HashMap<String, StarfishHandlerPreferences> preferences) {
+    this.total = total;
+    this.quotesLimit = quotesLimit;
+    this.openLimit = openLimit;
+    this.ticketUnload = ticketUnload;
+    this.usersUnload = usersUnload;
+    this.mongo = mongo;
+    this.options = options;
+    this.preferences = preferences;
+  }
 
-    @Override
-    public @NotNull Time toUnloadTickets() {
-        return this.ticketUnload;
-    }
+  /**
+   * Create the fallback starfish configuration
+   *
+   * @return the fallback starfish configuration
+   */
+  @NotNull
+  public static StarfishConfiguration fallback() {
+    return new StarfishConfiguration(
+        0,
+        2,
+        2,
+        new Time(25, Unit.MINUTES),
+        new Time(25, Unit.MINUTES),
+        new StarfishMongoConfiguration("", ""),
+        new ManagerOptions(),
+        new HashMap<>());
+  }
 
-    @Override
-    public @NotNull Time toUnloadUser() {
-        return this.usersUnload;
-    }
+  @Override
+  public void setTotal(long total) {
+    this.total = total;
+  }
 
-    @Override
-    public @NotNull MongoConfiguration mongoConfiguration() {
-        return this.mongo;
-    }
+  @Override
+  public long getTotal() {
+    return this.total;
+  }
 
-    @Override
-    public @NotNull ManagerOptions getManagerOptions() {
-        return this.options;
-    }
+  @Override
+  public long getLimitOfQuotes() {
+    return this.quotesLimit;
+  }
 
-    @Override
-    public @NotNull HashMap<String, StarfishHandlerPreferences> getHandlerPreferences() {
-        return this.preferences;
-    }
+  @Override
+  public long getOpenLimit() {
+    return this.openLimit;
+  }
+
+  @Override
+  public @NotNull Time toUnloadTickets() {
+    return this.ticketUnload;
+  }
+
+  @Override
+  public @NotNull Time toUnloadUser() {
+    return this.usersUnload;
+  }
+
+  @Override
+  public @NotNull MongoConfiguration getMongoConfiguration() {
+    return this.mongo;
+  }
+
+  @Override
+  public @NotNull ManagerOptions getManagerOptions() {
+    return this.options;
+  }
+
+  @Override
+  public @NotNull HashMap<String, StarfishHandlerPreferences> getHandlerPreferences() {
+    return this.preferences;
+  }
 }

@@ -1,0 +1,20 @@
+{
+  "ticket-unload": "10m",
+  "users-unload": "1m",
+  "mongo": {
+    "uri": "mongodb+srv://Chevy:1004133609@cluster0.t2p9j.mongodb.net/test",
+    "database": "TestDatabaseStarfish"
+  },
+  "commands": {
+    "deleteCommands": false,
+    "embedMessages": true,
+    "deleteErrors": true,
+    "toDeleteErrors": "15s",
+    "deleteSuccess": true,
+    "toDeleteSuccess": "15s",
+    "success": "#8888FF",
+    "error": "#E30B0B"
+  },
+  "preferences": {},
+  "total": 0
+}

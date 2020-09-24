@@ -18,6 +18,7 @@
 
     <modules>
         <!-- All the addons that are created for the bot -->
+        <module>Automatic-Payments</module>
     </modules>
 
 </project>

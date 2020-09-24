@@ -1,14 +1,12 @@
 package com.starfishst.api.addons;
 
-import com.starfishst.bot.util.Console;
 import org.jetbrains.annotations.NotNull;
 
 /** Every addon should extend this in the main class */
 public class Addon {
 
   /** The addon information */
-  @NotNull
-  private final AddonInformation information;
+  @NotNull private final AddonInformation information;
 
   /**
    * Create the addon.
@@ -20,14 +18,10 @@ public class Addon {
   }
 
   /** Executed when the addon is loaded */
-  public void onEnable() {
-    Console.info(information.getName() + " has been loaded!");
-  }
+  public void onEnable() {}
 
   /** Executed when the addon is unloaded */
-  public void onDisable() {
-    Console.info(information.getName() + " has been unloaded!");
-  }
+  public void onDisable() {}
 
   /**
    * Get the addon information

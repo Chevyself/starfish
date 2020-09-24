@@ -3,7 +3,10 @@ package com.starfishst.api.data.tickets;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 
-/** This is the enum that shows the ticket status. All tickets have an status that tells if you can do certain changes, actions or not */
+/**
+ * This is the enum that shows the ticket status. All tickets have an status that tells if you can
+ * do certain changes, actions or not
+ */
 public enum TicketStatus {
 
   /** When the ticket is asking for details and is just being created */
@@ -18,8 +21,8 @@ public enum TicketStatus {
   SELLING;
 
   /**
-   * Get a ticket status using a document. This will be deleted in future versions. As
-   * the Mongo dependency will be removed. TODO delete this method
+   * Get a ticket status using a document. This will be deleted in future versions. As the Mongo
+   * dependency will be removed. TODO delete this method
    *
    * @param document the document to get the status from
    * @return the status from the document

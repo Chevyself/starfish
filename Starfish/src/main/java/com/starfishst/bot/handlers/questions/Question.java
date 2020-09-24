@@ -1,10 +1,16 @@
 package com.starfishst.bot.handlers.questions;
 
-import com.starfishst.commands.utils.message.MessageQuery;
+import com.starfishst.api.data.user.BotUser;
+import com.starfishst.bot.util.Messages;
+import com.starfishst.commands.result.ResultType;
+import com.starfishst.commands.utils.embeds.EmbedQuery;
 import com.starfishst.core.utils.Strings;
+import com.starfishst.core.utils.maps.Maps;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This represents a question. Used in {@link com.starfishst.bot.oldtickets.type.QuestionsTicket}
@@ -13,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * <p>{ "title": "Something here", "description": "Something descriptive", "simple": "Something",
  * "limit": 10 }
- *
  */
 public class Question {
 
@@ -116,9 +121,41 @@ public class Question {
     return limit;
   }
 
+  /**
+   * Get the question as a query to send
+   *
+   * @param user the user that needs the query
+   * @return the query to send
+   */
   @NotNull
-  public MessageQuery getQuery() {
+  public EmbedQuery getQuery(@NotNull BotUser user) {
+    return Messages.build(
+        this.getBuiltTitle(), this.getBuiltDescription(), ResultType.GENERIC, user);
+  }
 
+  /**
+   * Get the answer given to this question from a message received event
+   *
+   * @param event the event of a message received
+   * @param user the user that queried the answer
+   * @return the answer given from the event of null if the answer is invalid
+   */
+  @Nullable
+  public Object getAnswer(@NotNull GuildMessageReceivedEvent event, @NotNull BotUser user) {
+    String contentRaw = event.getMessage().getContentRaw();
+    if (contentRaw.length() < limit) {
+      return contentRaw;
+    } else {
+      Messages.build(
+              user.getLocaleFile()
+                  .get(
+                      "questions.longer-than-limit",
+                      Maps.singleton("limit", String.valueOf(limit))),
+              ResultType.ERROR,
+              user)
+          .send(event.getChannel());
+      return null;
+    }
   }
 
   @Override

@@ -1,19 +1,23 @@
 package com.starfishst.bot.handlers.questions;
 
-import com.starfishst.bot.handlers.questions.Question;
-import com.starfishst.bot.oldconfig.DiscordConfiguration;
-import com.starfishst.bot.exception.TicketCreationException;
-import com.starfishst.bot.util.Discord;
-import com.starfishst.core.fallback.Fallback;
+import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.utility.Discord;
+import com.starfishst.bot.Starfish;
+import com.starfishst.bot.util.Messages;
+import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.Strings;
+import com.starfishst.core.utils.maps.Maps;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
- * This represents a role question. Used in {@link com.starfishst.bot.oldtickets.type.QuestionsTicket}
+ * This represents a role question
  *
  * <p>The representation in json:
  *
@@ -55,18 +59,31 @@ public class QuestionRole extends Question {
   }
 
   /**
+   * This checks that the list 'toCheck' does not contain any tickets outside of 'roles'
+   *
+   * @param toCheck the list to check
+   * @return a list of the roles mentioned that cannot be
+   */
+  @NotNull
+  private List<Role> getNotMentionableRoles(@NotNull List<Role> toCheck) {
+    List<Role> notMentionable = new ArrayList<>();
+    toCheck.forEach(
+        role -> {
+          if (!this.getRoles().contains(role)) {
+            notMentionable.add(role);
+          }
+        });
+    return notMentionable;
+  }
+
+  /**
    * Gets the list of roles as actual ones
    *
    * @return the list of roles
-   * @throws TicketCreationException in case there's no roles in 'discord.json'
    */
   @NotNull
-  public List<Role> getRoles() throws TicketCreationException {
-    List<Role> roles = DiscordConfiguration.getInstance().getRolesByKey(role);
-    if (roles == null || roles.isEmpty()) {
-      throw new TicketCreationException("There is no roles for " + role);
-    }
-    return roles;
+  public List<Role> getRoles() {
+    return Starfish.getDiscordConfiguration().getRoles(role);
   }
 
   /**
@@ -77,13 +94,40 @@ public class QuestionRole extends Question {
   @Override
   public @NotNull String getBuiltDescription() {
     HashMap<String, String> placeholders = new HashMap<>();
-    try {
-      placeholders.put("roles", Lots.pretty(Discord.getAsMention(getRoles())));
-      placeholders.put("limit", String.valueOf(limit));
-      return Strings.buildMessage(super.getBuiltDescription(), placeholders);
-    } catch (TicketCreationException e) {
-      Fallback.addError(e.getMessage());
-      return super.getBuiltDescription();
+    placeholders.put("roles", Lots.pretty(Discord.getAsMention(getRoles())));
+    placeholders.put("limit", String.valueOf(limit));
+    return Strings.buildMessage(super.getBuiltDescription(), placeholders);
+  }
+
+  @Override
+  public @Nullable Object getAnswer(
+      @NotNull GuildMessageReceivedEvent event, @NotNull BotUser user) {
+    List<Role> roles = event.getMessage().getMentionedRoles();
+    if (roles.isEmpty()) {
+      Messages.build(user.getLocaleFile().get("questions.empty-roles"), ResultType.ERROR, user);
+      return null;
+    } else if (roles.size() > limit) {
+      Messages.build(
+          user.getLocaleFile()
+              .get(
+                  "questions.more-roles-than-limit",
+                  Maps.singleton("limit", String.valueOf(this.getLimit()))),
+          ResultType.ERROR,
+          user);
+      return null;
+    }
+    List<Role> notMentionable = this.getNotMentionableRoles(roles);
+    if (notMentionable.isEmpty()) {
+      return roles;
+    } else {
+      Messages.build(
+          user.getLocaleFile()
+              .get(
+                  "questions.roles-not-mentionable",
+                  Maps.singleton("roles", Lots.pretty(Discord.getAsMention(notMentionable)))),
+          ResultType.ERROR,
+          user);
+      return null;
     }
   }
 }

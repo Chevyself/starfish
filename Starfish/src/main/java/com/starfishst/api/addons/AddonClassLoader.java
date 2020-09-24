@@ -1,6 +1,6 @@
 package com.starfishst.api.addons;
 
-import com.starfishst.simple.gson.GsonProvider;
+import com.starfishst.utils.gson.GsonProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,11 +14,8 @@ import org.jetbrains.annotations.NotNull;
 /** The class loader for addons */
 public class AddonClassLoader extends URLClassLoader {
 
-  /**
-   * The file where the addon is being loaded
-   */
-  @NotNull
-  private final File addonFile;
+  /** The file where the addon is being loaded */
+  @NotNull private final File addonFile;
 
   /**
    * Create the class loader for addons
@@ -37,8 +34,8 @@ public class AddonClassLoader extends URLClassLoader {
    * Get the addon information
    *
    * @return the addon information
-   * @throws IOException if the reader could not be closed or {@link FileNotFoundException} if the adddon
-   * does not include the 'addon.json'
+   * @throws IOException if the reader could not be closed or {@link FileNotFoundException} if the
+   *     adddon does not include the 'addon.json'
    */
   @NotNull
   public AddonInformation getInfo() throws IOException {
@@ -49,7 +46,8 @@ public class AddonClassLoader extends URLClassLoader {
       reader.close();
       return info;
     } else {
-      throw new FileNotFoundException("The resource 'addon.json' does not exist in " + this.addonFile.getName());
+      throw new FileNotFoundException(
+          "The resource 'addon.json' does not exist in " + this.addonFile.getName());
     }
   }
 }

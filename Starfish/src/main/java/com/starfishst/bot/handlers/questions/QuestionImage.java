@@ -1,11 +1,13 @@
 package com.starfishst.bot.handlers.questions;
 
-import com.starfishst.bot.handlers.questions.Question;
-import com.starfishst.bot.oldconfig.language.Lang;
-import com.starfishst.bot.exception.TicketCreationException;
+import com.starfishst.api.data.user.BotUser;
+import com.starfishst.bot.util.Messages;
+import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.maps.Maps;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * If the {@link Question#getSimple()} starts with 'image-' it will be a question image which means
@@ -30,11 +32,25 @@ public class QuestionImage extends Question {
    * Checks that the url provided is valid to use in embeds
    *
    * @param url the embed to validate
-   * @throws TicketCreationException if the embed is not valid
+   * @return true if it is a valid url
    */
-  public static void checkUrl(@NotNull String url) throws TicketCreationException {
-    if (!EmbedBuilder.URL_PATTERN.matcher(url).matches()) {
-      throw new TicketCreationException(Lang.get("URL_NOT_MATCH", Maps.singleton("url", url)));
+  public boolean checkUrl(@NotNull String url) {
+    return EmbedBuilder.URL_PATTERN.matcher(url).matches();
+  }
+
+  @Override
+  public @Nullable String getAnswer(
+      @NotNull GuildMessageReceivedEvent event, @NotNull BotUser user) {
+    String raw = event.getMessage().getContentRaw();
+    if (this.checkUrl(raw)) {
+      return raw;
+    } else {
+      Messages.build(
+              user.getLocaleFile().get("questions.invalid-image-url", Maps.singleton("url", raw)),
+              ResultType.ERROR,
+              user)
+          .send(event.getChannel());
+      return null;
     }
   }
 }

@@ -5,108 +5,116 @@ import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.events.StarfishCancellable;
 import com.starfishst.api.events.StarfishEvent;
-import com.starfishst.bot.users.StarfishUser;
+import com.starfishst.bot.data.StarfishUser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.Null;
-
-/**
- * Called before a ticket is created by a {@link com.starfishst.api.data.loader.TicketManager}
- */
+/** Called before a ticket is created by a {@link com.starfishst.api.data.loader.TicketManager} */
 public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellable {
 
-    /**
-     * The ticket manager creating the ticket
-     */
-    @NotNull
-    private final TicketManager manager;
+  /** The ticket manager creating the ticket */
+  @NotNull private final TicketManager manager;
 
-    /**
-     * The type of ticket that is being created
-     */
-    @NotNull
-    private final TicketType type;
+  /** The type of ticket that is being created */
+  @NotNull private final TicketType type;
 
-    /**
-     * The user creating the ticket
-     */
-    @NotNull
-    private final StarfishUser user;
+  /** The user creating the ticket */
+  @NotNull private final StarfishUser user;
 
-    /**
-     * The parent of the ticket
-     */
-    @Nullable
-    private final Ticket parent;
+  /** The parent of the ticket */
+  @Nullable private final Ticket parent;
 
-    /**
-     * Whether the event is cancelled
-     */
-    private boolean cancelled;
+  /** Whether the event is cancelled */
+  private boolean cancelled;
 
-    /**
-     * Create the event
-     *
-     * @param manager the manager that is creating the ticket
-     * @param type the type of the ticket being created
-     * @param user the user that is creating the ticket
-     * @param parent the parent of the ticket
-     */
-    public TicketPreCreationEvent(@NotNull TicketManager manager, @NotNull TicketType type, @NotNull StarfishUser user, @Nullable Ticket parent) {
-        this.manager = manager;
-        this.type = type;
-        this.user = user;
-        this.parent = parent;
-    }
+  /** Why is it cancelled */
+  @NotNull private String reason = "Ticket creation cancelled: No reason given";
 
-    /**
-     * Get the ticket creating the event
-     *
-     * @return the manager
-     */
-    @NotNull
-    public TicketManager getManager() {
-        return manager;
-    }
+  /**
+   * Create the event
+   *
+   * @param manager the manager that is creating the ticket
+   * @param type the type of the ticket being created
+   * @param user the user that is creating the ticket
+   * @param parent the parent of the ticket
+   */
+  public TicketPreCreationEvent(
+      @NotNull TicketManager manager,
+      @NotNull TicketType type,
+      @NotNull StarfishUser user,
+      @Nullable Ticket parent) {
+    this.manager = manager;
+    this.type = type;
+    this.user = user;
+    this.parent = parent;
+  }
 
-    /**
-     * Get the type of ticket that is being created
-     *
-     * @return the type of ticket that is being created
-     */
-    @NotNull
-    public TicketType getType() {
-        return this.type;
-    }
+  /**
+   * Set the reason why it was cancelled
+   *
+   * @param reason the reason why it was cancelled
+   */
+  public void setReason(@NotNull String reason) {
+    this.reason = reason;
+  }
 
-    /**
-     * Get the user that is creating the ticket
-     *
-     * @return the user creating the ticket
-     */
-    @NotNull
-    public StarfishUser getUser() {
-        return user;
-    }
+  /**
+   * Get the ticket creating the event
+   *
+   * @return the manager
+   */
+  @NotNull
+  public TicketManager getManager() {
+    return manager;
+  }
 
-    /**
-     * Get the parent of the ticket being creating
-     *
-     * @return the parent
-     */
-    @Nullable
-    public Ticket getParent() {
-        return parent;
-    }
+  /**
+   * Get the type of ticket that is being created
+   *
+   * @return the type of ticket that is being created
+   */
+  @NotNull
+  public TicketType getType() {
+    return this.type;
+  }
 
-    @Override
-    public boolean isCancelled() {
-        return this.cancelled;
-    }
+  /**
+   * Get the user that is creating the ticket
+   *
+   * @return the user creating the ticket
+   */
+  @NotNull
+  public StarfishUser getUser() {
+    return user;
+  }
 
-    @Override
-    public void setCancelled(boolean bol) {
-        this.cancelled = bol;
-    }
+  /**
+   * Get the parent of the ticket being creating
+   *
+   * @return the parent
+   */
+  @Nullable
+  public Ticket getParent() {
+    return parent;
+  }
+
+  /**
+   * Get why the creating was cancelled
+   *
+   * @return the reason why it was cancelled
+   */
+  @NotNull
+  public String getReason() {
+    return reason;
+  }
+
+  @Override
+  public boolean isCancelled() {
+    return this.cancelled;
+  }
+
+  @Override
+  public void setCancelled(boolean bol) {
+    this.cancelled = bol;
+  }
 }
