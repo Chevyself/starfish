@@ -2,6 +2,7 @@ package com.starfishst.api;
 
 import com.starfishst.core.utils.Validate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
@@ -65,4 +66,16 @@ public interface Preferences {
    */
   @NotNull
   Map<String, Object> getPreferences();
+
+  /**
+   * Convert the preferences into a string map. Maybe to be read by an user?
+   *
+   * @return the string map
+   */
+  @NotNull
+  default Map<String, String> toStringMap() {
+    HashMap<String, String> stringMap = new HashMap<>();
+    this.getPreferences().forEach((key, value) -> stringMap.put(key, value.toString()));
+    return stringMap;
+  }
 }

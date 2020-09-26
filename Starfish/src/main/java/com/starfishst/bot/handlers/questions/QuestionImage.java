@@ -53,4 +53,9 @@ public class QuestionImage extends Question {
       return null;
     }
   }
+
+  @Override
+  public @NotNull String getSimple() {
+    return "image" + super.getSimple();
+  }
 }

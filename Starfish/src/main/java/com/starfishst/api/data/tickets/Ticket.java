@@ -3,11 +3,18 @@ package com.starfishst.api.data.tickets;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
+import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.bot.util.Messages;
+import com.starfishst.commands.result.ResultType;
+import com.starfishst.commands.utils.embeds.EmbedQuery;
+import com.starfishst.core.utils.Strings;
 import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.core.utils.time.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
@@ -178,5 +185,51 @@ public interface Ticket {
       placeholders.put("channel", channel.getAsMention());
     }
     return placeholders;
+  }
+
+  /**
+   * Get the complete information from a ticket
+   *
+   * @param user the user that wants the information of a ticket
+   * @param appendUsers whether the users of the ticket must be added in the information
+   * @return the complete information of a ticket
+   */
+  @NotNull
+  default EmbedQuery toCompleteInformation(@NotNull BotUser user, boolean appendUsers) {
+    LocaleFile locale = user.getLocaleFile();
+    HashMap<String, String> placeholders = this.getPlaceholders();
+    LinkedHashMap<String, String> fields = new LinkedHashMap<>();
+
+    this.getDetails().toStringMap().forEach(fields::put);
+    if (appendUsers) {
+      StringBuilder usersBuilder = Strings.getBuilder();
+      this.getUsers()
+          .forEach(
+              (ticketUser, role) -> {
+                Member member = ticketUser.getMember();
+                if (member != null) {
+                  usersBuilder
+                      .append(member.getAsMention())
+                      .append(" role: ")
+                      .append(role)
+                      .append("\n");
+                } else {
+                  usersBuilder
+                      .append(ticketUser.getId())
+                      .append(" role: ")
+                      .append(role)
+                      .append("\n");
+                }
+              });
+      fields.put("users", usersBuilder.toString());
+    }
+    EmbedQuery embedQuery =
+        Messages.build(
+            locale.get("ticket-info.title", placeholders),
+            locale.get("ticket-info.description", placeholders),
+            ResultType.GENERIC,
+            user);
+    fields.forEach((key, value) -> embedQuery.getEmbedBuilder().addField(key, value, true));
+    return embedQuery;
   }
 }

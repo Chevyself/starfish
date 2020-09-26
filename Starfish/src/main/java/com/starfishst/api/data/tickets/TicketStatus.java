@@ -9,9 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public enum TicketStatus {
 
-  /**
-   * When the ticket is being loaded by the ticket manager
-   */
+  /** When the ticket is being loaded by the ticket manager */
   LOADING,
   /** When the ticket is asking for details and is just being created */
   CREATING,
@@ -21,9 +19,7 @@ public enum TicketStatus {
   CLOSED,
   /** When the business has finished but you still want the ticket for changes */
   ARCHIVED,
-  /**
-   *
-   */
+  /** */
   SELLING;
 
   /**

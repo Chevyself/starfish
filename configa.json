@@ -1,6 +1,6 @@
 {
-  "ticket-unload": "10m",
-  "users-unload": "10m",
+  "ticket-unload": "1m",
+  "users-unload": "1m",
   "mongo": {
     "uri": "The uri for the mongo client",
     "database": "TestDatabaseStarfish"
@@ -19,18 +19,13 @@
     "auto-save": {
       "preferences": {
         "enabled": true,
-        "time": "2m"
+        "time": "10s"
       }
     },
     "cleaner": {
       "preferences": {
         "delete-uncompleted-ticket-channels": true,
-        "time-to-announce-deletion": ["9m", "5m", "1m", "30s", "15s", "5s", "4s", "3s", "2s", "1s"]
-      }
-    },
-    "announcer": {
-      "preferences": {
-        "pin-copy-in-channel": true
+        "time-to-announce-deletion": ["9m", "5m", "1m", "50s", "30s", "15s", "5s", "4s", "3s", "2s", "1s"]
       }
     }
   },

@@ -17,6 +17,7 @@ import com.starfishst.bot.handlers.misc.CleanerHandler;
 import com.starfishst.bot.handlers.misc.DebugHandler;
 import com.starfishst.bot.handlers.misc.UpdateTicketName;
 import com.starfishst.bot.handlers.questions.QuestionsHandler;
+import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
 import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoaderFallback;
@@ -130,7 +131,8 @@ public class Starfish {
             new CleanerHandler(),
             new DebugHandler(),
             new UpdateTicketName(),
-            new QuestionsHandler(loader)));
+            new QuestionsHandler(loader),
+            new TicketAnnouncementHandler()));
     for (StarfishHandler handler : handlers) {
       handler.register(jda);
     }

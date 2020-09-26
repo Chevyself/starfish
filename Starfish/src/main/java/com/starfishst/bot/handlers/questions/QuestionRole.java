@@ -130,4 +130,9 @@ public class QuestionRole extends Question {
       return null;
     }
   }
+
+  @Override
+  public @NotNull String getSimple() {
+    return "role" + super.getSimple();
+  }
 }

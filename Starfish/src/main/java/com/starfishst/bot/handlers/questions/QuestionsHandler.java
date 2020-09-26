@@ -5,7 +5,6 @@ import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
-import com.starfishst.api.events.tickets.TicketLoadedEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.bot.handlers.StarfishEventHandler;
@@ -79,16 +78,16 @@ public class QuestionsHandler implements StarfishEventHandler {
    * @param event the event of a ticket being loaded/created
    */
   @Listener(priority = ListenPriority.HIGHEST)
-  public void onTicketLoadEvent(@NotNull TicketStatusUpdatedEvent event) {
-    if (event.getStatus() == TicketStatus.CREATING) {
+  public void onTicketStatusUpdated(@NotNull TicketStatusUpdatedEvent event) {
+    if (!event.isCancelled() && event.getStatus() == TicketStatus.CREATING) {
       Ticket ticket = event.getTicket().refresh();
       QuestionsConfiguration questions = this.questions.get(ticket.getTicketType());
       TextChannel channel = ticket.getTextChannel();
       List<BotUser> customers = event.getTicket().getUsers("customer");
       if (!customers.isEmpty()
-              && questions != null
-              && !questions.getQuestions().isEmpty()
-              && channel != null) {
+          && questions != null
+          && !questions.getQuestions().isEmpty()
+          && channel != null) {
         current.put(ticket, 0);
         questions.getQuestions().get(0).getQuery(customers.get(0)).send(channel);
       }

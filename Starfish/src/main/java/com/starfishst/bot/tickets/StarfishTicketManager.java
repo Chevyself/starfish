@@ -60,10 +60,10 @@ public class StarfishTicketManager implements TicketManager {
           channel = parent.getTextChannel();
         } else {
           channel =
-                  category
-                          .createTextChannel(
-                                  user.getLocaleFile().get("ticket.channel-name", ticket.getPlaceholders()))
-                          .complete();
+              category
+                  .createTextChannel(
+                      user.getLocaleFile().get("ticket.channel-name", ticket.getPlaceholders()))
+                  .complete();
         }
         ticket.setTextChannel(channel);
         if (user.getMember() != null) {

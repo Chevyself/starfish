@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Role;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -204,7 +205,24 @@ public class StarfishTicketLoader implements StarfishLoader {
   private StarfishTicketDetails getDetails(@NotNull Document document) {
     LinkedHashMap<String, Object> details = new LinkedHashMap<>();
     if (document.get("details") instanceof Document) {
-      document.get("details", Document.class).forEach(details::put);
+      document
+          .get("details", Document.class)
+          .forEach(
+              (string, object) -> {
+                if (string.startsWith("role")) {
+                  List<Role> roles = new ArrayList<>();
+                  List<Long> ids = ((Document) document.get("details")).getList(string, Long.class);
+                  for (Long id : ids) {
+                    Role role = this.jda.getRoleById(id);
+                    if (role != null) {
+                      roles.add(role);
+                    }
+                  }
+                  details.put(string, roles);
+                } else {
+                  details.put(string, object);
+                }
+              });
     }
     return new StarfishTicketDetails(details);
   }
@@ -309,15 +327,32 @@ public class StarfishTicketLoader implements StarfishLoader {
   }
 
   /**
-   * Get the details of a ticket as a document
+   * Get the details of a ticket as a document. {@link
+   * com.starfishst.bot.handlers.questions.QuestionRole} simple starts with 'role' so it is safe to
+   * cast
    *
    * @param ticket the ticket to get the document from
    * @return the document
    */
   @NotNull
+  @SuppressWarnings("unchecked")
   private Document detailsToDocument(@NotNull Ticket ticket) {
     Document document = new Document();
-    ticket.getDetails().getPreferences().forEach(document::append);
+    ticket
+        .getDetails()
+        .getPreferences()
+        .forEach(
+            (key, value) -> {
+              if (key.startsWith("role")) {
+                List<Long> ids = new ArrayList<>();
+                for (Role role : ((List<Role>) value)) {
+                  ids.add(role.getIdLong());
+                }
+                document.append(key, ids);
+              } else {
+                document.append(key, value);
+              }
+            });
     return document;
   }
 

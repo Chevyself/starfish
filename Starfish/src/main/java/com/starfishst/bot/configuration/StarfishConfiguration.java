@@ -29,7 +29,8 @@ public class StarfishConfiguration implements Configuration {
   private final ManagerOptions options;
 
   @SerializedName("handlers")
-  @NotNull private final HashMap<String, StarfishHandlerPreferences> handlersPreferences;
+  @NotNull
+  private final HashMap<String, StarfishHandlerPreferences> handlersPreferences;
 
   private long total;
 

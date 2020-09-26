@@ -1,7 +1,10 @@
 package com.starfishst.bot.tickets;
 
 import com.starfishst.api.data.tickets.TicketDetails;
+import com.starfishst.api.utility.Discord;
+import com.starfishst.core.utils.Lots;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link TicketDetails} */
@@ -22,5 +25,21 @@ public class StarfishTicketDetails implements TicketDetails {
   @Override
   public @NotNull LinkedHashMap<String, Object> getPreferences() {
     return this.preferences;
+  }
+
+  @NotNull
+  @Override
+  public Map<String, String> toStringMap() {
+    LinkedHashMap<String, String> stringMap = new LinkedHashMap<>();
+    this.getPreferences()
+        .forEach(
+            (key, value) -> {
+              if (key.startsWith("role")) {
+                stringMap.put(key, Lots.pretty(Discord.getAsMention(this.getListPreference(key))));
+              } else {
+                stringMap.put(key, value.toString());
+              }
+            });
+    return stringMap;
   }
 }
