@@ -3,9 +3,9 @@ package com.starfishst.api.events.tickets;
 import com.starfishst.api.data.loader.TicketManager;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketType;
+import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishCancellable;
 import com.starfishst.api.events.StarfishEvent;
-import com.starfishst.bot.data.StarfishUser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +19,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
   @NotNull private final TicketType type;
 
   /** The user creating the ticket */
-  @NotNull private final StarfishUser user;
+  @NotNull private final BotUser user;
 
   /** The parent of the ticket */
   @Nullable private final Ticket parent;
@@ -41,7 +41,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
   public TicketPreCreationEvent(
       @NotNull TicketManager manager,
       @NotNull TicketType type,
-      @NotNull StarfishUser user,
+      @NotNull BotUser user,
       @Nullable Ticket parent) {
     this.manager = manager;
     this.type = type;
@@ -84,7 +84,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
    * @return the user creating the ticket
    */
   @NotNull
-  public StarfishUser getUser() {
+  public BotUser getUser() {
     return user;
   }
 

@@ -7,9 +7,9 @@ import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.tickets.exception.TicketCreationException;
+import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketPreCreationEvent;
 import com.starfishst.api.utility.Discord;
-import com.starfishst.bot.data.StarfishUser;
 import com.starfishst.core.utils.maps.Maps;
 import java.util.LinkedHashMap;
 import net.dv8tion.jda.api.entities.Category;
@@ -39,7 +39,7 @@ public class StarfishTicketManager implements TicketManager {
 
   @Override
   public @NotNull Ticket createTicket(
-      @NotNull TicketType type, @NotNull StarfishUser user, @Nullable Ticket parent)
+      @NotNull TicketType type, @NotNull BotUser user, @Nullable Ticket parent)
       throws TicketCreationException {
     TicketPreCreationEvent preCreationEvent = new TicketPreCreationEvent(this, type, user, parent);
     if (preCreationEvent.callAndGet()) {
@@ -52,7 +52,7 @@ public class StarfishTicketManager implements TicketManager {
                 this.getNewId(parent),
                 type,
                 new StarfishTicketDetails(new LinkedHashMap<>()),
-                TicketStatus.CREATING,
+                TicketStatus.LOADING,
                 Maps.singleton(user, "owner"),
                 null);
         TextChannel channel =
@@ -64,6 +64,7 @@ public class StarfishTicketManager implements TicketManager {
         if (user.getMember() != null) {
           Discord.allow(channel, user.getMember(), Discord.ALLOWED);
         }
+        ticket.setTicketStatus(TicketStatus.CREATING);
         return ticket;
       } else {
         throw new TicketCreationException(
@@ -80,6 +81,16 @@ public class StarfishTicketManager implements TicketManager {
   @Override
   public long getTotal() {
     return this.configuration.getTotal();
+  }
+
+  @Override
+  public void setDataLoader(@NotNull DataLoader loader) {
+    this.loader = loader;
+  }
+
+  @Override
+  public void setConfiguration(@NotNull Configuration configuration) {
+    this.configuration = configuration;
   }
 
   @Override

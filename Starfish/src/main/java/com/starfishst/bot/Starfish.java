@@ -2,9 +2,11 @@ package com.starfishst.bot;
 
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
+import com.starfishst.api.data.loader.TicketManager;
 import com.starfishst.bot.commands.SetCommands;
 import com.starfishst.bot.commands.TicketCommands;
 import com.starfishst.bot.commands.providers.BotUserProvider;
+import com.starfishst.bot.commands.providers.BotUserSenderProvider;
 import com.starfishst.bot.configuration.StarfishConfiguration;
 import com.starfishst.bot.configuration.StarfishDiscordConfiguration;
 import com.starfishst.bot.handlers.StarfishHandler;
@@ -17,6 +19,7 @@ import com.starfishst.bot.handlers.questions.QuestionsHandler;
 import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoaderFallback;
+import com.starfishst.bot.tickets.StarfishTicketManager;
 import com.starfishst.commands.CommandManager;
 import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.providers.registry.ProvidersRegistryJDA;
@@ -65,6 +68,9 @@ public class Starfish {
       StarfishDiscordConfiguration.fallback();
   /** The data loader that the bot will be using */
   @NotNull private static StarfishLoader loader = new StarfishTicketLoaderFallback();
+
+  @NotNull
+  private static TicketManager ticketManager = new StarfishTicketManager(loader, configuration);
   /** The language handler for users using the bot */
   @NotNull
   private static final StarfishLanguageHandler languageHandler =
@@ -118,6 +124,7 @@ public class Starfish {
     languageHandler.load("en");
     ProvidersRegistry<CommandContext> registry = new ProvidersRegistryJDA(languageHandler);
     registry.addProvider(new BotUserProvider());
+    registry.addProvider(new BotUserSenderProvider());
     CommandManager manager =
         new CommandManager(
             jda,
@@ -128,6 +135,8 @@ public class Starfish {
             new StarfishPermissionChecker(languageHandler, loader));
     manager.registerCommand(new SetCommands());
     manager.registerCommand(new TicketCommands());
+    ticketManager.setDataLoader(loader);
+    ticketManager.setConfiguration(configuration);
   }
 
   /** Saves configuration */
@@ -211,5 +220,15 @@ public class Starfish {
   @NotNull
   public static StarfishLoader getLoader() {
     return loader;
+  }
+
+  /**
+   * Get the ticket manager that the bot is using
+   *
+   * @return the ticket manager
+   */
+  @NotNull
+  public static TicketManager getTicketManager() {
+    return ticketManager;
   }
 }

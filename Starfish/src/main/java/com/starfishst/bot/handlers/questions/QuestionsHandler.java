@@ -6,6 +6,7 @@ import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketLoadedEvent;
+import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.core.utils.Lots;
@@ -78,18 +79,19 @@ public class QuestionsHandler implements StarfishEventHandler {
    * @param event the event of a ticket being loaded/created
    */
   @Listener(priority = ListenPriority.HIGHEST)
-  public void onTicketLoadEvent(@NotNull TicketLoadedEvent event) {
-    Ticket ticket = event.getTicket();
-    QuestionsConfiguration questions = this.questions.get(ticket.getTicketType());
-    TextChannel channel = ticket.getTextChannel();
-    List<BotUser> customers = event.getTicket().getUsers("customer");
-    if (!customers.isEmpty()
-        && ticket.getTicketStatus() == TicketStatus.CREATING
-        && questions != null
-        && !questions.getQuestions().isEmpty()
-        && channel != null) {
-      current.put(ticket, 0);
-      questions.getQuestions().get(0).getQuery(customers.get(0)).send(channel);
+  public void onTicketLoadEvent(@NotNull TicketStatusUpdatedEvent event) {
+    if (event.getStatus() == TicketStatus.CREATING) {
+      Ticket ticket = event.getTicket();
+      QuestionsConfiguration questions = this.questions.get(ticket.getTicketType());
+      TextChannel channel = ticket.getTextChannel();
+      List<BotUser> customers = event.getTicket().getUsers("customer");
+      if (!customers.isEmpty()
+              && questions != null
+              && !questions.getQuestions().isEmpty()
+              && channel != null) {
+        current.put(ticket, 0);
+        questions.getQuestions().get(0).getQuery(customers.get(0)).send(channel);
+      }
     }
   }
 
@@ -100,21 +102,23 @@ public class QuestionsHandler implements StarfishEventHandler {
    */
   @SubscribeEvent
   public void onMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-    Ticket ticket = this.getTicketByChannel(event.getChannel());
-    if (ticket != null) {
-      BotUser user = loader.getStarfishUser(event.getAuthor().getIdLong());
-      List<Question> questions = this.questions.get(ticket.getTicketType()).getQuestions();
-      Question current = questions.get(this.current.get(ticket));
-      Object answer = current.getAnswer(event, user);
-      if (answer != null) {
-        ticket.getDetails().getPreferences().put(current.getSimple(), answer);
-        this.current.put(ticket, this.current.get(ticket) + 1);
-        if (this.current.get(ticket) >= questions.size()) {
-          ticket.refresh().setTicketStatus(TicketStatus.OPEN);
-          this.current.remove(ticket);
-        } else {
-          current = questions.get(this.current.get(ticket));
-          current.getQuery(user).send(event.getChannel());
+    if (!event.getAuthor().isBot()) {
+      Ticket ticket = this.getTicketByChannel(event.getChannel());
+      if (ticket != null) {
+        BotUser user = loader.getStarfishUser(event.getAuthor().getIdLong());
+        List<Question> questions = this.questions.get(ticket.getTicketType()).getQuestions();
+        Question current = questions.get(this.current.get(ticket));
+        Object answer = current.getAnswer(event, user);
+        if (answer != null) {
+          ticket.getDetails().getPreferences().put(current.getSimple(), answer);
+          this.current.put(ticket, this.current.get(ticket) + 1);
+          if (this.current.get(ticket) >= questions.size()) {
+            ticket.refresh().setTicketStatus(TicketStatus.OPEN);
+            this.current.remove(ticket);
+          } else {
+            current = questions.get(this.current.get(ticket));
+            current.getQuery(user).send(event.getChannel());
+          }
         }
       }
     }
