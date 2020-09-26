@@ -2,7 +2,11 @@ package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishHandler;
+import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.time.Time;
+import com.starfishst.core.utils.time.Unit;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,13 +18,22 @@ public class AutoSaveHandler extends TimerTask implements StarfishHandler {
     if (this.getPreferences().getPreferenceOr("enabled", Boolean.class, false)) {
       new Timer()
           .schedule(
-              this,
-              this.getPreferences()
-                  .getPreferenceOr("time", Time.class, Time.fromString("2m"))
-                  .millis(),
-              this.getPreferences()
-                  .getPreferenceOr("time", Time.class, Time.fromString("2m"))
-                  .millis());
+              this, this.getTime().millis(),
+              this.getTime().millis());
+    }
+  }
+
+  /**
+   * Get the time to auto save
+   * @return the time to auto save
+   */
+  @NotNull
+  private Time getTime() {
+    try {
+      return Time.fromString(this.getPreferences().getPreferenceOr("time", String.class, "2m"));
+    } catch (IllegalArgumentException e) {
+      Fallback.addError("Auto Save: " + this.getPreferences().getPreference("time", String.class) + " is not valid time!");
+      return new Time(2, Unit.MINUTES);
     }
   }
 
@@ -34,6 +47,7 @@ public class AutoSaveHandler extends TimerTask implements StarfishHandler {
 
   @Override
   public void run() {
+    // System.out.println("Saving...");
     Starfish.save();
   }
 }

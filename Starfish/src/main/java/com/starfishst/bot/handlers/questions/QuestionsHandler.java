@@ -81,7 +81,7 @@ public class QuestionsHandler implements StarfishEventHandler {
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketLoadEvent(@NotNull TicketStatusUpdatedEvent event) {
     if (event.getStatus() == TicketStatus.CREATING) {
-      Ticket ticket = event.getTicket();
+      Ticket ticket = event.getTicket().refresh();
       QuestionsConfiguration questions = this.questions.get(ticket.getTicketType());
       TextChannel channel = ticket.getTextChannel();
       List<BotUser> customers = event.getTicket().getUsers("customer");
@@ -116,7 +116,7 @@ public class QuestionsHandler implements StarfishEventHandler {
             ticket.refresh().setTicketStatus(TicketStatus.OPEN);
             this.current.remove(ticket);
           } else {
-            current = questions.get(this.current.get(ticket));
+            current = questions.get(this.current.get(ticket.refresh()));
             current.getQuery(user).send(event.getChannel());
           }
         }

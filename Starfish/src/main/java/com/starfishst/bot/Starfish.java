@@ -13,6 +13,7 @@ import com.starfishst.bot.handlers.StarfishHandler;
 import com.starfishst.bot.handlers.lang.StarfishLanguageHandler;
 import com.starfishst.bot.handlers.lang.StarfishLocaleFile;
 import com.starfishst.bot.handlers.misc.AutoSaveHandler;
+import com.starfishst.bot.handlers.misc.CleanerHandler;
 import com.starfishst.bot.handlers.misc.DebugHandler;
 import com.starfishst.bot.handlers.misc.UpdateTicketName;
 import com.starfishst.bot.handlers.questions.QuestionsHandler;
@@ -33,6 +34,7 @@ import com.starfishst.utils.events.ListenerManager;
 import com.starfishst.utils.gson.GsonProvider;
 import com.starfishst.utils.gson.adapters.core.ColorAdapter;
 import com.starfishst.utils.gson.adapters.core.TimeAdapter;
+import com.starfishst.utils.gson.adapters.jda.CategoryAdapter;
 import com.starfishst.utils.gson.adapters.jda.GuildAdapter;
 import com.starfishst.utils.gson.adapters.jda.RoleAdapter;
 import com.starfishst.utils.gson.adapters.jda.TextChannelAdapter;
@@ -45,10 +47,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
+import net.dv8tion.jda.internal.entities.CategoryImpl;
+import net.dv8tion.jda.internal.entities.GuildImpl;
+import net.dv8tion.jda.internal.entities.RoleImpl;
+import net.dv8tion.jda.internal.entities.TextChannelImpl;
 import org.jetbrains.annotations.NotNull;
 
 /** The main class of the starfish bot */
@@ -91,6 +98,11 @@ public class Starfish {
     GsonProvider.addAdapter(TextChannel.class, new TextChannelAdapter(jda));
     GsonProvider.addAdapter(Role.class, new RoleAdapter(jda));
     GsonProvider.addAdapter(Guild.class, new GuildAdapter(jda));
+    GsonProvider.addAdapter(Category.class, new CategoryAdapter(jda));
+    GsonProvider.addAdapter(TextChannelImpl.class, new TextChannelAdapter(jda));
+    GsonProvider.addAdapter(RoleImpl.class, new RoleAdapter(jda));
+    GsonProvider.addAdapter(GuildImpl.class, new GuildAdapter(jda));
+    GsonProvider.addAdapter(CategoryImpl.class, new CategoryAdapter(jda));
     GsonProvider.refresh();
     try {
       FileReader reader =
@@ -115,6 +127,7 @@ public class Starfish {
             loader,
             languageHandler,
             new AutoSaveHandler(),
+            new CleanerHandler(),
             new DebugHandler(),
             new UpdateTicketName(),
             new QuestionsHandler(loader)));
@@ -144,7 +157,13 @@ public class Starfish {
     try {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "config.json");
       FileWriter writer = new FileWriter(file);
-      GsonProvider.GSON.toJson(configuration, writer);
+      try {
+        GsonProvider.GSON.toJson(configuration, writer);
+      } catch (Exception e) {
+        Fallback.addError("'config.json' could not be written!");
+        e.printStackTrace();
+      }
+      writer.close();
     } catch (IOException e) {
       Fallback.addError("IOException: config.json could not be saved");
       e.printStackTrace();
@@ -152,7 +171,13 @@ public class Starfish {
     try {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "discord.json");
       FileWriter writer = new FileWriter(file);
-      GsonProvider.GSON.toJson(discordConfiguration, writer);
+      try {
+        GsonProvider.GSON.toJson(discordConfiguration, writer);
+      } catch (Exception e) {
+        Fallback.addError("'discord.json' could not be written!");
+        e.printStackTrace();
+      }
+      writer.close();
     } catch (IOException e) {
       Fallback.addError("IOException: discord.json could not be saved");
       e.printStackTrace();

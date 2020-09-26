@@ -15,6 +15,19 @@
     "success": "#8888FF",
     "error": "#E30B0B"
   },
-  "preferences": {},
+  "handlers": {
+    "auto-save": {
+      "preferences": {
+        "enabled": true,
+        "time": "2m"
+      }
+    },
+    "cleaner": {
+      "preferences": {
+        "delete-uncompleted-ticket-channels": true,
+        "time-to-announce-deletion": ["9m", "5m", "1m", "30s", "15s", "5s", "4s", "3s", "2s", "1s"]
+      }
+    }
+  },
   "total": 0
 }

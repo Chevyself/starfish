@@ -7,12 +7,17 @@ import com.starfishst.api.data.user.BotUser;
 import com.starfishst.bot.Starfish;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.result.Result;
+import com.starfishst.commands.result.ResultType;
 
 /** Commands for tickets */
 public class TicketCommands {
   @Command(aliases = "new", description = "Create a new ticket")
-  public Result newTicket(BotUser user) throws TicketCreationException {
-    Ticket ticket = Starfish.getTicketManager().createTicket(TicketType.ORDER, user, null);
-    return new Result("Channel: " + ticket.getTextChannel().getAsMention());
+  public Result newTicket(BotUser user) {
+    try {
+      Ticket ticket = Starfish.getTicketManager().createTicket(TicketType.ORDER, user, null);
+      return new Result("Channel: " + ticket.getTextChannel().getAsMention());
+    } catch (TicketCreationException e) {
+      return new Result(ResultType.ERROR, e.getMessage());
+    }
   }
 }

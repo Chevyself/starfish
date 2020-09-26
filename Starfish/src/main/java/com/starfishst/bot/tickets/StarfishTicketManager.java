@@ -55,11 +55,16 @@ public class StarfishTicketManager implements TicketManager {
                 TicketStatus.LOADING,
                 Maps.singleton(user, "owner"),
                 null);
-        TextChannel channel =
-            category
-                .createTextChannel(
-                    user.getLocaleFile().get("ticket.channel-name", ticket.getPlaceholders()))
-                .complete();
+        TextChannel channel;
+        if (parent != null && parent.getTextChannel() != null) {
+          channel = parent.getTextChannel();
+        } else {
+          channel =
+                  category
+                          .createTextChannel(
+                                  user.getLocaleFile().get("ticket.channel-name", ticket.getPlaceholders()))
+                          .complete();
+        }
         ticket.setTextChannel(channel);
         if (user.getMember() != null) {
           Discord.allow(channel, user.getMember(), Discord.ALLOWED);

@@ -28,7 +28,9 @@ public class StarfishConfiguration implements Configuration {
   @NotNull
   private final ManagerOptions options;
 
-  @NotNull private final HashMap<String, StarfishHandlerPreferences> preferences;
+  @SerializedName("handlers")
+  @NotNull private final HashMap<String, StarfishHandlerPreferences> handlersPreferences;
+
   private long total;
 
   @SerializedName("quotes-limit")
@@ -64,7 +66,7 @@ public class StarfishConfiguration implements Configuration {
    * @param usersUnload the time to unload users
    * @param mongo the configuration for mongo
    * @param options the options for commands
-   * @param preferences the preferences for handlers
+   * @param handlersPreferences the preferences for handlers
    */
   public StarfishConfiguration(
       long total,
@@ -74,7 +76,7 @@ public class StarfishConfiguration implements Configuration {
       @NotNull Time usersUnload,
       @NotNull StarfishMongoConfiguration mongo,
       @NotNull ManagerOptions options,
-      @NotNull HashMap<String, StarfishHandlerPreferences> preferences) {
+      @NotNull HashMap<String, StarfishHandlerPreferences> handlersPreferences) {
     this.total = total;
     this.quotesLimit = quotesLimit;
     this.openLimit = openLimit;
@@ -82,7 +84,7 @@ public class StarfishConfiguration implements Configuration {
     this.usersUnload = usersUnload;
     this.mongo = mongo;
     this.options = options;
-    this.preferences = preferences;
+    this.handlersPreferences = handlersPreferences;
   }
 
   /**
@@ -145,6 +147,6 @@ public class StarfishConfiguration implements Configuration {
 
   @Override
   public @NotNull HashMap<String, StarfishHandlerPreferences> getHandlerPreferences() {
-    return this.preferences;
+    return this.handlersPreferences;
   }
 }

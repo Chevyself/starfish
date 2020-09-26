@@ -11,6 +11,14 @@ public class StarfishHandlerPreferences implements Preferences {
   @NotNull private final HashMap<String, Object> preferences;
 
   /**
+   * Create the handler preferences. This constructor may only be used by Gson
+   */
+  @Deprecated
+  public StarfishHandlerPreferences() {
+    this.preferences = new HashMap<>();
+  }
+
+  /**
    * Create the handler preferences
    *
    * @param preferences the map with the preferences
