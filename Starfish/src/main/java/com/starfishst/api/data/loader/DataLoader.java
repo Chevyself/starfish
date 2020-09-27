@@ -3,6 +3,7 @@ package com.starfishst.api.data.loader;
 import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.commands.utils.responsive.ResponsiveMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,4 +36,11 @@ public interface DataLoader {
    */
   @NotNull
   BotRole getStarfishRole(long id);
+
+  /**
+   * Deletes the responsive message
+   *
+   * @param message the message to delete
+   */
+  void deleteMessage(@NotNull ResponsiveMessage message);
 }

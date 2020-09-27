@@ -27,6 +27,14 @@ public interface Configuration {
   Time toUnloadUser();
 
   /**
+   * Get the time to unload messages
+   *
+   * @return the time to unload messages from cache
+   */
+  @NotNull
+  Time toUnloadMessages();
+
+  /**
    * Set the total of tickets created
    *
    * @param total the total of tickets created

@@ -10,7 +10,7 @@ public class DebugHandler implements StarfishEventHandler {
 
   @Listener(priority = -1)
   public void onStarfishEvent(@NotNull StarfishEvent event) {
-    System.out.println(event);
+    // System.out.println(event);
   }
 
   @Override

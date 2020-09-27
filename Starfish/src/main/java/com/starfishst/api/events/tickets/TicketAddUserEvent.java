@@ -39,4 +39,24 @@ public class TicketAddUserEvent extends TicketEvent implements StarfishCancellab
   public void setCancelled(boolean bol) {
     this.cancelled = bol;
   }
+
+  /**
+   * Get the user that is being added
+   *
+   * @return the user that is being added
+   */
+  @NotNull
+  public BotUser getUser() {
+    return user;
+  }
+
+  /**
+   * Get the role to which the user is being added
+   *
+   * @return the role to which the user is being added
+   */
+  @NotNull
+  public String getRole() {
+    return role;
+  }
 }

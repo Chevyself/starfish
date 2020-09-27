@@ -9,31 +9,39 @@ import com.starfishst.api.Permissible;
 import com.starfishst.api.Permission;
 import com.starfishst.api.PermissionStack;
 import com.starfishst.api.configuration.MongoConfiguration;
+import com.starfishst.api.data.messages.BotResponsiveMessage;
 import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
 import com.starfishst.api.events.role.BotRoleUnloadedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
 import com.starfishst.bot.data.StarfishFreelancer;
 import com.starfishst.bot.data.StarfishPermission;
 import com.starfishst.bot.data.StarfishPreferences;
+import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishRole;
 import com.starfishst.bot.data.StarfishUser;
+import com.starfishst.commands.utils.responsive.ResponsiveMessage;
 import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.utils.events.ListenPriority;
 import com.starfishst.utils.events.Listener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +61,11 @@ public class StarfishTicketLoader implements StarfishLoader {
   @NotNull private final MongoCollection<Document> users;
   /** The collection to work with freelancers */
   @NotNull private final MongoCollection<Document> roles;
+  /** The collection to work with responsive messages */
+  @NotNull private final MongoCollection<Document> messages;
+  /** The deserializers to get the responsive messages */
+  @NotNull
+  private final HashMap<String, StarfishMessageDeserializer<?>> deserializers = new HashMap<>();
 
   /**
    * Creates the mongo loader instance
@@ -70,6 +83,7 @@ public class StarfishTicketLoader implements StarfishLoader {
     this.tickets = this.database.getCollection("tickets");
     this.users = this.database.getCollection("users");
     this.roles = this.database.getCollection("roles");
+    this.messages = this.database.getCollection("messages");
     this.ping();
   }
 
@@ -188,9 +202,20 @@ public class StarfishTicketLoader implements StarfishLoader {
    */
   @NotNull
   private StarfishPreferences getPreferences(@NotNull Document document) {
+    return this.getPreferences(document, "preferences");
+  }
+  /**
+   * Get the map of preferences from a document
+   *
+   * @param document the document to get the map
+   * @param key the key of to get in the document
+   * @return the map of links
+   */
+  @NotNull
+  private StarfishPreferences getPreferences(@NotNull Document document, @NotNull String key) {
     HashMap<String, Object> preferences = new HashMap<>();
-    if (document.get("preferences") instanceof Document) {
-      document.get("preferences", Document.class).forEach((preferences::put));
+    if (document.get(key) instanceof Document) {
+      document.get(key, Document.class).forEach((preferences::put));
     }
     return new StarfishPreferences(preferences);
   }
@@ -265,11 +290,11 @@ public class StarfishTicketLoader implements StarfishLoader {
       document.append("channel", ticket.getTextChannel().getIdLong());
     }
     Document query = new Document("id", ticket.getId());
-    Document first = this.roles.find(query).first();
+    Document first = this.tickets.find(query).first();
     if (first != null) {
-      this.roles.replaceOne(query, document);
+      this.tickets.replaceOne(query, document);
     } else {
-      this.roles.insertOne(document);
+      this.tickets.insertOne(document);
     }
   }
 
@@ -292,6 +317,38 @@ public class StarfishTicketLoader implements StarfishLoader {
     } else {
       this.users.insertOne(document);
     }
+  }
+
+  /**
+   * Listens for messages being unloaded to upload them to the database
+   *
+   * @param event the event of a message being unloaded
+   */
+  @Listener(priority = ListenPriority.HIGHEST)
+  public void onBotMessageUnloaded(BotMessageUnloadedEvent event) {
+    BotResponsiveMessage message = event.getMessage();
+    Document query = new Document("id", message.getId());
+    Document document =
+        new Document("id", message.getId()).append("data", this.dataToDocument(message));
+    Document first = this.messages.find(query).first();
+    if (first != null) {
+      this.messages.replaceOne(query, document);
+    } else {
+      this.messages.insertOne(document);
+    }
+  }
+
+  /**
+   * Convert the data from a responsive message into a document
+   *
+   * @param message the message to convert the data from
+   * @return the data as a document
+   */
+  @NotNull
+  private Document dataToDocument(@NotNull BotResponsiveMessage message) {
+    Document document = new Document();
+    message.getData().getPreferences().forEach(document::append);
+    return document;
   }
 
   /**
@@ -369,6 +426,49 @@ public class StarfishTicketLoader implements StarfishLoader {
     return document;
   }
 
+  /**
+   * Get a responsive message from a query
+   *
+   * @param query the query to get the message from
+   * @return the message if found else null
+   */
+  @Nullable
+  public ResponsiveMessage getResponsiveMessage(@NotNull Document query) {
+    Document first = this.messages.find(query).first();
+    if (first != null) {
+      return this.deserializers
+          .get(first.getString("type"))
+          .getMessage(first.getLong("id"), this.getPreferences(first, "data"), first);
+    } else {
+      return null;
+    }
+  }
+
+  @Override
+  public boolean acceptBots() {
+    return false;
+  }
+
+  @Override
+  public @NotNull Collection<ResponsiveMessage> getResponsiveMessages(@Nullable Guild guild) {
+    return new ArrayList<>();
+  }
+
+  @Override
+  @Nullable
+  public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
+    ResponsiveMessage message =
+        Cache.getCatchable(
+            catchable ->
+                catchable instanceof StarfishResponsiveMessage
+                    && ((StarfishResponsiveMessage) catchable).getId() == messageId,
+            StarfishResponsiveMessage.class);
+    if (message != null) {
+      return message;
+    }
+    return this.getResponsiveMessage(new Document("id", messageId));
+  }
+
   @Override
   public void onUnload() {
     this.client.close();
@@ -427,5 +527,17 @@ public class StarfishTicketLoader implements StarfishLoader {
     } else {
       return new StarfishRole(id, new HashSet<>());
     }
+  }
+
+  @Override
+  public void deleteMessage(@NotNull ResponsiveMessage message) {
+    Document query = new Document("id", message.getId());
+    this.messages.deleteOne(query);
+  }
+
+  @SubscribeEvent
+  @Override
+  public void onMessageReactionAdd(MessageReactionAddEvent event) {
+    StarfishLoader.super.onMessageReactionAdd(event);
   }
 }

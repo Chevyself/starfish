@@ -2,6 +2,7 @@ package com.starfishst.api.data.tickets;
 
 import com.starfishst.bot.Starfish;
 import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +63,17 @@ public enum TicketType {
   @Nullable
   public Category getCategory() {
     return Starfish.getDiscordConfiguration().getCategory(this.getCategoryName());
+  }
+
+  /**
+   * Get the category where the ticket can be created. This returns null if the guild has not been
+   * set
+   *
+   * @return he text channel where the ticket can be announced
+   */
+  @Nullable
+  public TextChannel getChannel() {
+    return Starfish.getDiscordConfiguration().getChannel(this.getChannelName());
   }
 
   /**

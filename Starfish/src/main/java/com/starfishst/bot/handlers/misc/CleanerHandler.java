@@ -51,7 +51,8 @@ public class CleanerHandler implements StarfishEventHandler {
   @Listener(priority = ListenPriority.MEDIUM)
   public void onTicketSecondPass(TicketSecondPassEvent event) {
     if (this.getPreferences()
-        .getPreferenceOr("delete-uncompleted-ticket-channels", Boolean.class, true) && event.getTicket().getTicketStatus() == TicketStatus.CREATING) {
+            .getPreferenceOr("delete-uncompleted-ticket-channels", Boolean.class, true)
+        && event.getTicket().getTicketStatus() == TicketStatus.CREATING) {
       if (this.containsTime(event.getTimeLeft())) {
         BotUser owner = event.getTicket().getOwner();
         TextChannel channel = event.getTicket().getTextChannel();

@@ -21,6 +21,10 @@ public class StarfishConfiguration implements Configuration {
   @SerializedName("users-unload")
   @NotNull
   private final Time usersUnload;
+  /** The time to unload users */
+  @SerializedName("messages-unload")
+  @NotNull
+  private final Time messagesUnload;
 
   @NotNull private final StarfishMongoConfiguration mongo;
 
@@ -40,7 +44,7 @@ public class StarfishConfiguration implements Configuration {
   @SerializedName("open-limit")
   private long openLimit;
 
-  /**
+    /**
    * This constructor is used for gson. Use {@link com.starfishst.core.fallback.Fallback} for a
    * configuration with no constructor
    */
@@ -50,6 +54,7 @@ public class StarfishConfiguration implements Configuration {
         0,
         2,
         2,
+        new Time(25, Unit.MINUTES),
         new Time(25, Unit.MINUTES),
         new Time(25, Unit.MINUTES),
         new StarfishMongoConfiguration("", ""),
@@ -65,6 +70,7 @@ public class StarfishConfiguration implements Configuration {
    * @param openLimit the limit of open tickets per user
    * @param ticketUnload the time to unload a ticket
    * @param usersUnload the time to unload users
+   * @param messagesUnload the time to unload messages
    * @param mongo the configuration for mongo
    * @param options the options for commands
    * @param handlersPreferences the preferences for handlers
@@ -75,6 +81,7 @@ public class StarfishConfiguration implements Configuration {
       long openLimit,
       @NotNull Time ticketUnload,
       @NotNull Time usersUnload,
+      @NotNull Time messagesUnload,
       @NotNull StarfishMongoConfiguration mongo,
       @NotNull ManagerOptions options,
       @NotNull HashMap<String, StarfishHandlerPreferences> handlersPreferences) {
@@ -83,6 +90,7 @@ public class StarfishConfiguration implements Configuration {
     this.openLimit = openLimit;
     this.ticketUnload = ticketUnload;
     this.usersUnload = usersUnload;
+    this.messagesUnload = messagesUnload;
     this.mongo = mongo;
     this.options = options;
     this.handlersPreferences = handlersPreferences;
@@ -99,6 +107,7 @@ public class StarfishConfiguration implements Configuration {
         0,
         2,
         2,
+        new Time(25, Unit.MINUTES),
         new Time(25, Unit.MINUTES),
         new Time(25, Unit.MINUTES),
         new StarfishMongoConfiguration("", ""),
@@ -134,6 +143,11 @@ public class StarfishConfiguration implements Configuration {
   @Override
   public @NotNull Time toUnloadUser() {
     return this.usersUnload;
+  }
+
+  @Override
+  public @NotNull Time toUnloadMessages() {
+    return this.messagesUnload;
   }
 
   @Override

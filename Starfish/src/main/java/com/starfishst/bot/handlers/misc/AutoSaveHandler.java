@@ -47,7 +47,7 @@ public class AutoSaveHandler extends TimerTask implements StarfishHandler {
 
   @Override
   public void run() {
-    // System.out.println("Saving...");
+    System.out.println("Saving...");
     Starfish.save();
   }
 }

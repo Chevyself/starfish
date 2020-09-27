@@ -56,7 +56,7 @@ public interface BotUser extends Localizable, Permissible {
   default User getDiscord() {
     JDA jda = Starfish.getConnection().getJda();
     if (jda != null) {
-      jda.getUserById(this.getId());
+      return jda.getUserById(this.getId());
     }
     return null;
   }

@@ -10,6 +10,7 @@ import com.starfishst.bot.commands.providers.BotUserSenderProvider;
 import com.starfishst.bot.configuration.StarfishConfiguration;
 import com.starfishst.bot.configuration.StarfishDiscordConfiguration;
 import com.starfishst.bot.handlers.StarfishHandler;
+import com.starfishst.bot.handlers.freelancer.FreelancerHandler;
 import com.starfishst.bot.handlers.lang.StarfishLanguageHandler;
 import com.starfishst.bot.handlers.lang.StarfishLocaleFile;
 import com.starfishst.bot.handlers.misc.AutoSaveHandler;
@@ -127,6 +128,7 @@ public class Starfish {
         Lots.list(
             loader,
             languageHandler,
+            new FreelancerHandler(),
             new AutoSaveHandler(),
             new CleanerHandler(),
             new DebugHandler(),
