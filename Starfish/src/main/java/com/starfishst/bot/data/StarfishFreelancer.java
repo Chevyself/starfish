@@ -15,9 +15,7 @@ public class StarfishFreelancer extends StarfishUser {
    * @param permissions the permission that the freelancer posses
    */
   public StarfishFreelancer(
-      long id,
-      @NotNull StarfishPreferences preferences,
-      @NotNull Set<PermissionStack> permissions) {
+      long id, @NotNull StarfishValuesMap preferences, @NotNull Set<PermissionStack> permissions) {
     super(id, preferences, permissions);
   }
 }

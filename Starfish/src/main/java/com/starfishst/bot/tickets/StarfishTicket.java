@@ -145,4 +145,22 @@ public class StarfishTicket extends Catchable implements Ticket {
   public StarfishTicket refresh() {
     return (StarfishTicket) super.refresh();
   }
+
+  @Override
+  public String toString() {
+    return "StarfishTicket{"
+        + "id="
+        + id
+        + ", type="
+        + type
+        + ", users="
+        + users
+        + ", details="
+        + details
+        + ", channel="
+        + channel
+        + ", status="
+        + status
+        + "} ";
+  }
 }

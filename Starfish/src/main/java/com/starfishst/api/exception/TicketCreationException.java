@@ -1,10 +1,9 @@
-package com.starfishst.api.data.tickets.exception;
+package com.starfishst.api.exception;
 
-import com.starfishst.core.exceptions.type.SimpleException;
 import org.jetbrains.annotations.NotNull;
 
 /** An exception thrown when a ticket cannot be created */
-public class TicketCreationException extends SimpleException {
+public class TicketCreationException extends StarfishException {
 
   /**
    * Create the exception

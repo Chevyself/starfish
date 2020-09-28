@@ -1,4 +1,4 @@
-package com.starfishst.bot.util;
+package com.starfishst.api.utility;
 
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.bot.Starfish;

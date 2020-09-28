@@ -2,8 +2,8 @@ package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.utility.Discord;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.Starfish;
-import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.Strings;

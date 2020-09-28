@@ -21,7 +21,7 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
   /** The type of the responsive message */
   @NotNull private final String type;
   /** The data of the message */
-  @NotNull private final StarfishPreferences data;
+  @NotNull private final StarfishValuesMap data;
   /** The seconds left */
   private long secondsLeft;
 
@@ -38,13 +38,12 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
       long id,
       @NotNull Set<ReactionResponse> reactions,
       @NotNull String type,
-      @NotNull StarfishPreferences data) {
+      @NotNull StarfishValuesMap data) {
     super(id, reactions);
     this.type = type;
     this.data = data;
     this.start = Starfish.getConfiguration().toUnloadMessages();
     this.addToCache();
-    this.refresh();
     new BotMessageLoadedEvent(this).call();
   }
 
@@ -61,13 +60,12 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
       @NotNull Message message,
       @NotNull Set<ReactionResponse> reactions,
       @NotNull String type,
-      @NotNull StarfishPreferences data) {
+      @NotNull StarfishValuesMap data) {
     super(message, reactions);
     this.type = type;
     this.data = data;
     this.start = Starfish.getConfiguration().toUnloadMessages();
     this.addToCache();
-    this.refresh();
     new BotMessageLoadedEvent(this).call();
   }
 
@@ -107,7 +105,7 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
 
   @NotNull
   @Override
-  public StarfishPreferences getData() {
+  public StarfishValuesMap getData() {
     return this.data;
   }
 

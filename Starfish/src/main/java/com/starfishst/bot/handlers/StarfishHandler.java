@@ -1,6 +1,6 @@
 package com.starfishst.bot.handlers;
 
-import com.starfishst.api.Preferences;
+import com.starfishst.api.ValuesMap;
 import com.starfishst.bot.Starfish;
 import java.util.HashMap;
 import net.dv8tion.jda.api.JDA;
@@ -44,13 +44,12 @@ public interface StarfishHandler {
    * @return the preferences
    */
   @NotNull
-  default Preferences getPreferences() {
-    Preferences preferences =
-        Starfish.getConfiguration().getHandlerPreferences().get(this.getName());
-    if (preferences != null) {
-      return preferences;
+  default ValuesMap getPreferences() {
+    ValuesMap valuesMap = Starfish.getConfiguration().getHandlerPreferences().get(this.getName());
+    if (valuesMap != null) {
+      return valuesMap;
     } else {
-      return new StarfishHandlerPreferences(new HashMap<>());
+      return new StarfishHandlerValuesMap(new HashMap<>());
     }
   }
 }

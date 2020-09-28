@@ -6,11 +6,12 @@ import com.starfishst.api.data.loader.TicketManager;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.tickets.exception.TicketCreationException;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketPreCreationEvent;
+import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.core.utils.maps.Maps;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -46,18 +47,24 @@ public class StarfishTicketManager implements TicketManager {
       throw new TicketCreationException(preCreationEvent.getReason());
     } else {
       Category category = type.getCategory();
+      HashMap<BotUser, String> users;
+      if (parent != null) {
+        users = parent.getUsers();
+      } else {
+        users = Maps.singleton(user, "owner");
+      }
+      StarfishTicketDetails details = new StarfishTicketDetails(new LinkedHashMap<>());
+      if (parent != null) {
+        details.addValues(parent.getDetails());
+      }
       if (category != null) {
         StarfishTicket ticket =
             new StarfishTicket(
-                this.getNewId(parent),
-                type,
-                new StarfishTicketDetails(new LinkedHashMap<>()),
-                TicketStatus.LOADING,
-                Maps.singleton(user, "owner"),
-                null);
+                this.getNewId(parent), type, details, TicketStatus.LOADING, users, null);
         TextChannel channel;
         if (parent != null && parent.getTextChannel() != null) {
           channel = parent.getTextChannel();
+          channel.getManager().setParent(category).queue();
         } else {
           channel =
               category

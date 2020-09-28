@@ -11,16 +11,16 @@ public enum TicketType {
   /** An order is a generic ticket. A freelancer and a customer */
   ORDER("orders", "orders"),
   /** The ticket that people can create to become a freelancer */
-  APPLY("applies", "none"),
+  APPLY("applies", "applies"),
   /** The ticket that people can use in case having issues */
-  SUPPORT("support", "none"),
+  SUPPORT("support", "support"),
   /**
    * This is the parent ticket for the rest of them, it is not really going to be saved in the
    * database
    */
-  TICKET("tickets", "none"),
+  TICKET("tickets", "tickets"),
   /** This ticket is used as a creator for 'sub-tickets' liker orders, apply and support */
-  TICKET_CREATOR("creators", "none"),
+  TICKET_CREATOR("creators", "creators"),
   /**
    * A quote is kinda like an order but the freelancer cannot just join the ticket it needs to send
    * a quote that the customer can accept
@@ -32,11 +32,11 @@ public enum TicketType {
    */
   PRODUCT("products", "products"),
   /** The ticket that is created when a customer wants to buy a product from a freelancer */
-  CHECK_OUT("checkout", "none"),
+  CHECK_OUT("checkout", "checkout"),
   /** Creates a suggestion that later the user can either send it or cancel it */
   SUGGESTION("suggestions", "suggestions"),
   /** Create a report ticket */
-  REPORT("reports", "none");
+  REPORT("reports", "reports");
 
   /** The name of the category where this tickets can be stored */
   @NotNull private final String categoryName;

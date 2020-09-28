@@ -24,13 +24,13 @@ public class ClaimOrderReactionResponse implements ReactionResponse {
 
   @Override
   public boolean removeReaction() {
-    return false;
+    return true;
   }
 
   @Override
   public void onReaction(@NotNull MessageReactionAddEvent event) {
     Ticket ticket =
-        Starfish.getLoader().getTicket(message.getData().getPreferenceOr("id", Long.class, -1L));
+        Starfish.getLoader().getTicket(message.getData().getValueOr("id", Long.class, -1L));
     BotUser user = Starfish.getLoader().getStarfishUser(event.getUserIdLong());
     if (ticket != null) {
       ticket.addUser(user, "freelancer");

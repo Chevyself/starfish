@@ -21,10 +21,10 @@ import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
 import com.starfishst.bot.data.StarfishFreelancer;
 import com.starfishst.bot.data.StarfishPermission;
-import com.starfishst.bot.data.StarfishPreferences;
 import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishRole;
 import com.starfishst.bot.data.StarfishUser;
+import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.commands.utils.responsive.ResponsiveMessage;
 import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.maps.Maps;
@@ -112,8 +112,8 @@ public class StarfishTicketLoader implements StarfishLoader {
   public BotUser getStarfishUser(@NotNull Document query) {
     Document first = this.users.find(query).first();
     if (first != null) {
-      StarfishPreferences preferences = this.getPreferences(first);
-      if (preferences.getPreferenceOr("freelancer", Boolean.class, false)) {
+      StarfishValuesMap preferences = this.getPreferences(first);
+      if (preferences.getValueOr("freelancer", Boolean.class, false)) {
         return new StarfishFreelancer(
             query.getLong("id"), preferences, this.getPermissionStacks(first));
       } else {
@@ -143,10 +143,10 @@ public class StarfishTicketLoader implements StarfishLoader {
       }
       // TODO add freelancers and owner
       return new StarfishTicket(
-          query.getLong("id"),
-          TicketType.valueOf(query.getString("type").toUpperCase()),
+          first.getLong("id"),
+          TicketType.valueOf(first.getString("type").toUpperCase()),
           this.getDetails(first),
-          TicketStatus.valueOf(query.getString("type").toUpperCase()),
+          TicketStatus.valueOf(first.getString("status").toUpperCase()),
           usersMap,
           jda.getTextChannelById(first.get("channel") != null ? first.getLong("channel") : -1));
     }
@@ -201,7 +201,7 @@ public class StarfishTicketLoader implements StarfishLoader {
    * @return the map of links
    */
   @NotNull
-  private StarfishPreferences getPreferences(@NotNull Document document) {
+  private StarfishValuesMap getPreferences(@NotNull Document document) {
     return this.getPreferences(document, "preferences");
   }
   /**
@@ -212,12 +212,12 @@ public class StarfishTicketLoader implements StarfishLoader {
    * @return the map of links
    */
   @NotNull
-  private StarfishPreferences getPreferences(@NotNull Document document, @NotNull String key) {
+  private StarfishValuesMap getPreferences(@NotNull Document document, @NotNull String key) {
     HashMap<String, Object> preferences = new HashMap<>();
     if (document.get(key) instanceof Document) {
       document.get(key, Document.class).forEach((preferences::put));
     }
-    return new StarfishPreferences(preferences);
+    return new StarfishValuesMap(preferences);
   }
 
   /**
@@ -347,7 +347,7 @@ public class StarfishTicketLoader implements StarfishLoader {
   @NotNull
   private Document dataToDocument(@NotNull BotResponsiveMessage message) {
     Document document = new Document();
-    message.getData().getPreferences().forEach(document::append);
+    message.getData().getMap().forEach(document::append);
     return document;
   }
 
@@ -397,7 +397,7 @@ public class StarfishTicketLoader implements StarfishLoader {
     Document document = new Document();
     ticket
         .getDetails()
-        .getPreferences()
+        .getMap()
         .forEach(
             (key, value) -> {
               if (key.startsWith("role")) {
@@ -422,7 +422,7 @@ public class StarfishTicketLoader implements StarfishLoader {
   @NotNull
   private Document preferencesToDocument(@NotNull BotUser user) {
     Document document = new Document();
-    user.getPreferences().getPreferences().forEach(document::append);
+    user.getPreferences().getMap().forEach(document::append);
     return document;
   }
 
@@ -507,7 +507,7 @@ public class StarfishTicketLoader implements StarfishLoader {
       return user;
     } else {
       return new StarfishUser(
-          id, new StarfishPreferences(Maps.singleton("lang", "en")), new HashSet<>());
+          id, new StarfishValuesMap(Maps.singleton("lang", "en")), new HashSet<>());
     }
   }
 

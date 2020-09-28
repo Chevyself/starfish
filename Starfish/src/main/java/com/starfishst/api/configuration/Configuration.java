@@ -1,6 +1,6 @@
 package com.starfishst.api.configuration;
 
-import com.starfishst.api.Preferences;
+import com.starfishst.api.ValuesMap;
 import com.starfishst.bot.Starfish;
 import com.starfishst.commands.ManagerOptions;
 import com.starfishst.core.utils.time.Time;
@@ -84,5 +84,5 @@ public interface Configuration {
    * @return the preferences for starfish handlers
    */
   @NotNull
-  HashMap<String, ? extends Preferences> getHandlerPreferences();
+  HashMap<String, ? extends ValuesMap> getHandlerPreferences();
 }

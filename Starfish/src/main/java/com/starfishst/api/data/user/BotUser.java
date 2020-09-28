@@ -1,7 +1,7 @@
 package com.starfishst.api.data.user;
 
 import com.starfishst.api.Permissible;
-import com.starfishst.api.Preferences;
+import com.starfishst.api.ValuesMap;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.lang.Localizable;
 import com.starfishst.bot.Starfish;
@@ -28,7 +28,7 @@ public interface BotUser extends Localizable, Permissible {
    * @return the preferences
    */
   @NotNull
-  Preferences getPreferences();
+  ValuesMap getPreferences();
 
   /**
    * Get the file that is used to handle the language of the user
@@ -44,7 +44,7 @@ public interface BotUser extends Localizable, Permissible {
    * @return true if the user is a freelancer
    */
   default boolean isFreelancer() {
-    return this.getPreferences().getPreferenceOr("freelancer", Boolean.class, false);
+    return this.getPreferences().getValueOr("freelancer", Boolean.class, false);
   }
 
   /**
@@ -78,6 +78,6 @@ public interface BotUser extends Localizable, Permissible {
   @Override
   @NotNull
   default String getLang() {
-    return this.getPreferences().getPreferenceOr("lang", String.class, "en");
+    return this.getPreferences().getValueOr("lang", String.class, "en");
   }
 }

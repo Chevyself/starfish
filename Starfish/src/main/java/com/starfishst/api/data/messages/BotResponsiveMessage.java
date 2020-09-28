@@ -1,6 +1,6 @@
 package com.starfishst.api.data.messages;
 
-import com.starfishst.api.Preferences;
+import com.starfishst.api.ValuesMap;
 import com.starfishst.commands.utils.responsive.ResponsiveMessage;
 import com.starfishst.core.utils.cache.ICatchable;
 
@@ -15,5 +15,5 @@ public interface BotResponsiveMessage extends ResponsiveMessage, ICatchable {
    *
    * @return the data
    */
-  Preferences getData();
+  ValuesMap getData();
 }

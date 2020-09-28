@@ -3,7 +3,7 @@ package com.starfishst.bot.configuration;
 import com.google.gson.annotations.SerializedName;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.MongoConfiguration;
-import com.starfishst.bot.handlers.StarfishHandlerPreferences;
+import com.starfishst.bot.handlers.StarfishHandlerValuesMap;
 import com.starfishst.commands.ManagerOptions;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
@@ -34,7 +34,7 @@ public class StarfishConfiguration implements Configuration {
 
   @SerializedName("handlers")
   @NotNull
-  private final HashMap<String, StarfishHandlerPreferences> handlersPreferences;
+  private final HashMap<String, StarfishHandlerValuesMap> handlersPreferences;
 
   private long total;
 
@@ -44,7 +44,7 @@ public class StarfishConfiguration implements Configuration {
   @SerializedName("open-limit")
   private long openLimit;
 
-    /**
+  /**
    * This constructor is used for gson. Use {@link com.starfishst.core.fallback.Fallback} for a
    * configuration with no constructor
    */
@@ -84,7 +84,7 @@ public class StarfishConfiguration implements Configuration {
       @NotNull Time messagesUnload,
       @NotNull StarfishMongoConfiguration mongo,
       @NotNull ManagerOptions options,
-      @NotNull HashMap<String, StarfishHandlerPreferences> handlersPreferences) {
+      @NotNull HashMap<String, StarfishHandlerValuesMap> handlersPreferences) {
     this.total = total;
     this.quotesLimit = quotesLimit;
     this.openLimit = openLimit;
@@ -161,7 +161,7 @@ public class StarfishConfiguration implements Configuration {
   }
 
   @Override
-  public @NotNull HashMap<String, StarfishHandlerPreferences> getHandlerPreferences() {
+  public @NotNull HashMap<String, StarfishHandlerValuesMap> getHandlerPreferences() {
     return this.handlersPreferences;
   }
 }

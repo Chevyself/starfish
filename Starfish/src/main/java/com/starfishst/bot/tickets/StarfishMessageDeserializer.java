@@ -1,7 +1,7 @@
 package com.starfishst.bot.tickets;
 
-import com.starfishst.bot.data.StarfishPreferences;
 import com.starfishst.bot.data.StarfishResponsiveMessage;
+import com.starfishst.bot.data.StarfishValuesMap;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,5 +21,5 @@ public interface StarfishMessageDeserializer<T extends StarfishResponsiveMessage
    * @return the message
    */
   @NotNull
-  T getMessage(long id, @NotNull StarfishPreferences data, @NotNull Document document);
+  T getMessage(long id, @NotNull StarfishValuesMap data, @NotNull Document document);
 }

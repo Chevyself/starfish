@@ -3,8 +3,8 @@ package com.starfishst.api.data.loader;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.tickets.exception.TicketCreationException;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.exception.TicketCreationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

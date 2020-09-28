@@ -4,10 +4,11 @@ import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.bot.util.Messages;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedQuery;
 import com.starfishst.core.utils.Strings;
+import com.starfishst.core.utils.cache.ICatchable;
 import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.core.utils.time.Time;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** Represents a ticket made by a customer */
-public interface Ticket {
+public interface Ticket extends ICatchable {
 
   /**
    * Adds an user to the ticket

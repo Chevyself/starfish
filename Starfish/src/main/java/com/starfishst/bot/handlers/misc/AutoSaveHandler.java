@@ -14,7 +14,7 @@ public class AutoSaveHandler extends TimerTask implements StarfishHandler {
 
   /** Create the task */
   public AutoSaveHandler() {
-    if (this.getPreferences().getPreferenceOr("enabled", Boolean.class, false)) {
+    if (this.getPreferences().getValueOr("enabled", Boolean.class, false)) {
       new Timer().schedule(this, this.getTime().millis(), this.getTime().millis());
     }
   }
@@ -27,11 +27,11 @@ public class AutoSaveHandler extends TimerTask implements StarfishHandler {
   @NotNull
   private Time getTime() {
     try {
-      return Time.fromString(this.getPreferences().getPreferenceOr("time", String.class, "2m"));
+      return Time.fromString(this.getPreferences().getValueOr("time", String.class, "2m"));
     } catch (IllegalArgumentException e) {
       Fallback.addError(
           "Auto Save: "
-              + this.getPreferences().getPreference("time", String.class)
+              + this.getPreferences().getValue("time", String.class)
               + " is not valid time!");
       return new Time(2, Unit.MINUTES);
     }

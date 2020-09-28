@@ -5,9 +5,12 @@ import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.handlers.StarfishEventHandler;
+import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.utils.events.ListenPriority;
@@ -62,7 +65,10 @@ public class QuestionsHandler implements StarfishEventHandler {
                 "questions/" + type.toString().toLowerCase() + ".json");
         FileReader reader =
             new FileReader(file); //  This can't throw an exception for not finding the file
-        questions.put(type, GsonProvider.GSON.fromJson(reader, QuestionsConfiguration.class));
+        this.questions.put(type, GsonProvider.GSON.fromJson(reader, QuestionsConfiguration.class));
+        this.questions.put(
+            TicketType.QUOTE,
+            this.questions.get(TicketType.ORDER)); // Copy the questions from orders
         reader.close();
         // TODO print that questions were loaded
       } catch (IOException e) {
@@ -81,15 +87,21 @@ public class QuestionsHandler implements StarfishEventHandler {
   public void onTicketStatusUpdated(@NotNull TicketStatusUpdatedEvent event) {
     if (!event.isCancelled() && event.getStatus() == TicketStatus.CREATING) {
       Ticket ticket = event.getTicket().refresh();
-      QuestionsConfiguration questions = this.questions.get(ticket.getTicketType());
       TextChannel channel = ticket.getTextChannel();
-      List<BotUser> customers = event.getTicket().getUsers("customer");
-      if (!customers.isEmpty()
+      QuestionsConfiguration questions = this.questions.get(ticket.getTicketType());
+      BotUser owner = event.getTicket().getOwner();
+      if (!current.containsKey(ticket)
+          && owner != null
           && questions != null
           && !questions.getQuestions().isEmpty()
           && channel != null) {
-        current.put(ticket, 0);
-        questions.getQuestions().get(0).getQuery(customers.get(0)).send(channel);
+        Ticket parent = this.getTicketByChannel(channel);
+        if (parent != null) {
+          current.put(ticket, current.get(parent));
+        } else {
+          current.put(ticket, 0);
+          questions.getQuestions().get(0).getQuery(owner).send(channel);
+        }
       }
     }
   }
@@ -109,14 +121,25 @@ public class QuestionsHandler implements StarfishEventHandler {
         Question current = questions.get(this.current.get(ticket));
         Object answer = current.getAnswer(event, user);
         if (answer != null) {
-          ticket.getDetails().getPreferences().put(current.getSimple(), answer);
-          this.current.put(ticket, this.current.get(ticket) + 1);
-          if (this.current.get(ticket) >= questions.size()) {
-            ticket.refresh().setTicketStatus(TicketStatus.OPEN);
-            this.current.remove(ticket);
+          TicketAddDetailEvent addDetailEvent =
+              new TicketAddDetailEvent(ticket, current.getSimple(), answer);
+          if (!addDetailEvent.callAndGet()) {
+            ticket = this.getTicketByChannel(event.getChannel());
+            if (ticket != null) {
+              ticket.getDetails().addValue(current.getSimple(), answer);
+              this.current.put(ticket, this.current.get(ticket) + 1);
+              if (this.current.get(ticket) >= questions.size()) {
+                ticket.refresh().setTicketStatus(TicketStatus.OPEN);
+                this.current.remove(ticket);
+              } else {
+                current = questions.get(this.current.get(ticket.refresh()));
+                current.getQuery(user).send(event.getChannel());
+              }
+            } else {
+              // TODO ?
+            }
           } else {
-            current = questions.get(this.current.get(ticket.refresh()));
-            current.getQuery(user).send(event.getChannel());
+            Messages.build(addDetailEvent.getReason(), ResultType.ERROR, user);
           }
         }
       }
@@ -130,10 +153,8 @@ public class QuestionsHandler implements StarfishEventHandler {
    */
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketUnloaded(@NotNull TicketUnloadedEvent event) {
-    if (this.current.containsKey(event.getTicket())
-        && event.getTicket().getTicketStatus() == TicketStatus.CREATING) {
-      this.current.remove(event.getTicket());
-    }
+    Ticket ticket = event.getTicket();
+    this.current.remove(ticket);
   }
 
   /**

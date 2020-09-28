@@ -17,7 +17,7 @@ public class StarfishUser extends Catchable implements BotUser {
   private final long id;
 
   /** The preferences of the user */
-  @NotNull private final StarfishPreferences preferences;
+  @NotNull private final StarfishValuesMap preferences;
 
   /** The set of permissions that the user has */
   private final Set<PermissionStack> permissions;
@@ -30,7 +30,7 @@ public class StarfishUser extends Catchable implements BotUser {
    * @param permissions the set of permissions that the user has
    */
   public StarfishUser(
-      long id, @NotNull StarfishPreferences preferences, Set<PermissionStack> permissions) {
+      long id, @NotNull StarfishValuesMap preferences, Set<PermissionStack> permissions) {
     super(Starfish.getConfiguration().toUnloadUser());
     this.id = id;
     this.preferences = preferences;
@@ -60,7 +60,7 @@ public class StarfishUser extends Catchable implements BotUser {
   }
 
   @Override
-  public @NotNull StarfishPreferences getPreferences() {
+  public @NotNull StarfishValuesMap getPreferences() {
     return this.preferences;
   }
 

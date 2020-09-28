@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** This object represents certain changes and configurations for an object */
-public interface Preferences {
+public interface ValuesMap {
 
   /**
    * Get the preference casted to certain class or null if the preference is not inside the map
@@ -20,8 +20,8 @@ public interface Preferences {
    * @return the value of the preference or null if it does not have one
    */
   @Nullable
-  default <T> T getPreference(@NotNull String name, @NotNull Class<T> clazz) {
-    Object obj = this.getPreferences().get(name);
+  default <T> T getValue(@NotNull String name, @NotNull Class<T> clazz) {
+    Object obj = this.getMap().get(name);
     if (obj != null) {
       return clazz.cast(obj);
     } else {
@@ -38,10 +38,10 @@ public interface Preferences {
    */
   @SuppressWarnings("unchecked")
   @NotNull
-  default <T> List<T> getListPreference(@NotNull String name) {
+  default <T> List<T> getLisValue(@NotNull String name) {
     List<T> list = new ArrayList<>();
     Class<List<T>> aClass = (Class<List<T>>) list.getClass();
-    list.addAll(this.getPreferenceOr(name, aClass, new ArrayList<>()));
+    list.addAll(this.getValueOr(name, aClass, new ArrayList<>()));
     return list;
   }
 
@@ -55,17 +55,37 @@ public interface Preferences {
    * @return the value of the preference or null if it does not have one
    */
   @NotNull
-  default <T> T getPreferenceOr(@NotNull String name, @NotNull Class<T> clazz, @NotNull T def) {
-    return Validate.notNullOr(this.getPreference(name, clazz), def);
+  default <T> T getValueOr(@NotNull String name, @NotNull Class<T> clazz, @NotNull T def) {
+    return Validate.notNullOr(this.getValue(name, clazz), def);
   }
 
   /**
-   * The main preferences map to get the preferences from
+   * Add a value to the map
    *
-   * @return the preferences map
+   * @param name the name of the value
+   * @param value the value to add
    */
-  @NotNull
-  Map<String, Object> getPreferences();
+  default void addValue(@NotNull String name, @NotNull Object value) {
+    this.getMap().put(name, value);
+  }
+
+  /**
+   * Adds the map values to this map
+   *
+   * @param map the map to add the values from
+   */
+  default void addValues(@NotNull Map<String, Object> map) {
+    map.forEach(this::addValue);
+  }
+
+  /**
+   * Adds the map values to this map
+   *
+   * @param map the map to add the values from
+   */
+  default void addValues(@NotNull ValuesMap map) {
+    this.addValues(map.getMap());
+  }
 
   /**
    * Convert the preferences into a string map. Maybe to be read by an user?
@@ -75,7 +95,15 @@ public interface Preferences {
   @NotNull
   default Map<String, String> toStringMap() {
     HashMap<String, String> stringMap = new HashMap<>();
-    this.getPreferences().forEach((key, value) -> stringMap.put(key, value.toString()));
+    this.getMap().forEach((key, value) -> stringMap.put(key, value.toString()));
     return stringMap;
   }
+
+  /**
+   * The main preferences map to get the preferences from
+   *
+   * @return the preferences map
+   */
+  @NotNull
+  Map<String, Object> getMap();
 }

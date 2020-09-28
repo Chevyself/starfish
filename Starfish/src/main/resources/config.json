@@ -30,6 +30,7 @@
     },
     "announcer": {
       "preferences": {
+        "announce-types": ["ORDER", "QUOTE"],
         "pin-copy-in-channel": true
       }
     }

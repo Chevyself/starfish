@@ -1,7 +1,7 @@
 package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.data.user.BotUser;
-import com.starfishst.bot.util.Messages;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.utils.maps.Maps;
 import net.dv8tion.jda.api.EmbedBuilder;

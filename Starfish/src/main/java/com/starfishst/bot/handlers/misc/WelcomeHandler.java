@@ -2,9 +2,9 @@ package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishHandler;
-import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.result.ResultType;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -36,7 +36,7 @@ public class WelcomeHandler implements StarfishHandler {
   public void onMemberJoin(GuildMemberJoinEvent event) {
     BotUser user = this.loader.getStarfishUser(event.getMember().getIdLong());
     TextChannel welcome = Starfish.getDiscordConfiguration().getChannel("welcome");
-    if (welcome != null && this.getPreferences().getPreferenceOr("enabled", Boolean.class, true)) {
+    if (welcome != null && this.getPreferences().getValueOr("enabled", Boolean.class, true)) {
       HashMap<String, String> placeholders = new HashMap<>();
       placeholders.put("username", event.getMember().getEffectiveName());
       placeholders.put("user", event.getMember().getAsMention());

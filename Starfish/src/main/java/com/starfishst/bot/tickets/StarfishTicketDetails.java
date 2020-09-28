@@ -23,7 +23,7 @@ public class StarfishTicketDetails implements TicketDetails {
   }
 
   @Override
-  public @NotNull LinkedHashMap<String, Object> getPreferences() {
+  public @NotNull LinkedHashMap<String, Object> getMap() {
     return this.preferences;
   }
 
@@ -31,11 +31,11 @@ public class StarfishTicketDetails implements TicketDetails {
   @Override
   public Map<String, String> toStringMap() {
     LinkedHashMap<String, String> stringMap = new LinkedHashMap<>();
-    this.getPreferences()
+    this.getMap()
         .forEach(
             (key, value) -> {
               if (key.startsWith("role")) {
-                stringMap.put(key, Lots.pretty(Discord.getAsMention(this.getListPreference(key))));
+                stringMap.put(key, Lots.pretty(Discord.getAsMention(this.getLisValue(key))));
               } else {
                 stringMap.put(key, value.toString());
               }

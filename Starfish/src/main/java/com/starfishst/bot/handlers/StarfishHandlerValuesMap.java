@@ -1,18 +1,18 @@
 package com.starfishst.bot.handlers;
 
-import com.starfishst.api.Preferences;
+import com.starfishst.api.ValuesMap;
 import java.util.HashMap;
 import org.jetbrains.annotations.NotNull;
 
 /** The preferences for a starfish handler */
-public class StarfishHandlerPreferences implements Preferences {
+public class StarfishHandlerValuesMap implements ValuesMap {
 
   /** The map of the preferences */
   @NotNull private final HashMap<String, Object> preferences;
 
   /** Create the handler preferences. This constructor may only be used by Gson */
   @Deprecated
-  public StarfishHandlerPreferences() {
+  public StarfishHandlerValuesMap() {
     this.preferences = new HashMap<>();
   }
 
@@ -21,12 +21,12 @@ public class StarfishHandlerPreferences implements Preferences {
    *
    * @param preferences the map with the preferences
    */
-  public StarfishHandlerPreferences(@NotNull HashMap<String, Object> preferences) {
+  public StarfishHandlerValuesMap(@NotNull HashMap<String, Object> preferences) {
     this.preferences = preferences;
   }
 
   @Override
-  public @NotNull HashMap<String, Object> getPreferences() {
+  public @NotNull HashMap<String, Object> getMap() {
     return this.preferences;
   }
 }

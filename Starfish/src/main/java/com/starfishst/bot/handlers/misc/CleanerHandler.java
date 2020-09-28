@@ -2,11 +2,13 @@ package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketSecondPassEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
+import com.starfishst.api.utility.Messages;
+import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.maps.Maps;
@@ -36,9 +38,14 @@ public class CleanerHandler implements StarfishEventHandler {
       TextChannel channel = ticket.getTextChannel();
       if (channel != null
           && this.getPreferences()
-              .getPreferenceOr("delete-uncompleted-ticket-channels", Boolean.class, true)) {
-        channel.delete().queue();
-        ticket.setTextChannel(null);
+              .getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)) {
+        Ticket child = Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId());
+        if (ticket.getTicketType() != TicketType.TICKET_CREATOR
+            && child != null
+            && !channel.equals(child.getTextChannel())) {
+          channel.delete().queue();
+          ticket.setTextChannel(null);
+        }
       }
     }
   }
@@ -50,8 +57,7 @@ public class CleanerHandler implements StarfishEventHandler {
    */
   @Listener(priority = ListenPriority.MEDIUM)
   public void onTicketSecondPass(TicketSecondPassEvent event) {
-    if (this.getPreferences()
-            .getPreferenceOr("delete-uncompleted-ticket-channels", Boolean.class, true)
+    if (this.getPreferences().getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)
         && event.getTicket().getTicketStatus() == TicketStatus.CREATING) {
       if (this.containsTime(event.getTimeLeft())) {
         BotUser owner = event.getTicket().getOwner();
@@ -92,7 +98,7 @@ public class CleanerHandler implements StarfishEventHandler {
    */
   @NotNull
   private List<Time> getTimes() {
-    List<String> timeStrings = this.getPreferences().getListPreference("time-to-announce-deletion");
+    List<String> timeStrings = this.getPreferences().getLisValue("time-to-announce-deletion");
     List<Time> times = new ArrayList<>();
     for (String timeString : timeStrings) {
       try {

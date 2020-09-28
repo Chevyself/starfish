@@ -1,8 +1,8 @@
 package com.starfishst.bot.handlers.freelancer;
 
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.bot.util.Messages;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.utils.events.ListenPriority;
 import com.starfishst.utils.events.Listener;
