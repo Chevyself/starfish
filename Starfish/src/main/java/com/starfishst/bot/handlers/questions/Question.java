@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * This represents a question. Used in {@link com.starfishst.bot.oldtickets.type.QuestionsTicket}
+ * This represents a question. Used in {@link QuestionsHandler}
  *
  * <p>The representation in json:
  *

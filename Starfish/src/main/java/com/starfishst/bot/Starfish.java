@@ -1,12 +1,18 @@
 package com.starfishst.bot;
 
+import com.starfishst.adapters.QuestionAdapter;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.data.loader.TicketManager;
+import com.starfishst.bot.commands.DeveloperCommands;
+import com.starfishst.bot.commands.FreelancerCommands;
+import com.starfishst.bot.commands.PermissionCommands;
 import com.starfishst.bot.commands.SetCommands;
 import com.starfishst.bot.commands.TicketCommands;
 import com.starfishst.bot.commands.providers.BotUserProvider;
 import com.starfishst.bot.commands.providers.BotUserSenderProvider;
+import com.starfishst.bot.commands.providers.PermissibleProvider;
+import com.starfishst.bot.commands.providers.TicketProvider;
 import com.starfishst.bot.configuration.StarfishConfiguration;
 import com.starfishst.bot.configuration.StarfishDiscordConfiguration;
 import com.starfishst.bot.handlers.StarfishHandler;
@@ -17,6 +23,7 @@ import com.starfishst.bot.handlers.misc.AutoSaveHandler;
 import com.starfishst.bot.handlers.misc.CleanerHandler;
 import com.starfishst.bot.handlers.misc.DebugHandler;
 import com.starfishst.bot.handlers.misc.UpdateTicketName;
+import com.starfishst.bot.handlers.questions.Question;
 import com.starfishst.bot.handlers.questions.QuestionsHandler;
 import com.starfishst.bot.handlers.ticket.QuoteHandler;
 import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
@@ -32,6 +39,8 @@ import com.starfishst.commands.providers.registry.ProvidersRegistryJDA;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.providers.registry.ProvidersRegistry;
 import com.starfishst.core.utils.Lots;
+import com.starfishst.core.utils.cache.Cache;
+import com.starfishst.core.utils.cache.ICatchable;
 import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.core.utils.time.Time;
@@ -98,6 +107,7 @@ public class Starfish {
     connection.createConnection(argsMaps.getOrDefault("token", ""));
     JDA jda = connection.validatedJda();
     jda.setEventManager(new AnnotatedEventManager());
+    GsonProvider.addAdapter(Question.class, new QuestionAdapter());
     GsonProvider.addAdapter(Color.class, new ColorAdapter());
     GsonProvider.addAdapter(Time.class, new TimeAdapter());
     GsonProvider.addAdapter(TextChannel.class, new TextChannelAdapter(jda));
@@ -146,8 +156,10 @@ public class Starfish {
     }
     languageHandler.load("en");
     ProvidersRegistry<CommandContext> registry = new ProvidersRegistryJDA(languageHandler);
+    registry.addProvider(new PermissibleProvider());
     registry.addProvider(new BotUserProvider());
     registry.addProvider(new BotUserSenderProvider());
+    registry.addProvider(new TicketProvider());
     CommandManager manager =
         new CommandManager(
             jda,
@@ -156,6 +168,9 @@ public class Starfish {
             languageHandler,
             registry,
             new StarfishPermissionChecker(languageHandler, loader));
+    manager.registerCommand(new DeveloperCommands());
+    manager.registerCommand(new FreelancerCommands());
+    manager.registerCommand(new PermissionCommands());
     manager.registerCommand(new SetCommands());
     manager.registerCommand(new TicketCommands());
     ticketManager.setDataLoader(loader);
@@ -195,6 +210,21 @@ public class Starfish {
     for (StarfishLocaleFile file : languageHandler.getFiles()) {
       file.save();
     }
+  }
+
+  /** Stops the bot */
+  public static void stop() {
+    List<ICatchable> cacheCopy = new ArrayList<>(Cache.getCache());
+    cacheCopy.forEach(ICatchable::unload);
+    for (StarfishHandler handler : handlers) {
+      handler.onUnload();
+    }
+    handlers.clear();
+    JDA jda = connection.getJda();
+    if (jda != null) {
+      jda.shutdownNow();
+    }
+    System.exit(0);
   }
 
   /**
@@ -265,5 +295,24 @@ public class Starfish {
   @NotNull
   public static TicketManager getTicketManager() {
     return ticketManager;
+  }
+
+  /**
+   * Get a handler using its class
+   *
+   * @param clazz the class of the handler
+   * @param <T> the type of the handler
+   * @return the handler
+   * @throws IllegalArgumentException if the handler is not found because it means it was not
+   *     registered
+   */
+  @NotNull
+  public static <T extends StarfishHandler> T getHandler(@NotNull Class<T> clazz) {
+    for (StarfishHandler handler : handlers) {
+      if (handler.getClass().equals(clazz)) {
+        return clazz.cast(handler);
+      }
+    }
+    throw new IllegalArgumentException("The handler " + clazz + " may not be registered");
   }
 }

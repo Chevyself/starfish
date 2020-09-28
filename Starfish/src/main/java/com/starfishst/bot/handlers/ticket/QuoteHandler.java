@@ -8,6 +8,7 @@ import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishEventHandler;
+import com.starfishst.core.utils.Strings;
 import com.starfishst.utils.events.ListenPriority;
 import com.starfishst.utils.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -25,8 +26,11 @@ public class QuoteHandler implements StarfishEventHandler {
     Ticket ticket = event.getTicket();
     BotUser owner = ticket.getOwner();
     TextChannel channel = ticket.getTextChannel();
+    Object detail = event.getDetail();
     if (!event.isCancelled()
         && event.getSimple().startsWith("budget")
+        && detail instanceof String
+        && Strings.containsIgnoreCase((String) detail, "quote")
         && ticket.getTicketStatus() == TicketStatus.CREATING
         && ticket.getTicketType() != TicketType.QUOTE
         && owner != null) {

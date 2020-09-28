@@ -1,4 +1,4 @@
-package com.starfishst.bot.configuration.adapters;
+package com.starfishst.adapters;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;

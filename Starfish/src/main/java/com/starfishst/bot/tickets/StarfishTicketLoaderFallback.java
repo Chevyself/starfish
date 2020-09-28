@@ -38,6 +38,12 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
   }
 
   @Override
+  public @Nullable Ticket getTicketByChannel(long channelId) {
+    throw new UnsupportedOperationException(
+        "Operations are not permitted in fallback ticket loader");
+  }
+
+  @Override
   public @NotNull BotUser getStarfishUser(long id) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");

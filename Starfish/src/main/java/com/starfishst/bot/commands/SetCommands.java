@@ -1,18 +1,13 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.api.PermissionStack;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.bot.Starfish;
-import com.starfishst.bot.data.StarfishPermission;
-import com.starfishst.bot.tickets.StarfishPermissionStack;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Perm;
 import com.starfishst.commands.result.Result;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.core.utils.Lots;
-import java.util.HashSet;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -93,29 +88,5 @@ public class SetCommands {
       @Required(name = "key", description = "The key to set the channel on") String key) {
     Starfish.getDiscordConfiguration().getChannels().put(key, channel);
     return new Result("Channel in " + key + " has been set to " + channel.getName());
-  }
-
-  /**
-   * Give a permission to an user
-   *
-   * @param user the user to give the permission
-   * @param node the node of the permission
-   * @param enabled whether the permission is enabled
-   * @return the result of the command
-   */
-  @Command(aliases = "permission", description = "Set the permission to an user")
-  public Result permission(
-      @Required(name = "user", description = "The user to give the permission to") BotUser user,
-      @Required(name = "node", description = "The node of the permission") String node,
-      @Required(name = "enabled", description = "Whether the permission is enabled")
-          boolean enabled) {
-    PermissionStack discord = user.getPermissions("discord");
-    if (discord == null) {
-      discord = new StarfishPermissionStack("discord", new HashSet<>());
-      user.getPermissions().add(discord);
-    }
-    discord.getPermissions().add(new StarfishPermission(node, enabled));
-    return new Result(
-        "The permission " + node + " in status " + enabled + " has been given to " + user);
   }
 }

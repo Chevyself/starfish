@@ -34,4 +34,14 @@ public class TicketRemoveUserEvent extends TicketEvent implements StarfishCancel
   public void setCancelled(boolean bol) {
     this.cancelled = bol;
   }
+
+  /**
+   * Get the user that is joining the ticket
+   *
+   * @return the user that is joining the ticket
+   */
+  @NotNull
+  public BotUser getUser() {
+    return user;
+  }
 }

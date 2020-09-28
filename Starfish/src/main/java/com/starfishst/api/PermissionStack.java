@@ -15,9 +15,24 @@ public interface PermissionStack {
    * @param node the node of the permission
    * @return true if this has the permission and is enabled
    */
-  default boolean hasPermission(String node) {
+  default boolean hasPermission(@NotNull String node) {
     for (Permission permission : this.getPermissions()) {
       if (permission.getNode().equalsIgnoreCase(node) && permission.isEnabled()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks whether this stack has a permission and if it is disabled
+   *
+   * @param node the node of the permission
+   * @return true if the stack has the permission
+   */
+  default boolean containsPermission(@NotNull String node) {
+    for (Permission permission : this.getPermissions()) {
+      if (permission.getNode().equalsIgnoreCase(node)) {
         return true;
       }
     }

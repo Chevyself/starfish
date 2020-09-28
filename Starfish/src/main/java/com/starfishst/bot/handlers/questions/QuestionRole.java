@@ -104,29 +104,32 @@ public class QuestionRole extends Question {
       @NotNull GuildMessageReceivedEvent event, @NotNull BotUser user) {
     List<Role> roles = event.getMessage().getMentionedRoles();
     if (roles.isEmpty()) {
-      Messages.build(user.getLocaleFile().get("questions.empty-roles"), ResultType.ERROR, user);
-      return null;
+      Messages.build(user.getLocaleFile().get("questions.empty-roles"), ResultType.ERROR, user)
+          .send(event.getChannel());
+        return null;
     } else if (roles.size() > limit) {
       Messages.build(
-          user.getLocaleFile()
-              .get(
-                  "questions.more-roles-than-limit",
-                  Maps.singleton("limit", String.valueOf(this.getLimit()))),
-          ResultType.ERROR,
-          user);
+              user.getLocaleFile()
+                  .get(
+                      "questions.more-roles-than-limit",
+                      Maps.singleton("limit", String.valueOf(this.getLimit()))),
+              ResultType.ERROR,
+              user)
+          .send(event.getChannel());
       return null;
     }
     List<Role> notMentionable = this.getNotMentionableRoles(roles);
     if (notMentionable.isEmpty()) {
-      return roles;
+      return new ArrayList<>(roles);
     } else {
       Messages.build(
-          user.getLocaleFile()
-              .get(
-                  "questions.roles-not-mentionable",
-                  Maps.singleton("roles", Lots.pretty(Discord.getAsMention(notMentionable)))),
-          ResultType.ERROR,
-          user);
+              user.getLocaleFile()
+                  .get(
+                      "questions.roles-not-mentionable",
+                      Maps.singleton("roles", Lots.pretty(Discord.getAsMention(notMentionable)))),
+              ResultType.ERROR,
+              user)
+          .send(event.getChannel());
       return null;
     }
   }

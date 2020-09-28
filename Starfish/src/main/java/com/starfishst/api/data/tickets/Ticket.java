@@ -17,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -175,11 +174,8 @@ public interface Ticket extends ICatchable {
             .build();
     BotUser owner = this.getOwner();
     if (owner != null) {
-      User discord = owner.getDiscord();
-      placeholders.put(
-          "owner", discord == null ? String.valueOf(owner.getId()) : discord.getName());
-      placeholders.put(
-          "owner_tag", discord == null ? String.valueOf(owner.getId()) : discord.getAsTag());
+      placeholders.put("owner", owner.getName());
+      placeholders.put("owner_tag", owner.getMention());
     }
     TextChannel channel = this.getTextChannel();
     if (channel != null) {

@@ -17,6 +17,7 @@ import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
 import com.starfishst.api.events.role.BotRoleUnloadedEvent;
+import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
 import com.starfishst.bot.data.StarfishFreelancer;
@@ -279,7 +280,15 @@ public class StarfishTicketLoader implements StarfishLoader {
    */
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketUnloadedEvent(@NotNull TicketUnloadedEvent event) {
-    Ticket ticket = event.getTicket();
+    saveTicket(event.getTicket());
+  }
+
+  /**
+   * Saves a ticket into the mongo database
+   *
+   * @param ticket the ticket to save
+   */
+  private void saveTicket(@NotNull Ticket ticket) {
     Document document =
         new Document("id", ticket.getId())
             .append("type", ticket.getTicketType().toString())
@@ -295,6 +304,18 @@ public class StarfishTicketLoader implements StarfishLoader {
       this.tickets.replaceOne(query, document);
     } else {
       this.tickets.insertOne(document);
+    }
+  }
+
+  /**
+   * Listens to when a ticket is done to save it in the database
+   *
+   * @param event the event of a ticket being done
+   */
+  @Listener(priority = ListenPriority.HIGHEST)
+  public void onTicketStatusUpdated(@NotNull TicketStatusUpdatedEvent event) {
+    if (!event.isCancelled() && event.getStatus() == TicketStatus.OPEN) {
+      this.saveTicket(event.getTicket());
     }
   }
 
@@ -490,6 +511,11 @@ public class StarfishTicketLoader implements StarfishLoader {
       return ticket;
     }
     return this.getTicket(new Document("id", id));
+  }
+
+  @Override
+  public @Nullable Ticket getTicketByChannel(long channelId) {
+    return this.getTicket(new Document("channel", channelId));
   }
 
   @Override

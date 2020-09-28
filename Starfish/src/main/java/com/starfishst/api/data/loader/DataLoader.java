@@ -20,6 +20,15 @@ public interface DataLoader {
   Ticket getTicket(long id);
 
   /**
+   * Get a ticket by its channel
+   *
+   * @param channelId the id of the channel
+   * @return the returned ticket
+   */
+  @Nullable
+  Ticket getTicketByChannel(long channelId);
+
+  /**
    * Get an starfish user by its id
    *
    * @param id the id of the user

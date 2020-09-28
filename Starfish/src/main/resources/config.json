@@ -33,6 +33,11 @@
         "announce-types": ["ORDER", "QUOTE"],
         "pin-copy-in-channel": true
       }
+    },
+    "tickets": {
+      "preferences": {
+        "announce-all-users-joining": false
+      }
     }
   },
   "total": 0

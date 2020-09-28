@@ -48,7 +48,6 @@ public class StarfishPermissionChecker implements PermissionChecker {
             this.dataLoader.getStarfishUser(
                 ((GuildCommandContext) context).getMember().getIdLong());
         if (member.hasPermission(perm.node(), "discord")
-            || member.hasPermission("*", "discord")
             || ((GuildCommandContext) context)
                 .getMember()
                 .hasPermission(Permission.ADMINISTRATOR)) {
@@ -56,14 +55,17 @@ public class StarfishPermissionChecker implements PermissionChecker {
         }
         for (Role role : ((GuildCommandContext) context).getMember().getRoles()) {
           BotRole roleData = this.dataLoader.getStarfishRole(role.getIdLong());
-          if (roleData.hasPermission(perm.node(), "discord")) {
+          if (roleData.containsPermission(perm.node(), "discord")
+              && !roleData.hasPermission(perm.node(), "context")) {
+            return new Result(ResultType.PERMISSION, this.messagesProvider.notAllowed(context));
+          } else if (roleData.hasPermission(perm.node(), "discord")) {
             return null;
           }
         }
       } else {
         String node = perm.node().startsWith("user:") ? perm.node().substring(5) : perm.node();
         BotUser userData = this.dataLoader.getStarfishUser(context.getSender().getIdLong());
-        if (userData.hasPermission(node, "discord") || userData.hasPermission("*", "discord")) {
+        if (userData.hasPermission(node, "discord:user")) {
           return null;
         }
       }
