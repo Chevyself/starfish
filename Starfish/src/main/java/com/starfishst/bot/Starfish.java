@@ -13,6 +13,7 @@ import com.starfishst.bot.commands.TicketCommands;
 import com.starfishst.bot.commands.providers.BotUserProvider;
 import com.starfishst.bot.commands.providers.BotUserSenderProvider;
 import com.starfishst.bot.commands.providers.PermissibleProvider;
+import com.starfishst.bot.commands.providers.StarfishFreelancerProvider;
 import com.starfishst.bot.commands.providers.TicketProvider;
 import com.starfishst.bot.configuration.StarfishConfiguration;
 import com.starfishst.bot.configuration.StarfishDiscordConfiguration;
@@ -171,6 +172,7 @@ public class Starfish {
     languageHandler.load("en");
     ProvidersRegistry<CommandContext> registry = new ProvidersRegistryJDA(languageHandler);
     registry.addProvider(new PermissibleProvider());
+    registry.addProvider(new StarfishFreelancerProvider());
     registry.addProvider(new BotUserProvider());
     registry.addProvider(new BotUserSenderProvider());
     registry.addProvider(new TicketProvider());

@@ -91,6 +91,7 @@ public class StarfishDataLoader implements StarfishLoader {
     this.ping();
     deserializers.put("claim-order", new ClaimOrderDeserializer());
     deserializers.put("ticket-panel", new TicketPanelDeserializer());
+    deserializers.put("offer", new OfferDeserializer());
   }
 
   /**

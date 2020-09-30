@@ -14,8 +14,7 @@ public class OfferDeserializer implements StarfishMessageDeserializer<OfferMessa
     @NotNull
     @Override
     public OfferMessage getMessage(long id, @NotNull StarfishValuesMap data, @NotNull Document document) {
-        // TODO
-        return null;
+        return new OfferMessage(id, data);
     }
 
 }
