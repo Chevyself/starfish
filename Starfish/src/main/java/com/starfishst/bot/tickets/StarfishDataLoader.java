@@ -26,6 +26,9 @@ import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishRole;
 import com.starfishst.bot.data.StarfishUser;
 import com.starfishst.bot.data.StarfishValuesMap;
+import com.starfishst.bot.tickets.deserializers.ClaimOrderDeserializer;
+import com.starfishst.bot.tickets.deserializers.OfferDeserializer;
+import com.starfishst.bot.tickets.deserializers.TicketPanelDeserializer;
 import com.starfishst.commands.utils.responsive.ResponsiveMessage;
 import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.maps.Maps;
@@ -48,7 +51,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /** An implementation for the data loader */
-public class StarfishTicketLoader implements StarfishLoader {
+public class StarfishDataLoader implements StarfishLoader {
 
   /** The jda instance to get important information of discord */
   @NotNull private final JDA jda;
@@ -75,7 +78,7 @@ public class StarfishTicketLoader implements StarfishLoader {
    * @param uri the mongo uri for authentication
    * @param database the database to use
    */
-  public StarfishTicketLoader(@NotNull JDA jda, @NotNull String uri, @NotNull String database) {
+  public StarfishDataLoader(@NotNull JDA jda, @NotNull String uri, @NotNull String database) {
     this.jda = jda;
     MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
     builder.connectTimeout(300).sslEnabled(true);
@@ -86,6 +89,8 @@ public class StarfishTicketLoader implements StarfishLoader {
     this.roles = this.database.getCollection("roles");
     this.messages = this.database.getCollection("messages");
     this.ping();
+    deserializers.put("claim-order", new ClaimOrderDeserializer());
+    deserializers.put("ticket-panel", new TicketPanelDeserializer());
   }
 
   /**
@@ -94,7 +99,7 @@ public class StarfishTicketLoader implements StarfishLoader {
    * @param jda the jda instance for important discord information
    * @param configuration the configuration to get the uri and database from
    */
-  public StarfishTicketLoader(@NotNull JDA jda, @NotNull MongoConfiguration configuration) {
+  public StarfishDataLoader(@NotNull JDA jda, @NotNull MongoConfiguration configuration) {
     this(jda, configuration.getUri(), configuration.getDatabase());
   }
 
@@ -350,7 +355,7 @@ public class StarfishTicketLoader implements StarfishLoader {
     BotResponsiveMessage message = event.getMessage();
     Document query = new Document("id", message.getId());
     Document document =
-        new Document("id", message.getId()).append("data", this.dataToDocument(message));
+        new Document("id", message.getId()).append("type", message.getType()).append("data", this.dataToDocument(message));
     Document first = this.messages.find(query).first();
     if (first != null) {
       this.messages.replaceOne(query, document);
@@ -478,14 +483,14 @@ public class StarfishTicketLoader implements StarfishLoader {
   @Override
   @Nullable
   public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
-    ResponsiveMessage message =
+    StarfishResponsiveMessage message =
         Cache.getCatchable(
             catchable ->
                 catchable instanceof StarfishResponsiveMessage
                     && ((StarfishResponsiveMessage) catchable).getId() == messageId,
             StarfishResponsiveMessage.class);
     if (message != null) {
-      return message;
+      return message.refresh();
     }
     return this.getResponsiveMessage(new Document("id", messageId));
   }

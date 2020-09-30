@@ -1,6 +1,7 @@
 package com.starfishst.api.utility;
 
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.bot.Starfish;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedFactory;
@@ -48,23 +49,48 @@ public class Messages {
   /**
    * Get the thumbnail for certain bot user
    *
-   * @param user the user to get the thumbnail from
+   * @param locale the locale to get the thumbnail from
    * @return the thumbnail for the user
    */
   @NotNull
-  public static String getThumbnail(@NotNull BotUser user) {
-    return user.getLocaleFile().get("thumbnail-url");
+  public static String getThumbnail(@NotNull LocaleFile locale) {
+    return locale.get("thumbnail-url");
   }
 
   /**
    * Get the thumbnail for certain bot user
    *
-   * @param user the user to get the thumbnail from
+   * @param locale the locale to get the thumbnail from
    * @return the thumbnail for the user
    */
   @NotNull
-  public static String getFooter(@NotNull BotUser user) {
-    return user.getLocaleFile().get("footer");
+  public static String getFooter(@NotNull LocaleFile locale) {
+    return locale.get("footer");
+  }
+
+  /**
+   * Builds a message
+   *
+   * @param title the title of the embed
+   * @param description the description of the embed
+   * @param type the type to get the color of the embed
+   * @param locale the locale that will read the message
+   * @return the embed query
+   */
+  public static EmbedQuery build(
+          @NotNull String title,
+          @NotNull String description,
+          @NotNull ResultType type,
+          @NotNull LocaleFile locale) {
+    return Messages.build(
+            title,
+            description,
+            Messages.getThumbnail(locale),
+            null,
+            Messages.getFooter(locale),
+            type,
+            null,
+            false);
   }
 
   /**
@@ -81,15 +107,28 @@ public class Messages {
       @NotNull String description,
       @NotNull ResultType type,
       @NotNull BotUser user) {
+    return Messages.build(title, description, type, user.getLocaleFile());
+  }
+
+  /**
+   * Builds a message
+   *
+   * @param description the description of the embed
+   * @param type the type to get the color of the embed
+   * @param locale the user locale will read the message
+   * @return the embed query
+   */
+  public static EmbedQuery build(
+          @NotNull String description, @NotNull ResultType type, @NotNull LocaleFile locale) {
     return Messages.build(
-        title,
-        description,
-        Messages.getThumbnail(user),
-        null,
-        Messages.getFooter(user),
-        type,
-        null,
-        false);
+            type.getTitle(Starfish.getLanguageHandler(), null),
+            description,
+            Messages.getThumbnail(locale),
+            null,
+            Messages.getFooter(locale),
+            type,
+            null,
+            false);
   }
 
   /**
@@ -102,14 +141,6 @@ public class Messages {
    */
   public static EmbedQuery build(
       @NotNull String description, @NotNull ResultType type, @NotNull BotUser user) {
-    return Messages.build(
-        type.getTitle(Starfish.getLanguageHandler(), null),
-        description,
-        Messages.getThumbnail(user),
-        null,
-        Messages.getFooter(user),
-        type,
-        null,
-        false);
+    return Messages.build(description, type, user.getLocaleFile());
   }
 }

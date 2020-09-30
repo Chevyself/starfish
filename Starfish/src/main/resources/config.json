@@ -1,6 +1,7 @@
 {
   "ticket-unload": "10m",
   "users-unload": "10m",
+  "messages-unload": "10m",
   "mongo": {
     "uri": "The uri for the mongo client",
     "database": "TestDatabaseStarfish"

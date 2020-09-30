@@ -40,9 +40,10 @@ public class CleanerHandler implements StarfishEventHandler {
           && this.getPreferences()
               .getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)) {
         Ticket child = Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId());
-        if (ticket.getTicketType() != TicketType.TICKET_CREATOR
-            && child != null
-            && !channel.equals(child.getTextChannel())) {
+        if (child == ticket) {
+          child = null;
+        }
+        if (child == null || !channel.equals(child.getTextChannel())){
           channel.delete().queue();
           ticket.setTextChannel(null);
         }

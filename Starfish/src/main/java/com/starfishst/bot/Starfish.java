@@ -30,7 +30,7 @@ import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
 import com.starfishst.bot.handlers.ticket.TicketCreatorHandler;
 import com.starfishst.bot.handlers.ticket.TicketHandler;
 import com.starfishst.bot.tickets.StarfishLoader;
-import com.starfishst.bot.tickets.StarfishTicketLoader;
+import com.starfishst.bot.tickets.StarfishDataLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoaderFallback;
 import com.starfishst.bot.tickets.StarfishTicketManager;
 import com.starfishst.commands.CommandManager;
@@ -39,6 +39,7 @@ import com.starfishst.commands.providers.registry.ProvidersRegistryJDA;
 import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.providers.registry.ProvidersRegistry;
 import com.starfishst.core.utils.Lots;
+import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.cache.Cache;
 import com.starfishst.core.utils.cache.ICatchable;
 import com.starfishst.core.utils.files.CoreFiles;
@@ -71,6 +72,7 @@ import net.dv8tion.jda.internal.entities.GuildImpl;
 import net.dv8tion.jda.internal.entities.RoleImpl;
 import net.dv8tion.jda.internal.entities.TextChannelImpl;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** The main class of the starfish bot */
 public class Starfish {
@@ -90,12 +92,23 @@ public class Starfish {
   /** The data loader that the bot will be using */
   @NotNull private static StarfishLoader loader = new StarfishTicketLoaderFallback();
 
+  /**
+   * The command manager that the bot is using
+   */
+  @Nullable
+  private static CommandManager manager;
+
+  /**
+   * The ticket manager that the bot is using
+   */
   @NotNull
   private static TicketManager ticketManager = new StarfishTicketManager(loader, configuration);
   /** The language handler for users using the bot */
   @NotNull
   private static final StarfishLanguageHandler languageHandler =
       new StarfishLanguageHandler(loader);
+
+
 
   /**
    * The main method of the bot
@@ -135,7 +148,7 @@ public class Starfish {
       Fallback.addError("IOException: discord.json could not be loaded");
       e.printStackTrace();
     }
-    loader = new StarfishTicketLoader(jda, configuration.getMongoConfiguration());
+    loader = new StarfishDataLoader(jda, configuration.getMongoConfiguration());
     languageHandler.setDataLoader(loader);
     handlers.addAll(
         Lots.list(
@@ -160,7 +173,7 @@ public class Starfish {
     registry.addProvider(new BotUserProvider());
     registry.addProvider(new BotUserSenderProvider());
     registry.addProvider(new TicketProvider());
-    CommandManager manager =
+    manager =
         new CommandManager(
             jda,
             "-",
@@ -314,5 +327,16 @@ public class Starfish {
       }
     }
     throw new IllegalArgumentException("The handler " + clazz + " may not be registered");
+  }
+
+  /**
+   * Get the command manager that the bot is using
+   *
+   * @return the command manager
+   * @throws NullPointerException if the command manager was not initialized
+   */
+  @NotNull
+  public static CommandManager getManager() {
+    return Validate.notNull(manager, "The command manager might not been initialized");
   }
 }

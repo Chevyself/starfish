@@ -74,6 +74,7 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
    *
    * @return the type of responsive message
    */
+  @Override
   @NotNull
   public String getType() {
     return type;
@@ -92,11 +93,12 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
 
   @Override
   public void onSecondsPassed() {
-    new BotMessageUnloadedEvent(this).call();
   }
 
   @Override
-  public void onRemove() {}
+  public void onRemove() {
+    new BotMessageUnloadedEvent(this).call();
+  }
 
   @Override
   public long getSecondsLeft() {

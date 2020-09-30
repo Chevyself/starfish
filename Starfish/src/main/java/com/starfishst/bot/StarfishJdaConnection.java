@@ -95,7 +95,7 @@ public class StarfishJdaConnection {
     return Validate.notNull(this.jda, "Bot is not connected with discord!");
   }
 
-  /**
+    /**
    * Get the connection with jda
    *
    * @return the connection with jda
