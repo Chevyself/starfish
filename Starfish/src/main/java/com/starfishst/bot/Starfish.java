@@ -4,6 +4,7 @@ import com.starfishst.adapters.QuestionAdapter;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.data.loader.TicketManager;
+import com.starfishst.bot.commands.ChannelsCommands;
 import com.starfishst.bot.commands.DeveloperCommands;
 import com.starfishst.bot.commands.FreelancerCommands;
 import com.starfishst.bot.commands.PermissionCommands;
@@ -181,6 +182,7 @@ public class Starfish {
             languageHandler,
             registry,
             new StarfishPermissionChecker(languageHandler, loader));
+    manager.registerCommand(new ChannelsCommands());
     manager.registerCommand(new DeveloperCommands());
     manager.registerCommand(new FreelancerCommands());
     manager.registerCommand(new PermissionCommands());

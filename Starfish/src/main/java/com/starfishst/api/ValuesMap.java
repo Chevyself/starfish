@@ -88,6 +88,15 @@ public interface ValuesMap {
   }
 
   /**
+   * Removes a value from the map
+   *
+   * @param key the key inside the map
+   */
+  default void removeValue(@NotNull String key) {
+    this.getMap().remove(key);
+  }
+
+  /**
    * Convert the preferences into a string map. Maybe to be read by an user?
    *
    * @return the string map

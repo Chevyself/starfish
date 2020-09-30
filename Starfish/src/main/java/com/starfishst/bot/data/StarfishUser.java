@@ -38,6 +38,26 @@ public class StarfishUser extends Catchable implements BotUser {
     new BotUserLoadedEvent(this).call();
   }
 
+  /**
+   * Create an starfish user from a freelancer
+   *
+   * @param user the user that is supposed to be a freelancer
+   * @throws IllegalArgumentException if the user is not a freelancer
+   */
+  public StarfishUser(@NotNull BotUser user) {
+    super(Starfish.getConfiguration().toUnloadUser());
+    if (!user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
+      throw new IllegalArgumentException(user + " is not a freelancer!");
+    }
+    this.id = user.getId();
+    this.preferences = new StarfishValuesMap(user.getPreferences().getMap());
+    this.permissions = user.getPermissions();
+    this.getPreferences().removeValue("freelancer");
+    this.getPreferences().removeValue("portfolio");
+    new BotUserLoadedEvent(this).call();
+    user.unload(false);
+  }
+
   @Override
   public @NotNull Set<PermissionStack> getPermissions() {
     return this.permissions;
