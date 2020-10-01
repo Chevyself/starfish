@@ -2,7 +2,7 @@ package com.starfishst.addons;
 
 import com.starfishst.api.addons.AddonInformation;
 import com.starfishst.core.utils.files.CoreFiles;
-import com.starfishst.simple.gson.GsonProvider;
+import com.starfishst.utils.gson.GsonProvider;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

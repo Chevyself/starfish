@@ -1,59 +1,52 @@
 {
-  "token": "discord_token_here get it from https://discordapp.com/developers/applications",
-  "prefix": "-",
-  "mongo": {
-    "uri": "some_uri",
-    "database": "database"
-  },
-  "total": 0,
-  "limitOfQuotes": 2,
-  "openTicketsByUserLimit": 2,
-  "toUnload": "10m",
-  "toUnloadFreelancer": "10m",
-  "inactiveTime": "2w",
-  "timeToFinishInactiveTest": "24h",
-  "autoSave": {
-    "enable": true,
-    "toSave": "2m"
-  },
-  "toAnnounce": [
-    "3m",
-    "1m",
-    "15s"
-  ],
-  "responsiveMessages": [
-  ],
+  "ticket-unload": "10m",
+  "users-unload": "10m",
+  "messages-unload": "10m",
   "fees": [
     {
-      "description": "A fee that applies +10$ and +0.03 of the price when it is from 5$ to 10$",
-      "addition": 100,
-      "percentage": 0.03,
-      "min": 5.0,
-      "max": 10.0
+      "description": "Commission Fee",
+      "percentage": 5.4,
+      "addition": 0.30
     }
   ],
-  "payments": {
-    "enable": false,
-    "port": 3000,
-    "keyStore": "",
-    "keyStorePassword": "",
-    "keyAlias": "",
-    "url": "",
-    "clientId": "",
-    "clientSecret": "",
-    "mode": "sandbox",
-    "note": ""
+  "mongo": {
+    "uri": "The uri for the mongo client",
+    "database": "TestDatabaseStarfish"
   },
   "commands": {
-    "deleteCommands": false,
+    "deleteCommands": true,
     "embedMessages": true,
     "deleteErrors": true,
     "toDeleteErrors": "15s",
     "deleteSuccess": true,
     "toDeleteSuccess": "15s",
-    "success": "#ffaa00",
-    "error": "#b30000"
+    "success": "#8888FF",
+    "error": "#E30B0B"
   },
-  "questionSendType": "NONE",
-  "bannedTypes": []
+  "handlers": {
+    "auto-save": {
+      "preferences": {
+        "enabled": true,
+        "time": "2m"
+      }
+    },
+    "cleaner": {
+      "preferences": {
+        "delete-uncompleted-ticket-channels": true,
+        "time-to-announce-deletion": ["9m", "5m", "1m", "30s", "15s", "5s", "4s", "3s", "2s", "1s"]
+      }
+    },
+    "announcer": {
+      "preferences": {
+        "announce-types": ["ORDER", "QUOTE"],
+        "pin-copy-in-channel": true
+      }
+    },
+    "tickets": {
+      "preferences": {
+        "announce-all-users-joining": false
+      }
+    }
+  },
+  "total": 0
 }

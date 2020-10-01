@@ -1,39 +1,34 @@
 package com.starfishst.api.addons;
 
-import com.starfishst.bot.util.Console;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 /** Every addon should extend this in the main class */
 public class Addon {
 
   /** The addon information */
-  @Nullable private AddonInformation information;
-
-  /** Executed when the addon is loaded */
-  public void onEnable() {
-    Console.info(information.getName() + " has been loaded!");
-  }
-
-  /** Executed when the addon is unloaded */
-  public void onDisable() {
-    Console.info(information.getName() + " has been unloaded!");
-  }
+  @NotNull private final AddonInformation information;
 
   /**
-   * Set the addon information
+   * Create the addon.
    *
-   * @param information the new addon information
+   * @param information The addon information;
    */
-  void setInformation(@Nullable AddonInformation information) {
+  public Addon(@NotNull AddonInformation information) {
     this.information = information;
   }
+
+  /** Executed when the addon is loaded */
+  public void onEnable() {}
+
+  /** Executed when the addon is unloaded */
+  public void onDisable() {}
 
   /**
    * Get the addon information
    *
    * @return the addon information
    */
-  @Nullable
+  @NotNull
   public AddonInformation getInformation() {
     return information;
   }

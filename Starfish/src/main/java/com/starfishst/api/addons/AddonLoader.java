@@ -1,6 +1,6 @@
 package com.starfishst.api.addons;
 
-import com.starfishst.bot.util.Console;
+import com.starfishst.api.utility.console.Console;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -50,21 +50,13 @@ public class AddonLoader {
             AddonClassLoader addonLoader = new AddonClassLoader(file, parentLoader);
             AddonInformation info = addonLoader.getInfo();
             Class<?> clazz = Class.forName(info.getMain(), true, addonLoader);
-            Object addonObj = clazz.getConstructor().newInstance();
-            System.out.println(addonObj.getClass().getSuperclass().getName());
+            Object addonObj = clazz.getConstructor(AddonInformation.class).newInstance(info);
             if (addonObj instanceof Addon) {
               Addon addon = (Addon) addonObj;
-              addon.setInformation(info);
               addon.onEnable();
               loaded.add(addon);
             } else {
-              Console.severe(
-                  "Failed to load "
-                      + info.getName()
-                      + " main class( "
-                      + clazz
-                      + ") does not extend "
-                      + Addon.class);
+
             }
           } catch (IOException
               | ClassNotFoundException
@@ -72,8 +64,7 @@ public class AddonLoader {
               | IllegalAccessException
               | InstantiationException
               | InvocationTargetException e) {
-            Console.severe(file.getName() + " could not be loaded");
-            e.printStackTrace();
+            Console.exception("AddonLoader: Addon " + file.getName() + " could not be loaded");
           }
         }
       }
@@ -82,14 +73,16 @@ public class AddonLoader {
 
   /** Unloads all the addons */
   public void unload() {
-    loaded.forEach(Addon::onDisable);
+    for (Addon addon : this.loaded) {
+      addon.onDisable();
+    }
     loaded.clear();
   }
 
   /** Loads all the addons */
   public void reload() {
-    unload();
-    load();
+    this.unload();
+    this.load();
   }
 
   /**
@@ -101,8 +94,7 @@ public class AddonLoader {
   @Nullable
   public Addon getAddonByName(@NotNull String name) {
     for (Addon addon : this.loaded) {
-      if (addon.getInformation() != null
-          && addon.getInformation().getName().equalsIgnoreCase(name)) {
+      if (addon.getInformation().getName().equalsIgnoreCase(name)) {
         return addon;
       }
     }

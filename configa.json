@@ -1,0 +1,33 @@
+{
+  "ticket-unload": "1m",
+  "users-unload": "1m",
+  "mongo": {
+    "uri": "The uri for the mongo client",
+    "database": "TestDatabaseStarfish"
+  },
+  "commands": {
+    "deleteCommands": true,
+    "embedMessages": true,
+    "deleteErrors": true,
+    "toDeleteErrors": "15s",
+    "deleteSuccess": true,
+    "toDeleteSuccess": "15s",
+    "success": "#8888FF",
+    "error": "#E30B0B"
+  },
+  "handlers": {
+    "auto-save": {
+      "preferences": {
+        "enabled": true,
+        "time": "10s"
+      }
+    },
+    "cleaner": {
+      "preferences": {
+        "delete-uncompleted-ticket-channels": true,
+        "time-to-announce-deletion": ["9m", "5m", "1m", "50s", "30s", "15s", "5s", "4s", "3s", "2s", "1s"]
+      }
+    }
+  },
+  "total": 0
+}
