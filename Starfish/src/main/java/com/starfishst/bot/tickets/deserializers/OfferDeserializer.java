@@ -6,15 +6,13 @@ import com.starfishst.bot.tickets.StarfishMessageDeserializer;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Deserializes offers
- */
+/** Deserializes offers */
 public class OfferDeserializer implements StarfishMessageDeserializer<OfferMessage> {
 
-    @NotNull
-    @Override
-    public OfferMessage getMessage(long id, @NotNull StarfishValuesMap data, @NotNull Document document) {
-        return new OfferMessage(id, data);
-    }
-
+  @NotNull
+  @Override
+  public OfferMessage getMessage(
+      long id, @NotNull StarfishValuesMap data, @NotNull Document document) {
+    return new OfferMessage(id, data);
+  }
 }

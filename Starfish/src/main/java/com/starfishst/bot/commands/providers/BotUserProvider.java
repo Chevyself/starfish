@@ -27,4 +27,9 @@ public class BotUserProvider implements IArgumentProvider<BotUser, CommandContex
       throw new ArgumentProviderException("Provider did not return an user!");
     }
   }
+
+  @Override
+  public boolean provides(@NotNull Class<?> clazz) {
+    return clazz == BotUser.class;
+  }
 }

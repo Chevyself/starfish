@@ -19,7 +19,6 @@ import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.core.utils.maps.Maps;
 import java.util.HashMap;
-
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,8 +54,12 @@ public class FreelancerCommands {
    * @param user the user to demote
    * @return the result of the command
    */
-  @Command(aliases = "demote", description = "demote.desc", permission = @Perm(node = "starfish.demote"))
-  public Result demote(BotUser sender, @Required(name = "user", description = "demote.desc") BotUser user) {
+  @Command(
+      aliases = "demote",
+      description = "demote.desc",
+      permission = @Perm(node = "starfish.demote"))
+  public Result demote(
+      BotUser sender, @Required(name = "user", description = "demote.desc") BotUser user) {
     HashMap<String, @NotNull String> placeholders = user.getPlaceholders();
     if (user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
       new StarfishUser(user);
@@ -70,7 +73,7 @@ public class FreelancerCommands {
    * See the information of a freelancer
    *
    * @param sender the user that wants to see the information
-   * @param user the user that is supposed to be a freelancer
+   * @param freelancer the freelancer to view the information from
    * @return the result of the freelancer information if the user happens to be a freelancer
    */
   @Command(
@@ -79,28 +82,27 @@ public class FreelancerCommands {
       permission = @Perm(node = "starfish.freelancerinfo"))
   public Result freelancerInfo(
       BotUser sender,
-      @Required(name = "freelancer", description = "The freelancer to view") BotUser user) {
-    if (user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
-      return new Result(user.toCompleteInformation(sender));
-    } else {
-      return new Result(
-          sender
-              .getLocaleFile()
-              .get(
-                  "freelancer-info.user.not-freelancer",
-                  Maps.singleton("user", sender.getMention())));
-    }
+      @Required(name = "freelancer", description = "The freelancer to view")
+          StarfishFreelancer freelancer) {
+    return new Result(freelancer.toCompleteInformation(sender));
   }
 
   /**
    * Send a quote to a quote ticket
+   *
    * @param freelancer the freelancer sending the quote
    * @param ticket the ticket that is getting the quote
    * @param strings the quote
    * @return the result of the command
    */
-  @Command(aliases = {"quote", "offer"}, description = "quote.desc")
-  public Result quote(StarfishFreelancer freelancer, @Required(name = "quote.ticket", description = "quote.ticket.desc") Ticket ticket, @Multiple @Required(name = "quote.offer", description = "quote.offer.desc")JoinedStrings strings) {
+  @Command(
+      aliases = {"quote", "offer"},
+      description = "quote.desc")
+  public Result quote(
+      StarfishFreelancer freelancer,
+      @Required(name = "quote.ticket", description = "quote.ticket.desc") Ticket ticket,
+      @Multiple @Required(name = "quote.offer", description = "quote.offer.desc")
+          JoinedStrings strings) {
     LocaleFile locale = freelancer.getLocaleFile();
     if (ticket.getTicketType() != TicketType.QUOTE) {
       return new Result(locale.get("quote.ticket-not-quote", ticket.getPlaceholders()));
@@ -112,12 +114,19 @@ public class FreelancerCommands {
         HashMap<String, String> placeholders = Maps.singleton("offer", strings.toString());
         BotUser owner = ticket.getOwner();
         if (owner != null) {
-          Messages.build(owner.getLocaleFile().get("offer.title", placeholders), owner.getLocaleFile().get("offer.desc", placeholders), ResultType.GENERIC, owner).send(channel, msg -> {
-            StarfishValuesMap map = new StarfishValuesMap();
-            map.addValue("offer", strings.toString());
-            map.addValue("freelancer", freelancer.getId());
-            new OfferMessage(msg, map);
-          });
+          Messages.build(
+                  owner.getLocaleFile().get("offer.title", placeholders),
+                  owner.getLocaleFile().get("offer.desc", placeholders),
+                  ResultType.GENERIC,
+                  owner)
+              .send(
+                  channel,
+                  msg -> {
+                    StarfishValuesMap map = new StarfishValuesMap();
+                    map.addValue("offer", strings.toString());
+                    map.addValue("freelancer", freelancer.getId());
+                    new OfferMessage(msg, map);
+                  });
         }
       }
     }

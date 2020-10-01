@@ -6,15 +6,14 @@ import com.starfishst.bot.tickets.StarfishMessageDeserializer;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Deserializes claim order messages
- */
-public class ClaimOrderDeserializer implements StarfishMessageDeserializer<ClaimOrderResponsiveMessage> {
+/** Deserializes claim order messages */
+public class ClaimOrderDeserializer
+    implements StarfishMessageDeserializer<ClaimOrderResponsiveMessage> {
 
-    @NotNull
-    @Override
-    public ClaimOrderResponsiveMessage getMessage(long id, @NotNull StarfishValuesMap data, @NotNull Document document) {
-        return new ClaimOrderResponsiveMessage(id, data);
-    }
-
+  @NotNull
+  @Override
+  public ClaimOrderResponsiveMessage getMessage(
+      long id, @NotNull StarfishValuesMap data, @NotNull Document document) {
+    return new ClaimOrderResponsiveMessage(id, data);
+  }
 }

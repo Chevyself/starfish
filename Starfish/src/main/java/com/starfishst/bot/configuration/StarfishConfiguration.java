@@ -1,13 +1,17 @@
 package com.starfishst.bot.configuration;
 
 import com.google.gson.annotations.SerializedName;
+import com.starfishst.api.Fee;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.MongoConfiguration;
 import com.starfishst.bot.handlers.StarfishHandlerValuesMap;
 import com.starfishst.commands.ManagerOptions;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link com.starfishst.api.configuration.Configuration} */
@@ -26,23 +30,24 @@ public class StarfishConfiguration implements Configuration {
   @NotNull
   private final Time messagesUnload;
 
+  /** The configuration for mongo */
   @NotNull private final StarfishMongoConfiguration mongo;
 
+  /** The fees that can be applied */
+  @NotNull private final List<Fee> fees;
+
+  /** The options for commands */
   @SerializedName("commands")
   @NotNull
   private final ManagerOptions options;
 
+  /** The preferences for handlers */
   @SerializedName("handlers")
   @NotNull
   private final HashMap<String, StarfishHandlerValuesMap> handlersPreferences;
 
+  /** The total of tickets created */
   private long total;
-
-  @SerializedName("quotes-limit")
-  private long quotesLimit;
-
-  @SerializedName("open-limit")
-  private long openLimit;
 
   /**
    * This constructor is used for gson. Use {@link com.starfishst.core.fallback.Fallback} for a
@@ -52,8 +57,7 @@ public class StarfishConfiguration implements Configuration {
   public StarfishConfiguration() {
     this(
         0,
-        2,
-        2,
+        new ArrayList<>(),
         new Time(25, Unit.MINUTES),
         new Time(25, Unit.MINUTES),
         new Time(25, Unit.MINUTES),
@@ -66,8 +70,7 @@ public class StarfishConfiguration implements Configuration {
    * Create the starfish configuration
    *
    * @param total the total of tickets created
-   * @param quotesLimit the limit of quotes per freelancer in a ticket
-   * @param openLimit the limit of open tickets per user
+   * @param fees the fees that can be applied
    * @param ticketUnload the time to unload a ticket
    * @param usersUnload the time to unload users
    * @param messagesUnload the time to unload messages
@@ -77,8 +80,7 @@ public class StarfishConfiguration implements Configuration {
    */
   public StarfishConfiguration(
       long total,
-      long quotesLimit,
-      long openLimit,
+      @NotNull List<Fee> fees,
       @NotNull Time ticketUnload,
       @NotNull Time usersUnload,
       @NotNull Time messagesUnload,
@@ -86,8 +88,7 @@ public class StarfishConfiguration implements Configuration {
       @NotNull ManagerOptions options,
       @NotNull HashMap<String, StarfishHandlerValuesMap> handlersPreferences) {
     this.total = total;
-    this.quotesLimit = quotesLimit;
-    this.openLimit = openLimit;
+    this.fees = fees;
     this.ticketUnload = ticketUnload;
     this.usersUnload = usersUnload;
     this.messagesUnload = messagesUnload;
@@ -105,8 +106,7 @@ public class StarfishConfiguration implements Configuration {
   public static StarfishConfiguration fallback() {
     return new StarfishConfiguration(
         0,
-        2,
-        2,
+        new ArrayList<>(),
         new Time(25, Unit.MINUTES),
         new Time(25, Unit.MINUTES),
         new Time(25, Unit.MINUTES),
@@ -126,13 +126,8 @@ public class StarfishConfiguration implements Configuration {
   }
 
   @Override
-  public long getLimitOfQuotes() {
-    return this.quotesLimit;
-  }
-
-  @Override
-  public long getOpenLimit() {
-    return this.openLimit;
+  public @NotNull Collection<Fee> getFees() {
+    return this.fees;
   }
 
   @Override

@@ -1,6 +1,6 @@
 package com.starfishst.api.addons;
 
-import com.starfishst.core.fallback.Fallback;
+import com.starfishst.api.utility.console.Console;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -64,7 +64,7 @@ public class AddonLoader {
               | IllegalAccessException
               | InstantiationException
               | InvocationTargetException e) {
-            Fallback.addError("AddonLoader: Addon " + file.getName() + " could not be loaded");
+            Console.exception("AddonLoader: Addon " + file.getName() + " could not be loaded");
           }
         }
       }

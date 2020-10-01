@@ -1,11 +1,11 @@
 package com.starfishst.bot.handlers.lang;
 
 import com.starfishst.api.data.loader.DataLoader;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.handlers.StarfishHandler;
 import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.messages.MessagesProvider;
 import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.files.CoreFiles;
 import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.core.utils.time.Time;
@@ -47,8 +47,7 @@ public class StarfishLanguageHandler implements MessagesProvider, StarfishHandle
                     CoreFiles.currentDirectory() + "/assets/lang/" + lang + ".properties",
                     CoreFiles.getResource("lang/" + lang + ".properties"))));
       } catch (IOException e) {
-        Fallback.addError("IOException: File for the language " + lang + " could not be gotten");
-        e.printStackTrace();
+        Console.exception(e, "IOException: File for the language " + lang + " could not be gotten");
       }
     }
   }

@@ -1,8 +1,5 @@
 package com.starfishst.api.data.tickets;
 
-import org.bson.Document;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * This is the enum that shows the ticket status. All tickets have an status that tells if you can
  * do certain changes, actions or not
@@ -20,18 +17,5 @@ public enum TicketStatus {
   /** When the business has finished but you still want the ticket for changes */
   ARCHIVED,
   /** */
-  SELLING;
-
-  /**
-   * Get a ticket status using a document. This will be deleted in future versions. As the Mongo
-   * dependency will be removed. TODO delete this method
-   *
-   * @param document the document to get the status from
-   * @return the status from the document
-   */
-  @NotNull
-  @Deprecated
-  public static TicketStatus fromDocument(@NotNull Document document) {
-    return TicketStatus.valueOf(document.getString("status"));
-  }
+  SELLING
 }

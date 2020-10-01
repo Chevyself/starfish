@@ -19,9 +19,7 @@ public class StarfishValuesMap implements ValuesMap {
   public StarfishValuesMap(@NotNull Map<String, Object> preferences) {
     this.preferences = new HashMap<>(preferences);
   }
-  /**
-   * Create the preferences
-   */
+  /** Create the preferences */
   public StarfishValuesMap() {
     this.preferences = new HashMap<>();
   }

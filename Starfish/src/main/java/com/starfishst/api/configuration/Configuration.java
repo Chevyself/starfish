@@ -1,10 +1,14 @@
 package com.starfishst.api.configuration;
 
+import com.starfishst.api.Fee;
 import com.starfishst.api.ValuesMap;
 import com.starfishst.bot.Starfish;
 import com.starfishst.commands.ManagerOptions;
 import com.starfishst.core.utils.time.Time;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
 /** The configuration for {@link Starfish} */
@@ -57,18 +61,29 @@ public interface Configuration {
   long getTotal();
 
   /**
-   * Get the limit that freelancers have to send quotes
+   * Get the fees applying to a value inside the config
    *
-   * @return the limit that freelancers have to send quotes
+   * @param value the value to get the applying fees
+   * @return the collection of fees that apply
    */
-  long getLimitOfQuotes();
+  @NotNull
+  default Collection<Fee> getFees(double value) {
+    List<Fee> fees = new ArrayList<>();
+    for (Fee fee : this.getFees()) {
+      if (fee.applies(value)) {
+        fees.add(fee);
+      }
+    }
+    return fees;
+  }
 
   /**
-   * Get the limit that a user has to have open tickets
+   * Get the fees inside the config
    *
-   * @return the open tickets limit
+   * @return the collection of fees
    */
-  long getOpenLimit();
+  @NotNull
+  Collection<Fee> getFees();
 
   /**
    * Get the configuration for commands

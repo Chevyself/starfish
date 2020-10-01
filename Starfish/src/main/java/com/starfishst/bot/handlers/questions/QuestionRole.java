@@ -106,7 +106,7 @@ public class QuestionRole extends Question {
     if (roles.isEmpty()) {
       Messages.build(user.getLocaleFile().get("questions.empty-roles"), ResultType.ERROR, user)
           .send(event.getChannel());
-        return null;
+      return null;
     } else if (roles.size() > limit) {
       Messages.build(
               user.getLocaleFile()

@@ -92,8 +92,7 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
   }
 
   @Override
-  public void onSecondsPassed() {
-  }
+  public void onSecondsPassed() {}
 
   @Override
   public void onRemove() {

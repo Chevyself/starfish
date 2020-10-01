@@ -4,16 +4,20 @@ import com.starfishst.adapters.QuestionAdapter;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.data.loader.TicketManager;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.commands.ChannelsCommands;
 import com.starfishst.bot.commands.DeveloperCommands;
 import com.starfishst.bot.commands.FreelancerCommands;
+import com.starfishst.bot.commands.InvoiceCommands;
 import com.starfishst.bot.commands.PermissionCommands;
+import com.starfishst.bot.commands.PortfolioCommands;
 import com.starfishst.bot.commands.SetCommands;
 import com.starfishst.bot.commands.TicketCommands;
 import com.starfishst.bot.commands.providers.BotUserProvider;
 import com.starfishst.bot.commands.providers.BotUserSenderProvider;
 import com.starfishst.bot.commands.providers.PermissibleProvider;
 import com.starfishst.bot.commands.providers.StarfishFreelancerProvider;
+import com.starfishst.bot.commands.providers.StarfishFreelancerSenderProvider;
 import com.starfishst.bot.commands.providers.TicketProvider;
 import com.starfishst.bot.configuration.StarfishConfiguration;
 import com.starfishst.bot.configuration.StarfishDiscordConfiguration;
@@ -31,14 +35,13 @@ import com.starfishst.bot.handlers.ticket.QuoteHandler;
 import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
 import com.starfishst.bot.handlers.ticket.TicketCreatorHandler;
 import com.starfishst.bot.handlers.ticket.TicketHandler;
-import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.bot.tickets.StarfishDataLoader;
+import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoaderFallback;
 import com.starfishst.bot.tickets.StarfishTicketManager;
 import com.starfishst.commands.CommandManager;
 import com.starfishst.commands.context.CommandContext;
 import com.starfishst.commands.providers.registry.ProvidersRegistryJDA;
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.providers.registry.ProvidersRegistry;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.Validate;
@@ -94,15 +97,10 @@ public class Starfish {
   /** The data loader that the bot will be using */
   @NotNull private static StarfishLoader loader = new StarfishTicketLoaderFallback();
 
-  /**
-   * The command manager that the bot is using
-   */
-  @Nullable
-  private static CommandManager manager;
+  /** The command manager that the bot is using */
+  @Nullable private static CommandManager manager;
 
-  /**
-   * The ticket manager that the bot is using
-   */
+  /** The ticket manager that the bot is using */
   @NotNull
   private static TicketManager ticketManager = new StarfishTicketManager(loader, configuration);
   /** The language handler for users using the bot */
@@ -110,18 +108,19 @@ public class Starfish {
   private static final StarfishLanguageHandler languageHandler =
       new StarfishLanguageHandler(loader);
 
-
-
   /**
    * The main method of the bot
    *
    * @param args the arguments include:
    */
   public static void main(String[] args) {
+    System.out.println("Loading Bot...");
+    Console.info("Bot is being started");
     HashMap<String, String> argsMaps = Maps.fromStringArray("=", args);
     connection.createConnection(argsMaps.getOrDefault("token", ""));
     JDA jda = connection.validatedJda();
     jda.setEventManager(new AnnotatedEventManager());
+    Console.debug("JDA has been setup");
     GsonProvider.addAdapter(Question.class, new QuestionAdapter());
     GsonProvider.addAdapter(Color.class, new ColorAdapter());
     GsonProvider.addAdapter(Time.class, new TimeAdapter());
@@ -134,21 +133,21 @@ public class Starfish {
     GsonProvider.addAdapter(GuildImpl.class, new GuildAdapter(jda));
     GsonProvider.addAdapter(CategoryImpl.class, new CategoryAdapter(jda));
     GsonProvider.refresh();
+    Console.debug("Adapter has been added");
     try {
       FileReader reader =
           new FileReader(CoreFiles.getFileOrResource(CoreFiles.currentDirectory(), "config.json"));
       configuration = GsonProvider.GSON.fromJson(reader, StarfishConfiguration.class);
     } catch (IOException e) {
-      Fallback.addError("IOException: config.json could not be loaded");
-      e.printStackTrace();
+      Console.exception(e, "IOException: config.json could not be loaded");
     }
+    Console.info("'config.json' has been loaded");
     try {
       FileReader reader =
           new FileReader(CoreFiles.getFileOrResource(CoreFiles.currentDirectory(), "discord.json"));
       discordConfiguration = GsonProvider.GSON.fromJson(reader, StarfishDiscordConfiguration.class);
     } catch (IOException e) {
-      Fallback.addError("IOException: discord.json could not be loaded");
-      e.printStackTrace();
+      Console.exception(e, "IOException: discord.json could not be loaded");
     }
     loader = new StarfishDataLoader(jda, configuration.getMongoConfiguration());
     languageHandler.setDataLoader(loader);
@@ -173,6 +172,7 @@ public class Starfish {
     ProvidersRegistry<CommandContext> registry = new ProvidersRegistryJDA(languageHandler);
     registry.addProvider(new PermissibleProvider());
     registry.addProvider(new StarfishFreelancerProvider());
+    registry.addProvider(new StarfishFreelancerSenderProvider());
     registry.addProvider(new BotUserProvider());
     registry.addProvider(new BotUserSenderProvider());
     registry.addProvider(new TicketProvider());
@@ -187,7 +187,9 @@ public class Starfish {
     manager.registerCommand(new ChannelsCommands());
     manager.registerCommand(new DeveloperCommands());
     manager.registerCommand(new FreelancerCommands());
+    manager.registerCommand(new InvoiceCommands());
     manager.registerCommand(new PermissionCommands());
+    manager.registerCommand(new PortfolioCommands());
     manager.registerCommand(new SetCommands());
     manager.registerCommand(new TicketCommands());
     ticketManager.setDataLoader(loader);
@@ -202,13 +204,11 @@ public class Starfish {
       try {
         GsonProvider.GSON.toJson(configuration, writer);
       } catch (Exception e) {
-        Fallback.addError("'config.json' could not be written!");
-        e.printStackTrace();
+        Console.exception(e, "'config.json' could not be written!");
       }
       writer.close();
     } catch (IOException e) {
-      Fallback.addError("IOException: config.json could not be saved");
-      e.printStackTrace();
+      Console.exception(e, "IOException: config.json could not be saved");
     }
     try {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "discord.json");
@@ -216,13 +216,11 @@ public class Starfish {
       try {
         GsonProvider.GSON.toJson(discordConfiguration, writer);
       } catch (Exception e) {
-        Fallback.addError("'discord.json' could not be written!");
-        e.printStackTrace();
+        Console.exception(e, "'discord.json' could not be written!");
       }
       writer.close();
     } catch (IOException e) {
-      Fallback.addError("IOException: discord.json could not be saved");
-      e.printStackTrace();
+      Console.exception(e, "IOException: discord.json could not be saved");
     }
     for (StarfishLocaleFile file : languageHandler.getFiles()) {
       file.save();

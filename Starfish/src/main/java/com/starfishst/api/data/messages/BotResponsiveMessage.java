@@ -26,5 +26,4 @@ public interface BotResponsiveMessage extends ResponsiveMessage, ICatchable {
    */
   @NotNull
   String getType();
-
 }

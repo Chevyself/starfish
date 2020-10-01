@@ -1,7 +1,7 @@
 package com.starfishst.bot.handlers.lang;
 
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.core.fallback.Fallback;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.files.CoreFiles;
 import java.io.File;
@@ -45,8 +45,7 @@ public class StarfishLocaleFile implements LocaleFile {
         }
       }
     } catch (IOException e) {
-      Fallback.addError("IOException: The defaults for " + this + " could not be saved");
-      e.printStackTrace();
+      Console.exception(e, "IOException: The defaults for " + this + " could not be saved");
     }
   }
 
@@ -76,8 +75,7 @@ public class StarfishLocaleFile implements LocaleFile {
       properties.store(writer, "No comments");
       writer.close();
     } catch (IOException e) {
-      Fallback.addError("IOException: Lang file from " + this + " could not be saved");
-      e.printStackTrace();
+      Console.exception(e, "IOException: Lang file from " + this + " could not be saved");
     }
   }
 

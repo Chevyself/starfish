@@ -1,8 +1,8 @@
 package com.starfishst.bot.handlers.misc;
 
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishHandler;
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.core.utils.time.Unit;
 import java.util.Timer;
@@ -29,7 +29,8 @@ public class AutoSaveHandler extends TimerTask implements StarfishHandler {
     try {
       return Time.fromString(this.getPreferences().getValueOr("time", String.class, "2m"));
     } catch (IllegalArgumentException e) {
-      Fallback.addError(
+      Console.exception(
+          e,
           "Auto Save: "
               + this.getPreferences().getValue("time", String.class)
               + " is not valid time!");

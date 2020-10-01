@@ -2,15 +2,14 @@ package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketSecondPassEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.utility.Messages;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.utils.events.ListenPriority;
@@ -43,7 +42,7 @@ public class CleanerHandler implements StarfishEventHandler {
         if (child == ticket) {
           child = null;
         }
-        if (child == null || !channel.equals(child.getTextChannel())){
+        if (child == null || !channel.equals(child.getTextChannel())) {
           channel.delete().queue();
           ticket.setTextChannel(null);
         }
@@ -105,7 +104,7 @@ public class CleanerHandler implements StarfishEventHandler {
       try {
         times.add(Time.fromString(timeString));
       } catch (IllegalArgumentException e) {
-        Fallback.addError("Cleaner: " + timeString + " is not valid time!");
+        Console.exception(e, "Cleaner: " + timeString + " is not valid time!");
       }
     }
     return times;

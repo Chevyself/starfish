@@ -1,6 +1,6 @@
 package com.starfishst.bot;
 
-import com.starfishst.core.fallback.Fallback;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.Validate;
 import com.starfishst.core.utils.time.Time;
@@ -26,7 +26,7 @@ public class StarfishJdaConnection {
    */
   @NotNull
   public static String getTokenFromInput(@NotNull Scanner scanner) {
-    System.out.println("Insert the bot token");
+    Console.info("Insert the bot token");
     while (true) {
       if (scanner.hasNext()) {
         String input = scanner.nextLine();
@@ -54,7 +54,7 @@ public class StarfishJdaConnection {
       try {
         jda = this.connect(token);
       } catch (LoginException e) {
-        System.out.println("Discord authentication failed");
+        Console.info("Discord authentication failed");
         token = getTokenFromInput(new Scanner(System.in));
       }
     }
@@ -76,12 +76,10 @@ public class StarfishJdaConnection {
         Thread.sleep(1);
         millis++;
       } catch (InterruptedException e) {
-        Fallback.addError("InterruptedException: Discord connection failed");
-        e.printStackTrace();
+        Console.exception(e, "InterruptedException: Discord connection failed");
       }
     }
-    System.out.println(
-        "Discord took " + Time.fromMillis(millis).toEffectiveString() + " to connect");
+    Console.info("Discord took " + Time.fromMillis(millis).toEffectiveString() + " to connect");
     return jda;
   }
 
@@ -95,7 +93,7 @@ public class StarfishJdaConnection {
     return Validate.notNull(this.jda, "Bot is not connected with discord!");
   }
 
-    /**
+  /**
    * Get the connection with jda
    *
    * @return the connection with jda

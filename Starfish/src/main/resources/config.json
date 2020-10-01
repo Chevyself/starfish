@@ -2,6 +2,13 @@
   "ticket-unload": "10m",
   "users-unload": "10m",
   "messages-unload": "10m",
+  "fees": [
+    {
+      "description": "Commission Fee",
+      "percentage": 5.4,
+      "addition": 0.30
+    }
+  ],
   "mongo": {
     "uri": "The uri for the mongo client",
     "database": "TestDatabaseStarfish"

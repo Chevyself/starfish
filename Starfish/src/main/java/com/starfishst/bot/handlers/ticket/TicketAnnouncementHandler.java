@@ -6,12 +6,12 @@ import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.utility.Discord;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.bot.data.messages.order.ClaimOrderResponsiveMessage;
 import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.commands.utils.embeds.EmbedQuery;
 import com.starfishst.commands.utils.message.MessageQuery;
-import com.starfishst.core.fallback.Fallback;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.maps.Maps;
 import com.starfishst.utils.events.ListenPriority;
@@ -99,7 +99,7 @@ public class TicketAnnouncementHandler implements StarfishEventHandler {
       try {
         announceTypes.add(TicketType.valueOf(name));
       } catch (IllegalArgumentException e) {
-        Fallback.addError("Announcer: " + name + " is not a valid Ticket Type");
+        Console.exception(e, "Announcer: " + name + " is not a valid Ticket Type");
       }
     }
     return announceTypes;

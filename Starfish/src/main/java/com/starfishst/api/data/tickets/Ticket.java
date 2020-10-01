@@ -30,7 +30,8 @@ public interface Ticket extends ICatchable {
    * @param role the role of the user
    */
   default void addUser(@NotNull BotUser user, @NotNull String role) {
-    if (!new TicketAddUserEvent(this, user, role).callAndGet()) {
+    if (!this.getUsers().containsKey(user)
+        && !new TicketAddUserEvent(this, user, role).callAndGet()) {
       this.getUsers().put(user, role);
     }
   }
@@ -41,7 +42,7 @@ public interface Ticket extends ICatchable {
    * @param user the user to remove from the ticket
    */
   default void removeUser(@NotNull BotUser user) {
-    if (!new TicketRemoveUserEvent(this, user).callAndGet()) {
+    if (this.getUsers().containsKey(user) && !new TicketRemoveUserEvent(this, user).callAndGet()) {
       this.getUsers().remove(user);
     }
   }

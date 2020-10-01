@@ -78,19 +78,19 @@ public class Messages {
    * @return the embed query
    */
   public static EmbedQuery build(
-          @NotNull String title,
-          @NotNull String description,
-          @NotNull ResultType type,
-          @NotNull LocaleFile locale) {
+      @NotNull String title,
+      @NotNull String description,
+      @NotNull ResultType type,
+      @NotNull LocaleFile locale) {
     return Messages.build(
-            title,
-            description,
-            Messages.getThumbnail(locale),
-            null,
-            Messages.getFooter(locale),
-            type,
-            null,
-            false);
+        title,
+        description,
+        Messages.getThumbnail(locale),
+        null,
+        Messages.getFooter(locale),
+        type,
+        null,
+        false);
   }
 
   /**
@@ -119,16 +119,16 @@ public class Messages {
    * @return the embed query
    */
   public static EmbedQuery build(
-          @NotNull String description, @NotNull ResultType type, @NotNull LocaleFile locale) {
+      @NotNull String description, @NotNull ResultType type, @NotNull LocaleFile locale) {
     return Messages.build(
-            type.getTitle(Starfish.getLanguageHandler(), null),
-            description,
-            Messages.getThumbnail(locale),
-            null,
-            Messages.getFooter(locale),
-            type,
-            null,
-            false);
+        type.getTitle(Starfish.getLanguageHandler(), null),
+        description,
+        Messages.getThumbnail(locale),
+        null,
+        Messages.getFooter(locale),
+        type,
+        null,
+        false);
   }
 
   /**

@@ -148,7 +148,16 @@ public class StarfishDataLoader implements StarfishLoader {
           usersMap.put(user, users.getString(key));
         }
       }
-      // TODO add freelancers and owner
+      if (first.get("customer") != null) {
+        usersMap.put(this.getStarfishUser(first.getLong("customer")), "owner");
+      }
+      if (first.get("freelancer") != null) {
+        BotUser user = this.getStarfishUser(first.getLong("freelancer"));
+        if (!user.isFreelancer()) {
+          user = new StarfishFreelancer(user);
+        }
+        usersMap.put(user, "freelancer");
+      }
       return new StarfishTicket(
           first.getLong("id"),
           TicketType.valueOf(first.getString("type").toUpperCase()),
@@ -356,7 +365,9 @@ public class StarfishDataLoader implements StarfishLoader {
     BotResponsiveMessage message = event.getMessage();
     Document query = new Document("id", message.getId());
     Document document =
-        new Document("id", message.getId()).append("type", message.getType()).append("data", this.dataToDocument(message));
+        new Document("id", message.getId())
+            .append("type", message.getType())
+            .append("data", this.dataToDocument(message));
     Document first = this.messages.find(query).first();
     if (first != null) {
       this.messages.replaceOne(query, document);
