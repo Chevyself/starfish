@@ -84,16 +84,6 @@ public class StarfishJdaConnection {
   }
 
   /**
-   * Validate the connection with jda to not be null
-   *
-   * @return the validated connection
-   */
-  @NotNull
-  public JDA validatedJda() {
-    return Validate.notNull(this.jda, "Bot is not connected with discord!");
-  }
-
-  /**
    * Get the connection with jda
    *
    * @return the connection with jda

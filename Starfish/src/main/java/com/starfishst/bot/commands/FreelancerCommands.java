@@ -14,6 +14,7 @@ import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Perm;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
+import com.starfishst.commands.utils.message.MessageQuery;
 import com.starfishst.core.annotations.Multiple;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
@@ -111,15 +112,16 @@ public class FreelancerCommands {
       if (ticket.getTicketStatus() == TicketStatus.CLOSED && channel == null) {
         return new Result(locale.get("quote.closed", ticket.getPlaceholders()));
       } else if (channel != null && ticket.getTicketStatus() == TicketStatus.OPEN) {
-        HashMap<String, String> placeholders = Maps.singleton("offer", strings.toString());
+        HashMap<String, String> placeholders = Maps.singleton("offer", strings.getString());
         BotUser owner = ticket.getOwner();
         if (owner != null) {
-          Messages.build(
+          MessageQuery query = Messages.build(
                   owner.getLocaleFile().get("offer.title", placeholders),
                   owner.getLocaleFile().get("offer.desc", placeholders),
                   ResultType.GENERIC,
-                  owner)
-              .send(
+                  owner).getAsMessageQuery();
+          query.getBuilder().append(channel.getGuild().getPublicRole());
+              query.send(
                   channel,
                   msg -> {
                     StarfishValuesMap map = new StarfishValuesMap();
@@ -130,6 +132,6 @@ public class FreelancerCommands {
         }
       }
     }
-    return new Result(locale.get("quote.sent"));
+    return new Result(locale.get("quote.sent", ticket.getPlaceholders()));
   }
 }

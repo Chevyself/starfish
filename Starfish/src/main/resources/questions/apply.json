@@ -20,6 +20,12 @@
       "limit": 10
     },
     {
+      "title": "Do you have a portfolio?",
+      "description": "Our standards require freelancers to have a portfolio. Please link it",
+      "simple": "portfolio",
+      "limit": 100
+    },
+    {
       "title": "Do you have an McMarket account?",
       "description": "If so, please link it",
       "simple": "mc-account",
@@ -39,8 +45,8 @@
     },
     {
       "title": "What's next?",
-      "description": "Please wait while the management team looks over your application. \n Don't be in a hurry, it may take some time for a decision to be made. \n If the management team don't repply in a few days, feel free to @mention them (Please do not abuse). \n **Type anything to continue**",
-      "simple": "next",
+      "description": "Please wait while the management team looks over your application. \n Don't be in a hurry, it may take some time for a decision to be made. \n If the management team don't repply in a few days, feel free to @mention them (Please do not abuse).",
+      "simple": "info-next",
       "limit": 10
     }
   ]

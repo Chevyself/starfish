@@ -64,10 +64,11 @@ public class FreelancerHandler implements StarfishEventHandler {
               .queue(
                   privateChannel ->
                       Messages.build(
-                              event.getUser().getLocaleFile().get("user.not-freelancer"),
+                              event.getUser().getLocaleFile().get("freelancer.not-roles"),
                               ResultType.PERMISSION,
                               event.getUser())
                           .send(privateChannel));
+          event.setCancelled(true);
         }
       } else {
         // Why would it be null?

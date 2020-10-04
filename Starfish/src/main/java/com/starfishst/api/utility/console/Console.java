@@ -24,7 +24,7 @@ public class Console {
   static {
     CustomFormatter formatter =
         new CustomFormatter(
-            "[%hour%:%minute%:%second% - %day%/%month%/%year% %level%] %message% %stack%");
+            "[%hour%:%minute%:%second% - %day%/%month%/%year% %level%] %message% %stack% \n");
     logger.setUseParentHandlers(false);
     try {
       logger.addHandler(Console.getFileHandler(formatter, null));
@@ -46,7 +46,7 @@ public class Console {
   @NotNull
   public static FileHandler getFileHandler(@NotNull Formatter formatter, @Nullable String url)
       throws IOException {
-    File directory = CoreFiles.directoryOrCreate(CoreFiles.currentDirectory() + "/logs");
+    File directory = CoreFiles.directoryOrCreate(CoreFiles.currentDirectory() + "/logs/");
     LocalDateTime date = TimeUtils.getLocalDateFromMillis(System.currentTimeMillis());
     FileHandler handler;
     if (url != null) {
@@ -54,7 +54,7 @@ public class Console {
     } else {
       handler =
           new FileHandler(
-              directory.toPath().toString()
+              directory.toPath().toString() + File.separator
                   + date.getMonthValue()
                   + "-"
                   + date.getDayOfMonth()
@@ -130,5 +130,15 @@ public class Console {
   public static void exception(@NotNull String message) {
     Fallback.addError(message);
     logger.log(Level.SEVERE, message);
+  }
+
+  /**
+   * Get the logger that the console is using
+   *
+   * @return the logger
+   */
+  @NotNull
+  public static Logger getLogger() {
+    return logger;
   }
 }

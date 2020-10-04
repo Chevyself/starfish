@@ -61,8 +61,7 @@ public class QuestionsHandler implements StarfishEventHandler {
                 CoreFiles.currentDirectory()
                     + "/assets/questions/"
                     + type.toString().toLowerCase()
-                    + ".json",
-                "questions/" + type.toString().toLowerCase() + ".json");
+                    + ".json", CoreFiles.getResource("questions/" + type.toString().toLowerCase() + ".json"));
         FileReader reader =
             new FileReader(file); //  This can't throw an exception for not finding the file
         this.questions.put(type, GsonProvider.GSON.fromJson(reader, QuestionsConfiguration.class));
@@ -127,14 +126,7 @@ public class QuestionsHandler implements StarfishEventHandler {
             ticket = this.getTicketByChannel(event.getChannel());
             if (ticket != null) {
               ticket.getDetails().addValue(current.getSimple(), answer);
-              this.current.put(ticket, this.current.get(ticket) + 1);
-              if (this.current.get(ticket) >= questions.size()) {
-                ticket.refresh().setTicketStatus(TicketStatus.OPEN);
-                this.current.remove(ticket);
-              } else {
-                current = questions.get(this.current.get(ticket.refresh()));
-                current.getQuery(user).send(event.getChannel());
-              }
+              this.sendNextQuestion(event, ticket, user, questions);
             } else {
               // TODO ?
             }
@@ -142,6 +134,29 @@ public class QuestionsHandler implements StarfishEventHandler {
             Messages.build(addDetailEvent.getReason(), ResultType.ERROR, user);
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Send the next question
+   *
+   * @param event the event of the received message
+   * @param ticket the ticket that is getting the questions
+   * @param user the user that is answering the questions
+   * @param questions the questions that are being asked to the ticket
+   */
+  private void sendNextQuestion(@NotNull GuildMessageReceivedEvent event, @NotNull Ticket ticket, @NotNull BotUser user, @NotNull List<Question> questions) {
+    Question current;
+    this.current.put(ticket, this.current.get(ticket) + 1);
+    if (this.current.get(ticket) >= questions.size()) {
+      ticket.refresh().setTicketStatus(TicketStatus.OPEN);
+      this.current.remove(ticket);
+    } else {
+      current = questions.get(this.current.get(ticket.refresh()));
+      current.getQuery(user).send(event.getChannel());
+      if (current instanceof QuestionInformation) {
+        sendNextQuestion(event, ticket, user, questions);
       }
     }
   }

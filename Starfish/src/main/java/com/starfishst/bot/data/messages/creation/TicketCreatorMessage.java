@@ -8,6 +8,7 @@ import com.starfishst.bot.handlers.lang.StarfishLocaleFile;
 import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.maps.Maps;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
@@ -39,10 +40,10 @@ public class TicketCreatorMessage extends StarfishResponsiveMessage {
    * @return the set of reaction responses
    */
   @NotNull
-  private static Set<TicketCreatorReactionResponse> getReactionResponses(
+  private static List<TicketCreatorReactionResponse> getReactionResponses(
       @NotNull TicketCreatorMessage message) {
     StarfishLocaleFile en = Starfish.getLanguageHandler().getFile("en");
-    return Lots.set(
+    return Lots.list(
         new TicketCreatorReactionResponse(
             TicketType.ORDER, en.get("unicode.tickets.order"), message),
         new TicketCreatorReactionResponse(

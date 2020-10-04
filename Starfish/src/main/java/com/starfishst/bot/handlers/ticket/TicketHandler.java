@@ -1,18 +1,27 @@
 package com.starfishst.bot.handlers.ticket;
 
 import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.Discord;
+import com.starfishst.api.utility.Messages;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.handlers.StarfishEventHandler;
+import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedQuery;
+import com.starfishst.commands.utils.message.MessageQuery;
+import com.starfishst.core.utils.time.ClassicTime;
+import com.starfishst.core.utils.time.Time;
 import com.starfishst.utils.events.ListenPriority;
 import com.starfishst.utils.events.Listener;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+
+import java.util.HashMap;
 
 /** A generic handler for tickets */
 public class TicketHandler implements StarfishEventHandler {
@@ -34,9 +43,30 @@ public class TicketHandler implements StarfishEventHandler {
             .setName(owner.getLocaleFile().get("ticket.channel-name", ticket.getPlaceholders()))
             .queue();
       }
+      if (event.getStatus() == TicketStatus.CLOSED && channel != null && owner != null) {
+        String timeString = this.getPreferences().getValueOr("time-to-delete-closed-tickets", String.class, "none");
+        if (!timeString.equalsIgnoreCase("none")) {
+          try {
+            LocaleFile file = owner.getLocaleFile();
+            Time time = Time.fromString(timeString);
+            ClassicTime classicTime = time.toClassicTime();
+            HashMap<String, String> placeholders = ticket.getPlaceholders();
+            placeholders.put("time", time.toEffectiveString());
+            Messages.build(file.get("ticket.closed.title", placeholders), file.get("ticket.closed.desc", placeholders), ResultType.GENERIC, owner).send(channel);
+            channel.delete().queueAfter(classicTime.getValue(), classicTime.getUnit());
+          } catch (IllegalArgumentException e) {
+            Console.exception(e, timeString +  " is not valid time");
+          }
+        }
+      }
     }
   }
 
+  /**
+   * Listen to when an user gets added to a ticket
+   *
+   * @param event the event of an user being removed from a ticket
+   */
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketAddUser(TicketAddUserEvent event) {
     BotUser user = event.getUser();
@@ -61,12 +91,23 @@ public class TicketHandler implements StarfishEventHandler {
                 .getEmbedBuilder()
                 .setTitle(locale.get("user-joined-ticket.title", user.getPlaceholders()));
           }
-          query.send(channel);
+          if (user.isFreelancer()) {
+            MessageQuery message = query.getAsMessageQuery();
+            message.getBuilder().append(channel.getGuild().getPublicRole());
+            message.send(channel);
+          } else {
+            query.send(channel);
+          }
         }
       }
     }
   }
 
+  /**
+   * Listen to when an user gets removed from a ticket
+   *
+   * @param event the event of an user being removed from a ticket
+   */
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketRemoveUser(TicketRemoveUserEvent event) {
     BotUser user = event.getUser();

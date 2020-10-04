@@ -7,6 +7,7 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.Starfish;
 import com.starfishst.commands.annotations.Command;
 import com.starfishst.commands.annotations.Exclude;
+import com.starfishst.commands.annotations.Perm;
 import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.commands.utils.embeds.EmbedQuery;
@@ -30,7 +31,7 @@ public class InvoiceCommands {
    * @return a successful result sending the invoice
    */
   @Exclude
-  @Command(aliases = "invoice", description = "Generates an invoice")
+  @Command(aliases = "invoice", description = "Generates an invoice",  permission = @Perm(node = "starfish.invoice"))
   public Result invoice(
       BotUser user,
       TextChannel channel,

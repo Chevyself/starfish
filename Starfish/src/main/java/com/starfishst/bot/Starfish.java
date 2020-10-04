@@ -66,6 +66,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -115,10 +118,12 @@ public class Starfish {
    */
   public static void main(String[] args) {
     System.out.println("Loading Bot...");
-    Console.info("Bot is being started");
     HashMap<String, String> argsMaps = Maps.fromStringArray("=", args);
-    connection.createConnection(argsMaps.getOrDefault("token", ""));
-    JDA jda = connection.validatedJda();
+      if (argsMaps.getOrDefault("debug", "false").equalsIgnoreCase("true")) {
+          Console.getLogger().setLevel(Level.FINEST);
+      }
+      Console.info("Starting bot");
+    JDA jda = connection.createConnection(argsMaps.getOrDefault("token", ""));
     jda.setEventManager(new AnnotatedEventManager());
     Console.debug("JDA has been setup");
     GsonProvider.addAdapter(Question.class, new QuestionAdapter());
@@ -238,6 +243,9 @@ public class Starfish {
     JDA jda = connection.getJda();
     if (jda != null) {
       jda.shutdownNow();
+    }
+    for (Handler handler : Console.getLogger().getHandlers()) {
+      handler.close();
     }
     System.exit(0);
   }

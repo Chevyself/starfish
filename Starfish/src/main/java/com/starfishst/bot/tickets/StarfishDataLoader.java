@@ -44,6 +44,7 @@ import java.util.Set;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import org.bson.Document;
@@ -329,7 +330,7 @@ public class StarfishDataLoader implements StarfishLoader {
    */
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketStatusUpdated(@NotNull TicketStatusUpdatedEvent event) {
-    if (!event.isCancelled() && event.getStatus() == TicketStatus.OPEN) {
+    if (!event.isCancelled()) {
       this.saveTicket(event.getTicket());
     }
   }
@@ -532,6 +533,21 @@ public class StarfishDataLoader implements StarfishLoader {
 
   @Override
   public @Nullable Ticket getTicketByChannel(long channelId) {
+    StarfishTicket ticket =
+            Cache.getCatchable(
+                    catchable ->
+                    {
+                      if (catchable instanceof StarfishTicket) {
+                      StarfishTicket starfishTicket = (StarfishTicket) catchable;
+                        TextChannel channel = starfishTicket.getTextChannel();
+                        return channel != null && channel.getIdLong() == channelId;
+                      }
+                      return false;
+                    },
+                    StarfishTicket.class);
+    if (ticket != null) {
+      return ticket;
+    }
     return this.getTicket(new Document("channel", channelId));
   }
 

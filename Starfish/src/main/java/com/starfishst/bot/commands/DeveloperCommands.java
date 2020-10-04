@@ -36,12 +36,12 @@ public class DeveloperCommands {
       permission = @Perm(node = "starfish.admin"))
   public Result ticketPanel(
       Message message,
-      @Optional(name = "id", description = "The id of the ticket to become a ticket panel")
-          JoinedNumber number) {
-    if (number != null) {
+      @Optional(name = "id", description = "The id of the ticket to become a ticket panel", suggestions = "-1")
+          long number) {
+    if (number != -1) {
       try {
-        System.out.println(number.asLong());
-        message.getTextChannel().retrieveMessageById(number.asLong()).complete();
+        System.out.println(number);
+        message.getTextChannel().retrieveMessageById(number).complete();
         return new Result();
       } catch (Exception e) {
         throw new SimpleRuntimeException("The given id is not valid", e);

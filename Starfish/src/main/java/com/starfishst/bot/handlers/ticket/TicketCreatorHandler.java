@@ -10,9 +10,13 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.data.messages.creation.TicketCreatorMessage;
 import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.commands.result.ResultType;
+import com.starfishst.commands.utils.embeds.EmbedQuery;
+import com.starfishst.commands.utils.message.MessageQuery;
 import com.starfishst.utils.events.ListenPriority;
 import com.starfishst.utils.events.Listener;
 import java.util.HashMap;
+import java.util.List;
+
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Handles ticket creators */
@@ -35,16 +39,19 @@ public class TicketCreatorHandler implements StarfishEventHandler {
         && owner != null) {
       LocaleFile locale = owner.getLocaleFile();
       HashMap<String, String> placeholders = ticket.getPlaceholders();
-      Messages.build(
+      MessageQuery query = Messages.build(
               locale.get("ticket-creator.title", placeholders),
               locale.get("ticket-creator.description", placeholders),
               ResultType.GENERIC,
-              owner)
+              owner).getAsMessageQuery();
+      List<BotUser> customers = ticket.getUsers("customer");
+      for (BotUser customer : customers) {
+        query.getBuilder().append(customer.getMention());
+      }
+      query
           .send(
               channel,
-              msg -> {
-                new TicketCreatorMessage(msg, ticket.getId());
-              });
+              msg -> new TicketCreatorMessage(msg, ticket.getId()));
     }
   }
 
