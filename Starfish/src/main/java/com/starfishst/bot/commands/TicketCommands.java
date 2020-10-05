@@ -71,8 +71,13 @@ public class TicketCommands {
    * @param ticket the ticket that is queried to be closed
    * @return the result of the command execution
    */
-  @Command(aliases = "close", description = "close.desc", permission = @Perm(node = "starfish.close"))
-  public Result close(BotUser sender, @Optional(name = "close.ticket", description = "close.ticket.desc") Ticket ticket) {
+  @Command(
+      aliases = "close",
+      description = "close.desc",
+      permission = @Perm(node = "starfish.close"))
+  public Result close(
+      BotUser sender,
+      @Optional(name = "close.ticket", description = "close.ticket.desc") Ticket ticket) {
     if (ticket.getTicketStatus() == TicketStatus.CLOSED) {
       return new Result(sender.getLocaleFile().get("closed.already", ticket.getPlaceholders()));
     } else {

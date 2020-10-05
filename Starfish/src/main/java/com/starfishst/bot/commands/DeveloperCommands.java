@@ -10,7 +10,6 @@ import com.starfishst.commands.result.Result;
 import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.annotations.Optional;
 import com.starfishst.core.exceptions.type.SimpleRuntimeException;
-import com.starfishst.core.objects.JoinedNumber;
 import net.dv8tion.jda.api.entities.Message;
 
 /** Commands used by the developer or server owner */
@@ -36,7 +35,10 @@ public class DeveloperCommands {
       permission = @Perm(node = "starfish.admin"))
   public Result ticketPanel(
       Message message,
-      @Optional(name = "id", description = "The id of the ticket to become a ticket panel", suggestions = "-1")
+      @Optional(
+              name = "id",
+              description = "The id of the ticket to become a ticket panel",
+              suggestions = "-1")
           long number) {
     if (number != -1) {
       try {

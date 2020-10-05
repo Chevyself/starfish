@@ -56,6 +56,6 @@ public class QuestionImage extends Question {
 
   @Override
   public @NotNull String getSimple() {
-    return "image" + super.getSimple();
+    return super.getSimple();
   }
 }

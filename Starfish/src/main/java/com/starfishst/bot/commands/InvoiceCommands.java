@@ -31,7 +31,10 @@ public class InvoiceCommands {
    * @return a successful result sending the invoice
    */
   @Exclude
-  @Command(aliases = "invoice", description = "Generates an invoice",  permission = @Perm(node = "starfish.invoice"))
+  @Command(
+      aliases = "invoice",
+      description = "Generates an invoice",
+      permission = @Perm(node = "starfish.invoice"))
   public Result invoice(
       BotUser user,
       TextChannel channel,

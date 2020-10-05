@@ -115,20 +115,22 @@ public class FreelancerCommands {
         HashMap<String, String> placeholders = Maps.singleton("offer", strings.getString());
         BotUser owner = ticket.getOwner();
         if (owner != null) {
-          MessageQuery query = Messages.build(
-                  owner.getLocaleFile().get("offer.title", placeholders),
-                  owner.getLocaleFile().get("offer.desc", placeholders),
-                  ResultType.GENERIC,
-                  owner).getAsMessageQuery();
+          MessageQuery query =
+              Messages.build(
+                      owner.getLocaleFile().get("offer.title", placeholders),
+                      owner.getLocaleFile().get("offer.desc", placeholders),
+                      ResultType.GENERIC,
+                      owner)
+                  .getAsMessageQuery();
           query.getBuilder().append(channel.getGuild().getPublicRole());
-              query.send(
-                  channel,
-                  msg -> {
-                    StarfishValuesMap map = new StarfishValuesMap();
-                    map.addValue("offer", strings.toString());
-                    map.addValue("freelancer", freelancer.getId());
-                    new OfferMessage(msg, map);
-                  });
+          query.send(
+              channel,
+              msg -> {
+                StarfishValuesMap map = new StarfishValuesMap();
+                map.addValue("offer", strings.toString());
+                map.addValue("freelancer", freelancer.getId());
+                new OfferMessage(msg, map);
+              });
         }
       }
     }

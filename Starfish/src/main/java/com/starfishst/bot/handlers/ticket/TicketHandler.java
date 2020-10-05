@@ -18,10 +18,9 @@ import com.starfishst.core.utils.time.ClassicTime;
 import com.starfishst.core.utils.time.Time;
 import com.starfishst.utils.events.ListenPriority;
 import com.starfishst.utils.events.Listener;
+import java.util.HashMap;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
-
-import java.util.HashMap;
 
 /** A generic handler for tickets */
 public class TicketHandler implements StarfishEventHandler {
@@ -44,7 +43,8 @@ public class TicketHandler implements StarfishEventHandler {
             .queue();
       }
       if (event.getStatus() == TicketStatus.CLOSED && channel != null && owner != null) {
-        String timeString = this.getPreferences().getValueOr("time-to-delete-closed-tickets", String.class, "none");
+        String timeString =
+            this.getPreferences().getValueOr("time-to-delete-closed-tickets", String.class, "none");
         if (!timeString.equalsIgnoreCase("none")) {
           try {
             LocaleFile file = owner.getLocaleFile();
@@ -52,10 +52,15 @@ public class TicketHandler implements StarfishEventHandler {
             ClassicTime classicTime = time.toClassicTime();
             HashMap<String, String> placeholders = ticket.getPlaceholders();
             placeholders.put("time", time.toEffectiveString());
-            Messages.build(file.get("ticket.closed.title", placeholders), file.get("ticket.closed.desc", placeholders), ResultType.GENERIC, owner).send(channel);
+            Messages.build(
+                    file.get("ticket.closed.title", placeholders),
+                    file.get("ticket.closed.desc", placeholders),
+                    ResultType.GENERIC,
+                    owner)
+                .send(channel);
             channel.delete().queueAfter(classicTime.getValue(), classicTime.getUnit());
           } catch (IllegalArgumentException e) {
-            Console.exception(e, timeString +  " is not valid time");
+            Console.exception(e, timeString + " is not valid time");
           }
         }
       }

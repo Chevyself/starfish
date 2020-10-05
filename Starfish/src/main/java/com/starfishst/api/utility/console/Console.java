@@ -54,7 +54,8 @@ public class Console {
     } else {
       handler =
           new FileHandler(
-              directory.toPath().toString() + File.separator
+              directory.toPath().toString()
+                  + File.separator
                   + date.getMonthValue()
                   + "-"
                   + date.getDayOfMonth()

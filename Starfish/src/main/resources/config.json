@@ -1,6 +1,6 @@
 {
-  "ticket-unload": "10m",
-  "users-unload": "10m",
+  "ticket-unload": "25m",
+  "users-unload": "2m",
   "messages-unload": "10m",
   "fees": [
     {
@@ -11,7 +11,7 @@
   ],
   "mongo": {
     "uri": "The uri for the mongo client",
-    "database": "TestDatabaseStarfish"
+    "database": "Starfish-Test-3"
   },
   "commands": {
     "deleteCommands": true,
@@ -33,7 +33,7 @@
     "cleaner": {
       "preferences": {
         "delete-uncompleted-ticket-channels": true,
-        "time-to-announce-deletion": ["9m", "5m", "1m", "30s", "15s", "5s", "4s", "3s", "2s", "1s"]
+        "time-to-announce-deletion": ["24m", "20m", "15m", "10m", "5m", "1m", "30s", "15s", "5s"]
       }
     },
     "announcer": {

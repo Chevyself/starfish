@@ -9,7 +9,6 @@ import com.starfishst.core.utils.Lots;
 import com.starfishst.core.utils.maps.Maps;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
 

@@ -68,7 +68,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -119,10 +118,10 @@ public class Starfish {
   public static void main(String[] args) {
     System.out.println("Loading Bot...");
     HashMap<String, String> argsMaps = Maps.fromStringArray("=", args);
-      if (argsMaps.getOrDefault("debug", "false").equalsIgnoreCase("true")) {
-          Console.getLogger().setLevel(Level.FINEST);
-      }
-      Console.info("Starting bot");
+    if (argsMaps.getOrDefault("debug", "false").equalsIgnoreCase("true")) {
+      Console.getLogger().setLevel(Level.FINEST);
+    }
+    Console.info("Starting bot");
     JDA jda = connection.createConnection(argsMaps.getOrDefault("token", ""));
     jda.setEventManager(new AnnotatedEventManager());
     Console.debug("JDA has been setup");

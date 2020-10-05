@@ -247,24 +247,26 @@ public class StarfishDataLoader implements StarfishLoader {
   private StarfishTicketDetails getDetails(@NotNull Document document) {
     LinkedHashMap<String, Object> details = new LinkedHashMap<>();
     if (document.get("details") instanceof Document) {
-      document
-          .get("details", Document.class)
-          .forEach(
-              (string, object) -> {
-                if (string.startsWith("role")) {
+      Document detailsDocument = document.get("details", Document.class);
+      detailsDocument.forEach(
+          (string, object) -> {
+            if (object instanceof List) {
+              if (!((List<?>) object).isEmpty()) {
+                Object value = ((List<?>) object).get(0);
+                if (value.getClass() == Long.class) {
                   List<Role> roles = new ArrayList<>();
-                  List<Long> ids = ((Document) document.get("details")).getList(string, Long.class);
-                  for (Long id : ids) {
-                    Role role = this.jda.getRoleById(id);
-                    if (role != null) {
-                      roles.add(role);
-                    }
+                  for (Long id : detailsDocument.getList(string, Long.class)) {
+                    roles.add(jda.getRoleById(id));
                   }
                   details.put(string, roles);
-                } else {
-                  details.put(string, object);
                 }
-              });
+              } else {
+                details.put(string, new ArrayList<>());
+              }
+            } else {
+              details.put(string, object);
+            }
+          });
     }
     return new StarfishTicketDetails(details);
   }
@@ -534,17 +536,16 @@ public class StarfishDataLoader implements StarfishLoader {
   @Override
   public @Nullable Ticket getTicketByChannel(long channelId) {
     StarfishTicket ticket =
-            Cache.getCatchable(
-                    catchable ->
-                    {
-                      if (catchable instanceof StarfishTicket) {
-                      StarfishTicket starfishTicket = (StarfishTicket) catchable;
-                        TextChannel channel = starfishTicket.getTextChannel();
-                        return channel != null && channel.getIdLong() == channelId;
-                      }
-                      return false;
-                    },
-                    StarfishTicket.class);
+        Cache.getCatchable(
+            catchable -> {
+              if (catchable instanceof StarfishTicket) {
+                StarfishTicket starfishTicket = (StarfishTicket) catchable;
+                TextChannel channel = starfishTicket.getTextChannel();
+                return channel != null && channel.getIdLong() == channelId;
+              }
+              return false;
+            },
+            StarfishTicket.class);
     if (ticket != null) {
       return ticket;
     }

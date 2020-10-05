@@ -61,7 +61,8 @@ public class QuestionsHandler implements StarfishEventHandler {
                 CoreFiles.currentDirectory()
                     + "/assets/questions/"
                     + type.toString().toLowerCase()
-                    + ".json", CoreFiles.getResource("questions/" + type.toString().toLowerCase() + ".json"));
+                    + ".json",
+                CoreFiles.getResource("questions/" + type.toString().toLowerCase() + ".json"));
         FileReader reader =
             new FileReader(file); //  This can't throw an exception for not finding the file
         this.questions.put(type, GsonProvider.GSON.fromJson(reader, QuestionsConfiguration.class));
@@ -146,7 +147,11 @@ public class QuestionsHandler implements StarfishEventHandler {
    * @param user the user that is answering the questions
    * @param questions the questions that are being asked to the ticket
    */
-  private void sendNextQuestion(@NotNull GuildMessageReceivedEvent event, @NotNull Ticket ticket, @NotNull BotUser user, @NotNull List<Question> questions) {
+  private void sendNextQuestion(
+      @NotNull GuildMessageReceivedEvent event,
+      @NotNull Ticket ticket,
+      @NotNull BotUser user,
+      @NotNull List<Question> questions) {
     Question current;
     this.current.put(ticket, this.current.get(ticket) + 1);
     if (this.current.get(ticket) >= questions.size()) {
