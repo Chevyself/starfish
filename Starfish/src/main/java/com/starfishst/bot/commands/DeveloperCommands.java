@@ -4,12 +4,12 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.data.messages.panel.TicketPanelMessage;
 import com.starfishst.bot.handlers.lang.StarfishLocaleFile;
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Perm;
-import com.starfishst.commands.result.Result;
-import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.annotations.Optional;
 import com.starfishst.core.exceptions.type.SimpleRuntimeException;
+import com.starfishst.jda.annotations.Command;
+import com.starfishst.jda.annotations.Perm;
+import com.starfishst.jda.result.Result;
+import com.starfishst.jda.result.ResultType;
 import net.dv8tion.jda.api.entities.Message;
 
 /** Commands used by the developer or server owner */

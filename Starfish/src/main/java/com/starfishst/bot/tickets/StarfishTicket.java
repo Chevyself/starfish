@@ -13,9 +13,9 @@ import com.starfishst.api.events.tickets.TicketSecondPassEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.bot.Starfish;
-import com.starfishst.core.utils.cache.Catchable;
-import com.starfishst.core.utils.time.Time;
 import java.util.HashMap;
+import me.googas.commons.cache.Catchable;
+import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,7 +68,7 @@ public class StarfishTicket extends Catchable implements Ticket {
   }
 
   @Override
-  public void onSecondsPassed() {
+  public void onSecondPassed() {
     new TicketSecondPassEvent(this).call();
   }
 

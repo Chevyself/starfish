@@ -1,10 +1,10 @@
 package com.starfishst.api;
 
-import com.starfishst.core.utils.Validate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import me.googas.commons.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

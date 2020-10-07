@@ -10,15 +10,16 @@ import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.console.Console;
+import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.commands.result.ResultType;
-import com.starfishst.commands.utils.embeds.EmbedQuery;
-import com.starfishst.commands.utils.message.MessageQuery;
-import com.starfishst.core.utils.time.ClassicTime;
-import com.starfishst.core.utils.time.Time;
-import com.starfishst.utils.events.ListenPriority;
-import com.starfishst.utils.events.Listener;
+import com.starfishst.jda.result.ResultType;
+import com.starfishst.jda.utils.embeds.EmbedQuery;
+import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.HashMap;
+import me.googas.commons.events.ListenPriority;
+import me.googas.commons.events.Listener;
+import me.googas.commons.time.ClassicTime;
+import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -42,9 +43,17 @@ public class TicketHandler implements StarfishEventHandler {
             .setName(owner.getLocaleFile().get("ticket.channel-name", ticket.getPlaceholders()))
             .queue();
       }
-      if (event.getStatus() == TicketStatus.CLOSED && channel != null && owner != null) {
+      Ticket child = Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId());
+      if (child == ticket) {
+        child = null;
+      }
+      if (!event.isCancelled()
+          && event.getStatus() == TicketStatus.CLOSED
+          && child == null
+          && channel != null
+          && owner != null) {
         String timeString =
-            this.getPreferences().getValueOr("time-to-delete-closed-tickets", String.class, "none");
+            this.getPreferences().getValueOr("time-to-delete-closed-tickets", String.class, "15s");
         if (!timeString.equalsIgnoreCase("none")) {
           try {
             LocaleFile file = owner.getLocaleFile();

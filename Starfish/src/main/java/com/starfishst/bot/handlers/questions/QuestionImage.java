@@ -2,8 +2,8 @@ package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.utils.maps.Maps;
+import com.starfishst.jda.result.ResultType;
+import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;

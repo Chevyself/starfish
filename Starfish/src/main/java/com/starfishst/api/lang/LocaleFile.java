@@ -1,9 +1,9 @@
 package com.starfishst.api.lang;
 
-import com.starfishst.core.utils.Strings;
-import com.starfishst.core.utils.maps.MapBuilder;
 import java.io.File;
 import java.util.HashMap;
+import me.googas.commons.Strings;
+import me.googas.commons.maps.MapBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -5,13 +5,13 @@ import com.starfishst.api.Fee;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.MongoConfiguration;
 import com.starfishst.bot.handlers.StarfishHandlerValuesMap;
-import com.starfishst.commands.ManagerOptions;
-import com.starfishst.core.utils.time.Time;
-import com.starfishst.core.utils.time.Unit;
+import com.starfishst.jda.ManagerOptions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import me.googas.commons.time.Time;
+import me.googas.commons.time.Unit;
 import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link com.starfishst.api.configuration.Configuration} */
@@ -50,7 +50,7 @@ public class StarfishConfiguration implements Configuration {
   private long total;
 
   /**
-   * This constructor is used for gson. Use {@link com.starfishst.core.fallback.Fallback} for a
+   * This constructor is used for gson. Use {@link me.googas.commons.fallback.Fallback} for a
    * configuration with no constructor
    */
   @Deprecated

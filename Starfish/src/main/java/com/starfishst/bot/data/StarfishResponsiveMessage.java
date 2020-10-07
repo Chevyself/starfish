@@ -4,11 +4,11 @@ import com.starfishst.api.data.messages.BotResponsiveMessage;
 import com.starfishst.api.events.messages.BotMessageLoadedEvent;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
 import com.starfishst.bot.Starfish;
-import com.starfishst.commands.utils.responsive.ReactionResponse;
-import com.starfishst.commands.utils.responsive.SimpleResponsiveMessage;
-import com.starfishst.core.utils.time.Time;
-import com.starfishst.core.utils.time.Unit;
+import com.starfishst.jda.utils.responsive.ReactionResponse;
+import com.starfishst.jda.utils.responsive.SimpleResponsiveMessage;
 import java.util.Set;
+import me.googas.commons.time.Time;
+import me.googas.commons.time.Unit;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
 
@@ -92,7 +92,7 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
   }
 
   @Override
-  public void onSecondsPassed() {}
+  public void onSecondPassed() {}
 
   @Override
   public void onRemove() {

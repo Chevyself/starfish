@@ -4,15 +4,14 @@ import com.starfishst.api.data.user.BotUser;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.data.StarfishFreelancer;
 import com.starfishst.bot.tickets.StarfishLoader;
-import com.starfishst.commands.context.CommandContext;
 import com.starfishst.core.exceptions.ArgumentProviderException;
-import com.starfishst.core.providers.type.IArgumentProvider;
+import com.starfishst.jda.context.CommandContext;
+import com.starfishst.jda.providers.type.JdaArgumentProvider;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 
 /** Provides command manager with freelancers */
-public class StarfishFreelancerProvider
-    implements IArgumentProvider<StarfishFreelancer, CommandContext> {
+public class StarfishFreelancerProvider implements JdaArgumentProvider<StarfishFreelancer> {
 
   @Override
   public @NotNull Class<StarfishFreelancer> getClazz() {

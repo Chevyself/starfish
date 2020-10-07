@@ -3,7 +3,7 @@ package com.starfishst.bot.tickets;
 import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
-import com.starfishst.commands.utils.responsive.ResponsiveMessage;
+import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import java.util.Collection;
 import net.dv8tion.jda.api.entities.Guild;
 import org.jetbrains.annotations.NotNull;

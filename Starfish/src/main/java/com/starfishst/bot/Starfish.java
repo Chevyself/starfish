@@ -1,6 +1,11 @@
 package com.starfishst.bot;
 
+import com.starfishst.adapters.ColorAdapter;
 import com.starfishst.adapters.QuestionAdapter;
+import com.starfishst.adapters.jda.CategoryAdapter;
+import com.starfishst.adapters.jda.GuildAdapter;
+import com.starfishst.adapters.jda.RoleAdapter;
+import com.starfishst.adapters.jda.TextChannelAdapter;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.data.loader.TicketManager;
@@ -39,25 +44,8 @@ import com.starfishst.bot.tickets.StarfishDataLoader;
 import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoaderFallback;
 import com.starfishst.bot.tickets.StarfishTicketManager;
-import com.starfishst.commands.CommandManager;
-import com.starfishst.commands.context.CommandContext;
-import com.starfishst.commands.providers.registry.ProvidersRegistryJDA;
-import com.starfishst.core.providers.registry.ProvidersRegistry;
-import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.Validate;
-import com.starfishst.core.utils.cache.Cache;
-import com.starfishst.core.utils.cache.ICatchable;
-import com.starfishst.core.utils.files.CoreFiles;
-import com.starfishst.core.utils.maps.Maps;
-import com.starfishst.core.utils.time.Time;
-import com.starfishst.utils.events.ListenerManager;
-import com.starfishst.utils.gson.GsonProvider;
-import com.starfishst.utils.gson.adapters.core.ColorAdapter;
-import com.starfishst.utils.gson.adapters.core.TimeAdapter;
-import com.starfishst.utils.gson.adapters.jda.CategoryAdapter;
-import com.starfishst.utils.gson.adapters.jda.GuildAdapter;
-import com.starfishst.utils.gson.adapters.jda.RoleAdapter;
-import com.starfishst.utils.gson.adapters.jda.TextChannelAdapter;
+import com.starfishst.jda.CommandManager;
+import com.starfishst.jda.providers.registry.JdaProvidersRegistry;
 import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
@@ -68,6 +56,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import me.googas.commons.CoreFiles;
+import me.googas.commons.Lots;
+import me.googas.commons.Validate;
+import me.googas.commons.cache.Cache;
+import me.googas.commons.cache.ICatchable;
+import me.googas.commons.events.ListenerManager;
+import me.googas.commons.gson.GsonProvider;
+import me.googas.commons.gson.adapters.time.TimeAdapter;
+import me.googas.commons.maps.Maps;
+import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -121,6 +119,8 @@ public class Starfish {
     if (argsMaps.getOrDefault("debug", "false").equalsIgnoreCase("true")) {
       Console.getLogger().setLevel(Level.FINEST);
     }
+    Thread.setDefaultUncaughtExceptionHandler(
+        (thread, throwable) -> Console.exception(throwable, "Uncaught exception"));
     Console.info("Starting bot");
     JDA jda = connection.createConnection(argsMaps.getOrDefault("token", ""));
     jda.setEventManager(new AnnotatedEventManager());
@@ -153,8 +153,11 @@ public class Starfish {
     } catch (IOException e) {
       Console.exception(e, "IOException: discord.json could not be loaded");
     }
+    Console.info("'discord.json' has been loaded");
+    Console.info("Setting up mongo connection");
     loader = new StarfishDataLoader(jda, configuration.getMongoConfiguration());
     languageHandler.setDataLoader(loader);
+    Console.debug("Adding handlers");
     handlers.addAll(
         Lots.list(
             loader,
@@ -171,15 +174,19 @@ public class Starfish {
             new TicketHandler()));
     for (StarfishHandler handler : handlers) {
       handler.register(jda);
+      Console.debug(handler.getName() + " handler has been registered");
     }
+    Console.info("Setting up language");
     languageHandler.load("en");
-    ProvidersRegistry<CommandContext> registry = new ProvidersRegistryJDA(languageHandler);
+    Console.info("Setting up commands");
+    JdaProvidersRegistry registry = new JdaProvidersRegistry(languageHandler);
     registry.addProvider(new PermissibleProvider());
     registry.addProvider(new StarfishFreelancerProvider());
     registry.addProvider(new StarfishFreelancerSenderProvider());
     registry.addProvider(new BotUserProvider());
     registry.addProvider(new BotUserSenderProvider());
     registry.addProvider(new TicketProvider());
+    Console.debug("Registry has been setup");
     manager =
         new CommandManager(
             jda,
@@ -196,8 +203,11 @@ public class Starfish {
     manager.registerCommand(new PortfolioCommands());
     manager.registerCommand(new SetCommands());
     manager.registerCommand(new TicketCommands());
+    Console.debug("Commands have been registered");
     ticketManager.setDataLoader(loader);
     ticketManager.setConfiguration(configuration);
+    Console.info("Ticket Manager is ready");
+    Console.info("Bot is ready to use");
   }
 
   /** Saves configuration */

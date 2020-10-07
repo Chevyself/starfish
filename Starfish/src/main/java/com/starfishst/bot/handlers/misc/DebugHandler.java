@@ -2,7 +2,7 @@ package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.events.StarfishEvent;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.utils.events.Listener;
+import me.googas.commons.events.Listener;
 import org.jetbrains.annotations.NotNull;
 
 /** Handler for debugging */

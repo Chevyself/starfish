@@ -2,13 +2,13 @@ package com.starfishst.bot.handlers.lang;
 
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.console.Console;
-import com.starfishst.core.utils.Validate;
-import com.starfishst.core.utils.files.CoreFiles;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import me.googas.commons.CoreFiles;
+import me.googas.commons.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -7,12 +7,11 @@ import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Perm;
-import com.starfishst.commands.result.Result;
-import com.starfishst.commands.result.ResultType;
 import com.starfishst.core.annotations.Optional;
-import com.starfishst.core.annotations.Required;
+import com.starfishst.jda.annotations.Command;
+import com.starfishst.jda.annotations.Perm;
+import com.starfishst.jda.result.Result;
+import com.starfishst.jda.result.ResultType;
 import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -35,7 +34,10 @@ public class TicketCommands {
       permission = @Perm(node = "starfish.ticket.info"))
   public Result ticketinfo(
       BotUser user,
-      @Required(name = "id", description = "The id of the ticket to see the information")
+      @Optional(
+              name = "Ticket",
+              description = "The id of the ticket to see the information",
+              suggestions = "-1")
           Ticket ticket) {
     return new Result(ticket.toCompleteInformation(user, false));
   }
@@ -77,12 +79,13 @@ public class TicketCommands {
       permission = @Perm(node = "starfish.close"))
   public Result close(
       BotUser sender,
-      @Optional(name = "close.ticket", description = "close.ticket.desc") Ticket ticket) {
+      @Optional(name = "close.ticket", description = "close.ticket.desc", suggestions = "-1")
+          Ticket ticket) {
     if (ticket.getTicketStatus() == TicketStatus.CLOSED) {
       return new Result(sender.getLocaleFile().get("closed.already", ticket.getPlaceholders()));
     } else {
       ticket.setTicketStatus(TicketStatus.CLOSED);
-      return new Result(sender.getLocaleFile().get("closed.success", ticket.getPlaceholders()));
+      return new Result();
     }
   }
 }

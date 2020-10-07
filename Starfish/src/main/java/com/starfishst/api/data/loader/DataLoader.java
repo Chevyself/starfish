@@ -3,7 +3,7 @@ package com.starfishst.api.data.loader;
 import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
-import com.starfishst.commands.utils.responsive.ResponsiveMessage;
+import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

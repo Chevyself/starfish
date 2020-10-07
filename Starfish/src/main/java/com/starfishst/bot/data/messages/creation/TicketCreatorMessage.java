@@ -5,10 +5,10 @@ import com.starfishst.bot.Starfish;
 import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.bot.handlers.lang.StarfishLocaleFile;
-import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.maps.Maps;
 import java.util.HashSet;
 import java.util.List;
+import me.googas.commons.Lots;
+import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
 

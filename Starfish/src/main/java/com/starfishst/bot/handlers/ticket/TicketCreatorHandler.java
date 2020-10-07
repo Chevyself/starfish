@@ -9,12 +9,12 @@ import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.data.messages.creation.TicketCreatorMessage;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.commands.result.ResultType;
-import com.starfishst.commands.utils.message.MessageQuery;
-import com.starfishst.utils.events.ListenPriority;
-import com.starfishst.utils.events.Listener;
+import com.starfishst.jda.result.ResultType;
+import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.HashMap;
 import java.util.List;
+import me.googas.commons.events.ListenPriority;
+import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Handles ticket creators */

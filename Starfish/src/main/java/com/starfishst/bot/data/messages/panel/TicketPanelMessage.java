@@ -2,7 +2,7 @@ package com.starfishst.bot.data.messages.panel;
 
 import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishValuesMap;
-import com.starfishst.core.utils.Lots;
+import me.googas.commons.Lots;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
 

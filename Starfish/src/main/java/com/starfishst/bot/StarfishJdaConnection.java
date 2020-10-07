@@ -1,10 +1,10 @@
 package com.starfishst.bot;
 
 import com.starfishst.api.utility.console.Console;
-import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.time.Time;
 import java.util.Scanner;
 import javax.security.auth.login.LoginException;
+import me.googas.commons.Lots;
+import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;

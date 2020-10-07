@@ -10,16 +10,16 @@ import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.bot.data.messages.order.ClaimOrderResponsiveMessage;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.commands.utils.embeds.EmbedQuery;
-import com.starfishst.commands.utils.message.MessageQuery;
-import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.maps.Maps;
-import com.starfishst.utils.events.ListenPriority;
-import com.starfishst.utils.events.Listener;
+import com.starfishst.jda.utils.embeds.EmbedQuery;
+import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import me.googas.commons.Lots;
+import me.googas.commons.events.ListenPriority;
+import me.googas.commons.events.Listener;
+import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -45,9 +45,11 @@ public class TicketAnnouncementHandler implements StarfishEventHandler {
           && owner != null) {
         ticket.toCompleteInformation(owner, false).send(textChannel, msg -> msg.pin().queue());
       }
-      TextChannel channel = type.getChannel();
-      if (channel != null && owner != null && this.getAnnounceTypes().contains(type)) {
-        this.announce(channel, owner, ticket);
+      if (owner != null && this.getAnnounceTypes().contains(type)) {
+        TextChannel channel = type.getChannel();
+        if (channel != null) {
+          this.announce(channel, owner, ticket);
+        }
       }
     }
   }

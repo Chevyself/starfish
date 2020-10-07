@@ -1,14 +1,14 @@
 package com.starfishst.bot.data.messages.panel;
 
 import com.starfishst.bot.Starfish;
-import com.starfishst.commands.AnnotatedCommand;
-import com.starfishst.commands.CommandManager;
-import com.starfishst.commands.context.CommandContext;
-import com.starfishst.commands.listener.CommandListener;
-import com.starfishst.commands.result.Result;
-import com.starfishst.commands.utils.embeds.EmbedFactory;
-import com.starfishst.commands.utils.responsive.ReactionResponse;
-import com.starfishst.core.utils.Validate;
+import com.starfishst.jda.AnnotatedCommand;
+import com.starfishst.jda.CommandManager;
+import com.starfishst.jda.context.CommandContext;
+import com.starfishst.jda.listener.CommandListener;
+import com.starfishst.jda.result.Result;
+import com.starfishst.jda.utils.embeds.EmbedFactory;
+import com.starfishst.jda.utils.responsive.ReactionResponse;
+import me.googas.commons.Validate;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
 

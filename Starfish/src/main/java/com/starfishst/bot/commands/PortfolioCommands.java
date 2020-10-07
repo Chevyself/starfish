@@ -1,13 +1,13 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.bot.data.StarfishFreelancer;
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.result.Result;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
-import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.maps.Maps;
+import com.starfishst.jda.annotations.Command;
+import com.starfishst.jda.result.Result;
 import java.util.List;
+import me.googas.commons.Lots;
+import me.googas.commons.maps.Maps;
 
 /** Commands for managing portfolio */
 public class PortfolioCommands {

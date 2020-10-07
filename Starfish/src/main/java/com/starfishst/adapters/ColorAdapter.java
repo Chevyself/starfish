@@ -5,9 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
-import com.starfishst.utils.gson.adapters.JsonAdapter;
 import java.awt.*;
 import java.lang.reflect.Type;
+import me.googas.commons.gson.adapters.JsonAdapter;
 
 /** Adapts color into json */
 public class ColorAdapter implements JsonAdapter<Color> {

@@ -12,7 +12,7 @@
 
     <groupId>com.starfish.bot</groupId>
     <artifactId>Starfish</artifactId>
-    <version>3.1.0-SNAPSHOT-0</version>
+    <version>3.1.1-SNAPSHOT-0</version>
     <description>The actual Discord Bot and an API for Addons</description>
 
     <build>
@@ -51,7 +51,7 @@
                 <version>2.2.6.RELEASE</version>
                 <configuration>
                     <fork>true</fork>
-                    <mainClass>com.starfishst.bot.Main</mainClass>
+                    <mainClass>com.starfishst.bot.Starfish</mainClass>
                 </configuration>
                 <executions>
                     <execution>
@@ -130,15 +130,9 @@
         </dependency>
         <!-- Command Framework -->
         <dependency>
-            <groupId>com.starfishst.commands</groupId>
+            <groupId>com.starfishst.jda</groupId>
             <artifactId>JDA</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <!--  Utilities-->
-        <dependency>
-            <groupId>com.starfishst.utils</groupId>
-            <artifactId>core-utils</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <!-- Gson -->
         <dependency>
@@ -151,23 +145,6 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>3.12.3</version>
-        </dependency>
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.2.6.RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>5.2.5.RELEASE</version>
-        </dependency>
-        <!-- PayPal -->
-        <dependency>
-            <groupId>com.paypal.sdk</groupId>
-            <artifactId>rest-api-sdk</artifactId>
-            <version>1.14.0</version>
         </dependency>
     </dependencies>
     

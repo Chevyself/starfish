@@ -5,8 +5,8 @@ import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.events.role.BotRoleLoadedEvent;
 import com.starfishst.api.events.role.BotRoleUnloadedEvent;
 import com.starfishst.bot.Starfish;
-import com.starfishst.core.utils.cache.Catchable;
 import java.util.Set;
+import me.googas.commons.cache.Catchable;
 import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link BotRole} */
@@ -31,7 +31,7 @@ public class StarfishRole extends Catchable implements BotRole {
   }
 
   @Override
-  public void onSecondsPassed() {}
+  public void onSecondPassed() {}
 
   @Override
   public void onRemove() {

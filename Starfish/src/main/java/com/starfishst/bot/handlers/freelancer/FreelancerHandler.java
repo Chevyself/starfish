@@ -3,11 +3,12 @@ package com.starfishst.bot.handlers.freelancer;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.commands.result.ResultType;
-import com.starfishst.utils.events.ListenPriority;
-import com.starfishst.utils.events.Listener;
+import com.starfishst.jda.result.ResultType;
 import java.util.ArrayList;
 import java.util.List;
+import me.googas.commons.Lots;
+import me.googas.commons.events.ListenPriority;
+import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -43,8 +44,11 @@ public class FreelancerHandler implements StarfishEventHandler {
           .getMap()
           .forEach(
               (key, value) -> {
-                if (key.startsWith("role")) {
-                  allowedRoles.addAll(event.getTicket().getDetails().getLisValue(key));
+                if (value instanceof List) {
+                  Class<?> clazz = Lots.getClazz((List) value);
+                  if (clazz != null && Role.class.isAssignableFrom(clazz)) {
+                    allowedRoles.addAll(event.getTicket().getDetails().getLisValue(key));
+                  }
                 }
               });
       Member member = event.getUser().getMember();

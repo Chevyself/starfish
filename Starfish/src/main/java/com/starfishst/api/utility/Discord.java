@@ -1,10 +1,10 @@
 package com.starfishst.api.utility;
 
-import com.starfishst.core.utils.Atomic;
-import com.starfishst.core.utils.Lots;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import me.googas.commons.Atomic;
+import me.googas.commons.Lots;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;

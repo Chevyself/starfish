@@ -3,7 +3,7 @@ package com.starfishst.bot.data.messages.offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.bot.Starfish;
-import com.starfishst.commands.utils.responsive.ReactionResponse;
+import com.starfishst.jda.utils.responsive.ReactionResponse;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
 

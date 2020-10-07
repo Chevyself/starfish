@@ -29,11 +29,7 @@ import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.bot.tickets.deserializers.ClaimOrderDeserializer;
 import com.starfishst.bot.tickets.deserializers.OfferDeserializer;
 import com.starfishst.bot.tickets.deserializers.TicketPanelDeserializer;
-import com.starfishst.commands.utils.responsive.ResponsiveMessage;
-import com.starfishst.core.utils.cache.Cache;
-import com.starfishst.core.utils.maps.Maps;
-import com.starfishst.utils.events.ListenPriority;
-import com.starfishst.utils.events.Listener;
+import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,6 +37,11 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import me.googas.commons.Lots;
+import me.googas.commons.cache.Cache;
+import me.googas.commons.events.ListenPriority;
+import me.googas.commons.events.Listener;
+import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -298,7 +299,7 @@ public class StarfishDataLoader implements StarfishLoader {
    */
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketUnloadedEvent(@NotNull TicketUnloadedEvent event) {
-    saveTicket(event.getTicket());
+    this.saveTicket(event.getTicket());
   }
 
   /**
@@ -441,12 +442,17 @@ public class StarfishDataLoader implements StarfishLoader {
         .getMap()
         .forEach(
             (key, value) -> {
-              if (key.startsWith("role")) {
-                List<Long> ids = new ArrayList<>();
-                for (Role role : ((List<Role>) value)) {
-                  ids.add(role.getIdLong());
+              if (value instanceof List) {
+                Class<?> clazz = Lots.getClazz((List<?>) value);
+                if (clazz != null) {
+                  if (Role.class.isAssignableFrom(clazz)) {
+                    List<Long> ids = new ArrayList<>();
+                    for (Role role : ((List<Role>) value)) {
+                      ids.add(role.getIdLong());
+                    }
+                    document.append(key, ids);
+                  }
                 }
-                document.append(key, ids);
               } else {
                 document.append(key, value);
               }
@@ -500,10 +506,7 @@ public class StarfishDataLoader implements StarfishLoader {
   public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
     StarfishResponsiveMessage message =
         Cache.getCatchable(
-            catchable ->
-                catchable instanceof StarfishResponsiveMessage
-                    && ((StarfishResponsiveMessage) catchable).getId() == messageId,
-            StarfishResponsiveMessage.class);
+            catchable -> catchable.getId() == messageId, StarfishResponsiveMessage.class);
     if (message != null) {
       return message.refresh();
     }
@@ -523,10 +526,7 @@ public class StarfishDataLoader implements StarfishLoader {
   @Override
   public @Nullable Ticket getTicket(long id) {
     StarfishTicket ticket =
-        Cache.getCatchable(
-            catchable ->
-                catchable instanceof StarfishTicket && ((StarfishTicket) catchable).getId() == id,
-            StarfishTicket.class);
+        Cache.getCatchable(catchable -> catchable.getId() == id, StarfishTicket.class);
     if (ticket != null) {
       return ticket;
     }
@@ -538,12 +538,8 @@ public class StarfishDataLoader implements StarfishLoader {
     StarfishTicket ticket =
         Cache.getCatchable(
             catchable -> {
-              if (catchable instanceof StarfishTicket) {
-                StarfishTicket starfishTicket = (StarfishTicket) catchable;
-                TextChannel channel = starfishTicket.getTextChannel();
-                return channel != null && channel.getIdLong() == channelId;
-              }
-              return false;
+              TextChannel channel = catchable.getTextChannel();
+              return channel != null && channel.getIdLong() == channelId;
             },
             StarfishTicket.class);
     if (ticket != null) {
@@ -554,11 +550,7 @@ public class StarfishDataLoader implements StarfishLoader {
 
   @Override
   public @NotNull BotUser getStarfishUser(long id) {
-    BotUser user =
-        Cache.getCatchable(
-            catchable ->
-                catchable instanceof StarfishUser && ((StarfishUser) catchable).getId() == id,
-            StarfishUser.class);
+    BotUser user = Cache.getCatchable(catchable -> catchable.getId() == id, StarfishUser.class);
     if (user != null) {
       return user;
     }
@@ -573,11 +565,7 @@ public class StarfishDataLoader implements StarfishLoader {
 
   @Override
   public @NotNull BotRole getStarfishRole(long id) {
-    BotRole role =
-        Cache.getCatchable(
-            catchable ->
-                catchable instanceof StarfishRole && ((StarfishRole) catchable).getId() == id,
-            StarfishRole.class);
+    BotRole role = Cache.getCatchable(catchable -> catchable.getId() == id, StarfishRole.class);
     if (role != null) {
       return role;
     }

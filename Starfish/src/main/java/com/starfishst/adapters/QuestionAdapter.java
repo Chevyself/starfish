@@ -10,9 +10,9 @@ import com.starfishst.bot.handlers.questions.Question;
 import com.starfishst.bot.handlers.questions.QuestionImage;
 import com.starfishst.bot.handlers.questions.QuestionInformation;
 import com.starfishst.bot.handlers.questions.QuestionRole;
-import com.starfishst.core.utils.Validate;
-import com.starfishst.utils.gson.adapters.JsonAdapter;
 import java.lang.reflect.Type;
+import me.googas.commons.Validate;
+import me.googas.commons.gson.adapters.JsonAdapter;
 
 /** Adapts questions in JSON */
 public class QuestionAdapter implements JsonAdapter<Question> {

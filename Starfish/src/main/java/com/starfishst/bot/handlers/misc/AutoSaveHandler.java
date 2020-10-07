@@ -3,10 +3,10 @@ package com.starfishst.bot.handlers.misc;
 import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishHandler;
-import com.starfishst.core.utils.time.Time;
-import com.starfishst.core.utils.time.Unit;
 import java.util.Timer;
 import java.util.TimerTask;
+import me.googas.commons.time.Time;
+import me.googas.commons.time.Unit;
 import org.jetbrains.annotations.NotNull;
 
 /** A task to auto-save the config */

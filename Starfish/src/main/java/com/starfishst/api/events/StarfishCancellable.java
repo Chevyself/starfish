@@ -1,7 +1,7 @@
 package com.starfishst.api.events;
 
 import com.starfishst.bot.Starfish;
-import com.starfishst.utils.events.Cancellable;
+import me.googas.commons.events.Cancellable;
 
 /** An starfish event that can be cancelled. */
 public interface StarfishCancellable extends Cancellable {

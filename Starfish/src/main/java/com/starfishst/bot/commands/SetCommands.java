@@ -2,12 +2,12 @@ package com.starfishst.bot.commands;
 
 import com.starfishst.api.utility.Discord;
 import com.starfishst.bot.Starfish;
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Perm;
-import com.starfishst.commands.result.Result;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
-import com.starfishst.core.utils.Lots;
+import com.starfishst.jda.annotations.Command;
+import com.starfishst.jda.annotations.Perm;
+import com.starfishst.jda.result.Result;
+import me.googas.commons.Lots;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;

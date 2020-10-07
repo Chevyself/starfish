@@ -3,12 +3,12 @@ package com.starfishst.api.configuration;
 import com.starfishst.api.Fee;
 import com.starfishst.api.ValuesMap;
 import com.starfishst.bot.Starfish;
-import com.starfishst.commands.ManagerOptions;
-import com.starfishst.core.utils.time.Time;
+import com.starfishst.jda.ManagerOptions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import me.googas.commons.time.Time;
 import org.jetbrains.annotations.NotNull;
 
 /** The configuration for {@link Starfish} */

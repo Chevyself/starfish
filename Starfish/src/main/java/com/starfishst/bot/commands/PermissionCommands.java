@@ -5,13 +5,13 @@ import com.starfishst.api.Permission;
 import com.starfishst.api.PermissionStack;
 import com.starfishst.bot.data.StarfishPermission;
 import com.starfishst.bot.tickets.StarfishPermissionStack;
-import com.starfishst.commands.annotations.Command;
-import com.starfishst.commands.annotations.Perm;
-import com.starfishst.commands.result.Result;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
-import com.starfishst.core.utils.Strings;
+import com.starfishst.jda.annotations.Command;
+import com.starfishst.jda.annotations.Perm;
+import com.starfishst.jda.result.Result;
 import java.util.HashSet;
+import me.googas.commons.Strings;
 
 /** Commands related to permissions */
 public class PermissionCommands {

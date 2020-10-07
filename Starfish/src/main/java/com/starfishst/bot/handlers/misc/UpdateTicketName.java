@@ -6,8 +6,8 @@ import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.utils.events.ListenPriority;
-import com.starfishst.utils.events.Listener;
+import me.googas.commons.events.ListenPriority;
+import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 

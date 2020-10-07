@@ -2,12 +2,12 @@ package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.bot.Starfish;
-import com.starfishst.commands.context.CommandContext;
-import com.starfishst.core.providers.type.IExtraArgumentProvider;
+import com.starfishst.jda.context.CommandContext;
+import com.starfishst.jda.providers.type.JdaExtraArgumentProvider;
 import org.jetbrains.annotations.NotNull;
 
 /** Provides the command context with bot user when is a sender */
-public class BotUserSenderProvider implements IExtraArgumentProvider<BotUser, CommandContext> {
+public class BotUserSenderProvider implements JdaExtraArgumentProvider<BotUser> {
 
   @Override
   public @NotNull Class<BotUser> getClazz() {

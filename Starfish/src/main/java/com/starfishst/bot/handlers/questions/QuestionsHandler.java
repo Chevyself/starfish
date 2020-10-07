@@ -9,18 +9,19 @@ import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.utility.Messages;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.commands.result.ResultType;
-import com.starfishst.core.utils.Lots;
-import com.starfishst.core.utils.files.CoreFiles;
-import com.starfishst.utils.events.ListenPriority;
-import com.starfishst.utils.events.Listener;
-import com.starfishst.utils.gson.GsonProvider;
+import com.starfishst.jda.result.ResultType;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import me.googas.commons.CoreFiles;
+import me.googas.commons.Lots;
+import me.googas.commons.events.ListenPriority;
+import me.googas.commons.events.Listener;
+import me.googas.commons.gson.GsonProvider;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
@@ -70,6 +71,7 @@ public class QuestionsHandler implements StarfishEventHandler {
             TicketType.QUOTE,
             this.questions.get(TicketType.ORDER)); // Copy the questions from orders
         reader.close();
+        Console.info("'" + type + ".json' was loaded");
         // TODO print that questions were loaded
       } catch (IOException e) {
         // TODO add fallback

@@ -3,14 +3,14 @@ package com.starfishst.bot.commands.providers;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.tickets.StarfishLoader;
-import com.starfishst.commands.context.CommandContext;
 import com.starfishst.core.exceptions.ArgumentProviderException;
-import com.starfishst.core.providers.type.IArgumentProvider;
-import com.starfishst.core.utils.maps.Maps;
+import com.starfishst.jda.context.CommandContext;
+import com.starfishst.jda.providers.type.JdaArgumentProvider;
+import me.googas.commons.maps.Maps;
 import org.jetbrains.annotations.NotNull;
 
 /** Provides the registry with {@link Ticket}! */
-public class TicketProvider implements IArgumentProvider<Ticket, CommandContext> {
+public class TicketProvider implements JdaArgumentProvider<Ticket> {
 
   @Override
   public @NotNull Class<Ticket> getClazz() {

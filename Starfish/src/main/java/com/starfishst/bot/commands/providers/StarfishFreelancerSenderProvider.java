@@ -4,14 +4,14 @@ import com.starfishst.api.data.user.BotUser;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.data.StarfishFreelancer;
 import com.starfishst.bot.tickets.StarfishLoader;
-import com.starfishst.commands.context.CommandContext;
 import com.starfishst.core.exceptions.ArgumentProviderException;
-import com.starfishst.core.providers.type.IExtraArgumentProvider;
+import com.starfishst.jda.context.CommandContext;
+import com.starfishst.jda.providers.type.JdaExtraArgumentProvider;
 import org.jetbrains.annotations.NotNull;
 
 /** Provides freelancers as a sender */
 public class StarfishFreelancerSenderProvider
-    implements IExtraArgumentProvider<StarfishFreelancer, CommandContext> {
+    implements JdaExtraArgumentProvider<StarfishFreelancer> {
   @Override
   public @NotNull Class<StarfishFreelancer> getClazz() {
     return StarfishFreelancer.class;

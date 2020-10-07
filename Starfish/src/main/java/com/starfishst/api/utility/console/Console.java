@@ -1,17 +1,18 @@
 package com.starfishst.api.utility.console;
 
 import com.starfishst.bot.Starfish;
-import com.starfishst.core.fallback.Fallback;
-import com.starfishst.core.utils.files.CoreFiles;
-import com.starfishst.core.utils.time.TimeUtils;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import me.googas.commons.CoreFiles;
+import me.googas.commons.fallback.Fallback;
+import me.googas.commons.time.TimeUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,6 +69,7 @@ public class Console {
                   + ".txt");
     }
     handler.setFormatter(formatter);
+    handler.setLevel(Level.FINEST);
     return handler;
   }
 
@@ -81,6 +83,7 @@ public class Console {
   public static ConsoleHandler getConsoleHandler(@NotNull Formatter formatter) {
     ConsoleHandler handler = new ConsoleHandler();
     handler.setFormatter(formatter);
+    handler.setLevel(Level.FINEST);
     return handler;
   }
 
@@ -141,5 +144,12 @@ public class Console {
   @NotNull
   public static Logger getLogger() {
     return logger;
+  }
+
+  /** Sets the console to debug */
+  public static void setDebug() {
+    for (Handler handler : logger.getHandlers()) {
+      handler.setLevel(Level.FINEST);
+    }
   }
 }

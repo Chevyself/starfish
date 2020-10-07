@@ -1,10 +1,10 @@
 package com.starfishst.api.configuration;
 
 import com.starfishst.api.utility.Discord;
-import com.starfishst.core.utils.Validate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import me.googas.commons.Validate;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;

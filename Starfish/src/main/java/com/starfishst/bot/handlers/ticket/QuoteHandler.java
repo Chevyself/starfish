@@ -8,9 +8,9 @@ import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishEventHandler;
-import com.starfishst.core.utils.Strings;
-import com.starfishst.utils.events.ListenPriority;
-import com.starfishst.utils.events.Listener;
+import me.googas.commons.Strings;
+import me.googas.commons.events.ListenPriority;
+import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Handles quotes */

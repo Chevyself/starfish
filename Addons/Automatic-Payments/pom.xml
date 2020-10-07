@@ -14,4 +14,24 @@
     <artifactId>Automatic-Payments</artifactId>
     <version>3.0.0-Release</version>
 
+    <dependencies>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.2.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.2.5.RELEASE</version>
+        </dependency>
+        <!-- PayPal -->
+        <dependency>
+            <groupId>com.paypal.sdk</groupId>
+            <artifactId>rest-api-sdk</artifactId>
+            <version>1.14.0</version>
+        </dependency>
+    </dependencies>
+
 </project>
