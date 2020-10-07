@@ -71,11 +71,24 @@ public class TicketAnnouncementHandler implements StarfishEventHandler {
         .forEach(
             (key, value) -> {
               // Safe to cast
-              if (key.startsWith("role")) {
-                toMention.addAll(((List<Role>) value));
+              if (value instanceof List) {
+                Class<?> clazz = Lots.getClazz((List<?>) value);
+                if (clazz != null) {
+                  if (Role.class.isAssignableFrom(clazz)) {
+                    toMention.addAll(((List<Role>) value));
+                  }
+                }
               }
             });
     EmbedQuery embedQuery = ticket.toCompleteInformation(user, false);
+    if (ticket.getTicketType() == TicketType.QUOTE) {
+      String footer = this.getPreferences().getValueOr("quote-footer", String.class, "none");
+      if (!footer.equalsIgnoreCase("none")) {
+        embedQuery
+            .getEmbedBuilder()
+            .setFooter(user.getLocaleFile().get(footer, ticket.getPlaceholders()));
+      }
+    }
     MessageQuery query = embedQuery.getAsMessageQuery();
     query.getBuilder().append(Lots.pretty(Discord.getAsMention(toMention)));
     query.send(

@@ -15,6 +15,14 @@ import org.jetbrains.annotations.NotNull;
 public interface Configuration {
 
   /**
+   * Get the default lang to which the bot will be running on
+   *
+   * @return the default lang
+   */
+  @NotNull
+  String getDefaultLang();
+
+  /**
    * Get the time to unload tickets
    *
    * @return the time to unload tickets from cache

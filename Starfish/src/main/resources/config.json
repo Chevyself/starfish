@@ -1,4 +1,5 @@
 {
+  "lang": "en",
   "ticket-unload": "25m",
   "users-unload": "2m",
   "messages-unload": "10m",
@@ -38,6 +39,7 @@
     },
     "announcer": {
       "preferences": {
+        "quote-footer": "none",
         "announce-types": ["ORDER", "QUOTE"],
         "pin-copy-in-channel": true
       }

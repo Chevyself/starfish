@@ -113,17 +113,21 @@ public class StarfishTicket extends Catchable implements Ticket {
   }
 
   @Override
-  public void addUser(@NotNull BotUser user, @NotNull String role) {
+  public boolean addUser(@NotNull BotUser user, @NotNull String role) {
     if (!new TicketAddUserEvent(this, user, role).callAndGet()) {
       this.users.put(user, role);
+      return true;
     }
+    return false;
   }
 
   @Override
-  public void removeUser(@NotNull BotUser user) {
+  public boolean removeUser(@NotNull BotUser user) {
     if (!new TicketRemoveUserEvent(this, user).callAndGet()) {
       this.users.remove(user);
+      return true;
     }
+    return false;
   }
 
   @Override

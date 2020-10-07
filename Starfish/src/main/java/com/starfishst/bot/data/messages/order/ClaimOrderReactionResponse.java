@@ -3,6 +3,8 @@ package com.starfishst.bot.data.messages.order;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.bot.Starfish;
+import com.starfishst.bot.handlers.lang.StarfishLocaleFile;
+import com.starfishst.jda.utils.embeds.EmbedQuery;
 import com.starfishst.jda.utils.responsive.ReactionResponse;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
@@ -32,8 +34,20 @@ public class ClaimOrderReactionResponse implements ReactionResponse {
     Ticket ticket =
         Starfish.getLoader().getTicket(message.getData().getValueOr("id", Long.class, -1L));
     BotUser user = Starfish.getLoader().getStarfishUser(event.getUserIdLong());
+    StarfishLocaleFile locale = Starfish.getLanguageHandler().getDefault();
     if (ticket != null) {
-      ticket.addUser(user, "freelancer");
+      if (ticket.addUser(user, "freelancer") || ticket.hasFreelancers()) {
+        EmbedQuery query = ticket.toCompleteInformation(locale, false);
+        query.getEmbedBuilder().setTitle(locale.get("ticket.claimed.title"));
+        query.getEmbedBuilder().setDescription(locale.get("ticket.claimed.desc"));
+        query
+            .getEmbedBuilder()
+            .setColor(Starfish.getConfiguration().getManagerOptions().getError());
+        event
+            .getChannel()
+            .editMessageById(event.getMessageIdLong(), query.getAsMessageQuery().getMessage())
+            .queue();
+      }
     }
   }
 

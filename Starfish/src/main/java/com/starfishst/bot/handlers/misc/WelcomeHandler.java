@@ -6,7 +6,6 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishHandler;
 import com.starfishst.jda.result.ResultType;
-import java.util.HashMap;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
@@ -37,12 +36,9 @@ public class WelcomeHandler implements StarfishHandler {
     BotUser user = this.loader.getStarfishUser(event.getMember().getIdLong());
     TextChannel welcome = Starfish.getDiscordConfiguration().getChannel("welcome");
     if (welcome != null && this.getPreferences().getValueOr("enabled", Boolean.class, true)) {
-      HashMap<String, String> placeholders = new HashMap<>();
-      placeholders.put("username", event.getMember().getEffectiveName());
-      placeholders.put("user", event.getMember().getAsMention());
       Messages.build(
-              user.getLocaleFile().get("welcome.title", placeholders),
-              user.getLocaleFile().get("welcome.description"),
+              user.getLocaleFile().get("welcome.title", user.getPlaceholders()),
+              user.getLocaleFile().get("welcome.description", user.getPlaceholders()),
               ResultType.GENERIC,
               user)
           .send(welcome);

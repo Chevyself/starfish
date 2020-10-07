@@ -28,23 +28,29 @@ public interface Ticket extends ICatchable {
    *
    * @param user the user that is going to be added
    * @param role the role of the user
+   * @return whether the user was added or not. true if removed
    */
-  default void addUser(@NotNull BotUser user, @NotNull String role) {
+  default boolean addUser(@NotNull BotUser user, @NotNull String role) {
     if (!this.getUsers().containsKey(user)
         && !new TicketAddUserEvent(this, user, role).callAndGet()) {
       this.getUsers().put(user, role);
+      return true;
     }
+    return false;
   }
 
   /**
    * Removes an user from the ticket
    *
    * @param user the user to remove from the ticket
+   * @return whether the user was removed. true if removed
    */
-  default void removeUser(@NotNull BotUser user) {
+  default boolean removeUser(@NotNull BotUser user) {
     if (this.getUsers().containsKey(user) && !new TicketRemoveUserEvent(this, user).callAndGet()) {
       this.getUsers().remove(user);
+      return true;
     }
+    return false;
   }
 
   /**
@@ -188,13 +194,12 @@ public interface Ticket extends ICatchable {
   /**
    * Get the complete information from a ticket
    *
-   * @param user the user that wants the information of a ticket
+   * @param locale the locale that will read the ticket information
    * @param appendUsers whether the users of the ticket must be added in the information
    * @return the complete information of a ticket
    */
   @NotNull
-  default EmbedQuery toCompleteInformation(@NotNull BotUser user, boolean appendUsers) {
-    LocaleFile locale = user.getLocaleFile();
+  default EmbedQuery toCompleteInformation(@NotNull LocaleFile locale, boolean appendUsers) {
     HashMap<String, String> placeholders = this.getPlaceholders();
     LinkedHashMap<String, String> fields = new LinkedHashMap<>();
 
@@ -226,8 +231,44 @@ public interface Ticket extends ICatchable {
             locale.get("ticket-info.title", placeholders),
             locale.get("ticket-info.description", placeholders),
             ResultType.GENERIC,
-            user);
+            locale);
     fields.forEach((key, value) -> embedQuery.getEmbedBuilder().addField(key, value, true));
     return embedQuery;
+  }
+
+  /**
+   * Get the complete information from a ticket
+   *
+   * @param user the user that will read the information
+   * @param appendUsers whether the users of the ticket must be added in the information
+   * @return the complete information of a ticket
+   */
+  @NotNull
+  default EmbedQuery toCompleteInformation(@NotNull BotUser user, boolean appendUsers) {
+    return this.toCompleteInformation(user.getLocaleFile(), appendUsers);
+  }
+
+  /**
+   * Check whether the ticket has freelancers
+   *
+   * @return true if the ticket has freelancers
+   */
+  default boolean hasFreelancers() {
+    return this.countFreelancers() > 0;
+  }
+
+  /**
+   * Get how many freelancers there is in the ticket
+   *
+   * @return the amount of freelancers
+   */
+  default int countFreelancers() {
+    int size = 0;
+    for (String value : this.getUsers().values()) {
+      if (value.equalsIgnoreCase("freelancer")) {
+        size++;
+      }
+    }
+    return size;
   }
 }

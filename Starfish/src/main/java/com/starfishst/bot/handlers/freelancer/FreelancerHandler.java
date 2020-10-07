@@ -37,46 +37,60 @@ public class FreelancerHandler implements StarfishEventHandler {
                         .send(privateChannel));
       }
     } else {
-      List<Role> allowedRoles = new ArrayList<>();
-      event
-          .getTicket()
-          .getDetails()
-          .getMap()
-          .forEach(
-              (key, value) -> {
-                if (value instanceof List) {
-                  Class<?> clazz = Lots.getClazz((List) value);
-                  if (clazz != null && Role.class.isAssignableFrom(clazz)) {
-                    allowedRoles.addAll(event.getTicket().getDetails().getLisValue(key));
-                  }
-                }
-              });
-      Member member = event.getUser().getMember();
-      if (member != null) {
-        // Check if the freelancer has an allowed role
-        boolean allowed = false;
-        for (Role role : member.getRoles()) {
-          if (allowedRoles.contains(role)) {
-            allowed = true;
-            break;
-          }
-        }
-        if (!allowed) {
+      if (event.getTicket().hasFreelancers()) {
+        Member member = event.getUser().getMember();
+        if (member != null) {
           member
               .getUser()
               .openPrivateChannel()
               .queue(
-                  privateChannel ->
+                  channel ->
                       Messages.build(
-                              event.getUser().getLocaleFile().get("freelancer.not-roles"),
+                              event.getUser().getLocaleFile().get("freelancer.ticket-claimed"),
                               ResultType.PERMISSION,
                               event.getUser())
-                          .send(privateChannel));
-          event.setCancelled(true);
+                          .send(channel));
         }
-      } else {
-        // Why would it be null?
         event.setCancelled(true);
+      } else {
+        List<Role> allowedRoles = new ArrayList<>();
+        event
+            .getTicket()
+            .getDetails()
+            .getMap()
+            .forEach(
+                (key, value) -> {
+                  if (value instanceof List) {
+                    Class<?> clazz = Lots.getClazz((List<?>) value);
+                    if (clazz != null && Role.class.isAssignableFrom(clazz)) {
+                      allowedRoles.addAll(event.getTicket().getDetails().getLisValue(key));
+                    }
+                  }
+                });
+        Member member = event.getUser().getMember();
+        if (member != null) {
+          // Check if the freelancer has an allowed role
+          boolean allowed = false;
+          for (Role role : member.getRoles()) {
+            if (allowedRoles.contains(role)) {
+              allowed = true;
+              break;
+            }
+          }
+          if (!allowed) {
+            member
+                .getUser()
+                .openPrivateChannel()
+                .queue(
+                    privateChannel ->
+                        Messages.build(
+                                event.getUser().getLocaleFile().get("freelancer.not-roles"),
+                                ResultType.PERMISSION,
+                                event.getUser())
+                            .send(privateChannel));
+            event.setCancelled(true);
+          }
+        }
       }
     }
   }

@@ -2,6 +2,7 @@ package com.starfishst.bot.handlers.lang;
 
 import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.utility.console.Console;
+import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishHandler;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.messages.MessagesProvider;
@@ -50,6 +51,16 @@ public class StarfishLanguageHandler implements MessagesProvider, StarfishHandle
         Console.exception(e, "IOException: File for the language " + lang + " could not be gotten");
       }
     }
+  }
+
+  /**
+   * Get the default language of the bot
+   *
+   * @return the default language
+   */
+  @NotNull
+  public StarfishLocaleFile getDefault() {
+    return this.getFile(Starfish.getConfiguration().getDefaultLang());
   }
 
   /**
