@@ -38,8 +38,12 @@ public class ClaimOrderReactionResponse implements ReactionResponse {
     if (ticket != null) {
       if (ticket.addUser(user, "freelancer") || ticket.hasFreelancers()) {
         EmbedQuery query = ticket.toCompleteInformation(locale, false);
-        query.getEmbedBuilder().setTitle(locale.get("ticket.claimed.title", ticket.getPlaceholders()));
-        query.getEmbedBuilder().setDescription(locale.get("ticket.claimed.desc", ticket.getPlaceholders()));
+        query
+            .getEmbedBuilder()
+            .setTitle(locale.get("ticket.claimed.title", ticket.getPlaceholders()));
+        query
+            .getEmbedBuilder()
+            .setDescription(locale.get("ticket.claimed.desc", ticket.getPlaceholders()));
         query
             .getEmbedBuilder()
             .setColor(Starfish.getConfiguration().getManagerOptions().getError());
