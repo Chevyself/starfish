@@ -49,7 +49,7 @@ public class QuestionImage extends Question {
               user.getLocaleFile().get("questions.invalid-image-url", Maps.singleton("url", raw)),
               ResultType.ERROR,
               user)
-          .send(event.getChannel());
+          .send(event.getChannel(), Messages.getErrorConsumer());
       return null;
     }
   }

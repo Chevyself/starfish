@@ -1,18 +1,24 @@
 package com.starfishst.bot.commands;
 
+import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.exception.TicketCreationException;
+import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
+import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.core.annotations.Optional;
 import com.starfishst.jda.annotations.Command;
 import com.starfishst.jda.annotations.Perm;
+import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
+import java.util.Collection;
 import java.util.HashMap;
+import me.googas.commons.Strings;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Commands for tickets */
@@ -33,13 +39,18 @@ public class TicketCommands {
       description = "ticket-info.desc",
       permission = @Perm(node = "starfish.ticket.info"))
   public Result ticketinfo(
+      CommandContext context,
       BotUser user,
       @Optional(
               name = "Ticket",
               description = "The id of the ticket to see the information",
               suggestions = "-1")
           Ticket ticket) {
-    return new Result(ticket.toCompleteInformation(user, false));
+    if (context.hasFlag("-u") && user.hasPermission("starfish.ticket.info.users", "discord")) {
+      return new Result(ticket.toCompleteInformation(user, true));
+    } else {
+      return new Result(ticket.toCompleteInformation(user, false));
+    }
   }
 
   @Command(
@@ -86,6 +97,40 @@ public class TicketCommands {
     } else {
       ticket.setTicketStatus(TicketStatus.CLOSED);
       return new Result();
+    }
+  }
+
+  @Command(aliases = "offers", description = "offers.desc")
+  public Result offers(
+      CommandContext context,
+      BotUser sender,
+      @Optional(name = "offers.ticket", description = "offers.ticket.desc", suggestions = "-1")
+          Ticket ticket) {
+    LocaleFile locale = sender.getLocaleFile();
+    if (ticket.getTicketType() != TicketType.QUOTE) {
+      return new Result(
+          ResultType.ERROR, locale.get("offers.ticket-not-quote", ticket.getPlaceholders()));
+    } else {
+      boolean appendUsers = false;
+      if (context.hasFlag("-u") && sender.hasPermission("offers.see-users", "discord")) {
+        appendUsers = true;
+      }
+      StarfishLoader loader = Starfish.getLoader();
+      Collection<Offer> offers = loader.getOffers(ticket);
+      StringBuilder builder = Strings.getBuilder();
+      builder.append(locale.get("offers.title", ticket.getPlaceholders()));
+      for (Offer offer : offers) {
+        HashMap<String, String> placeholders = new HashMap<>();
+        placeholders.put("offer", offer.getOffer());
+        if (appendUsers) {
+          BotUser freelancer = loader.getStarfishUser(offer.getFreelancer());
+          placeholders.putAll(freelancer.getPlaceholders());
+          builder.append(locale.get("offers.offer-user", placeholders));
+        } else {
+          builder.append(locale.get("offers.offer", placeholders));
+        }
+      }
+      return new Result(builder.toString());
     }
   }
 }

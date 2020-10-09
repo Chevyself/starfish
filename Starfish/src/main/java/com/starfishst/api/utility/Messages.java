@@ -3,10 +3,13 @@ package com.starfishst.api.utility;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.bot.Starfish;
+import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedFactory;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import java.util.LinkedHashMap;
+import java.util.function.Consumer;
+import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -142,5 +145,15 @@ public class Messages {
   public static EmbedQuery build(
       @NotNull String description, @NotNull ResultType type, @NotNull BotUser user) {
     return Messages.build(description, type, user.getLocaleFile());
+  }
+
+  /**
+   * Get the consumer for errors
+   *
+   * @return the consumer for errors
+   */
+  @Nullable
+  public static Consumer<Message> getErrorConsumer() {
+    return Starfish.getManager().getListener().getConsumer(new Result(ResultType.ERROR, ""));
   }
 }

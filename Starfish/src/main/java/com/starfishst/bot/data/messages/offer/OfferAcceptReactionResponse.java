@@ -2,8 +2,11 @@ package com.starfishst.bot.data.messages.offer;
 
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.Starfish;
+import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.responsive.ReactionResponse;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +27,7 @@ public class OfferAcceptReactionResponse implements ReactionResponse {
 
   @Override
   public boolean removeReaction() {
-    return false;
+    return true;
   }
 
   @Override
@@ -38,9 +41,18 @@ public class OfferAcceptReactionResponse implements ReactionResponse {
           Starfish.getTicketManager()
               .getDataLoader()
               .getStarfishUser(message.getData().getValueOr("freelancer", Long.class, -1L));
-      ticket.addUser(freelancer, "freelancer");
+      if (!ticket.addUser(freelancer, "freelancer")) {
+        TextChannel channel = ticket.getTextChannel();
+        BotUser owner = ticket.getOwner();
+        if (channel != null && owner != null) {
+          Messages.build(
+                  owner.getLocaleFile().get("offer.freelancer-cant-join", ticket.getPlaceholders()),
+                  ResultType.ERROR,
+                  owner)
+              .send(channel, Messages.getErrorConsumer());
+        }
+      }
     }
-    message.delete();
   }
 
   @Override

@@ -70,7 +70,7 @@ public class CleanerHandler implements StarfishEventHandler {
                   owner.getLocaleFile().get("cleaner.delete-time.description", placeholders),
                   ResultType.GENERIC,
                   owner)
-              .send(channel);
+              .send(channel, Messages.getErrorConsumer());
         }
       }
     }

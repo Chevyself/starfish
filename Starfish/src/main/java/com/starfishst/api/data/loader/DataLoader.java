@@ -1,9 +1,11 @@
 package com.starfishst.api.data.loader;
 
 import com.starfishst.api.data.role.BotRole;
+import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
+import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +47,15 @@ public interface DataLoader {
    */
   @NotNull
   BotRole getStarfishRole(long id);
+
+  /**
+   * Get all the offers sent to a ticket
+   *
+   * @param ticket the ticket querying offers
+   * @return the offers found
+   */
+  @NotNull
+  Collection<Offer> getOffers(@NotNull Ticket ticket);
 
   /**
    * Deletes the responsive message

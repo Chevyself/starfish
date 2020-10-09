@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.starfishst.api.Permissible;
 import com.starfishst.api.Permission;
@@ -11,6 +12,7 @@ import com.starfishst.api.PermissionStack;
 import com.starfishst.api.configuration.MongoConfiguration;
 import com.starfishst.api.data.messages.BotResponsiveMessage;
 import com.starfishst.api.data.role.BotRole;
+import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
@@ -26,6 +28,7 @@ import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishRole;
 import com.starfishst.bot.data.StarfishUser;
 import com.starfishst.bot.data.StarfishValuesMap;
+import com.starfishst.bot.data.messages.offer.OfferMessage;
 import com.starfishst.bot.tickets.deserializers.ClaimOrderDeserializer;
 import com.starfishst.bot.tickets.deserializers.OfferDeserializer;
 import com.starfishst.bot.tickets.deserializers.TicketPanelDeserializer;
@@ -39,6 +42,7 @@ import java.util.List;
 import java.util.Set;
 import me.googas.commons.Lots;
 import me.googas.commons.cache.Cache;
+import me.googas.commons.cache.ICatchable;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import me.googas.commons.maps.Maps;
@@ -575,6 +579,46 @@ public class StarfishDataLoader implements StarfishLoader {
     } else {
       return new StarfishRole(id, new HashSet<>());
     }
+  }
+
+  /**
+   * Get all the offers sent to a ticket
+   *
+   * @param ticket the ticket querying offers
+   * @return the offers found
+   */
+  @Override
+  public @NotNull Collection<Offer> getOffers(@NotNull Ticket ticket) {
+    List<OfferMessage> offers = new ArrayList<>();
+    for (ICatchable catchable : Cache.getCache()) {
+      if (catchable instanceof OfferMessage) {
+        if (((OfferMessage) catchable).getTicket() == ticket.getId()) {
+          offers.add((OfferMessage) catchable);
+        }
+      }
+    }
+    MongoCursor<Document> cursor =
+        this.messages.find(new Document("data.ticket", ticket.getId())).cursor();
+    while (cursor.hasNext()) {
+      Document document = cursor.next();
+      boolean contains = false;
+      for (OfferMessage offer : offers) {
+        if (document.getLong("id") == offer.getId()) {
+          contains = true;
+        }
+      }
+      if (!contains) {
+        StarfishResponsiveMessage message =
+            this.deserializers
+                .get("offer")
+                .getMessage(
+                    document.getLong("id"), this.getPreferences(document, "data"), document);
+        if (message instanceof OfferMessage) {
+          offers.add((OfferMessage) message);
+        }
+      }
+    }
+    return new ArrayList<>(offers);
   }
 
   @Override

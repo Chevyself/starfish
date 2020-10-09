@@ -153,7 +153,7 @@ public class Question {
                       Maps.singleton("limit", String.valueOf(limit))),
               ResultType.ERROR,
               user)
-          .send(event.getChannel());
+          .send(event.getChannel(), Messages.getErrorConsumer());
       return null;
     }
   }

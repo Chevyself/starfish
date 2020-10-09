@@ -105,7 +105,7 @@ public class QuestionRole extends Question {
     List<Role> roles = event.getMessage().getMentionedRoles();
     if (roles.isEmpty()) {
       Messages.build(user.getLocaleFile().get("questions.empty-roles"), ResultType.ERROR, user)
-          .send(event.getChannel());
+          .send(event.getChannel(), Messages.getErrorConsumer());
       return null;
     } else if (roles.size() > limit) {
       Messages.build(
@@ -115,7 +115,7 @@ public class QuestionRole extends Question {
                       Maps.singleton("limit", String.valueOf(this.getLimit()))),
               ResultType.ERROR,
               user)
-          .send(event.getChannel());
+          .send(event.getChannel(), Messages.getErrorConsumer());
       return null;
     }
     List<Role> notMentionable = this.getNotMentionableRoles(roles);
@@ -129,7 +129,7 @@ public class QuestionRole extends Question {
                       Maps.singleton("roles", Lots.pretty(Discord.getAsMention(notMentionable)))),
               ResultType.ERROR,
               user)
-          .send(event.getChannel());
+          .send(event.getChannel(), Messages.getErrorConsumer());
       return null;
     }
   }

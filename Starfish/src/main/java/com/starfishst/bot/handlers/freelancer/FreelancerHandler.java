@@ -1,5 +1,6 @@
 package com.starfishst.bot.handlers.freelancer;
 
+import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.handlers.StarfishEventHandler;
@@ -23,6 +24,7 @@ public class FreelancerHandler implements StarfishEventHandler {
    */
   @Listener(priority = ListenPriority.LOWEST)
   public void onTicketAddUserEvent(TicketAddUserEvent event) {
+    Ticket ticket = event.getTicket();
     if (!event.getRole().equalsIgnoreCase("freelancer")) {
       return;
     }
@@ -34,13 +36,16 @@ public class FreelancerHandler implements StarfishEventHandler {
             .queue(
                 privateChannel ->
                     Messages.build(
-                            event.getUser().getLocaleFile().get("user.not-freelancer"),
+                            event
+                                .getUser()
+                                .getLocaleFile()
+                                .get("user.not-freelancer", ticket.getPlaceholders()),
                             ResultType.PERMISSION,
                             event.getUser())
                         .send(privateChannel));
       }
     } else {
-      if (event.getTicket().hasFreelancers()) {
+      if (ticket.hasFreelancers()) {
         Member member = event.getUser().getMember();
         if (member != null) {
           member
@@ -49,7 +54,10 @@ public class FreelancerHandler implements StarfishEventHandler {
               .queue(
                   channel ->
                       Messages.build(
-                              event.getUser().getLocaleFile().get("freelancer.ticket-claimed"),
+                              event
+                                  .getUser()
+                                  .getLocaleFile()
+                                  .get("freelancer.ticket-claimed", ticket.getPlaceholders()),
                               ResultType.PERMISSION,
                               event.getUser())
                           .send(channel));
@@ -57,8 +65,7 @@ public class FreelancerHandler implements StarfishEventHandler {
         event.setCancelled(true);
       } else {
         List<Role> allowedRoles = new ArrayList<>();
-        event
-            .getTicket()
+        ticket
             .getDetails()
             .getMap()
             .forEach(
@@ -66,7 +73,7 @@ public class FreelancerHandler implements StarfishEventHandler {
                   if (value instanceof List) {
                     Class<?> clazz = Lots.getClazz((List<?>) value);
                     if (clazz != null && Role.class.isAssignableFrom(clazz)) {
-                      allowedRoles.addAll(event.getTicket().getDetails().getLisValue(key));
+                      allowedRoles.addAll(ticket.getDetails().getLisValue(key));
                     }
                   }
                 });
@@ -87,7 +94,10 @@ public class FreelancerHandler implements StarfishEventHandler {
                 .queue(
                     privateChannel ->
                         Messages.build(
-                                event.getUser().getLocaleFile().get("freelancer.not-roles"),
+                                event
+                                    .getUser()
+                                    .getLocaleFile()
+                                    .get("freelancer.not-roles", ticket.getPlaceholders()),
                                 ResultType.PERMISSION,
                                 event.getUser())
                             .send(privateChannel));

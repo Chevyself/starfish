@@ -163,7 +163,7 @@ public class QuestionsHandler implements StarfishEventHandler {
       current = questions.get(this.current.get(ticket.refresh()));
       current.getQuery(user).send(event.getChannel());
       if (current instanceof QuestionInformation) {
-        sendNextQuestion(event, ticket, user, questions);
+        this.sendNextQuestion(event, ticket, user, questions);
       }
     }
   }

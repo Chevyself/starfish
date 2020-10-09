@@ -1,6 +1,7 @@
 package com.starfishst.bot.tickets;
 
 import com.starfishst.api.data.role.BotRole;
+import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
@@ -51,6 +52,18 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
 
   @Override
   public @NotNull BotRole getStarfishRole(long id) {
+    throw new UnsupportedOperationException(
+        "Operations are not permitted in fallback ticket loader");
+  }
+
+  /**
+   * Get all the offers sent to a ticket
+   *
+   * @param ticket the ticket querying offers
+   * @return the offers found
+   */
+  @Override
+  public @NotNull Collection<Offer> getOffers(@NotNull Ticket ticket) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }

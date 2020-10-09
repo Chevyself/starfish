@@ -88,4 +88,19 @@ public class StarfishUser extends Catchable implements BotUser {
   public @NotNull LocaleFile getLocaleFile() {
     return Starfish.getLanguageHandler().getFile(this.getLang());
   }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) return true;
+    if (!(object instanceof StarfishUser)) return false;
+
+    StarfishUser that = (StarfishUser) object;
+
+    return id == that.id;
+  }
+
+  @Override
+  public int hashCode() {
+    return (int) (id ^ (id >>> 32));
+  }
 }

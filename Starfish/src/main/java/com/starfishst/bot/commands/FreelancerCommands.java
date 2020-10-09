@@ -127,8 +127,9 @@ public class FreelancerCommands {
               channel,
               msg -> {
                 StarfishValuesMap map = new StarfishValuesMap();
-                map.addValue("offer", strings.toString());
+                map.addValue("offer", strings.getString());
                 map.addValue("freelancer", freelancer.getId());
+                map.addValue("ticket", ticket.getId());
                 new OfferMessage(msg, map);
               });
         }

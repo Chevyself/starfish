@@ -4,6 +4,7 @@ import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.exception.TicketCreationException;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.Starfish;
 import com.starfishst.jda.utils.responsive.ReactionResponse;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -49,7 +50,7 @@ public class TicketCreatorReactionResponse implements ReactionResponse {
       try {
         Starfish.getTicketManager().createTicket(type, user, ticket);
       } catch (TicketCreationException e) {
-        e.toQuery(user).send(event.getTextChannel());
+        e.toQuery(user).send(event.getTextChannel(), Messages.getErrorConsumer());
       }
       ticket.unload(false);
     }

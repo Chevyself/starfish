@@ -6,6 +6,7 @@ import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.exception.TicketCreationException;
+import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.StarfishEventHandler;
 import me.googas.commons.Strings;
@@ -40,7 +41,7 @@ public class QuoteHandler implements StarfishEventHandler {
         ticket.unload();
       } catch (TicketCreationException e) {
         if (channel != null) {
-          e.toQuery(owner).send(channel);
+          e.toQuery(owner).send(channel, Messages.getErrorConsumer());
         }
       }
     }
