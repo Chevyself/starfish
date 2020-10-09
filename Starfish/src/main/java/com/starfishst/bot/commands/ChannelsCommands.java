@@ -10,6 +10,7 @@ import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
+import java.util.ArrayList;
 import java.util.List;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.IPermissionHolder;
@@ -33,14 +34,14 @@ public class ChannelsCommands {
       description = "add.description",
       permission = @Perm(node = "starfish.add"))
   public Result add(BotUser user, Message message, CommandContext context) {
-    List<IMentionable> mentions =
-        message.getMentions(Message.MentionType.ROLE, Message.MentionType.USER);
+    List<IMentionable> mentions = new ArrayList<>(message.getMentionedRoles());
+    mentions.addAll(message.getMentionedMembers());
     TextChannel channel = message.getTextChannel();
     StarfishLoader loader = Starfish.getLoader();
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("add.mentions-empty"));
     }
-    Ticket ticket = loader.getTicketByChannel(message.getIdLong());
+    Ticket ticket = loader.getTicketByChannel(channel.getIdLong());
     if (ticket == null) {
       if (context.hasFlag("-v")) {
         for (IMentionable mentionable : mentions) {
@@ -91,14 +92,14 @@ public class ChannelsCommands {
       description = "remove.description",
       permission = @Perm(node = "starfish.remove"))
   public Result remove(BotUser user, Message message, CommandContext context) {
-    List<IMentionable> mentions =
-        message.getMentions(Message.MentionType.ROLE, Message.MentionType.USER);
+    List<IMentionable> mentions = new ArrayList<>(message.getMentionedRoles());
+    mentions.addAll(message.getMentionedMembers());
     TextChannel channel = message.getTextChannel();
     StarfishLoader loader = Starfish.getLoader();
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("remove.mentions-empty"));
     }
-    Ticket ticket = loader.getTicketByChannel(message.getIdLong());
+    Ticket ticket = loader.getTicketByChannel(channel.getIdLong());
     if (ticket == null) {
       for (IMentionable mentionable : mentions) {
         if (mentionable instanceof IPermissionHolder) {

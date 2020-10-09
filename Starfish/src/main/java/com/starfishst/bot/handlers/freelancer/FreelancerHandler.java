@@ -23,7 +23,10 @@ public class FreelancerHandler implements StarfishEventHandler {
    */
   @Listener(priority = ListenPriority.LOWEST)
   public void onTicketAddUserEvent(TicketAddUserEvent event) {
-    if (event.getRole().equalsIgnoreCase("freelancer") && !event.getUser().isFreelancer()) {
+    if (!event.getRole().equalsIgnoreCase("freelancer")) {
+      return;
+    }
+    if (!event.getUser().isFreelancer()) {
       event.setCancelled(true);
       User user = event.getUser().getDiscord();
       if (user != null) {

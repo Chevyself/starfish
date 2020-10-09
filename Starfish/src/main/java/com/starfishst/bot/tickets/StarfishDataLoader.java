@@ -506,7 +506,7 @@ public class StarfishDataLoader implements StarfishLoader {
   public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
     StarfishResponsiveMessage message =
         Cache.getCatchable(
-            catchable -> catchable.getId() == messageId, StarfishResponsiveMessage.class);
+            StarfishResponsiveMessage.class, catchable -> catchable.getId() == messageId);
     if (message != null) {
       return message.refresh();
     }
@@ -526,7 +526,7 @@ public class StarfishDataLoader implements StarfishLoader {
   @Override
   public @Nullable Ticket getTicket(long id) {
     StarfishTicket ticket =
-        Cache.getCatchable(catchable -> catchable.getId() == id, StarfishTicket.class);
+        Cache.getCatchable(StarfishTicket.class, catchable -> catchable.getId() == id);
     if (ticket != null) {
       return ticket;
     }
@@ -537,11 +537,11 @@ public class StarfishDataLoader implements StarfishLoader {
   public @Nullable Ticket getTicketByChannel(long channelId) {
     StarfishTicket ticket =
         Cache.getCatchable(
+            StarfishTicket.class,
             catchable -> {
               TextChannel channel = catchable.getTextChannel();
               return channel != null && channel.getIdLong() == channelId;
-            },
-            StarfishTicket.class);
+            });
     if (ticket != null) {
       return ticket;
     }
@@ -550,7 +550,7 @@ public class StarfishDataLoader implements StarfishLoader {
 
   @Override
   public @NotNull BotUser getStarfishUser(long id) {
-    BotUser user = Cache.getCatchable(catchable -> catchable.getId() == id, StarfishUser.class);
+    BotUser user = Cache.getCatchable(StarfishUser.class, catchable -> catchable.getId() == id);
     if (user != null) {
       return user;
     }
@@ -565,7 +565,7 @@ public class StarfishDataLoader implements StarfishLoader {
 
   @Override
   public @NotNull BotRole getStarfishRole(long id) {
-    BotRole role = Cache.getCatchable(catchable -> catchable.getId() == id, StarfishRole.class);
+    BotRole role = Cache.getCatchable(StarfishRole.class, catchable -> catchable.getId() == id);
     if (role != null) {
       return role;
     }
