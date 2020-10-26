@@ -18,6 +18,7 @@
     <build>
         <finalName>${project.artifactId}-${git.commit.id.describe-short}</finalName>
         <plugins>
+
             <!-- Maven java version plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -27,6 +28,36 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+            </plugin>
+            <!-- Maven java jar plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.starfishst.bot.Starfish</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- Maven jar shade plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Maven java formatter plugin (Google format) -->
             <plugin>
@@ -43,23 +74,6 @@
                 <configuration>
                     <style>google</style>
                 </configuration>
-            </plugin>
-            <!-- Spring Boot -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.2.6.RELEASE</version>
-                <configuration>
-                    <fork>true</fork>
-                    <mainClass>com.starfishst.bot.Starfish</mainClass>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <!-- Commit ID Plugin -->
             <plugin>
@@ -93,6 +107,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
         <!-- The resources of the bot -->
         <resources>
@@ -126,7 +141,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.2.0_204</version>
+            <version>4.2.0_211</version>
         </dependency>
         <!-- Command Framework -->
         <dependency>

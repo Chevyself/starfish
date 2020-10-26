@@ -49,6 +49,11 @@
         "announce-all-users-joining": false,
         "time-to-delete-closed-tickets": "15s"
       }
+    },
+    "welcome": {
+      "preferences": {
+        "enabled": true
+      }
     }
   },
   "total": 0
