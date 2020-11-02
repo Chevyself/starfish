@@ -62,7 +62,7 @@ public enum TicketType {
    */
   @Nullable
   public Category getCategory() {
-    return Starfish.getDiscordConfiguration().getCategory(this.getCategoryName());
+    return Starfish.getDiscordConfiguration().requireCategory(this.getCategoryName());
   }
 
   /**
@@ -73,7 +73,7 @@ public enum TicketType {
    */
   @Nullable
   public TextChannel getChannel() {
-    return Starfish.getDiscordConfiguration().getChannel(this.getChannelName());
+    return Starfish.getDiscordConfiguration().requireChannel(this.getChannelName());
   }
 
   /**

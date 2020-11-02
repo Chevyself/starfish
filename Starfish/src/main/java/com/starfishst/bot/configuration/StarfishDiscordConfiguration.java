@@ -3,10 +3,8 @@ package com.starfishst.bot.configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import java.util.HashMap;
 import java.util.List;
-import net.dv8tion.jda.api.entities.Category;
+import java.util.Map;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,13 +12,13 @@ import org.jetbrains.annotations.Nullable;
 public class StarfishDiscordConfiguration implements DiscordConfiguration {
 
   /** The roles that the bot can use */
-  @NotNull private final HashMap<String, List<Role>> roles;
+  @NotNull private final Map<String, List<Long>> roles;
   /** The categories that the bot can use */
-  @NotNull private final HashMap<String, Category> categories;
+  @NotNull private final Map<String, Long> categories;
   /** The channels that the bot can use */
-  @NotNull private final HashMap<String, TextChannel> channels;
+  @NotNull private final Map<String, Long> channels;
   /** The guild where the bot is working */
-  @Nullable private Guild guild;
+  private long guild;
 
   /**
    * Create the discord configuration
@@ -31,10 +29,10 @@ public class StarfishDiscordConfiguration implements DiscordConfiguration {
    * @param channels the channels that the bot can use
    */
   public StarfishDiscordConfiguration(
-      @Nullable Guild guild,
-      @NotNull HashMap<String, List<Role>> roles,
-      @NotNull HashMap<String, Category> categories,
-      @NotNull HashMap<String, TextChannel> channels) {
+      long guild,
+      @NotNull Map<String, List<Long>> roles,
+      @NotNull Map<String, Long> categories,
+      @NotNull Map<String, Long> channels) {
     this.guild = guild;
     this.roles = roles;
     this.categories = categories;
@@ -44,7 +42,7 @@ public class StarfishDiscordConfiguration implements DiscordConfiguration {
   /** This constructor is used for gson */
   @Deprecated
   public StarfishDiscordConfiguration() {
-    this(null, new HashMap<>(), new HashMap<>(), new HashMap<>());
+    this(-1, new HashMap<>(), new HashMap<>(), new HashMap<>());
   }
 
   /**
@@ -54,32 +52,36 @@ public class StarfishDiscordConfiguration implements DiscordConfiguration {
    */
   @NotNull
   public static StarfishDiscordConfiguration fallback() {
-    return new StarfishDiscordConfiguration(
-        null, new HashMap<>(), new HashMap<>(), new HashMap<>());
+    return new StarfishDiscordConfiguration(-1, new HashMap<>(), new HashMap<>(), new HashMap<>());
   }
 
   @Override
-  public @Nullable Guild getGuild() {
-    return this.guild;
-  }
-
-  @Override
-  public @NotNull HashMap<String, List<Role>> getRoles() {
+  public @NotNull Map<String, List<Long>> getRoles() {
     return this.roles;
   }
 
   @Override
-  public @NotNull HashMap<String, Category> getCategories() {
+  public @NotNull Map<String, Long> getCategories() {
     return this.categories;
   }
 
   @Override
-  public @NotNull HashMap<String, TextChannel> getChannels() {
+  public @NotNull Map<String, Long> getChannels() {
     return this.channels;
   }
 
   @Override
   public void setGuild(@Nullable Guild guild) {
-    this.guild = guild;
+    this.guild = guild == null ? -1 : guild.getIdLong();
+  }
+
+  /**
+   * Get the id of the guild where the bot is working
+   *
+   * @return the id of guild where the bot is working
+   */
+  @Override
+  public long getGuildId() {
+    return this.guild;
   }
 }

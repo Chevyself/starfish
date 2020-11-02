@@ -1,10 +1,12 @@
 package com.starfishst.api.configuration;
 
 import com.starfishst.api.utility.Discord;
+import com.starfishst.bot.Starfish;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import me.googas.commons.Validate;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -23,19 +25,19 @@ public interface DiscordConfiguration {
    * @return if this returns null it means that the guild has not been set
    */
   @Nullable
-  default Category getCategory(@NotNull String key) {
+  default Category requireCategory(@NotNull String key) {
     Guild guild = this.getGuild();
     if (guild != null) {
       Category validated =
           Discord.validateCategory(
-              this.getCategories().get(key),
+              this.getCategory(key),
               guild,
               key,
               true,
               this.getRoles("allowed-in-categories"),
               this.getRoles("allowed-to-see-in-categories"));
-      if (validated != this.getCategories().get(key)) {
-        this.getCategories().put(key, validated);
+      if (validated.getIdLong() != this.getCategories().get(key)) {
+        this.getCategories().put(key, validated.getIdLong());
       }
       return validated;
     }
@@ -48,21 +50,54 @@ public interface DiscordConfiguration {
    * @param key the key of the channel
    * @return the channel
    */
-  default TextChannel getChannel(@NotNull String key) {
+  @Nullable
+  default TextChannel requireChannel(@NotNull String key) {
     Guild guild = this.getGuild();
     if (guild != null) {
       TextChannel validated =
           Discord.validateChannel(
-              this.getChannels().get(key),
+              this.getChannel(key),
               guild,
               key,
               true,
               this.getRoles("allowed-in-channels"),
               this.getRoles("allowed-to-see-in-channels"));
-      if (validated != this.getChannels().get(key)) {
-        this.getChannels().put(key, validated);
+      if (validated.getIdLong() != this.getChannels().get(key)) {
+        this.getChannels().put(key, validated.getIdLong());
       }
       return validated;
+    }
+    return null;
+  }
+
+  /**
+   * * Get a channel using its key
+   *
+   * @param key the key of the channel
+   * @return the channel
+   */
+  @Nullable
+  default TextChannel getChannel(@NotNull String key) {
+    Guild guild = this.getGuild();
+    if (guild != null) {
+      long id = this.getChannels().getOrDefault(key, -1L);
+      return guild.getTextChannelById(id);
+    }
+    return null;
+  }
+
+  /**
+   * * Get a channel using its key
+   *
+   * @param key the key of the channel
+   * @return the channel
+   */
+  @Nullable
+  default Category getCategory(@NotNull String key) {
+    Guild guild = this.getGuild();
+    if (guild != null) {
+      long id = this.getChannels().getOrDefault(key, -1L);
+      return guild.getCategoryById(id);
     }
     return null;
   }
@@ -75,11 +110,21 @@ public interface DiscordConfiguration {
    */
   @NotNull
   default List<Role> getRoles(@NotNull String key) {
-    List<Role> validated = Validate.notNullOr(this.getRoles().get(key), new ArrayList<>());
+    List<Role> roles = new ArrayList<>();
+    List<Long> validated = Validate.notNullOr(this.getRoles().get(key), new ArrayList<>());
     if (validated != this.getRoles().get(key)) {
       this.getRoles().put(key, validated);
     }
-    return validated;
+    JDA jda = Starfish.getConnection().getJda();
+    if (jda != null) {
+      for (Long id : validated) {
+        Role role = jda.getRoleById(id);
+        if (role != null) {
+          roles.add(role);
+        }
+      }
+    }
+    return roles;
   }
 
   /**
@@ -90,12 +135,25 @@ public interface DiscordConfiguration {
   void setGuild(@Nullable Guild guild);
 
   /**
+   * Get the id of the guild where the bot is working
+   *
+   * @return the id of guild where the bot is working
+   */
+  long getGuildId();
+
+  /**
    * Get the guild where the bot is working
    *
    * @return the guild where the bot is working
    */
   @Nullable
-  Guild getGuild();
+  default Guild getGuild() {
+    JDA jda = Starfish.getConnection().getJda();
+    if (jda != null) {
+      return jda.getGuildById(this.getGuildId());
+    }
+    return null;
+  }
 
   /**
    * Get the roles that can be used by the bot
@@ -103,7 +161,7 @@ public interface DiscordConfiguration {
    * @return the roles
    */
   @NotNull
-  HashMap<String, List<Role>> getRoles();
+  Map<String, List<Long>> getRoles();
 
   /**
    * Get the categories that can be used by the bot
@@ -111,7 +169,7 @@ public interface DiscordConfiguration {
    * @return the categories
    */
   @NotNull
-  HashMap<String, Category> getCategories();
+  Map<String, Long> getCategories();
 
   /**
    * Get the channels that can be used by the bot
@@ -119,5 +177,5 @@ public interface DiscordConfiguration {
    * @return the channels
    */
   @NotNull
-  HashMap<String, TextChannel> getChannels();
+  Map<String, Long> getChannels();
 }

@@ -170,7 +170,7 @@ public class StarfishDataLoader implements StarfishLoader {
           this.getDetails(first),
           TicketStatus.valueOf(first.getString("status").toUpperCase()),
           usersMap,
-          jda.getTextChannelById(first.get("channel") != null ? first.getLong("channel") : -1));
+          first.getLong("channel"));
     }
     return null;
   }

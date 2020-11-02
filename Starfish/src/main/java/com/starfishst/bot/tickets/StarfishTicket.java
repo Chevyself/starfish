@@ -16,6 +16,7 @@ import com.starfishst.bot.Starfish;
 import java.util.HashMap;
 import me.googas.commons.cache.Catchable;
 import me.googas.commons.time.Time;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +36,7 @@ public class StarfishTicket extends Catchable implements Ticket {
   @NotNull private final StarfishTicketDetails details;
 
   /** The channel where the ticket is happening */
-  @Nullable private TextChannel channel;
+  private long channel;
   /** The status of the ticket */
   @NotNull private TicketStatus status;
 
@@ -56,7 +57,7 @@ public class StarfishTicket extends Catchable implements Ticket {
       @NotNull StarfishTicketDetails details,
       @NotNull TicketStatus status,
       @NotNull HashMap<BotUser, String> users,
-      @Nullable TextChannel channel) {
+      long channel) {
     super(Starfish.getConfiguration().toUnloadTickets());
     this.id = id;
     this.type = type;
@@ -99,7 +100,11 @@ public class StarfishTicket extends Catchable implements Ticket {
 
   @Override
   public @Nullable TextChannel getTextChannel() {
-    return this.channel;
+    JDA jda = Starfish.getConnection().getJda();
+    if (jda != null) {
+      return jda.getTextChannelById(this.channel);
+    }
+    return null;
   }
 
   @Override
@@ -133,7 +138,7 @@ public class StarfishTicket extends Catchable implements Ticket {
   @Override
   public void setTextChannel(@Nullable TextChannel channel) {
     if (!new TicketNewChannelEvent(this, channel).callAndGet()) {
-      this.channel = channel;
+      this.channel = channel == null ? -1 : channel.getIdLong();
     }
   }
 

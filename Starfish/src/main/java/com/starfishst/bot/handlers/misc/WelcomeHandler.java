@@ -34,7 +34,7 @@ public class WelcomeHandler implements StarfishHandler {
   @SubscribeEvent
   public void onMemberJoin(GuildMemberJoinEvent event) {
     BotUser user = this.loader.getStarfishUser(event.getMember().getIdLong());
-    TextChannel welcome = Starfish.getDiscordConfiguration().getChannel("welcome");
+    TextChannel welcome = Starfish.getDiscordConfiguration().requireChannel("welcome");
     if (welcome != null && this.getPreferences().getValueOr("enabled", Boolean.class, true)) {
       Messages.build(
               user.getLocaleFile().get("welcome.title", user.getPlaceholders()),

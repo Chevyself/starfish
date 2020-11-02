@@ -141,6 +141,7 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    */
   @Nullable
   default Member getMember() {
+    JDA jda = Starfish.getConnection().getJda();
     Guild guild = Starfish.getDiscordConfiguration().getGuild();
     if (guild != null) {
       return guild.getMemberById(this.getId());

@@ -7,10 +7,13 @@ import com.starfishst.core.annotations.Required;
 import com.starfishst.jda.annotations.Command;
 import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.result.Result;
+import java.util.ArrayList;
+import java.util.List;
 import me.googas.commons.Lots;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Commands for setting configuration */
@@ -46,7 +49,11 @@ public class SetCommands {
   public Result roles(
       Message message,
       @Required(name = "key", description = "The key to set the roles on") String key) {
-    Starfish.getDiscordConfiguration().getRoles().put(key, message.getMentionedRoles());
+    List<Long> ids = new ArrayList<>();
+    for (Role role : message.getMentionedRoles()) {
+      ids.add(role.getIdLong());
+    }
+    Starfish.getDiscordConfiguration().getRoles().put(key, ids);
     return new Result(
         "Roles in "
             + key
@@ -68,7 +75,7 @@ public class SetCommands {
   public Result category(
       Category category,
       @Required(name = "key", description = "The key to set the category on") String key) {
-    Starfish.getDiscordConfiguration().getCategories().put(key, category);
+    Starfish.getDiscordConfiguration().getCategories().put(key, category.getIdLong());
     return new Result("Category in " + key + " has been set to " + category.getName());
   }
 
@@ -86,7 +93,7 @@ public class SetCommands {
   public Result channel(
       TextChannel channel,
       @Required(name = "key", description = "The key to set the channel on") String key) {
-    Starfish.getDiscordConfiguration().getChannels().put(key, channel);
+    Starfish.getDiscordConfiguration().getChannels().put(key, channel.getIdLong());
     return new Result("Channel in " + key + " has been set to " + channel.getName());
   }
 }
