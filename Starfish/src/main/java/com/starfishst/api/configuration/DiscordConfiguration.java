@@ -1,6 +1,7 @@
 package com.starfishst.api.configuration;
 
 import com.starfishst.api.utility.Discord;
+import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.Starfish;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public interface DiscordConfiguration {
   default Category requireCategory(@NotNull String key) {
     Guild guild = this.getGuild();
     if (guild != null) {
+      Console.info("Category of " + key + " is " + this.getCategory(key));
       Category validated =
           Discord.validateCategory(
               this.getCategory(key),
@@ -36,6 +38,11 @@ public interface DiscordConfiguration {
               true,
               this.getRoles("allowed-in-categories"),
               this.getRoles("allowed-to-see-in-categories"));
+      Console.info(
+          "Validated: "
+              + validated.getIdLong()
+              + " in categories "
+              + this.getCategories().get(key));
       if (validated.getIdLong() != this.getCategories().get(key)) {
         this.getCategories().put(key, validated.getIdLong());
       }
@@ -96,7 +103,7 @@ public interface DiscordConfiguration {
   default Category getCategory(@NotNull String key) {
     Guild guild = this.getGuild();
     if (guild != null) {
-      long id = this.getChannels().getOrDefault(key, -1L);
+      long id = this.getCategories().getOrDefault(key, -1L);
       return guild.getCategoryById(id);
     }
     return null;
