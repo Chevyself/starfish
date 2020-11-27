@@ -52,9 +52,17 @@ public class TicketCreatorReactionResponse implements ReactionResponse {
       } catch (TicketCreationException e) {
         e.toQuery(user).send(event.getTextChannel(), Messages.getErrorConsumer());
       }
-      ticket.unload(false);
+      try {
+        ticket.unload(false);
+      } catch (Throwable throwable) {
+        throwable.printStackTrace();
+      }
     }
-    message.unload(false);
+    try {
+      message.unload(false);
+    } catch (Throwable throwable) {
+      throwable.printStackTrace();
+    }
   }
 
   @Override

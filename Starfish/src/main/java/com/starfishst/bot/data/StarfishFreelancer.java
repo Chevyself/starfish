@@ -2,6 +2,8 @@ package com.starfishst.bot.data;
 
 import com.starfishst.api.PermissionStack;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.bot.Starfish;
+import java.util.Map;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +31,22 @@ public class StarfishFreelancer extends StarfishUser {
     this(
         user.getId(), new StarfishValuesMap(user.getPreferences().getMap()), user.getPermissions());
     this.getPreferences().addValue("freelancer", true);
-    user.unload(false);
+  }
+
+  public static StarfishFreelancer promote(@NotNull BotUser user) {
+    try {
+      user.unload(false);
+    } catch (Throwable throwable) {
+      throwable.printStackTrace();
+    }
+    return new StarfishFreelancer(user);
+  }
+
+  @Override
+  public @NotNull Map<String, String> getPlaceholders() {
+    Map<String, String> placeholders = super.getPlaceholders();
+    placeholders.put(
+        "rating", this.getRating().getReadable(Starfish.getLanguageHandler().getDefault()));
+    return placeholders;
   }
 }

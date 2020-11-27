@@ -10,8 +10,8 @@ import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketPreCreationEvent;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.utility.Discord;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -47,7 +47,7 @@ public class StarfishTicketManager implements TicketManager {
       throw new TicketCreationException(preCreationEvent.getReason());
     } else {
       Category category = type.getCategory();
-      HashMap<BotUser, String> users;
+      Map<BotUser, String> users;
       if (parent != null) {
         users = parent.getUsers();
       } else {

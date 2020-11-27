@@ -100,6 +100,11 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
   }
 
   @Override
+  public @NotNull Time getToRemove() {
+    return Starfish.getConfiguration().toUnloadMessages();
+  }
+
+  @Override
   public long getSecondsLeft() {
     return this.secondsLeft;
   }

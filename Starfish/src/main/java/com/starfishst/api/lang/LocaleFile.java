@@ -1,7 +1,7 @@
 package com.starfishst.api.lang;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.Map;
 import me.googas.commons.Strings;
 import me.googas.commons.maps.MapBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public interface LocaleFile extends Localizable {
    * @return the built string
    */
   @NotNull
-  default String get(@NotNull String path, @NotNull HashMap<String, String> placeholders) {
+  default String get(@NotNull String path, @NotNull Map<String, String> placeholders) {
     return Strings.buildMessage(this.get(path), placeholders);
   }
 

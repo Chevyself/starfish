@@ -15,7 +15,7 @@ import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import com.starfishst.jda.utils.message.MessageQuery;
-import java.util.HashMap;
+import java.util.Map;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import me.googas.commons.time.ClassicTime;
@@ -59,7 +59,7 @@ public class TicketHandler implements StarfishEventHandler {
             LocaleFile file = owner.getLocaleFile();
             Time time = Time.fromString(timeString);
             ClassicTime classicTime = time.toClassicTime();
-            HashMap<String, String> placeholders = ticket.getPlaceholders();
+            Map<String, String> placeholders = ticket.getPlaceholders();
             placeholders.put("time", time.toEffectiveString());
             Messages.build(
                     file.get("ticket.closed.title", placeholders),

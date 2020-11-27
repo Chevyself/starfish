@@ -4,6 +4,7 @@ import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import java.util.Collection;
 import net.dv8tion.jda.api.entities.Guild;
@@ -70,6 +71,18 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
 
   @Override
   public void deleteMessage(@NotNull ResponsiveMessage message) {
+    throw new UnsupportedOperationException(
+        "Operations are not permitted in fallback ticket loader");
+  }
+
+  /**
+   * Get the rating of a freelancer by its id
+   *
+   * @param id the id of the freelancer
+   * @return the rating of the freelancer
+   */
+  @Override
+  public @NotNull FreelancerRating getRating(long id) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }

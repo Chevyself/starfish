@@ -37,8 +37,12 @@ public class QuoteHandler implements StarfishEventHandler {
         && owner != null) {
       try {
         Starfish.getTicketManager().createTicket(TicketType.QUOTE, owner, ticket);
-        ticket.unload(false);
-        ticket.unload();
+        try {
+          ticket.unload(false);
+          ticket.unload();
+        } catch (Throwable throwable) {
+          throwable.printStackTrace();
+        }
       } catch (TicketCreationException e) {
         if (channel != null) {
           e.toQuery(owner).send(channel, Messages.getErrorConsumer());

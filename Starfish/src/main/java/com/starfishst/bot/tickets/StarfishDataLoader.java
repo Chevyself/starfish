@@ -17,12 +17,15 @@ import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
 import com.starfishst.api.events.role.BotRoleUnloadedEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
+import com.starfishst.api.events.user.FreelancerRatingUnloadedEvent;
 import com.starfishst.bot.data.StarfishFreelancer;
+import com.starfishst.bot.data.StarfishFreelancerRating;
 import com.starfishst.bot.data.StarfishPermission;
 import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishRole;
@@ -31,6 +34,7 @@ import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.bot.data.messages.offer.OfferMessage;
 import com.starfishst.bot.tickets.deserializers.ClaimOrderDeserializer;
 import com.starfishst.bot.tickets.deserializers.OfferDeserializer;
+import com.starfishst.bot.tickets.deserializers.ReviewFreelancerDeserializer;
 import com.starfishst.bot.tickets.deserializers.TicketPanelDeserializer;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import java.util.ArrayList;
@@ -39,10 +43,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import me.googas.commons.Lots;
-import me.googas.commons.cache.Cache;
-import me.googas.commons.cache.ICatchable;
+import me.googas.commons.cache.thread.Cache;
+import me.googas.commons.cache.thread.ICatchable;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import me.googas.commons.maps.Maps;
@@ -73,6 +79,8 @@ public class StarfishDataLoader implements StarfishLoader {
   @NotNull private final MongoCollection<Document> roles;
   /** The collection to work with responsive messages */
   @NotNull private final MongoCollection<Document> messages;
+  /** The collection that contains the ratings of freelancers */
+  @NotNull private final MongoCollection<Document> ratings;
   /** The deserializers to get the responsive messages */
   @NotNull
   private final HashMap<String, StarfishMessageDeserializer<?>> deserializers = new HashMap<>();
@@ -94,10 +102,12 @@ public class StarfishDataLoader implements StarfishLoader {
     this.users = this.database.getCollection("users");
     this.roles = this.database.getCollection("roles");
     this.messages = this.database.getCollection("messages");
+    this.ratings = this.database.getCollection("ratings");
     this.ping();
     deserializers.put("claim-order", new ClaimOrderDeserializer());
     deserializers.put("ticket-panel", new TicketPanelDeserializer());
     deserializers.put("offer", new OfferDeserializer());
+    deserializers.put("review", new ReviewFreelancerDeserializer());
   }
 
   /**
@@ -137,6 +147,32 @@ public class StarfishDataLoader implements StarfishLoader {
   }
 
   /**
+   * Get an starfish user from a document query
+   *
+   * @param query the document query
+   * @return the starfish user
+   */
+  @Nullable
+  public StarfishFreelancerRating getFreelancerRating(@NotNull Document query) {
+    Document first = this.ratings.find(query).first();
+    if (first != null) {
+      Map<Long, Integer> map = new TreeMap<>();
+      if (first.get("ratings") != null) {
+        Document ratings = first.get("ratings", Document.class);
+        ratings.forEach(
+            (id, rate) -> {
+              try {
+                map.put(Long.valueOf(id), ratings.getInteger(id));
+              } catch (NumberFormatException ignored) {
+              }
+            });
+      }
+      return new StarfishFreelancerRating(first.getLong("id"), map);
+    }
+    return null;
+  }
+
+  /**
    * Get a ticket from a query
    *
    * @param query the query of the ticket
@@ -160,7 +196,7 @@ public class StarfishDataLoader implements StarfishLoader {
       if (first.get("freelancer") != null) {
         BotUser user = this.getStarfishUser(first.getLong("freelancer"));
         if (!user.isFreelancer()) {
-          user = new StarfishFreelancer(user);
+          user = StarfishFreelancer.promote(user);
         }
         usersMap.put(user, "freelancer");
       }
@@ -304,6 +340,32 @@ public class StarfishDataLoader implements StarfishLoader {
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketUnloadedEvent(@NotNull TicketUnloadedEvent event) {
     this.saveTicket(event.getTicket());
+  }
+
+  /**
+   * Listens to when the rating of a freelancer is unloaded
+   *
+   * @param event the event of the rating of a freelancer being unloaded
+   */
+  @Listener(priority = ListenPriority.HIGHEST)
+  public void onFreelancerRatingUnloaded(@NotNull FreelancerRatingUnloadedEvent event) {
+    FreelancerRating rating = event.getRating();
+    Document document = new Document("id", rating.getId());
+    Document ratings = new Document();
+    rating
+        .getMap()
+        .forEach(
+            (key, value) -> {
+              ratings.append(String.valueOf(key), value);
+            });
+    document.append("ratings", ratings);
+    Document query = new Document("id", rating.getId());
+    Document first = this.ratings.find(query).first();
+    if (first != null) {
+      this.ratings.replaceOne(query, document);
+    } else {
+      this.ratings.insertOne(document);
+    }
   }
 
   /**
@@ -509,8 +571,7 @@ public class StarfishDataLoader implements StarfishLoader {
   @Nullable
   public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
     StarfishResponsiveMessage message =
-        Cache.getCatchable(
-            StarfishResponsiveMessage.class, catchable -> catchable.getId() == messageId);
+        Cache.get(StarfishResponsiveMessage.class, catchable -> catchable.getId() == messageId);
     if (message != null) {
       return message.refresh();
     }
@@ -529,8 +590,7 @@ public class StarfishDataLoader implements StarfishLoader {
 
   @Override
   public @Nullable Ticket getTicket(long id) {
-    StarfishTicket ticket =
-        Cache.getCatchable(StarfishTicket.class, catchable -> catchable.getId() == id);
+    StarfishTicket ticket = Cache.get(StarfishTicket.class, catchable -> catchable.getId() == id);
     if (ticket != null) {
       return ticket;
     }
@@ -540,7 +600,7 @@ public class StarfishDataLoader implements StarfishLoader {
   @Override
   public @Nullable Ticket getTicketByChannel(long channelId) {
     StarfishTicket ticket =
-        Cache.getCatchable(
+        Cache.get(
             StarfishTicket.class,
             catchable -> {
               TextChannel channel = catchable.getTextChannel();
@@ -554,7 +614,7 @@ public class StarfishDataLoader implements StarfishLoader {
 
   @Override
   public @NotNull BotUser getStarfishUser(long id) {
-    BotUser user = Cache.getCatchable(StarfishUser.class, catchable -> catchable.getId() == id);
+    BotUser user = Cache.get(StarfishUser.class, catchable -> catchable.getId() == id);
     if (user != null) {
       return user;
     }
@@ -569,7 +629,7 @@ public class StarfishDataLoader implements StarfishLoader {
 
   @Override
   public @NotNull BotRole getStarfishRole(long id) {
-    BotRole role = Cache.getCatchable(StarfishRole.class, catchable -> catchable.getId() == id);
+    BotRole role = Cache.get(StarfishRole.class, catchable -> catchable.getId() == id);
     if (role != null) {
       return role;
     }
@@ -625,6 +685,19 @@ public class StarfishDataLoader implements StarfishLoader {
   public void deleteMessage(@NotNull ResponsiveMessage message) {
     Document query = new Document("id", message.getId());
     this.messages.deleteOne(query);
+  }
+
+  @Override
+  public @NotNull StarfishFreelancerRating getRating(long id) {
+    StarfishFreelancerRating rating =
+        Cache.get(StarfishFreelancerRating.class, catchable -> catchable.getId() == id);
+    if (rating != null) return rating;
+    rating = this.getFreelancerRating(new Document("id", id));
+    if (rating != null) {
+      return rating;
+    } else {
+      return new StarfishFreelancerRating(id, new TreeMap<>());
+    }
   }
 
   @SubscribeEvent

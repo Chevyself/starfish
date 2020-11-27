@@ -8,11 +8,12 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import me.googas.commons.Strings;
-import me.googas.commons.cache.ICatchable;
+import me.googas.commons.cache.thread.ICatchable;
 import me.googas.commons.maps.Maps;
 import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.entities.Member;
@@ -113,13 +114,49 @@ public interface Ticket extends ICatchable {
   TicketType getTicketType();
 
   /**
-   * Get the users inside the ticket. The map shows the user and its role in the ticket: 'user' or
-   * 'freelancer'
+   * Get the complete information from a ticket
    *
-   * @return a map of users inside the ticket
+   * @param locale the locale that will read the ticket information
+   * @param appendUsers whether the users of the ticket must be added in the information
+   * @return the complete information of a ticket
    */
   @NotNull
-  HashMap<BotUser, String> getUsers();
+  default EmbedQuery toCompleteInformation(@NotNull LocaleFile locale, boolean appendUsers) {
+    Map<String, String> placeholders = this.getPlaceholders();
+    LinkedHashMap<String, String> fields = new LinkedHashMap<>();
+
+    this.getDetails().toStringMap().forEach(fields::put);
+    if (appendUsers) {
+      StringBuilder usersBuilder = Strings.getBuilder();
+      this.getUsers()
+          .forEach(
+              (ticketUser, role) -> {
+                Member member = ticketUser.getMember();
+                if (member != null) {
+                  usersBuilder
+                      .append(member.getAsMention())
+                      .append(" role: ")
+                      .append(role)
+                      .append("\n");
+                } else {
+                  usersBuilder
+                      .append(ticketUser.getId())
+                      .append(" role: ")
+                      .append(role)
+                      .append("\n");
+                }
+              });
+      fields.put("users", usersBuilder.toString());
+    }
+    EmbedQuery embedQuery =
+        Messages.build(
+            locale.get("ticket-info.title", placeholders),
+            locale.get("ticket-info.description", placeholders),
+            ResultType.GENERIC,
+            locale);
+    fields.forEach((key, value) -> embedQuery.getEmbedBuilder().addField(key, value, true));
+    return embedQuery;
+  }
 
   /**
    * Get the details of the ticket
@@ -168,13 +205,22 @@ public interface Ticket extends ICatchable {
   }
 
   /**
+   * Get the users inside the ticket. The map shows the user and its role in the ticket: 'user' or
+   * 'freelancer'
+   *
+   * @return a map of users inside the ticket
+   */
+  @NotNull
+  Map<BotUser, String> getUsers();
+
+  /**
    * Get the placeholders of this ticket for messages
    *
    * @return the map of placeholders
    */
   @NotNull
-  default HashMap<String, String> getPlaceholders() {
-    HashMap<String, String> placeholders =
+  default Map<String, String> getPlaceholders() {
+    Map<String, String> placeholders =
         Maps.builder("id", String.valueOf(this.getId()))
             .append("type", this.getTicketType().toString().toLowerCase())
             .append("status", this.getTicketStatus().toString().toLowerCase())
@@ -189,51 +235,6 @@ public interface Ticket extends ICatchable {
       placeholders.put("channel", channel.getAsMention());
     }
     return placeholders;
-  }
-
-  /**
-   * Get the complete information from a ticket
-   *
-   * @param locale the locale that will read the ticket information
-   * @param appendUsers whether the users of the ticket must be added in the information
-   * @return the complete information of a ticket
-   */
-  @NotNull
-  default EmbedQuery toCompleteInformation(@NotNull LocaleFile locale, boolean appendUsers) {
-    HashMap<String, String> placeholders = this.getPlaceholders();
-    LinkedHashMap<String, String> fields = new LinkedHashMap<>();
-
-    this.getDetails().toStringMap().forEach(fields::put);
-    if (appendUsers) {
-      StringBuilder usersBuilder = Strings.getBuilder();
-      this.getUsers()
-          .forEach(
-              (ticketUser, role) -> {
-                Member member = ticketUser.getMember();
-                if (member != null) {
-                  usersBuilder
-                      .append(member.getAsMention())
-                      .append(" role: ")
-                      .append(role)
-                      .append("\n");
-                } else {
-                  usersBuilder
-                      .append(ticketUser.getId())
-                      .append(" role: ")
-                      .append(role)
-                      .append("\n");
-                }
-              });
-      fields.put("users", usersBuilder.toString());
-    }
-    EmbedQuery embedQuery =
-        Messages.build(
-            locale.get("ticket-info.title", placeholders),
-            locale.get("ticket-info.description", placeholders),
-            ResultType.GENERIC,
-            locale);
-    fields.forEach((key, value) -> embedQuery.getEmbedBuilder().addField(key, value, true));
-    return embedQuery;
   }
 
   /**
@@ -270,5 +271,36 @@ public interface Ticket extends ICatchable {
       }
     }
     return size;
+  }
+
+  /**
+   * Get the freelancer operating in this ticket
+   *
+   * @return the freelancers on this ticket
+   */
+  @NotNull
+  default Collection<BotUser> getFreelancers() {
+    ArrayList<BotUser> freelancers = new ArrayList<>();
+    this.getUsers()
+        .forEach(
+            (user, role) -> {
+              if (role.equalsIgnoreCase("freelancer")) freelancers.add(user);
+            });
+    return freelancers;
+  }
+
+  /**
+   * Get the first freelancer operating on this ticket
+   *
+   * @return the first freelancer
+   */
+  @NotNull
+  default BotUser getFreelancer() {
+    if (!this.getFreelancers().isEmpty()) {
+      for (BotUser freelancer : this.getFreelancers()) {
+        return freelancer;
+      }
+    }
+    throw new IllegalStateException("There's no freelancer on this ticket");
   }
 }

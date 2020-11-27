@@ -61,7 +61,11 @@ public class ChannelsCommands {
       for (IMentionable mentionable : mentions) {
         if (mentionable instanceof Member) {
           BotUser starfishUser = loader.getStarfishUser(mentionable.getIdLong());
-          ticket.addUser(starfishUser, "customer");
+          if (starfishUser.isFreelancer()) {
+            ticket.addUser(starfishUser, "freelancer");
+          } else {
+            ticket.addUser(starfishUser, "customer");
+          }
         } else {
           if (context.hasFlag("-v")) {
             if (mentionable instanceof IPermissionHolder) {

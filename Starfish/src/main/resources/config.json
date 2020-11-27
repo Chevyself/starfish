@@ -34,7 +34,8 @@
     "cleaner": {
       "preferences": {
         "delete-uncompleted-ticket-channels": true,
-        "time-to-announce-deletion": ["24m", "20m", "15m", "10m", "5m", "1m", "30s", "15s", "5s"]
+        "time-to-announce-deletion": ["24m", "20m", "15m", "10m", "5m", "1m", "30s", "15s", "5s"],
+        "to-delete-ticket": "25m"
       }
     },
     "announcer": {

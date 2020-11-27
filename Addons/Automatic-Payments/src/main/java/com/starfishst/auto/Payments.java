@@ -5,17 +5,7 @@ import com.paypal.api.payments.PaymentExecution;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
-import com.starfishst.bot.oldconfig.Configuration;
-import com.starfishst.bot.oldconfig.PaymentsConfiguration;
-import com.starfishst.bot.oldconfig.language.Lang;
-import com.starfishst.bot.oldtickets.TicketManager;
-import com.starfishst.bot.oldtickets.type.Ticket;
-import com.starfishst.bot.util.Console;
-import com.starfishst.bot.util.OldMessages;
-import com.starfishst.bot.util.Tickets;
-import com.starfishst.core.utils.Strings;
-import com.starfishst.core.utils.files.CoreFiles;
-import com.starfishst.core.utils.maps.Maps;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +14,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
+import com.starfishst.api.data.loader.TicketManager;
+import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.utility.console.Console;
+import me.googas.commons.CoreFiles;
+import me.googas.commons.Strings;
+import me.googas.commons.maps.Maps;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -39,6 +37,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.security.auth.login.Configuration;
+
 /**
  * This class handles all the requests made to the server from PayPal
  *
@@ -52,10 +52,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class Payments implements ErrorController, WebMvcConfigurer {
 
   /** The pages and their html */
-  @NotNull private static final HashMap<String, String> pages = new HashMap<>();
+  @NotNull private static final Map<String, String> pages = new HashMap<>();
   /** The configuration for payments */
   @NotNull
-  private static final PaymentsConfiguration config = Configuration.getInstance().getPayments();
+  private static final PaymentsConfiguration config = new PaymentsConfiguration();
   /**
    * Initializes the spring listener
    *

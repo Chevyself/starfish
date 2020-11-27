@@ -11,8 +11,8 @@ import com.starfishst.bot.data.messages.creation.TicketCreatorMessage;
 import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.message.MessageQuery;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -36,7 +36,7 @@ public class TicketCreatorHandler implements StarfishEventHandler {
         && ticket.getTicketType() == TicketType.TICKET_CREATOR
         && owner != null) {
       LocaleFile locale = owner.getLocaleFile();
-      HashMap<String, String> placeholders = ticket.getPlaceholders();
+      Map<String, String> placeholders = ticket.getPlaceholders();
       MessageQuery query =
           Messages.build(
                   locale.get("ticket-creator.title", placeholders),

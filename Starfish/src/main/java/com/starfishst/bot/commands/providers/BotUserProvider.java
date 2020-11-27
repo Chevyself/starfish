@@ -22,7 +22,7 @@ public class BotUserProvider implements JdaArgumentProvider<BotUser> {
       throws ArgumentProviderException {
     Object user = context.getRegistry().fromString(s, User.class, context);
     if (user instanceof User) {
-      return Starfish.getLoader().getStarfishUser(context.getSender().getIdLong());
+      return Starfish.getLoader().getStarfishUser(((User) user).getIdLong());
     } else {
       throw new ArgumentProviderException("Provider did not return an user!");
     }

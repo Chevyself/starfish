@@ -6,7 +6,8 @@ import com.starfishst.api.events.role.BotRoleLoadedEvent;
 import com.starfishst.api.events.role.BotRoleUnloadedEvent;
 import com.starfishst.bot.Starfish;
 import java.util.Set;
-import me.googas.commons.cache.Catchable;
+import me.googas.commons.cache.thread.Catchable;
+import me.googas.commons.time.Time;
 import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link BotRole} */
@@ -24,9 +25,9 @@ public class StarfishRole extends Catchable implements BotRole {
    * @param permissions the permissions that the role has
    */
   public StarfishRole(long id, Set<PermissionStack> permissions) {
-    super(Starfish.getConfiguration().toUnloadUser());
     this.id = id;
     this.permissions = permissions;
+    this.addToCache();
     new BotRoleLoadedEvent(this);
   }
 
@@ -36,6 +37,11 @@ public class StarfishRole extends Catchable implements BotRole {
   @Override
   public void onRemove() {
     new BotRoleUnloadedEvent(this);
+  }
+
+  @Override
+  public @NotNull Time getToRemove() {
+    return Starfish.getConfiguration().toUnloadUser();
   }
 
   @Override

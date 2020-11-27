@@ -10,8 +10,9 @@ import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import me.googas.commons.Lots;
-import me.googas.commons.cache.ICatchable;
+import me.googas.commons.cache.thread.ICatchable;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -27,12 +28,12 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    * Get the complete information of the user
    *
    * @param user the user that will read the information
-   * @return the complete information of the suer
+   * @return the complete information of the user
    */
   @NotNull
   default EmbedQuery toCompleteInformation(@NotNull BotUser user) {
     LocaleFile locale = user.getLocaleFile();
-    HashMap<String, String> placeholders = this.getPlaceholders();
+    Map<String, String> placeholders = this.getPlaceholders();
     EmbedQuery embedQuery =
         Messages.build(
             locale.get("user-info.title", placeholders),
@@ -52,12 +53,20 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
                 }
               }
             });
+    fields.put("Rating", this.getRating().getReadable(user.getLocaleFile()));
     fields.forEach(
         (key, value) -> {
           embedQuery.getEmbedBuilder().addField(key, value, true);
         });
     return embedQuery;
   }
+
+  /**
+   * Get the rating of the freelancer
+   *
+   * @return the rating of the freelancer
+   */
+  FreelancerRating getRating();
 
   /**
    * Get the user as a discord mention
@@ -141,7 +150,6 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    */
   @Nullable
   default Member getMember() {
-    JDA jda = Starfish.getConnection().getJda();
     Guild guild = Starfish.getDiscordConfiguration().getGuild();
     if (guild != null) {
       return guild.getMemberById(this.getId());
@@ -180,7 +188,7 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    * @return the placeholders of the user
    */
   @NotNull
-  default HashMap<String, String> getPlaceholders() {
+  default Map<String, String> getPlaceholders() {
     return Maps.builder("id", String.valueOf(this.getId()))
         .append("mention", this.getMention())
         .append("name", this.getName())

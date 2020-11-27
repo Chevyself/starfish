@@ -3,8 +3,7 @@ package com.starfishst.bot.handlers.misc;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.user.BotUser;
-import com.starfishst.api.events.tickets.TicketSecondPassEvent;
-import com.starfishst.api.events.tickets.TicketUnloadedEvent;
+import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.console.Console;
 import com.starfishst.bot.Starfish;
@@ -13,58 +12,53 @@ import com.starfishst.jda.result.ResultType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TimerTask;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import me.googas.commons.maps.Maps;
 import me.googas.commons.time.Time;
+import me.googas.commons.time.Unit;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 
 /** Cleans the discord server from unloaded tickets, etc. */
-public class CleanerHandler implements StarfishEventHandler {
+public class CleanerHandler extends TimerTask implements StarfishEventHandler {
 
-  /**
-   * Listens for the ticket being unloaded to check if it was creating to set it as closed and
-   * delete its channel if the preference is set as so
-   *
-   * @param event the event of a ticket being unloaded
-   */
-  @Listener(priority = ListenPriority.LOWEST)
-  public void onTicketUnloadedEvent(TicketUnloadedEvent event) {
-    Ticket ticket = event.getTicket();
-    if (ticket.getTicketStatus() == TicketStatus.CREATING) {
-      ticket.setTicketStatus(TicketStatus.CLOSED);
-      TextChannel channel = ticket.getTextChannel();
-      if (channel != null
-          && this.getPreferences()
-              .getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)) {
-        Ticket child = Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId());
-        if (child == ticket) {
-          child = null;
-        }
-        if (child == null || !channel.equals(child.getTextChannel())) {
-          channel.delete().queue();
-          ticket.setTextChannel(null);
-        }
-      }
-    }
+  /** The map that contains the ticket id and the time left */
+  @NotNull private final Map<Long, Long> map = new HashMap<>();
+
+  public CleanerHandler() {
+    Starfish.TIMER.schedule(this, 0, 1000);
   }
 
-  /**
-   * Listens for the seconds passed in a ticket to announce that it will be deleted
-   *
-   * @param event the event of a second passed for a ticket to be unloaded
-   */
-  @Listener(priority = ListenPriority.MEDIUM)
-  public void onTicketSecondPass(TicketSecondPassEvent event) {
+  public void unload(@NotNull Ticket ticket) {
+    ticket.setTicketStatus(TicketStatus.CLOSED);
+    /*
+    if (channel != null
+            && this.getPreferences()
+            .getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)) {
+      Ticket child = Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId());
+      if (child == ticket) {
+        child = null;
+      }
+      if (child == null || !channel.equals(child.getTextChannel())) {
+        channel.delete().queue();
+        ticket.setTextChannel(null);
+      }
+    }
+     */
+    this.map.remove(ticket.getId());
+  }
+
+  public void onSecondPass(@NotNull Ticket ticket, @NotNull Time time) {
     if (this.getPreferences().getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)
-        && event.getTicket().getTicketStatus() == TicketStatus.CREATING) {
-      if (this.containsTime(event.getTimeLeft())) {
-        BotUser owner = event.getTicket().getOwner();
-        TextChannel channel = event.getTicket().getTextChannel();
+        && ticket.getTicketStatus() == TicketStatus.CREATING) {
+      if (this.containsTime(time)) {
+        BotUser owner = ticket.getOwner();
+        TextChannel channel = ticket.getTextChannel();
         if (owner != null && channel != null) {
-          HashMap<String, String> placeholders =
-              Maps.singleton("time", event.getTimeLeft().toEffectiveString());
+          Map<String, String> placeholders = Maps.singleton("time", time.toEffectiveString());
           Messages.build(
                   owner.getLocaleFile().get("cleaner.delete-time.title", placeholders),
                   owner.getLocaleFile().get("cleaner.delete-time.description", placeholders),
@@ -74,6 +68,23 @@ public class CleanerHandler implements StarfishEventHandler {
         }
       }
     }
+  }
+
+  @Listener(priority = ListenPriority.HIGHEST)
+  public void onTicketStatusUpdated(TicketStatusUpdatedEvent event) {
+    if (event.isCancelled()) return;
+    if (event.getStatus() == TicketStatus.CREATING) {
+      this.map.put(event.getTicket().getId(), this.getTime().getValue(Unit.SECONDS));
+    }
+    if (event.getStatus() != TicketStatus.CREATING) {
+      this.map.remove(event.getTicket().getId());
+    }
+  }
+
+  @NotNull
+  public Time getTime() {
+    return Time.fromString(
+        this.getPreferences().getValueOr("to-delete-ticket", String.class, "3m"));
   }
 
   /**
@@ -89,6 +100,24 @@ public class CleanerHandler implements StarfishEventHandler {
       }
     }
     return false;
+  }
+
+  @Override
+  public void run() {
+    HashMap<Long, Long> copy = new HashMap<>(this.map);
+    copy.forEach(
+        (id, secondsLeft) -> {
+          long left = secondsLeft - 1;
+          Ticket ticket = Starfish.getLoader().getTicket(id);
+          this.map.put(id, left);
+          if (ticket != null && ticket.getTicketStatus() == TicketStatus.CREATING) {
+            if (left > 0) {
+              this.onSecondPass(ticket, new Time(left, Unit.SECONDS));
+            } else {
+              this.unload(ticket);
+            }
+          }
+        });
   }
 
   /**

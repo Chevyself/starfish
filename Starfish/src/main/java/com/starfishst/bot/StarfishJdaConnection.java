@@ -17,6 +17,9 @@ public class StarfishJdaConnection {
   /** The jda instance used by the bot. */
   @Nullable private JDA jda;
 
+  /** Whether getting the token from config failed */
+  boolean config = false;
+
   /**
    * Get a token from the input of the console
    *
@@ -54,10 +57,26 @@ public class StarfishJdaConnection {
         jda = this.connect(token);
       } catch (LoginException e) {
         Console.info("Discord authentication failed");
-        token = getTokenFromInput(new Scanner(System.in));
+        Console.info("Getting token from config");
+        token = getToken();
       }
     }
     return jda;
+  }
+
+  /**
+   * Attempts to get the token from either config or input
+   *
+   * @return the token
+   */
+  private String getToken() {
+    if (config) {
+      Console.info("Getting from configuration failed trying to get from input");
+      return getTokenFromInput(new Scanner(System.in));
+    } else {
+      config = true;
+      return Starfish.getConfiguration().getToken();
+    }
   }
 
   /**

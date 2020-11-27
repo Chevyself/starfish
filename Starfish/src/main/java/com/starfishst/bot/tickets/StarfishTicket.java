@@ -13,8 +13,8 @@ import com.starfishst.api.events.tickets.TicketSecondPassEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.bot.Starfish;
-import java.util.HashMap;
-import me.googas.commons.cache.Catchable;
+import java.util.Map;
+import me.googas.commons.cache.thread.Catchable;
 import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -30,7 +30,7 @@ public class StarfishTicket extends Catchable implements Ticket {
   /** The type of ticket */
   @NotNull private final TicketType type;
   /** The map of users inside the ticket */
-  @NotNull private final HashMap<BotUser, String> users;
+  @NotNull private final Map<BotUser, String> users;
 
   /** The details of the ticket */
   @NotNull private final StarfishTicketDetails details;
@@ -56,15 +56,15 @@ public class StarfishTicket extends Catchable implements Ticket {
       @NotNull TicketType type,
       @NotNull StarfishTicketDetails details,
       @NotNull TicketStatus status,
-      @NotNull HashMap<BotUser, String> users,
+      @NotNull Map<BotUser, String> users,
       long channel) {
-    super(Starfish.getConfiguration().toUnloadTickets());
     this.id = id;
     this.type = type;
     this.details = details;
     this.status = status;
     this.users = users;
     this.channel = channel;
+    this.addToCache();
     new TicketLoadedEvent(this).call();
   }
 
@@ -79,6 +79,11 @@ public class StarfishTicket extends Catchable implements Ticket {
   }
 
   @Override
+  public @NotNull Time getToRemove() {
+    return Starfish.getConfiguration().toUnloadTickets();
+  }
+
+  @Override
   public long getId() {
     return this.id;
   }
@@ -89,7 +94,7 @@ public class StarfishTicket extends Catchable implements Ticket {
   }
 
   @Override
-  public @NotNull HashMap<BotUser, String> getUsers() {
+  public @NotNull Map<BotUser, String> getUsers() {
     return this.users;
   }
 

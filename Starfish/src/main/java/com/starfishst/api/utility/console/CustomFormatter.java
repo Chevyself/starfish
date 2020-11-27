@@ -1,5 +1,8 @@
 package com.starfishst.api.utility.console;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.logging.Formatter;
@@ -63,23 +66,22 @@ public class CustomFormatter extends Formatter {
     placeHolders.put("second", String.valueOf(date.getSecond()));
   }
 
+  @NotNull
+  private String getStackTrace(@NotNull Throwable throwable) {
+    Writer stringWriter = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(stringWriter);
+    throwable.printStackTrace(printWriter);
+    return stringWriter.toString();
+  }
+
   @Override
   public String format(@NotNull LogRecord record) {
-    HashMap<String, String> placeholders = getPlaceholders(record);
+    HashMap<String, String> placeholders = this.getPlaceholders(record);
     if (record.getThrown() != null) {
-      StringBuilder builder = Strings.getBuilder();
-      for (StackTraceElement element : record.getThrown().getStackTrace()) {
-        builder.append(element.toString()).append("\n");
-      }
-      if (record.getThrown().getCause() != null) {
-        builder.append(record.getThrown().getCause().getMessage()).append("\n");
-      }
-      for (StackTraceElement element : record.getThrown().getCause().getStackTrace()) {
-        builder.append(element.toString()).append("\n");
-      }
-      placeholders.put("message", record.getThrown().getMessage());
-      placeholders.put("stack", "\n" + builder.toString());
+      String message = record.getThrown().getMessage();
+      placeholders.put("message", message == null ? "No information provided" : message);
+      placeholders.put("stack", this.getStackTrace(record.getThrown()));
     }
-    return Strings.buildMessage(format, placeholders);
+    return Strings.buildMessage(this.format, placeholders);
   }
 }

@@ -10,6 +10,8 @@ import com.starfishst.bot.data.StarfishFreelancer;
 import com.starfishst.bot.data.StarfishUser;
 import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.bot.data.messages.offer.OfferMessage;
+import com.starfishst.bot.data.messages.rating.ReviewFreelancer;
+import com.starfishst.bot.tickets.StarfishTicket;
 import com.starfishst.core.annotations.Multiple;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
@@ -18,8 +20,9 @@ import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.message.MessageQuery;
-import java.util.HashMap;
+import java.util.Map;
 import me.googas.commons.maps.Maps;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,9 +42,9 @@ public class FreelancerCommands {
       permission = @Perm(node = "starfish.promote"))
   public Result promote(
       BotUser sender, @Required(name = "user", description = "The user to promote") BotUser user) {
-    HashMap<String, @NotNull String> placeholders = user.getPlaceholders();
+    Map<String, @NotNull String> placeholders = user.getPlaceholders();
     if (!user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
-      new StarfishFreelancer(user);
+      StarfishFreelancer.promote(user);
       return new Result(sender.getLocaleFile().get("user.promoted", placeholders));
     } else {
       return new Result(sender.getLocaleFile().get("user.already-freelancer", placeholders));
@@ -61,7 +64,7 @@ public class FreelancerCommands {
       permission = @Perm(node = "starfish.demote"))
   public Result demote(
       BotUser sender, @Required(name = "user", description = "demote.desc") BotUser user) {
-    HashMap<String, @NotNull String> placeholders = user.getPlaceholders();
+    Map<String, @NotNull String> placeholders = user.getPlaceholders();
     if (user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
       new StarfishUser(user);
       return new Result(sender.getLocaleFile().get("user.demoted", placeholders));
@@ -112,7 +115,7 @@ public class FreelancerCommands {
       if (ticket.getTicketStatus() == TicketStatus.CLOSED && channel == null) {
         return new Result(locale.get("quote.closed", ticket.getPlaceholders()));
       } else if (channel != null && ticket.getTicketStatus() == TicketStatus.OPEN) {
-        HashMap<String, String> placeholders = Maps.singleton("offer", strings.getString());
+        Map<String, String> placeholders = Maps.singleton("offer", strings.getString());
         BotUser owner = ticket.getOwner();
         if (owner != null) {
           MessageQuery query =
@@ -136,5 +139,33 @@ public class FreelancerCommands {
       }
     }
     return new Result(locale.get("quote.sent", ticket.getPlaceholders()));
+  }
+
+  @Command(
+      aliases = "review",
+      description = "freelancer.review.desc",
+      permission = @Perm(node = "starfish.review"))
+  public Result review(LocaleFile locale, Ticket ticket) {
+    if (!(ticket instanceof StarfishTicket))
+      return new Result(ResultType.ERROR, "This ticket is not an starfish ticket");
+    BotUser owner = ticket.getOwner();
+    if (owner == null) return new Result(ResultType.ERROR, locale.get("review.ticket-no-user"));
+    Member member = owner.getMember();
+    if (member == null) return new Result(ResultType.ERROR, locale.get("review.ticket-no-user"));
+    if (!ticket.hasFreelancers())
+      return new Result(ResultType.ERROR, locale.get("review.ticket-no-freelancer"));
+    BotUser freelancer = ticket.getFreelancer();
+    Map<String, String> placeholders = freelancer.getPlaceholders();
+    placeholders.put("user", member.getAsMention());
+    LocaleFile ownerLocale = owner.getLocaleFile();
+      return new Result(
+        Messages.build(
+            ownerLocale.get("review.title", placeholders),
+            ownerLocale.get("review.description", placeholders),
+            ResultType.GENERIC,
+            owner),
+        msg -> {
+          new ReviewFreelancer(msg, freelancer.getId(), owner.getId());
+        });
   }
 }

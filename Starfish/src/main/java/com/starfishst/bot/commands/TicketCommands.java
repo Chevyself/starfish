@@ -18,6 +18,7 @@ import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import me.googas.commons.Strings;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -68,7 +69,7 @@ public class TicketCommands {
     TextChannel channel = type.getChannel();
     if (channel != null) {
       Starfish.getHandler(TicketAnnouncementHandler.class).announce(channel, user, ticket);
-      HashMap<String, String> placeholders = ticket.getPlaceholders();
+      Map<String, String> placeholders = ticket.getPlaceholders();
       placeholders.put("announce-channel", channel.getAsMention());
       return new Result(user.getLocaleFile().get("ticket.announced", placeholders));
     } else {

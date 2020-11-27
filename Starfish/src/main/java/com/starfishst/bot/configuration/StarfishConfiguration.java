@@ -17,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 /** An implementation for {@link com.starfishst.api.configuration.Configuration} */
 public class StarfishConfiguration implements Configuration {
 
+  /** The token to use to connect with discord */
+  @NotNull private final String token;
+
   /** The default lang */
   @NotNull private final String lang;
 
@@ -59,6 +62,7 @@ public class StarfishConfiguration implements Configuration {
   @Deprecated
   public StarfishConfiguration() {
     this(
+        "Tolen",
         "en",
         0,
         new ArrayList<>(),
@@ -73,6 +77,7 @@ public class StarfishConfiguration implements Configuration {
   /**
    * Create the starfish configuration
    *
+   * @param token the token to connect with discord
    * @param lang the default lang that the bot runs at
    * @param total the total of tickets created
    * @param fees the fees that can be applied
@@ -84,6 +89,7 @@ public class StarfishConfiguration implements Configuration {
    * @param handlersPreferences the preferences for handlers
    */
   public StarfishConfiguration(
+      @NotNull String token,
       @NotNull String lang,
       long total,
       @NotNull List<Fee> fees,
@@ -93,6 +99,7 @@ public class StarfishConfiguration implements Configuration {
       @NotNull StarfishMongoConfiguration mongo,
       @NotNull ManagerOptions options,
       @NotNull HashMap<String, StarfishHandlerValuesMap> handlersPreferences) {
+    this.token = token;
     this.lang = lang;
     this.total = total;
     this.fees = fees;
@@ -112,6 +119,7 @@ public class StarfishConfiguration implements Configuration {
   @NotNull
   public static StarfishConfiguration fallback() {
     return new StarfishConfiguration(
+        "token",
         "en",
         0,
         new ArrayList<>(),
@@ -136,6 +144,16 @@ public class StarfishConfiguration implements Configuration {
   @Override
   public @NotNull Collection<Fee> getFees() {
     return this.fees;
+  }
+
+  /**
+   * Get the token to connect with discord
+   *
+   * @return the token
+   */
+  @Override
+  public @NotNull String getToken() {
+    return this.token;
   }
 
   /**

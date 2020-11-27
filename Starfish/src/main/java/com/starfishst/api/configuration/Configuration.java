@@ -15,6 +15,14 @@ import org.jetbrains.annotations.NotNull;
 public interface Configuration {
 
   /**
+   * Get the token to connect with discord
+   *
+   * @return the token
+   */
+  @NotNull
+  String getToken();
+
+  /**
    * Get the default lang to which the bot will be running on
    *
    * @return the default lang

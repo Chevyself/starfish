@@ -2,7 +2,7 @@ package com.starfishst.api.data.messages;
 
 import com.starfishst.api.ValuesMap;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
-import me.googas.commons.cache.ICatchable;
+import me.googas.commons.cache.thread.ICatchable;
 import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link ResponsiveMessage} */

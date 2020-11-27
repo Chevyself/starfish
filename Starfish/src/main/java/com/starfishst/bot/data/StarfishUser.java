@@ -2,12 +2,14 @@ package com.starfishst.bot.data;
 
 import com.starfishst.api.PermissionStack;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.user.BotUserLoadedEvent;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.bot.Starfish;
 import java.util.Set;
-import me.googas.commons.cache.Catchable;
+import me.googas.commons.cache.thread.Catchable;
+import me.googas.commons.time.Time;
 import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link com.starfishst.api.data.user.BotUser} */
@@ -31,10 +33,10 @@ public class StarfishUser extends Catchable implements BotUser {
    */
   public StarfishUser(
       long id, @NotNull StarfishValuesMap preferences, Set<PermissionStack> permissions) {
-    super(Starfish.getConfiguration().toUnloadUser());
     this.id = id;
     this.preferences = preferences;
     this.permissions = permissions;
+    this.addToCache();
     new BotUserLoadedEvent(this).call();
   }
 
@@ -45,7 +47,6 @@ public class StarfishUser extends Catchable implements BotUser {
    * @throws IllegalArgumentException if the user is not a freelancer
    */
   public StarfishUser(@NotNull BotUser user) {
-    super(Starfish.getConfiguration().toUnloadUser());
     if (!user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
       throw new IllegalArgumentException(user + " is not a freelancer!");
     }
@@ -55,7 +56,11 @@ public class StarfishUser extends Catchable implements BotUser {
     this.getPreferences().removeValue("freelancer");
     this.getPreferences().removeValue("portfolio");
     new BotUserLoadedEvent(this).call();
-    user.unload(false);
+    try {
+      user.unload(false);
+    } catch (Throwable ignored) {
+    }
+    this.addToCache();
   }
 
   @Override
@@ -72,6 +77,16 @@ public class StarfishUser extends Catchable implements BotUser {
   @Override
   public void onRemove() {
     new BotUserUnloadedEvent(this).call();
+  }
+
+  @Override
+  public @NotNull Time getToRemove() {
+    return Starfish.getConfiguration().toUnloadUser();
+  }
+
+  @Override
+  public FreelancerRating getRating() {
+    return Starfish.getLoader().getRating(this.id);
   }
 
   @Override

@@ -4,6 +4,7 @@ import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import java.util.Collection;
 import org.jetbrains.annotations.NotNull;
@@ -63,4 +64,13 @@ public interface DataLoader {
    * @param message the message to delete
    */
   void deleteMessage(@NotNull ResponsiveMessage message);
+
+  /**
+   * Get the rating of a freelancer by its id
+   *
+   * @param id the id of the freelancer
+   * @return the rating of the freelancer
+   */
+  @NotNull
+  FreelancerRating getRating(long id);
 }
