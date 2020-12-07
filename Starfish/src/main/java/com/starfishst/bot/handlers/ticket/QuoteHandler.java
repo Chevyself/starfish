@@ -1,21 +1,21 @@
 package com.starfishst.bot.handlers.ticket;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.Starfish;
-import com.starfishst.bot.handlers.StarfishEventHandler;
 import me.googas.commons.Strings;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Handles quotes */
-public class QuoteHandler implements StarfishEventHandler {
+public class QuoteHandler implements StarfishHandler {
 
   /**
    * Listen to when a detail is added to a ticket and check if a quote can be created

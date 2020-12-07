@@ -1,17 +1,15 @@
 package com.starfishst.bot.data;
 
-import com.starfishst.api.PermissionStack;
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.role.BotRole;
-import com.starfishst.api.events.role.BotRoleLoadedEvent;
 import com.starfishst.api.events.role.BotRoleUnloadedEvent;
-import com.starfishst.bot.Starfish;
+import com.starfishst.api.permissions.PermissionStack;
 import java.util.Set;
-import me.googas.commons.cache.thread.Catchable;
+import lombok.NonNull;
 import me.googas.commons.time.Time;
-import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link BotRole} */
-public class StarfishRole extends Catchable implements BotRole {
+public class StarfishRole implements BotRole {
 
   /** The id of the role */
   private final long id;
@@ -27,12 +25,7 @@ public class StarfishRole extends Catchable implements BotRole {
   public StarfishRole(long id, Set<PermissionStack> permissions) {
     this.id = id;
     this.permissions = permissions;
-    this.addToCache();
-    new BotRoleLoadedEvent(this);
   }
-
-  @Override
-  public void onSecondPassed() {}
 
   @Override
   public void onRemove() {
@@ -40,7 +33,7 @@ public class StarfishRole extends Catchable implements BotRole {
   }
 
   @Override
-  public @NotNull Time getToRemove() {
+  public @NonNull Time getToRemove() {
     return Starfish.getConfiguration().toUnloadUser();
   }
 
@@ -50,7 +43,7 @@ public class StarfishRole extends Catchable implements BotRole {
   }
 
   @Override
-  public @NotNull Set<PermissionStack> getPermissions() {
+  public @NonNull Set<PermissionStack> getPermissions() {
     return this.permissions;
   }
 }

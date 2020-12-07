@@ -1,27 +1,27 @@
 package com.starfishst.bot.commands.providers;
 
+import com.starfishst.api.Starfish;
+import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.bot.Starfish;
-import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.providers.type.JdaArgumentProvider;
+import lombok.NonNull;
 import me.googas.commons.maps.Maps;
-import org.jetbrains.annotations.NotNull;
 
 /** Provides the registry with {@link Ticket}! */
 public class TicketProvider implements JdaArgumentProvider<Ticket> {
 
   @Override
-  public @NotNull Class<Ticket> getClazz() {
+  public @NonNull Class<Ticket> getClazz() {
     return Ticket.class;
   }
 
-  @NotNull
+  @NonNull
   @Override
-  public Ticket fromString(@NotNull String s, @NotNull CommandContext context)
+  public Ticket fromString(@NonNull String s, @NonNull CommandContext context)
       throws ArgumentProviderException {
-    StarfishLoader loader = Starfish.getLoader();
+    DataLoader loader = Starfish.getLoader();
     Object id = context.getRegistry().fromString(s, long.class, context);
     if (id instanceof Long) {
       Ticket ticket = loader.getTicket((long) id);

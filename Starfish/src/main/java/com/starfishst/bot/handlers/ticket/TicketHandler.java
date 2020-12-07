@@ -1,17 +1,16 @@
 package com.starfishst.bot.handlers.ticket;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.api.utility.console.Console;
-import com.starfishst.bot.Starfish;
-import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import com.starfishst.jda.utils.message.MessageQuery;
@@ -24,7 +23,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** A generic handler for tickets */
-public class TicketHandler implements StarfishEventHandler {
+public class TicketHandler implements StarfishHandler {
 
   /**
    * Listen when the status of a ticket is updated to apply some changes
@@ -67,9 +66,9 @@ public class TicketHandler implements StarfishEventHandler {
                     ResultType.GENERIC,
                     owner)
                 .send(channel);
-            channel.delete().queueAfter(classicTime.getValue(), classicTime.getUnit());
+            channel.delete().queueAfter(classicTime.getValue(), classicTime.getUnit().toTimeUnit());
           } catch (IllegalArgumentException e) {
-            Console.exception(e, timeString + " is not valid time");
+            Starfish.getFallback().process(e, timeString + " is not valid time");
           }
         }
       }
@@ -97,13 +96,9 @@ public class TicketHandler implements StarfishEventHandler {
           EmbedQuery query = user.toCompleteInformation(owner);
           LocaleFile locale = owner.getLocaleFile();
           if (user.isFreelancer()) {
-            query
-                .getEmbedBuilder()
-                .setTitle(locale.get("freelancer-joined-ticket.title", user.getPlaceholders()));
+            query.setTitle(locale.get("freelancer-joined-ticket.title", user.getPlaceholders()));
           } else {
-            query
-                .getEmbedBuilder()
-                .setTitle(locale.get("user-joined-ticket.title", user.getPlaceholders()));
+            query.setTitle(locale.get("user-joined-ticket.title", user.getPlaceholders()));
           }
           if (user.isFreelancer()) {
             MessageQuery message = query.getAsMessageQuery();
@@ -138,13 +133,9 @@ public class TicketHandler implements StarfishEventHandler {
           EmbedQuery query = user.toCompleteInformation(owner);
           LocaleFile locale = owner.getLocaleFile();
           if (user.isFreelancer()) {
-            query
-                .getEmbedBuilder()
-                .setTitle(locale.get("freelancer-left-ticket.title", user.getPlaceholders()));
+            query.setTitle(locale.get("freelancer-left-ticket.title", user.getPlaceholders()));
           } else {
-            query
-                .getEmbedBuilder()
-                .setTitle(locale.get("user-left-ticket.title", user.getPlaceholders()));
+            query.setTitle(locale.get("user-left-ticket.title", user.getPlaceholders()));
           }
           query.send(channel);
         }

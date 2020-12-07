@@ -1,22 +1,22 @@
 package com.starfishst.bot.commands.providers;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.user.BotUser;
-import com.starfishst.bot.Starfish;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.providers.type.JdaExtraArgumentProvider;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** Provides the command context with bot user when is a sender */
 public class BotUserSenderProvider implements JdaExtraArgumentProvider<BotUser> {
 
   @Override
-  public @NotNull Class<BotUser> getClazz() {
+  public @NonNull Class<BotUser> getClazz() {
     return BotUser.class;
   }
 
-  @NotNull
+  @NonNull
   @Override
-  public BotUser getObject(@NotNull CommandContext context) {
+  public BotUser getObject(@NonNull CommandContext context) {
     return Starfish.getLoader().getStarfishUser(context.getSender().getIdLong());
   }
 }

@@ -1,6 +1,6 @@
 package com.starfishst.bot.handlers.questions;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /**
  * This is actually not a question but send a information message to the ticket that is being
@@ -17,7 +17,7 @@ public class QuestionInformation extends Question {
    * @param limit the limit of the question
    */
   public QuestionInformation(
-      @NotNull String title, @NotNull String simple, @NotNull String description, int limit) {
+      @NonNull String title, @NonNull String simple, @NonNull String description, int limit) {
     super(title, simple, description, limit);
   }
 }

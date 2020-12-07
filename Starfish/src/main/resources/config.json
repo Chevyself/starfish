@@ -14,6 +14,7 @@
     "uri": "The uri for the mongo client",
     "database": "Starfish-Test-3"
   },
+  "prefix": "-",
   "commands": {
     "deleteCommands": true,
     "embedMessages": true,

@@ -1,22 +1,24 @@
 package com.starfishst.bot.handlers.questions;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.api.utility.console.Console;
-import com.starfishst.bot.handlers.StarfishEventHandler;
+import com.starfishst.bot.handlers.misc.CleanerHandler;
 import com.starfishst.jda.result.ResultType;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import lombok.NonNull;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.Lots;
 import me.googas.commons.events.ListenPriority;
@@ -25,27 +27,25 @@ import me.googas.commons.gson.GsonProvider;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** Handles questions tickets */
-public class QuestionsHandler implements StarfishEventHandler {
+public class QuestionsHandler implements StarfishHandler {
 
   /** The map of the ticket and the current question it is in */
-  @NotNull private final HashMap<Ticket, Integer> current = new HashMap<>();
+  @NonNull private final HashMap<Ticket, Integer> current = new HashMap<>();
 
   /** The loader to get users */
-  @NotNull private final DataLoader loader;
+  @NonNull private final DataLoader loader;
 
   /** The questions for each type of ticket */
-  @NotNull private final HashMap<TicketType, QuestionsConfiguration> questions;
+  @NonNull private final HashMap<TicketType, QuestionsConfiguration> questions;
 
   /**
    * Create the questions handler
    *
    * @param loader the loader to get users
    */
-  public QuestionsHandler(@NotNull DataLoader loader) {
+  public QuestionsHandler(@NonNull DataLoader loader) {
     this.loader = loader;
     this.questions = new HashMap<>();
     this.loadQuestions();
@@ -71,7 +71,6 @@ public class QuestionsHandler implements StarfishEventHandler {
             TicketType.QUOTE,
             this.questions.get(TicketType.ORDER)); // Copy the questions from orders
         reader.close();
-        Console.info("'" + type + ".json' was loaded");
         // TODO print that questions were loaded
       } catch (IOException e) {
         // TODO add fallback
@@ -86,9 +85,9 @@ public class QuestionsHandler implements StarfishEventHandler {
    * @param event the event of a ticket being loaded/created
    */
   @Listener(priority = ListenPriority.HIGHEST)
-  public void onTicketStatusUpdated(@NotNull TicketStatusUpdatedEvent event) {
+  public void onTicketStatusUpdated(@NonNull TicketStatusUpdatedEvent event) {
     if (!event.isCancelled() && event.getStatus() == TicketStatus.CREATING) {
-      Ticket ticket = event.getTicket().refresh();
+      Ticket ticket = this.refresh(event.getTicket());
       TextChannel channel = ticket.getTextChannel();
       QuestionsConfiguration questions = this.questions.get(ticket.getTicketType());
       BotUser owner = event.getTicket().getOwner();
@@ -114,7 +113,7 @@ public class QuestionsHandler implements StarfishEventHandler {
    * @param event the event of receiving a message
    */
   @SubscribeEvent
-  public void onMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+  public void onMessageReceived(@NonNull GuildMessageReceivedEvent event) {
     if (!event.getAuthor().isBot()) {
       Ticket ticket = this.getTicketByChannel(event.getChannel());
       if (ticket != null) {
@@ -150,22 +149,28 @@ public class QuestionsHandler implements StarfishEventHandler {
    * @param questions the questions that are being asked to the ticket
    */
   private void sendNextQuestion(
-      @NotNull GuildMessageReceivedEvent event,
-      @NotNull Ticket ticket,
-      @NotNull BotUser user,
-      @NotNull List<Question> questions) {
+      @NonNull GuildMessageReceivedEvent event,
+      @NonNull Ticket ticket,
+      @NonNull BotUser user,
+      @NonNull List<Question> questions) {
     Question current;
     this.current.put(ticket, this.current.get(ticket) + 1);
     if (this.current.get(ticket) >= questions.size()) {
-      ticket.refresh().setTicketStatus(TicketStatus.OPEN);
+      this.refresh(ticket).setTicketStatus(TicketStatus.OPEN);
       this.current.remove(ticket);
     } else {
-      current = questions.get(this.current.get(ticket.refresh()));
+      current = questions.get(this.current.get(this.refresh(ticket)));
       current.getQuery(user).send(event.getChannel());
       if (current instanceof QuestionInformation) {
         this.sendNextQuestion(event, ticket, user, questions);
       }
     }
+  }
+
+  /** @see CleanerHandler#refresh(Ticket) */
+  @NonNull
+  private Ticket refresh(@NonNull Ticket ticket) {
+    return Starfish.getHandler(CleanerHandler.class).refresh(ticket);
   }
 
   /**
@@ -174,7 +179,7 @@ public class QuestionsHandler implements StarfishEventHandler {
    * @param event the event of a ticket being unloaded
    */
   @Listener(priority = ListenPriority.HIGHEST)
-  public void onTicketUnloaded(@NotNull TicketUnloadedEvent event) {
+  public void onTicketUnloaded(@NonNull TicketUnloadedEvent event) {
     Ticket ticket = event.getTicket();
     this.current.remove(ticket);
   }
@@ -185,8 +190,7 @@ public class QuestionsHandler implements StarfishEventHandler {
    * @param channel the channel to get the ticket from
    * @return the ticket if found else null
    */
-  @Nullable
-  private Ticket getTicketByChannel(@NotNull TextChannel channel) {
+  private Ticket getTicketByChannel(@NonNull TextChannel channel) {
     for (Ticket ticket : this.current.keySet()) {
       TextChannel textChannel = ticket.getTextChannel();
       if (textChannel != null && textChannel.equals(channel)) {

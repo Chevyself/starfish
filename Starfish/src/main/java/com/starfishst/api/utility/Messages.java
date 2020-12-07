@@ -1,17 +1,19 @@
 package com.starfishst.api.utility;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.bot.Starfish;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedFactory;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Consumer;
+import lombok.NonNull;
+import me.googas.commons.Lots;
 import net.dv8tion.jda.api.entities.Message;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class Messages {
 
@@ -28,15 +30,15 @@ public class Messages {
    * @param inline whether the fields must be inline
    * @return the embed query
    */
-  @NotNull
+  @NonNull
   public static EmbedQuery build(
-      @Nullable String title,
-      @Nullable String description,
-      @Nullable String thumbnail,
-      @Nullable String image,
-      @Nullable String footer,
-      @Nullable ResultType type,
-      @Nullable LinkedHashMap<String, String> fields,
+      String title,
+      String description,
+      String thumbnail,
+      String image,
+      String footer,
+      ResultType type,
+      LinkedHashMap<String, String> fields,
       boolean inline) {
     return EmbedFactory.newEmbed(
         title,
@@ -55,8 +57,8 @@ public class Messages {
    * @param locale the locale to get the thumbnail from
    * @return the thumbnail for the user
    */
-  @NotNull
-  public static String getThumbnail(@NotNull LocaleFile locale) {
+  @NonNull
+  public static String getThumbnail(@NonNull LocaleFile locale) {
     return locale.get("thumbnail-url");
   }
 
@@ -66,8 +68,8 @@ public class Messages {
    * @param locale the locale to get the thumbnail from
    * @return the thumbnail for the user
    */
-  @NotNull
-  public static String getFooter(@NotNull LocaleFile locale) {
+  @NonNull
+  public static String getFooter(@NonNull LocaleFile locale) {
     return locale.get("footer");
   }
 
@@ -81,10 +83,10 @@ public class Messages {
    * @return the embed query
    */
   public static EmbedQuery build(
-      @NotNull String title,
-      @NotNull String description,
-      @NotNull ResultType type,
-      @NotNull LocaleFile locale) {
+      @NonNull String title,
+      @NonNull String description,
+      @NonNull ResultType type,
+      @NonNull LocaleFile locale) {
     return Messages.build(
         title,
         description,
@@ -105,11 +107,12 @@ public class Messages {
    * @param user the user that will read the message
    * @return the embed query
    */
+  @NonNull
   public static EmbedQuery build(
-      @NotNull String title,
-      @NotNull String description,
-      @NotNull ResultType type,
-      @NotNull BotUser user) {
+      @NonNull String title,
+      @NonNull String description,
+      @NonNull ResultType type,
+      @NonNull BotUser user) {
     return Messages.build(title, description, type, user.getLocaleFile());
   }
 
@@ -121,8 +124,9 @@ public class Messages {
    * @param locale the user locale will read the message
    * @return the embed query
    */
+  @NonNull
   public static EmbedQuery build(
-      @NotNull String description, @NotNull ResultType type, @NotNull LocaleFile locale) {
+      @NonNull String description, @NonNull ResultType type, @NonNull LocaleFile locale) {
     return Messages.build(
         type.getTitle(Starfish.getLanguageHandler(), null),
         description,
@@ -142,9 +146,60 @@ public class Messages {
    * @param user the user that will read the message
    * @return the embed query
    */
+  @NonNull
   public static EmbedQuery build(
-      @NotNull String description, @NotNull ResultType type, @NotNull BotUser user) {
+      @NonNull String description, @NonNull ResultType type, @NonNull BotUser user) {
     return Messages.build(description, type, user.getLocaleFile());
+  }
+
+  /**
+   * Build a query
+   *
+   * @param titleKey the key of the title
+   * @param descKey the key of the description
+   * @param placeholders the placeholders to replace the title and the description
+   * @param viewer the language to get the title and the description
+   * @return the built message
+   */
+  @NonNull
+  public static EmbedQuery build(
+      @NonNull String titleKey,
+      @NonNull String descKey,
+      @NonNull Map<String, String> placeholders,
+      @NonNull LocaleFile viewer) {
+    return Messages.build(
+        viewer.get(titleKey, placeholders),
+        viewer.get(descKey, placeholders),
+        ResultType.GENERIC,
+        viewer);
+  }
+
+  /**
+   * Get the information of an user for a viewer
+   *
+   * @param user the user to get the information of
+   * @param viewer the user that will see the information
+   * @return the built embed query
+   */
+  @NonNull
+  public static EmbedQuery build(@NonNull BotUser user, @NonNull BotUser viewer) {
+    Map<String, String> placeholders = user.getPlaceholders();
+    EmbedQuery build =
+        build("user-info.title", "user-info.description", placeholders, viewer.getLocaleFile());
+    user.getPreferences()
+        .getMap()
+        .forEach(
+            (key, value) -> {
+              if (key.equalsIgnoreCase("lang") || key.equalsIgnoreCase("freelancer")) return;
+              if (value instanceof Collection) {
+                build.addField(key, Lots.pretty((Collection<?>) value), true);
+              } else {
+                build.addField(key, value.toString(), true);
+              }
+            });
+    if (user.isFreelancer())
+      build.addField("Rating", user.getRating().getReadable(viewer.getLocaleFile()), true);
+    return build;
   }
 
   /**
@@ -152,8 +207,7 @@ public class Messages {
    *
    * @return the consumer for errors
    */
-  @Nullable
   public static Consumer<Message> getErrorConsumer() {
-    return Starfish.getManager().getListener().getConsumer(new Result(ResultType.ERROR, ""));
+    return Starfish.getCommandManager().getListener().getConsumer(new Result(ResultType.ERROR, ""));
   }
 }

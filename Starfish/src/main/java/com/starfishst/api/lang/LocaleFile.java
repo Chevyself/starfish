@@ -2,10 +2,10 @@ package com.starfishst.api.lang;
 
 import java.io.File;
 import java.util.Map;
+import lombok.NonNull;
 import me.googas.commons.Strings;
+import me.googas.commons.Validate;
 import me.googas.commons.maps.MapBuilder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** The file of localized messages. Used to get the messages for {@link Localizable} */
 public interface LocaleFile extends Localizable {
@@ -19,8 +19,7 @@ public interface LocaleFile extends Localizable {
    * @param path the path to the string
    * @return the string if the path leads to one else null
    */
-  @Nullable
-  String getRaw(@NotNull String path);
+  String getRaw(@NonNull String path);
 
   /**
    * Get the string or the path to create it
@@ -28,8 +27,8 @@ public interface LocaleFile extends Localizable {
    * @param path the path to the string
    * @return the string if the path leads to one else the path
    */
-  @NotNull
-  default String get(@NotNull String path) {
+  @NonNull
+  default String get(@NonNull String path) {
     String raw = this.getRaw(path);
     return raw == null ? path : raw;
   }
@@ -42,9 +41,9 @@ public interface LocaleFile extends Localizable {
    * @param placeholders the string to build the string
    * @return the built string
    */
-  @NotNull
-  default String get(@NotNull String path, @NotNull Map<String, String> placeholders) {
-    return Strings.buildMessage(this.get(path), placeholders);
+  @NonNull
+  default String get(@NonNull String path, @NonNull Map<String, String> placeholders) {
+    return Strings.build(this.get(path), placeholders);
   }
 
   /**
@@ -55,9 +54,9 @@ public interface LocaleFile extends Localizable {
    * @param placeholders the string to build the string
    * @return the built string
    */
-  @NotNull
-  default String get(@NotNull String path, @NotNull MapBuilder<String, String> placeholders) {
-    return Strings.buildMessage(this.get(path), placeholders);
+  @NonNull
+  default String get(@NonNull String path, @NonNull MapBuilder<String, String> placeholders) {
+    return Strings.build(this.get(path), placeholders);
   }
 
   /**
@@ -65,6 +64,15 @@ public interface LocaleFile extends Localizable {
    *
    * @return the file that this is using
    */
-  @NotNull
+  @NonNull
   File getFile();
+
+  /**
+   * Get the unicode that differentiates this language
+   *
+   * @return the unicode to differentiate this language
+   */
+  default @NonNull String getUnicode() {
+    return Validate.notNull(this.getRaw("unicode"), this + " has a null unicode property");
+  }
 }

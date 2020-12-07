@@ -1,26 +1,26 @@
 package com.starfishst.bot.data.messages.creation;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.Starfish;
 import com.starfishst.jda.utils.responsive.ReactionResponse;
+import lombok.NonNull;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
-import org.jetbrains.annotations.NotNull;
 
 /** The ticket creator reaction response */
 public class TicketCreatorReactionResponse implements ReactionResponse {
 
   /** The ticket type to create */
-  @NotNull private final TicketType type;
+  @NonNull private final TicketType type;
 
   /** The unicode of the reaction */
-  @NotNull private final String unicode;
+  @NonNull private final String unicode;
 
   /** The ticket creator to get the message from */
-  @NotNull private final TicketCreatorMessage message;
+  @NonNull private final TicketCreatorMessage message;
 
   /**
    * Create the reaction response
@@ -30,7 +30,7 @@ public class TicketCreatorReactionResponse implements ReactionResponse {
    * @param message the message that is using this response
    */
   public TicketCreatorReactionResponse(
-      @NotNull TicketType type, @NotNull String unicode, @NotNull TicketCreatorMessage message) {
+      @NonNull TicketType type, @NonNull String unicode, @NonNull TicketCreatorMessage message) {
     this.type = type;
     this.unicode = unicode;
     this.message = message;
@@ -42,7 +42,7 @@ public class TicketCreatorReactionResponse implements ReactionResponse {
   }
 
   @Override
-  public void onReaction(@NotNull MessageReactionAddEvent event) {
+  public boolean onReaction(@NonNull MessageReactionAddEvent event) {
     BotUser user = Starfish.getLoader().getStarfishUser(event.getUserIdLong());
     Ticket ticket =
         Starfish.getLoader().getTicket(message.getData().getValueOr("id", Long.class, -1L));
@@ -63,10 +63,11 @@ public class TicketCreatorReactionResponse implements ReactionResponse {
     } catch (Throwable throwable) {
       throwable.printStackTrace();
     }
+    return true;
   }
 
   @Override
-  public @NotNull String getUnicode() {
+  public @NonNull String getUnicode() {
     return this.unicode;
   }
 

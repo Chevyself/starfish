@@ -1,5 +1,7 @@
 package com.starfishst.bot.commands;
 
+import com.starfishst.api.Starfish;
+import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
@@ -7,12 +9,9 @@ import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.bot.Starfish;
 import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
-import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.core.annotations.Optional;
 import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
@@ -38,7 +37,7 @@ public class TicketCommands {
   @Command(
       aliases = {"ticketinfo", "ti"},
       description = "ticket-info.desc",
-      permission = @Perm(node = "starfish.ticket.info"))
+      node = "starfish.ticket.info")
   public Result ticketinfo(
       CommandContext context,
       BotUser user,
@@ -57,7 +56,7 @@ public class TicketCommands {
   @Command(
       aliases = {"announce", "repost", "reannounce"},
       description = "repost.desc",
-      permission = @Perm(node = "starfish.ticket.announce"))
+      node = "starfish.ticket.announce")
   public Result announce(
       BotUser user,
       @Optional(
@@ -85,10 +84,7 @@ public class TicketCommands {
    * @param ticket the ticket that is queried to be closed
    * @return the result of the command execution
    */
-  @Command(
-      aliases = "close",
-      description = "close.desc",
-      permission = @Perm(node = "starfish.close"))
+  @Command(aliases = "close", description = "close.desc", node = "starfish.close")
   public Result close(
       BotUser sender,
       @Optional(name = "close.ticket", description = "close.ticket.desc", suggestions = "-1")
@@ -116,7 +112,7 @@ public class TicketCommands {
       if (context.hasFlag("-u") && sender.hasPermission("offers.see-users", "discord")) {
         appendUsers = true;
       }
-      StarfishLoader loader = Starfish.getLoader();
+      DataLoader loader = Starfish.getLoader();
       Collection<Offer> offers = loader.getOffers(ticket);
       StringBuilder builder = Strings.getBuilder();
       builder.append(locale.get("offers.title", ticket.getPlaceholders()));

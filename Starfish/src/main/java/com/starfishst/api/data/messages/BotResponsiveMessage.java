@@ -1,12 +1,12 @@
 package com.starfishst.api.data.messages;
 
-import com.starfishst.api.ValuesMap;
+import com.starfishst.api.utility.StarfishCatchable;
+import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
-import me.googas.commons.cache.thread.ICatchable;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** An implementation for {@link ResponsiveMessage} */
-public interface BotResponsiveMessage extends ResponsiveMessage, ICatchable {
+public interface BotResponsiveMessage extends ResponsiveMessage, StarfishCatchable {
 
   /** Deletes the responsive message */
   void delete();
@@ -16,7 +16,7 @@ public interface BotResponsiveMessage extends ResponsiveMessage, ICatchable {
    *
    * @return the data
    */
-  @NotNull
+  @NonNull
   ValuesMap getData();
 
   /**
@@ -24,6 +24,6 @@ public interface BotResponsiveMessage extends ResponsiveMessage, ICatchable {
    *
    * @return the type of the message
    */
-  @NotNull
+  @NonNull
   String getType();
 }

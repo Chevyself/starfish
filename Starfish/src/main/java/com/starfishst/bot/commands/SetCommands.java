@@ -1,11 +1,10 @@
 package com.starfishst.bot.commands;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.utility.Discord;
-import com.starfishst.bot.Starfish;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.result.Result;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class SetCommands {
   @Command(
       aliases = "set",
       description = "Set the settings for the configuration",
-      permission = @Perm(node = "starfish.admin"))
+      node = "starfish.admin")
   public Result set(Guild guild) {
     Starfish.getDiscordConfiguration().setGuild(guild);
     return new Result("Guild has been set " + guild.getName());
@@ -42,10 +41,7 @@ public class SetCommands {
    * @param key the key to set the roles on
    * @return the result of the command
    */
-  @Command(
-      aliases = "roles",
-      description = "Set the roles in a key",
-      permission = @Perm(node = "starfish.admin"))
+  @Command(aliases = "roles", description = "Set the roles in a key", node = "starfish.admin")
   public Result roles(
       Message message,
       @Required(name = "key", description = "The key to set the roles on") String key) {
@@ -68,10 +64,7 @@ public class SetCommands {
    * @param key the key to set the category
    * @return the result of the command
    */
-  @Command(
-      aliases = "category",
-      description = "Set a category in a key",
-      permission = @Perm(node = "starfish.admin"))
+  @Command(aliases = "category", description = "Set a category in a key", node = "starfish.admin")
   public Result category(
       Category category,
       @Required(name = "key", description = "The key to set the category on") String key) {
@@ -86,10 +79,7 @@ public class SetCommands {
    * @param key the key to set the channel
    * @return the result of the command
    */
-  @Command(
-      aliases = "channel",
-      description = "Set a channel in a key",
-      permission = @Perm(node = "starfish.admin"))
+  @Command(aliases = "channel", description = "Set a channel in a key", node = "starfish.admin")
   public Result channel(
       TextChannel channel,
       @Required(name = "key", description = "The key to set the channel on") String key) {

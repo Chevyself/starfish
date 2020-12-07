@@ -1,30 +1,30 @@
 package com.starfishst.bot.commands.providers;
 
-import com.starfishst.api.Permissible;
+import com.starfishst.api.Starfish;
+import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.data.user.BotUser;
-import com.starfishst.bot.Starfish;
-import com.starfishst.bot.tickets.StarfishLoader;
+import com.starfishst.api.permissions.Permissible;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.core.providers.type.IArgumentProvider;
 import com.starfishst.jda.context.CommandContext;
 import java.util.List;
+import lombok.NonNull;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import org.jetbrains.annotations.NotNull;
 
 public class PermissibleProvider implements IArgumentProvider<Permissible, CommandContext> {
   @Override
-  public @NotNull Class<Permissible> getClazz() {
+  public @NonNull Class<Permissible> getClazz() {
     return Permissible.class;
   }
 
-  @NotNull
+  @NonNull
   @Override
-  public Permissible fromString(@NotNull String string, @NotNull CommandContext context)
+  public Permissible fromString(@NonNull String string, @NonNull CommandContext context)
       throws ArgumentProviderException {
     Permissible permissible = null;
-    StarfishLoader loader = Starfish.getLoader();
+    DataLoader loader = Starfish.getLoader();
     BotUser sender = loader.getStarfishUser(context.getSender().getIdLong());
     List<User> mentionedUsers = context.getMessage().getMentionedUsers();
     for (User mentionedUser : mentionedUsers) {

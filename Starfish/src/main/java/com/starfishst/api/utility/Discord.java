@@ -1,10 +1,12 @@
 package com.starfishst.api.utility;
 
+import com.starfishst.api.Starfish;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import me.googas.commons.Atomic;
+import lombok.NonNull;
 import me.googas.commons.Lots;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -15,14 +17,12 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PermissionOverride;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** Various utils for discord */
 public class Discord {
 
   /** This list contains the permissions needed for a user to read and write inside a channel */
-  @NotNull
+  @NonNull
   public static final List<Permission> ALLOWED =
       Lots.list(
           Permission.MESSAGE_READ,
@@ -31,7 +31,7 @@ public class Discord {
           Permission.MESSAGE_HISTORY);
 
   /** This list contains the permissions needed for a user to read inside a channel */
-  @NotNull
+  @NonNull
   public static final List<Permission> ALLOWED_SEE =
       Lots.list(Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
 
@@ -48,14 +48,14 @@ public class Discord {
    * @param <I> the permission holders type
    * @return the category
    */
-  @NotNull
+  @NonNull
   public static <I extends IPermissionHolder> Category validateCategory(
-      @Nullable Category category,
-      @NotNull Guild guild,
-      @NotNull String name,
+      Category category,
+      @NonNull Guild guild,
+      @NonNull String name,
       boolean removePerms,
-      @Nullable List<I> allow,
-      @Nullable List<I> allowSee) {
+      List<I> allow,
+      List<I> allowSee) {
     if (category != null && category.getChannels().size() < 50) {
       return category;
     } else {
@@ -79,7 +79,7 @@ public class Discord {
    * @param <C> the channel type
    */
   public static <I extends IPermissionHolder, C extends GuildChannel> void allow(
-      @NotNull C channel, @NotNull List<I> toAllow, @NotNull Collection<Permission> permissions) {
+      @NonNull C channel, @NonNull List<I> toAllow, @NonNull Collection<Permission> permissions) {
     toAllow.forEach(allow -> allow(channel, allow, permissions));
   }
 
@@ -93,7 +93,7 @@ public class Discord {
    * @param <C> the channel type
    */
   public static <I extends IPermissionHolder, C extends GuildChannel> void allow(
-      @NotNull C channel, @NotNull I toAllow, @NotNull Collection<Permission> permissions) {
+      @NonNull C channel, @NonNull I toAllow, @NonNull Collection<Permission> permissions) {
     if (channel.getPermissionOverride(toAllow) != null) {
       channel.putPermissionOverride(toAllow).setAllow(permissions).queue();
     } else {
@@ -106,7 +106,7 @@ public class Discord {
    *
    * @param channel the channel to remove the public perms from
    */
-  public static void removePublicPerms(@NotNull GuildChannel channel) {
+  public static void removePublicPerms(@NonNull GuildChannel channel) {
     channel
         .putPermissionOverride(channel.getGuild().getPublicRole())
         .setDeny(Permission.ALL_GUILD_PERMISSIONS)
@@ -120,11 +120,30 @@ public class Discord {
    * @return the list of mentions
    * @param <I> the mentionable interface
    */
-  @NotNull
-  public static <I extends IMentionable> List<String> getAsMention(@NotNull List<I> mentionables) {
+  @NonNull
+  public static <I extends IMentionable> List<String> getAsMention(@NonNull List<I> mentionables) {
     List<String> tags = new ArrayList<>();
     mentionables.forEach(mentionable -> tags.add(mentionable.getAsMention()));
     return tags;
+  }
+
+  /**
+   * Get a collection of roles ids as mentions
+   *
+   * @param ids the ids of the roles
+   * @return the mention of the roles
+   */
+  @NonNull
+  public static List<String> getRolesAsMention(Collection<Long> ids) {
+    List<String> mentions = new ArrayList<>();
+    if (ids == null || ids.isEmpty()) return mentions;
+    for (Long id : ids) {
+      if (id != null) {
+        Role role = getRole(id);
+        if (role != null) mentions.add(role.getAsMention());
+      }
+    }
+    return mentions;
   }
 
   /**
@@ -139,14 +158,14 @@ public class Discord {
    * @return the not null challenge
    * @param <I> the permission holder interface
    */
-  @NotNull
+  @NonNull
   public static <I extends IPermissionHolder> TextChannel validateChannel(
-      @Nullable TextChannel channel,
-      @NotNull Guild guild,
-      @NotNull String channelName,
+      TextChannel channel,
+      @NonNull Guild guild,
+      @NonNull String channelName,
       boolean removePerms,
-      @Nullable List<I> allow,
-      @Nullable List<I> allowSee) {
+      List<I> allow,
+      List<I> allowSee) {
     if (channel == null) {
       channel = guild.createTextChannel(channelName).complete();
       applyPermissions(channel, removePerms, allow, allowSee);
@@ -166,10 +185,7 @@ public class Discord {
    * @param <I> the permission holder interface
    */
   private static <C extends GuildChannel, I extends IPermissionHolder> void applyPermissions(
-      @NotNull C channel,
-      boolean removePerms,
-      @Nullable List<I> allow,
-      @Nullable List<I> allowSee) {
+      @NonNull C channel, boolean removePerms, List<I> allow, List<I> allowSee) {
     if (removePerms) {
       removePublicPerms(channel);
     }
@@ -190,7 +206,7 @@ public class Discord {
    * @param <C> the channel type
    */
   public static <I extends IPermissionHolder, C extends GuildChannel> void disallow(
-      @NotNull C channel, @NotNull I member) {
+      @NonNull C channel, @NonNull I member) {
     PermissionOverride permissionOverride = channel.getPermissionOverride(member);
     if (permissionOverride != null) {
       permissionOverride.delete().queue();
@@ -206,8 +222,10 @@ public class Discord {
    * @param <C> the channel type
    */
   public static <I extends IPermissionHolder, C extends GuildChannel> void disallow(
-      @NotNull C channel, @NotNull List<I> members) {
-    members.forEach(member -> disallow(channel, member));
+      @NonNull C channel, @NonNull List<I> members) {
+    for (I member : members) {
+      disallow(channel, member);
+    }
   }
 
   /**
@@ -217,17 +235,11 @@ public class Discord {
    * @param query the role querying
    * @return true if the member has the role
    */
-  public static boolean hasRole(@NotNull Member member, @NotNull Role query) {
-    Atomic<Boolean> atomic = new Atomic<>(false);
-    member
-        .getRoles()
-        .forEach(
-            role -> {
-              if (role.getIdLong() == query.getIdLong()) {
-                atomic.set(true);
-              }
-            });
-    return atomic.get();
+  public static boolean hasRole(@NonNull Member member, @NonNull Role query) {
+    for (Role role : member.getRoles()) {
+      if (role.getIdLong() == query.getIdLong()) return true;
+    }
+    return false;
   }
 
   /**
@@ -237,14 +249,44 @@ public class Discord {
    * @param query the list querying
    * @return true if the member has at least one role
    */
-  public static boolean hasRole(@NotNull Member member, @NotNull List<Role> query) {
-    Atomic<Boolean> atomic = new Atomic<>(false);
-    query.forEach(
-        role -> {
-          if (hasRole(member, role)) {
-            atomic.set(true);
-          }
-        });
-    return atomic.get();
+  public static boolean hasRole(@NonNull Member member, @NonNull List<Role> query) {
+    if (query.isEmpty()) return false;
+    for (Role role : query) {
+      if (hasRole(member, role)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Get a role by its id
+   *
+   * @param id the id of the role to get
+   * @return the role if found null otherwise
+   */
+  public static Role getRole(long id) {
+    JDA jda = Starfish.getJdaConnection().getJda();
+    if (jda == null) return null;
+    return jda.getRoleById(id);
+  }
+
+  /**
+   * Get a list of roles from a collection of them ids
+   *
+   * @param ids the ids of the roles to get
+   * @return the roles
+   */
+  @NonNull
+  public static List<Role> getRoles(Collection<Long> ids) {
+    List<Role> roles = new ArrayList<>();
+    if (ids == null || ids.isEmpty()) return roles;
+    for (Long id : ids) {
+      if (id != null) {
+        Role role = getRole(id);
+        if (role != null) {
+          roles.add(role);
+        }
+      }
+    }
+    return roles;
   }
 }

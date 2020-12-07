@@ -1,24 +1,24 @@
 package com.starfishst.bot.commands.providers;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.user.BotUser;
-import com.starfishst.bot.Starfish;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.providers.type.JdaArgumentProvider;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.User;
-import org.jetbrains.annotations.NotNull;
 
 /** Provides the command manager with bot users */
 public class BotUserProvider implements JdaArgumentProvider<BotUser> {
 
   @Override
-  public @NotNull Class<BotUser> getClazz() {
+  public @NonNull Class<BotUser> getClazz() {
     return BotUser.class;
   }
 
-  @NotNull
+  @NonNull
   @Override
-  public BotUser fromString(@NotNull String s, @NotNull CommandContext context)
+  public BotUser fromString(@NonNull String s, @NonNull CommandContext context)
       throws ArgumentProviderException {
     Object user = context.getRegistry().fromString(s, User.class, context);
     if (user instanceof User) {
@@ -29,7 +29,7 @@ public class BotUserProvider implements JdaArgumentProvider<BotUser> {
   }
 
   @Override
-  public boolean provides(@NotNull Class<?> clazz) {
+  public boolean provides(@NonNull Class<?> clazz) {
     return clazz == BotUser.class;
   }
 }

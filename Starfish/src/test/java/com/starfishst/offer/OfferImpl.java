@@ -1,17 +1,17 @@
 package com.starfishst.offer;
 
 import com.starfishst.api.data.tickets.Offer;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 public class OfferImpl implements Offer {
 
   private final long freelancer;
 
-  @NotNull private final String offer;
+  @NonNull private final String offer;
 
   private final long ticket;
 
-  public OfferImpl(long freelancer, @NotNull String offer, long ticket) {
+  public OfferImpl(long freelancer, @NonNull String offer, long ticket) {
     this.freelancer = freelancer;
     this.offer = offer;
     this.ticket = ticket;
@@ -33,7 +33,7 @@ public class OfferImpl implements Offer {
    * @return the offer as a string
    */
   @Override
-  public @NotNull String getOffer() {
+  public @NonNull String getOffer() {
     return null;
   }
 

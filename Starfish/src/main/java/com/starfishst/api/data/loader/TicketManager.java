@@ -5,8 +5,7 @@ import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.exception.TicketCreationException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import lombok.NonNull;
 
 /** Managers {@link com.starfishst.api.data.tickets.Ticket} */
 public interface TicketManager {
@@ -21,8 +20,8 @@ public interface TicketManager {
    * @return the ticket created
    * @throws TicketCreationException in case the ticket cannot be created
    */
-  @NotNull
-  Ticket createTicket(@NotNull TicketType type, @NotNull BotUser user, @Nullable Ticket parent)
+  @NonNull
+  Ticket createTicket(@NonNull TicketType type, @NonNull BotUser user, Ticket parent)
       throws TicketCreationException;
 
   /**
@@ -31,7 +30,7 @@ public interface TicketManager {
    * @param parent the parent of the ticket being created
    * @return the new id
    */
-  default long getNewId(@Nullable Ticket parent) {
+  default long getNewId(Ticket parent) {
     if (parent != null && parent.getTicketType() != TicketType.PRODUCT) {
       return parent.getId();
     } else {
@@ -54,12 +53,11 @@ public interface TicketManager {
   void setTotal(long total);
 
   /**
-   * Get the data loader that the manager is using
+   * Sets the data loader that the manager must
    *
-   * @return the data loader
+   * @param loader the new loader to set
    */
-  @NotNull
-  DataLoader getDataLoader();
+  void setDataLoader(@NonNull DataLoader loader);
 
   /**
    * Get the total of tickets loaded
@@ -69,16 +67,17 @@ public interface TicketManager {
   long getTotal();
 
   /**
-   * Sets the data loader that the manager must
-   *
-   * @param loader the new loader to set
-   */
-  void setDataLoader(@NotNull DataLoader loader);
-
-  /**
    * Sets the configuration that the manager must use
    *
    * @param configuration the configuration
    */
-  void setConfiguration(@NotNull Configuration configuration);
+  void setConfiguration(@NonNull Configuration configuration);
+
+  /**
+   * Get the data loader that the manager is using
+   *
+   * @return the data loader
+   */
+  @NonNull
+  DataLoader getDataLoader();
 }

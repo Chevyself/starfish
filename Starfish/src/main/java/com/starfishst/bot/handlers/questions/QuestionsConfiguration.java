@@ -2,13 +2,13 @@ package com.starfishst.bot.handlers.questions;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** A configuration file for questions */
 public class QuestionsConfiguration {
 
   /** The list of questions for ticket creation */
-  @NotNull private final List<Question> questions;
+  @NonNull private final List<Question> questions;
 
   /** Create an instance using gson */
   @Deprecated
@@ -21,7 +21,7 @@ public class QuestionsConfiguration {
    *
    * @return the list of questions
    */
-  @NotNull
+  @NonNull
   public List<Question> getQuestions() {
     return questions;
   }

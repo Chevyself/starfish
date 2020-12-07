@@ -5,7 +5,7 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.core.exceptions.type.SimpleException;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** An implementation for {@link SimpleException} */
 public class StarfishException extends SimpleException {
@@ -15,7 +15,7 @@ public class StarfishException extends SimpleException {
    *
    * @param message a message explaining what caused the exception
    */
-  public StarfishException(@NotNull String message) {
+  public StarfishException(@NonNull String message) {
     super(message);
   }
 
@@ -25,7 +25,7 @@ public class StarfishException extends SimpleException {
    * @param message the message to explain why the exception was caused
    * @param cause the exception that caused this one
    */
-  public StarfishException(@NotNull String message, @NotNull Throwable cause) {
+  public StarfishException(@NonNull String message, @NonNull Throwable cause) {
     super(message, cause);
   }
 
@@ -35,8 +35,8 @@ public class StarfishException extends SimpleException {
    * @param user the user that will read the exception
    * @return the exception as a query
    */
-  @NotNull
-  public EmbedQuery toQuery(@NotNull BotUser user) {
+  @NonNull
+  public EmbedQuery toQuery(@NonNull BotUser user) {
     return Messages.build(this.getMessage(), ResultType.ERROR, user);
   }
 }

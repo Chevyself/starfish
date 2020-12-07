@@ -5,13 +5,20 @@ import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.data.user.FreelancerRating;
-import com.starfishst.jda.utils.responsive.ResponsiveMessage;
+import com.starfishst.api.events.StarfishHandler;
+import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
+import com.starfishst.api.events.role.BotRoleUnloadedEvent;
+import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
+import com.starfishst.api.events.tickets.TicketUnloadedEvent;
+import com.starfishst.api.events.user.BotUserUnloadedEvent;
+import com.starfishst.api.events.user.FreelancerRatingUnloadedEvent;
+import com.starfishst.bot.data.StarfishResponsiveMessage;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import lombok.NonNull;
+import me.googas.commons.events.Listener;
 
 /** Loads and saves data */
-public interface DataLoader {
+public interface DataLoader extends StarfishHandler {
 
   /**
    * Get a ticket by its id
@@ -19,7 +26,6 @@ public interface DataLoader {
    * @param id the id of the ticket
    * @return the returned ticket
    */
-  @Nullable
   Ticket getTicket(long id);
 
   /**
@@ -28,7 +34,6 @@ public interface DataLoader {
    * @param channelId the id of the channel
    * @return the returned ticket
    */
-  @Nullable
   Ticket getTicketByChannel(long channelId);
 
   /**
@@ -37,7 +42,7 @@ public interface DataLoader {
    * @param id the id of the user
    * @return the starfish user
    */
-  @NotNull
+  @NonNull
   BotUser getStarfishUser(long id);
 
   /**
@@ -46,7 +51,7 @@ public interface DataLoader {
    * @param id the id of the role
    * @return the role
    */
-  @NotNull
+  @NonNull
   BotRole getStarfishRole(long id);
 
   /**
@@ -55,15 +60,15 @@ public interface DataLoader {
    * @param ticket the ticket querying offers
    * @return the offers found
    */
-  @NotNull
-  Collection<Offer> getOffers(@NotNull Ticket ticket);
+  @NonNull
+  Collection<Offer> getOffers(@NonNull Ticket ticket);
 
   /**
    * Deletes the responsive message
    *
    * @param message the message to delete
    */
-  void deleteMessage(@NotNull ResponsiveMessage message);
+  void deleteMessage(@NonNull StarfishResponsiveMessage message);
 
   /**
    * Get the rating of a freelancer by its id
@@ -71,6 +76,53 @@ public interface DataLoader {
    * @param id the id of the freelancer
    * @return the rating of the freelancer
    */
-  @NotNull
+  @NonNull
   FreelancerRating getRating(long id);
+
+  /**
+   * Listen to a role being unloaded to save it to the database
+   *
+   * @param event the event of a role being unloaded
+   */
+  @Listener
+  void onRoleUnloadedEvent(@NonNull BotRoleUnloadedEvent event);
+
+  /**
+   * Listens to when a ticket is unloaded
+   *
+   * @param event the event of a ticket being unloaded
+   */
+  @Listener
+  void onTicketUnloadedEvent(@NonNull TicketUnloadedEvent event);
+
+  /**
+   * Listens to when the rating of a freelancer is unloaded
+   *
+   * @param event the event of the rating of a freelancer being unloaded
+   */
+  @Listener
+  void onFreelancerRatingUnloaded(@NonNull FreelancerRatingUnloadedEvent event);
+  /**
+   * Listens to when a ticket is done to save it in the database
+   *
+   * @param event the event of a ticket being done
+   */
+  @Listener
+  void onTicketStatusUpdated(@NonNull TicketStatusUpdatedEvent event);
+
+  /**
+   * Listen to when a user is unloaded to save it to the database
+   *
+   * @param event the event of a user being unloaded
+   */
+  @Listener
+  void onBotUserUnloaded(@NonNull BotUserUnloadedEvent event);
+
+  /**
+   * Listens for messages being unloaded to upload them to the database
+   *
+   * @param event the event of a message being unloaded
+   */
+  @Listener
+  void onBotMessageUnloaded(@NonNull BotMessageUnloadedEvent event);
 }

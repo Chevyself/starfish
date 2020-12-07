@@ -1,22 +1,22 @@
 package com.starfishst.bot.data;
 
-import com.starfishst.api.ValuesMap;
+import com.starfishst.api.utility.ValuesMap;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** An implementation for {@link ValuesMap} used in {@link StarfishUser} */
 public class StarfishValuesMap implements ValuesMap {
 
   /** The map of preferences */
-  @NotNull private final HashMap<String, Object> preferences;
+  @NonNull private final HashMap<String, Object> preferences;
 
   /**
    * Create the preferences
    *
    * @param preferences the map of preferences
    */
-  public StarfishValuesMap(@NotNull Map<String, Object> preferences) {
+  public StarfishValuesMap(@NonNull Map<String, Object> preferences) {
     this.preferences = new HashMap<>(preferences);
   }
   /** Create the preferences */
@@ -25,7 +25,7 @@ public class StarfishValuesMap implements ValuesMap {
   }
 
   @Override
-  public @NotNull HashMap<String, Object> getMap() {
+  public @NonNull HashMap<String, Object> getMap() {
     return this.preferences;
   }
 }

@@ -2,20 +2,20 @@ package com.starfishst.api.events.user;
 
 import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.StarfishEvent;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** An event that has a freelancer rating involved */
 public class FreelancerRatingEvent implements StarfishEvent {
 
   /** The rating involved in the event */
-  @NotNull private final FreelancerRating rating;
+  @NonNull private final FreelancerRating rating;
 
   /**
    * Create the event
    *
    * @param rating the rating involved in the event
    */
-  public FreelancerRatingEvent(@NotNull FreelancerRating rating) {
+  public FreelancerRatingEvent(@NonNull FreelancerRating rating) {
     this.rating = rating;
   }
 
@@ -24,7 +24,7 @@ public class FreelancerRatingEvent implements StarfishEvent {
    *
    * @return the rating involved in the event
    */
-  @NotNull
+  @NonNull
   public FreelancerRating getRating() {
     return rating;
   }

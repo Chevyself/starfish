@@ -1,7 +1,7 @@
 package com.starfishst.api.events.user;
 
 import com.starfishst.api.data.user.FreelancerRating;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** Called when the freelancer rating is unloaded */
 public class FreelancerRatingUnloadedEvent extends FreelancerRatingEvent {
@@ -11,7 +11,7 @@ public class FreelancerRatingUnloadedEvent extends FreelancerRatingEvent {
    *
    * @param rating the rating involved in the event
    */
-  public FreelancerRatingUnloadedEvent(@NotNull FreelancerRating rating) {
+  public FreelancerRatingUnloadedEvent(@NonNull FreelancerRating rating) {
     super(rating);
   }
 }

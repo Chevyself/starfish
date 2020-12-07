@@ -1,6 +1,6 @@
 package com.starfishst.addons;
 
-import com.starfishst.api.addons.AddonInformation;
+import com.starfishst.api.addons.JavaAddonInformation;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +34,8 @@ public class AddonsTest {
           InputStream resource = classLoader.getResourceAsStream("addon.json");
           if (resource != null) {
             InputStreamReader reader = new InputStreamReader(resource);
-            AddonInformation info = GsonProvider.GSON.fromJson(reader, AddonInformation.class);
+            JavaAddonInformation info =
+                GsonProvider.GSON.fromJson(reader, JavaAddonInformation.class);
             Class<?> aClass = Class.forName(info.getMain(), true, classLoader);
             Method onEnable = aClass.getDeclaredMethod("onEnable");
             Object o = aClass.getConstructors()[0].newInstance();

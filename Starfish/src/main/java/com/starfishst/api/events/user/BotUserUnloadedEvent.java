@@ -1,7 +1,7 @@
 package com.starfishst.api.events.user;
 
 import com.starfishst.api.data.user.BotUser;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** Called when a bot user gets unloaded */
 public class BotUserUnloadedEvent extends BotUserEvent {
@@ -10,7 +10,7 @@ public class BotUserUnloadedEvent extends BotUserEvent {
    *
    * @param user the user involved in the event
    */
-  public BotUserUnloadedEvent(@NotNull BotUser user) {
+  public BotUserUnloadedEvent(@NonNull BotUser user) {
     super(user);
   }
 }

@@ -4,11 +4,11 @@ import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.data.messages.creation.TicketCreatorMessage;
-import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.List;
@@ -18,7 +18,7 @@ import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Handles ticket creators */
-public class TicketCreatorHandler implements StarfishEventHandler {
+public class TicketCreatorHandler implements StarfishHandler {
 
   /**
    * Listen to when a ticket gets its status updated
@@ -48,7 +48,7 @@ public class TicketCreatorHandler implements StarfishEventHandler {
       for (BotUser customer : customers) {
         query.getBuilder().append(customer.getMention());
       }
-      query.send(channel, msg -> new TicketCreatorMessage(msg, ticket.getId()));
+      query.send(channel, msg -> new TicketCreatorMessage(msg, ticket.getId()).cache());
     }
   }
 

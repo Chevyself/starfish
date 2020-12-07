@@ -1,59 +1,62 @@
 package com.starfishst.bot.configuration;
 
 import com.google.gson.annotations.SerializedName;
-import com.starfishst.api.Fee;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.MongoConfiguration;
+import com.starfishst.api.utility.Fee;
 import com.starfishst.bot.handlers.StarfishHandlerValuesMap;
 import com.starfishst.jda.ManagerOptions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import lombok.NonNull;
 import me.googas.commons.time.Time;
 import me.googas.commons.time.Unit;
-import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link com.starfishst.api.configuration.Configuration} */
 public class StarfishConfiguration implements Configuration {
 
   /** The token to use to connect with discord */
-  @NotNull private final String token;
+  @NonNull private final String token;
 
   /** The default lang */
-  @NotNull private final String lang;
+  @NonNull private final String lang;
 
   /** The time to unload tickets */
   @SerializedName("ticket-unload")
-  @NotNull
+  @NonNull
   private final Time ticketUnload;
   /** The time to unload users */
   @SerializedName("users-unload")
-  @NotNull
+  @NonNull
   private final Time usersUnload;
   /** The time to unload users */
   @SerializedName("messages-unload")
-  @NotNull
+  @NonNull
   private final Time messagesUnload;
 
   /** The configuration for mongo */
-  @NotNull private final StarfishMongoConfiguration mongo;
+  @NonNull private final StarfishMongoConfiguration mongo;
 
   /** The fees that can be applied */
-  @NotNull private final List<Fee> fees;
+  @NonNull private final List<Fee> fees;
 
   /** The options for commands */
   @SerializedName("commands")
-  @NotNull
+  @NonNull
   private final ManagerOptions options;
 
   /** The preferences for handlers */
   @SerializedName("handlers")
-  @NotNull
+  @NonNull
   private final HashMap<String, StarfishHandlerValuesMap> handlersPreferences;
 
   /** The total of tickets created */
   private long total;
+
+  /** The prefix used in commands */
+  private final String prefix;
 
   /**
    * This constructor is used for gson. Use {@link me.googas.commons.fallback.Fallback} for a
@@ -71,7 +74,8 @@ public class StarfishConfiguration implements Configuration {
         new Time(25, Unit.MINUTES),
         new StarfishMongoConfiguration("", ""),
         new ManagerOptions(),
-        new HashMap<>());
+        new HashMap<>(),
+        "-");
   }
 
   /**
@@ -87,18 +91,20 @@ public class StarfishConfiguration implements Configuration {
    * @param mongo the configuration for mongo
    * @param options the options for commands
    * @param handlersPreferences the preferences for handlers
+   * @param prefix
    */
   public StarfishConfiguration(
-      @NotNull String token,
-      @NotNull String lang,
+      @NonNull String token,
+      @NonNull String lang,
       long total,
-      @NotNull List<Fee> fees,
-      @NotNull Time ticketUnload,
-      @NotNull Time usersUnload,
-      @NotNull Time messagesUnload,
-      @NotNull StarfishMongoConfiguration mongo,
-      @NotNull ManagerOptions options,
-      @NotNull HashMap<String, StarfishHandlerValuesMap> handlersPreferences) {
+      @NonNull List<Fee> fees,
+      @NonNull Time ticketUnload,
+      @NonNull Time usersUnload,
+      @NonNull Time messagesUnload,
+      @NonNull StarfishMongoConfiguration mongo,
+      @NonNull ManagerOptions options,
+      @NonNull HashMap<String, StarfishHandlerValuesMap> handlersPreferences,
+      @NonNull String prefix) {
     this.token = token;
     this.lang = lang;
     this.total = total;
@@ -109,6 +115,7 @@ public class StarfishConfiguration implements Configuration {
     this.mongo = mongo;
     this.options = options;
     this.handlersPreferences = handlersPreferences;
+    this.prefix = prefix;
   }
 
   /**
@@ -116,7 +123,7 @@ public class StarfishConfiguration implements Configuration {
    *
    * @return the fallback starfish configuration
    */
-  @NotNull
+  @NonNull
   public static StarfishConfiguration fallback() {
     return new StarfishConfiguration(
         "token",
@@ -128,7 +135,8 @@ public class StarfishConfiguration implements Configuration {
         new Time(25, Unit.MINUTES),
         new StarfishMongoConfiguration("", ""),
         new ManagerOptions(),
-        new HashMap<>());
+        new HashMap<>(),
+        "-");
   }
 
   @Override
@@ -142,7 +150,7 @@ public class StarfishConfiguration implements Configuration {
   }
 
   @Override
-  public @NotNull Collection<Fee> getFees() {
+  public @NonNull Collection<Fee> getFees() {
     return this.fees;
   }
 
@@ -152,8 +160,13 @@ public class StarfishConfiguration implements Configuration {
    * @return the token
    */
   @Override
-  public @NotNull String getToken() {
+  public @NonNull String getToken() {
     return this.token;
+  }
+
+  @Override
+  public @NonNull String getPrefix() {
+    return this.prefix;
   }
 
   /**
@@ -162,37 +175,37 @@ public class StarfishConfiguration implements Configuration {
    * @return the default lang
    */
   @Override
-  public @NotNull String getDefaultLang() {
+  public @NonNull String getDefaultLang() {
     return this.lang;
   }
 
   @Override
-  public @NotNull Time toUnloadTickets() {
+  public @NonNull Time toUnloadTickets() {
     return this.ticketUnload;
   }
 
   @Override
-  public @NotNull Time toUnloadUser() {
+  public @NonNull Time toUnloadUser() {
     return this.usersUnload;
   }
 
   @Override
-  public @NotNull Time toUnloadMessages() {
+  public @NonNull Time toUnloadMessages() {
     return this.messagesUnload;
   }
 
   @Override
-  public @NotNull MongoConfiguration getMongoConfiguration() {
+  public @NonNull MongoConfiguration getMongoConfiguration() {
     return this.mongo;
   }
 
   @Override
-  public @NotNull ManagerOptions getManagerOptions() {
+  public @NonNull ManagerOptions getManagerOptions() {
     return this.options;
   }
 
   @Override
-  public @NotNull HashMap<String, StarfishHandlerValuesMap> getHandlerPreferences() {
+  public @NonNull HashMap<String, StarfishHandlerValuesMap> getHandlerPreferences() {
     return this.handlersPreferences;
   }
 }

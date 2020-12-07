@@ -2,20 +2,20 @@ package com.starfishst.api.events.tickets;
 
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.events.StarfishEvent;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** An event related to a ticket */
 public class TicketEvent implements StarfishEvent {
 
   /** The ticket involved in the event */
-  @NotNull private final Ticket ticket;
+  @NonNull private final Ticket ticket;
 
   /**
    * Create the event
    *
    * @param ticket the ticket involved in the event
    */
-  public TicketEvent(@NotNull Ticket ticket) {
+  public TicketEvent(@NonNull Ticket ticket) {
     this.ticket = ticket;
   }
 
@@ -24,7 +24,7 @@ public class TicketEvent implements StarfishEvent {
    *
    * @return the ticket that was involved in the event
    */
-  @NotNull
+  @NonNull
   public Ticket getTicket() {
     return ticket;
   }

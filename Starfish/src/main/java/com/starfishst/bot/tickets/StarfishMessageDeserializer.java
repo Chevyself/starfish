@@ -2,8 +2,8 @@ package com.starfishst.bot.tickets;
 
 import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishValuesMap;
+import lombok.NonNull;
 import org.bson.Document;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Deserializes responsive messages from mongo
@@ -20,6 +20,6 @@ public interface StarfishMessageDeserializer<T extends StarfishResponsiveMessage
    * @param document the document used to get the data and id
    * @return the message
    */
-  @NotNull
-  T getMessage(long id, @NotNull StarfishValuesMap data, @NotNull Document document);
+  @NonNull
+  T getMessage(long id, @NonNull StarfishValuesMap data, @NonNull Document document);
 }

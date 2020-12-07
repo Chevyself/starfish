@@ -5,12 +5,11 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import java.util.HashMap;
+import lombok.NonNull;
 import me.googas.commons.Strings;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * This represents a question. Used in {@link QuestionsHandler}
@@ -25,11 +24,11 @@ public class Question {
   /** The limit of characters for the answer */
   protected final int limit;
   /** The title of the question */
-  @NotNull private final String title;
+  @NonNull private final String title;
   /** The simple of the question */
-  @NotNull private final String simple;
+  @NonNull private final String simple;
   /** The description of the role */
-  @NotNull private final String description;
+  @NonNull private final String description;
 
   /**
    * Create a question
@@ -40,7 +39,7 @@ public class Question {
    * @param limit the limit of the question
    */
   public Question(
-      @NotNull String title, @NotNull String simple, @NotNull String description, int limit) {
+      @NonNull String title, @NonNull String simple, @NonNull String description, int limit) {
     this.limit = limit;
     if (simple.contains(" ")) {
       String error = "The 'simple' or summary of a question may not have spaces but got: " + simple;
@@ -57,78 +56,13 @@ public class Question {
   }
 
   /**
-   * The tile of a question
-   *
-   * @return the title
-   */
-  @NotNull
-  public String getBuiltTitle() {
-    HashMap<String, String> placeholders = new HashMap<>();
-    placeholders.put("limit", String.valueOf(limit));
-    return Strings.buildMessage(title, placeholders);
-  }
-
-  /**
-   * Get the raw title of the question
-   *
-   * @return the raw title of the question
-   */
-  @NotNull
-  public String getTitle() {
-    return title;
-  }
-
-  /**
-   * A word to describe the question: Example:
-   *
-   * <p>Title: What's your email? Simple: email
-   *
-   * @return the simple of a question
-   */
-  @NotNull
-  public String getSimple() {
-    return simple;
-  }
-
-  /**
-   * Get the description of the question to help who's answering a little bit
-   *
-   * @return the description
-   */
-  @NotNull
-  public String getBuiltDescription() {
-    HashMap<String, String> placeholders = new HashMap<>();
-    placeholders.put("limit", String.valueOf(limit));
-    return Strings.buildMessage(description, placeholders);
-  }
-
-  /**
-   * Get the raw description of the question
-   *
-   * @return the raw description of the question
-   */
-  @NotNull
-  public String getDescription() {
-    return description;
-  }
-
-  /**
-   * Get the limit of characters of an answer
-   *
-   * @return the limit of characters
-   */
-  public int getLimit() {
-    return limit;
-  }
-
-  /**
    * Get the question as a query to send
    *
    * @param user the user that needs the query
    * @return the query to send
    */
-  @NotNull
-  public EmbedQuery getQuery(@NotNull BotUser user) {
+  @NonNull
+  public EmbedQuery getQuery(@NonNull BotUser user) {
     return Messages.build(
         this.getBuiltTitle(), this.getBuiltDescription(), ResultType.GENERIC, user);
   }
@@ -140,8 +74,7 @@ public class Question {
    * @param user the user that queried the answer
    * @return the answer given from the event of null if the answer is invalid
    */
-  @Nullable
-  public Object getAnswer(@NotNull GuildMessageReceivedEvent event, @NotNull BotUser user) {
+  public Object getAnswer(@NonNull GuildMessageReceivedEvent event, @NonNull BotUser user) {
     String contentRaw = event.getMessage().getContentRaw();
     if (contentRaw.length() < limit) {
       return contentRaw;
@@ -156,6 +89,71 @@ public class Question {
           .send(event.getChannel(), Messages.getErrorConsumer());
       return null;
     }
+  }
+
+  /**
+   * The tile of a question
+   *
+   * @return the title
+   */
+  @NonNull
+  public String getBuiltTitle() {
+    HashMap<String, String> placeholders = new HashMap<>();
+    placeholders.put("limit", String.valueOf(limit));
+    return Strings.build(title, placeholders);
+  }
+
+  /**
+   * Get the raw title of the question
+   *
+   * @return the raw title of the question
+   */
+  @NonNull
+  public String getTitle() {
+    return title;
+  }
+
+  /**
+   * A word to describe the question: Example:
+   *
+   * <p>Title: What's your email? Simple: email
+   *
+   * @return the simple of a question
+   */
+  @NonNull
+  public String getSimple() {
+    return simple;
+  }
+
+  /**
+   * Get the limit of characters of an answer
+   *
+   * @return the limit of characters
+   */
+  public int getLimit() {
+    return limit;
+  }
+
+  /**
+   * Get the description of the question to help who's answering a little bit
+   *
+   * @return the description
+   */
+  @NonNull
+  public String getBuiltDescription() {
+    HashMap<String, String> placeholders = new HashMap<>();
+    placeholders.put("limit", String.valueOf(limit));
+    return Strings.build(description, placeholders);
+  }
+
+  /**
+   * Get the raw description of the question
+   *
+   * @return the raw description of the question
+   */
+  @NonNull
+  public String getDescription() {
+    return description;
   }
 
   @Override

@@ -9,7 +9,6 @@ import java.awt.*;
 import java.lang.reflect.Type;
 import me.googas.commons.gson.adapters.JsonAdapter;
 
-/** Adapts color into json */
 public class ColorAdapter implements JsonAdapter<Color> {
 
   @Override

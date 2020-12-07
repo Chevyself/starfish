@@ -1,9 +1,10 @@
 package com.starfishst.bot.handlers.freelancer;
 
 import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
+import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.jda.result.ResultType;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
 /** Handles freelancers */
-public class FreelancerHandler implements StarfishEventHandler {
+public class FreelancerHandler implements StarfishHandler {
 
   /**
    * In the event of a freelancer being added to a ticket check if it can be added
@@ -72,8 +73,8 @@ public class FreelancerHandler implements StarfishEventHandler {
                 (key, value) -> {
                   if (value instanceof List) {
                     Class<?> clazz = Lots.getClazz((List<?>) value);
-                    if (clazz != null && Role.class.isAssignableFrom(clazz)) {
-                      allowedRoles.addAll(ticket.getDetails().getLisValue(key));
+                    if (clazz != null && Long.class.isAssignableFrom(clazz)) {
+                      allowedRoles.addAll(Discord.getRoles(ticket.getDetails().getLisValue(key)));
                     }
                   }
                 });

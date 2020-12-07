@@ -1,28 +1,28 @@
 package com.starfishst.bot.handlers.misc;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.Starfish;
-import com.starfishst.bot.handlers.StarfishHandler;
 import com.starfishst.jda.result.ResultType;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
-import org.jetbrains.annotations.NotNull;
 
 /** Listens for when a user joins the guild and sends a message greeting them */
 public class WelcomeHandler implements StarfishHandler {
 
   /** The data loader to get the user of the joined user */
-  @NotNull private final DataLoader loader;
+  @NonNull private final DataLoader loader;
 
   /**
    * Create the welcome handler
    *
    * @param loader the data loader to get the user joined
    */
-  public WelcomeHandler(@NotNull DataLoader loader) {
+  public WelcomeHandler(@NonNull DataLoader loader) {
     this.loader = loader;
   }
 

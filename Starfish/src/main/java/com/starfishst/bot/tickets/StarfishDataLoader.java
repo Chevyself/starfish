@@ -1,21 +1,18 @@
 package com.starfishst.bot.tickets;
 
+import com.google.gson.Gson;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.starfishst.api.Permissible;
-import com.starfishst.api.Permission;
-import com.starfishst.api.PermissionStack;
-import com.starfishst.api.configuration.MongoConfiguration;
+import com.starfishst.api.Starfish;
+import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.data.messages.BotResponsiveMessage;
 import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
@@ -24,100 +21,87 @@ import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
 import com.starfishst.api.events.user.FreelancerRatingUnloadedEvent;
-import com.starfishst.bot.data.StarfishFreelancer;
+import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.bot.data.StarfishFreelancerRating;
-import com.starfishst.bot.data.StarfishPermission;
 import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishRole;
+import com.starfishst.bot.data.StarfishTicket;
 import com.starfishst.bot.data.StarfishUser;
-import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.bot.data.messages.offer.OfferMessage;
-import com.starfishst.bot.tickets.deserializers.ClaimOrderDeserializer;
-import com.starfishst.bot.tickets.deserializers.OfferDeserializer;
-import com.starfishst.bot.tickets.deserializers.ReviewFreelancerDeserializer;
-import com.starfishst.bot.tickets.deserializers.TicketPanelDeserializer;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
+import com.starfishst.jda.utils.responsive.controller.ResponsiveMessageController;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import me.googas.commons.Lots;
-import me.googas.commons.cache.thread.Cache;
-import me.googas.commons.cache.thread.ICatchable;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import lombok.NonNull;
+import me.googas.commons.cache.Cache;
+import me.googas.commons.cache.Catchable;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
-import me.googas.commons.maps.Maps;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-/** An implementation for the data loader */
-public class StarfishDataLoader implements StarfishLoader {
+public class StarfishDataLoader implements DataLoader, ResponsiveMessageController {
 
-  /** The jda instance to get important information of discord */
-  @NotNull private final JDA jda;
-  /** The mongo client created for the use of the database */
-  @NotNull private final MongoClient client;
-  /** The database that is being used */
-  @NotNull private final MongoDatabase database;
-  /** The collection to work with tickets */
-  @NotNull private final MongoCollection<Document> tickets;
-  /** The collection to work with freelancers */
-  @NotNull private final MongoCollection<Document> users;
-  /** The collection to work with freelancers */
-  @NotNull private final MongoCollection<Document> roles;
-  /** The collection to work with responsive messages */
-  @NotNull private final MongoCollection<Document> messages;
-  /** The collection that contains the ratings of freelancers */
-  @NotNull private final MongoCollection<Document> ratings;
-  /** The deserializers to get the responsive messages */
-  @NotNull
-  private final HashMap<String, StarfishMessageDeserializer<?>> deserializers = new HashMap<>();
+  @NonNull private final Gson gson;
 
+  @NonNull private final MongoClient client;
+
+  @NonNull private final MongoDatabase database;
+
+  @NonNull private final MongoCollection<Document> tickets;
+
+  @NonNull private final MongoCollection<Document> users;
+
+  @NonNull private final MongoCollection<Document> roles;
+
+  @NonNull private final MongoCollection<Document> messages;
+
+  @NonNull private final MongoCollection<Document> ratings;
   /**
    * Creates the mongo loader instance
    *
-   * @param jda the jda instance for important discord information
+   * @param gson
    * @param uri the mongo uri for authentication
    * @param database the database to use
    */
-  public StarfishDataLoader(@NotNull JDA jda, @NotNull String uri, @NotNull String database) {
-    this.jda = jda;
+  public StarfishDataLoader(@NonNull Gson gson, @NonNull String uri, @NonNull String database) {
+    this.gson = gson;
     MongoClientOptions.Builder builder = new MongoClientOptions.Builder();
     builder.connectTimeout(300).sslEnabled(true);
     this.client = new MongoClient(new MongoClientURI(uri, builder));
-    this.database = client.getDatabase(database);
+    this.database = this.client.getDatabase(database);
     this.tickets = this.database.getCollection("tickets");
     this.users = this.database.getCollection("users");
     this.roles = this.database.getCollection("roles");
     this.messages = this.database.getCollection("messages");
     this.ratings = this.database.getCollection("ratings");
     this.ping();
-    deserializers.put("claim-order", new ClaimOrderDeserializer());
-    deserializers.put("ticket-panel", new TicketPanelDeserializer());
-    deserializers.put("offer", new OfferDeserializer());
-    deserializers.put("review", new ReviewFreelancerDeserializer());
   }
 
   /**
-   * Creates the mongo loader instance
+   * Get an object first look in cache then in the mongo database
    *
-   * @param jda the jda instance for important discord information
-   * @param configuration the configuration to get the uri and database from
+   * @param clazz the class of the object to get
+   * @param predicate to check the cache object
+   * @param collection the collection that contains the type of object
+   * @param query the mongo query to get the object from the database
+   * @param <T> the type of object to get
+   * @return the object
    */
-  public StarfishDataLoader(@NotNull JDA jda, @NotNull MongoConfiguration configuration) {
-    this(jda, configuration.getUri(), configuration.getDatabase());
+  private <T extends Catchable> T getObject(
+      @NonNull Class<T> clazz,
+      @NonNull Predicate<T> predicate,
+      @NonNull MongoCollection<Document> collection,
+      @NonNull Document query) {
+    return Starfish.getCache()
+        .getOrSupply(clazz, predicate, this.supplyObjectFromQuery(clazz, collection, query));
   }
 
   /** Ping the mongo database to make sure that this is working */
@@ -125,584 +109,266 @@ public class StarfishDataLoader implements StarfishLoader {
     database.runCommand(new Document("serverStatus", 1));
   }
 
-  /**
-   * Get an starfish user from a document query
-   *
-   * @param query the document query
-   * @return the starfish user
-   */
-  @Nullable
-  public BotUser getStarfishUser(@NotNull Document query) {
-    Document first = this.users.find(query).first();
-    if (first != null) {
-      StarfishValuesMap preferences = this.getPreferences(first);
-      if (preferences.getValueOr("freelancer", Boolean.class, false)) {
-        return new StarfishFreelancer(
-            query.getLong("id"), preferences, this.getPermissionStacks(first));
-      } else {
-        return new StarfishUser(query.getLong("id"), preferences, this.getPermissionStacks(first));
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Get an starfish user from a document query
-   *
-   * @param query the document query
-   * @return the starfish user
-   */
-  @Nullable
-  public StarfishFreelancerRating getFreelancerRating(@NotNull Document query) {
-    Document first = this.ratings.find(query).first();
-    if (first != null) {
-      Map<Long, Integer> map = new TreeMap<>();
-      if (first.get("ratings") != null) {
-        Document ratings = first.get("ratings", Document.class);
-        ratings.forEach(
-            (id, rate) -> {
-              try {
-                map.put(Long.valueOf(id), ratings.getInteger(id));
-              } catch (NumberFormatException ignored) {
-              }
-            });
-      }
-      return new StarfishFreelancerRating(first.getLong("id"), map);
-    }
-    return null;
-  }
-
-  /**
-   * Get a ticket from a query
-   *
-   * @param query the query of the ticket
-   * @return the ticket if found else null
-   */
-  @Nullable
-  public Ticket getTicket(@NotNull Document query) {
-    Document first = this.tickets.find(query).first();
-    HashMap<BotUser, String> usersMap = new HashMap<>();
-    if (first != null) {
-      if (first.get("users") != null) {
-        Document users = first.get("users", Document.class);
-        for (String key : users.keySet()) {
-          BotUser user = this.getStarfishUser(Long.parseLong(key));
-          usersMap.put(user, users.getString(key));
-        }
-      }
-      if (first.get("customer") != null) {
-        usersMap.put(this.getStarfishUser(first.getLong("customer")), "owner");
-      }
-      if (first.get("freelancer") != null) {
-        BotUser user = this.getStarfishUser(first.getLong("freelancer"));
-        if (!user.isFreelancer()) {
-          user = StarfishFreelancer.promote(user);
-        }
-        usersMap.put(user, "freelancer");
-      }
-      return new StarfishTicket(
-          first.getLong("id"),
-          TicketType.valueOf(first.getString("type").toUpperCase()),
-          this.getDetails(first),
-          TicketStatus.valueOf(first.getString("status").toUpperCase()),
-          usersMap,
-          first.get("channel") == null ? -1 : first.getLong("channel"));
-    }
-    return null;
-  }
-
-  /**
-   * Get a starfish role from the database for certain query
-   *
-   * @param query the query to find the role
-   * @return the role if found else null
-   */
-  public @Nullable BotRole getStarfishRole(@NotNull Document query) {
-    Document first = this.roles.find(query).first();
-    if (first != null) {
-      return new StarfishRole(first.getLong("id"), this.getPermissionStacks(first));
-    }
-    return null;
-  }
-
-  /**
-   * Get the permission stack from a document
-   *
-   * @param document the document to get the stack from
-   * @return the set of the permission stacks
-   */
-  @NotNull
-  private Set<PermissionStack> getPermissionStacks(Document document) {
-    Set<PermissionStack> permissions = new HashSet<>();
-    if (document.get("permissions") instanceof List) {
-      for (Document stackDocument : document.getList("permissions", Document.class)) {
-        Set<Permission> guidoPermissions = new HashSet<>();
-        List<String> stack = stackDocument.getList("permissions", String.class);
-        for (String string : stack) {
-          if (string.startsWith("-")) {
-            guidoPermissions.add(new StarfishPermission(string.substring(1), false));
-          } else {
-            guidoPermissions.add(new StarfishPermission(string, true));
-          }
-        }
-        permissions.add(
-            new StarfishPermissionStack(stackDocument.getString("context"), guidoPermissions));
-      }
-    }
-    return permissions;
-  }
-
-  /**
-   * Get the map of preferences from a document
-   *
-   * @param document the document to get the map
-   * @return the map of links
-   */
-  @NotNull
-  private StarfishValuesMap getPreferences(@NotNull Document document) {
-    return this.getPreferences(document, "preferences");
-  }
-  /**
-   * Get the map of preferences from a document
-   *
-   * @param document the document to get the map
-   * @param key the key of to get in the document
-   * @return the map of links
-   */
-  @NotNull
-  private StarfishValuesMap getPreferences(@NotNull Document document, @NotNull String key) {
-    HashMap<String, Object> preferences = new HashMap<>();
-    if (document.get(key) instanceof Document) {
-      document.get(key, Document.class).forEach((preferences::put));
-    }
-    return new StarfishValuesMap(preferences);
-  }
-
-  /**
-   * Get ticket details from a document
-   *
-   * @param document the document to get ticket details
-   * @return the details
-   */
-  @NotNull
-  private StarfishTicketDetails getDetails(@NotNull Document document) {
-    LinkedHashMap<String, Object> details = new LinkedHashMap<>();
-    if (document.get("details") instanceof Document) {
-      Document detailsDocument = document.get("details", Document.class);
-      detailsDocument.forEach(
-          (string, object) -> {
-            if (object instanceof List) {
-              if (!((List<?>) object).isEmpty()) {
-                Object value = ((List<?>) object).get(0);
-                if (value.getClass() == Long.class) {
-                  List<Role> roles = new ArrayList<>();
-                  for (Long id : detailsDocument.getList(string, Long.class)) {
-                    roles.add(jda.getRoleById(id));
-                  }
-                  details.put(string, roles);
-                }
-              } else {
-                details.put(string, new ArrayList<>());
-              }
-            } else {
-              details.put(string, object);
-            }
-          });
-    }
-    return new StarfishTicketDetails(details);
-  }
-
-  /**
-   * Listen to a role being unloaded to save it to the database
-   *
-   * @param event the event of a role being unloaded
-   */
-  @Listener(priority = ListenPriority.HIGHEST)
-  public void onRoleUnloadedEvent(@NotNull BotRoleUnloadedEvent event) {
-    BotRole role = event.getRole();
-    Document document =
-        new Document("id", role.getId())
-            .append("permissions", this.getPermissionStacksDocument(role));
-    Document query = new Document("id", role.getId());
-    Document first = this.roles.find(query).first();
-    if (first != null) {
-      this.roles.replaceOne(query, document);
-    } else {
-      this.roles.insertOne(document);
-    }
-  }
-
-  /**
-   * Listens to when a ticket is unloaded
-   *
-   * @param event the event of a ticket being unloaded
-   */
-  @Listener(priority = ListenPriority.HIGHEST)
-  public void onTicketUnloadedEvent(@NotNull TicketUnloadedEvent event) {
-    this.saveTicket(event.getTicket());
-  }
-
-  /**
-   * Listens to when the rating of a freelancer is unloaded
-   *
-   * @param event the event of the rating of a freelancer being unloaded
-   */
-  @Listener(priority = ListenPriority.HIGHEST)
-  public void onFreelancerRatingUnloaded(@NotNull FreelancerRatingUnloadedEvent event) {
-    FreelancerRating rating = event.getRating();
-    Document document = new Document("id", rating.getId());
-    Document ratings = new Document();
-    rating
-        .getMap()
-        .forEach(
-            (key, value) -> {
-              ratings.append(String.valueOf(key), value);
-            });
-    document.append("ratings", ratings);
-    Document query = new Document("id", rating.getId());
-    Document first = this.ratings.find(query).first();
-    if (first != null) {
-      this.ratings.replaceOne(query, document);
-    } else {
-      this.ratings.insertOne(document);
-    }
-  }
-
-  /**
-   * Saves a ticket into the mongo database
-   *
-   * @param ticket the ticket to save
-   */
-  private void saveTicket(@NotNull Ticket ticket) {
-    Document document =
-        new Document("id", ticket.getId())
-            .append("type", ticket.getTicketType().toString())
-            .append("users", this.usersToDocument(ticket))
-            .append("details", this.detailsToDocument(ticket))
-            .append("status", ticket.getTicketStatus().toString());
-    if (ticket.getTextChannel() != null) {
-      document.append("channel", ticket.getTextChannel().getIdLong());
-    }
-    Document query = new Document("id", ticket.getId());
-    Document first = this.tickets.find(query).first();
-    if (first != null) {
-      this.tickets.replaceOne(query, document);
-    } else {
-      this.tickets.insertOne(document);
-    }
-  }
-
-  /**
-   * Listens to when a ticket is done to save it in the database
-   *
-   * @param event the event of a ticket being done
-   */
-  @Listener(priority = ListenPriority.HIGHEST)
-  public void onTicketStatusUpdated(@NotNull TicketStatusUpdatedEvent event) {
-    if (!event.isCancelled()) {
-      this.saveTicket(event.getTicket());
-    }
-  }
-
-  /**
-   * Listen to when a user is unloaded to save it to the database
-   *
-   * @param event the event of a user being unloaded
-   */
-  @Listener(priority = ListenPriority.HIGHEST)
-  public void onBotUserUnloaded(BotUserUnloadedEvent event) {
-    BotUser user = event.getUser();
-    Document document =
-        new Document("id", user.getId())
-            .append("preferences", this.preferencesToDocument(user))
-            .append("permissions", this.getPermissionStacksDocument(user));
-    Document query = new Document("id", user.getId());
-    Document first = this.users.find(query).first();
-    if (first != null) {
-      this.users.replaceOne(first, document);
-    } else {
-      this.users.insertOne(document);
-    }
-  }
-
-  /**
-   * Listens for messages being unloaded to upload them to the database
-   *
-   * @param event the event of a message being unloaded
-   */
-  @Listener(priority = ListenPriority.HIGHEST)
-  public void onBotMessageUnloaded(BotMessageUnloadedEvent event) {
-    BotResponsiveMessage message = event.getMessage();
-    Document query = new Document("id", message.getId());
-    Document document =
-        new Document("id", message.getId())
-            .append("type", message.getType())
-            .append("data", this.dataToDocument(message));
-    Document first = this.messages.find(query).first();
-    if (first != null) {
-      this.messages.replaceOne(query, document);
-    } else {
-      this.messages.insertOne(document);
-    }
-  }
-
-  /**
-   * Convert the data from a responsive message into a document
-   *
-   * @param message the message to convert the data from
-   * @return the data as a document
-   */
-  @NotNull
-  private Document dataToDocument(@NotNull BotResponsiveMessage message) {
-    Document document = new Document();
-    message.getData().getMap().forEach(document::append);
-    return document;
-  }
-
-  /**
-   * Get the document of a permission stack from a permissible
-   *
-   * @param permissible the permissible to get the stacks from
-   * @return the document of the permission stack
-   */
-  @NotNull
-  private List<Document> getPermissionStacksDocument(@NotNull Permissible permissible) {
-    List<Document> stack = new ArrayList<>();
-    for (PermissionStack permission : permissible.getPermissions()) {
-      List<String> nodes = new ArrayList<>();
-      for (Permission permissionPermission : permission.getPermissions()) {
-        nodes.add(permissionPermission.getNodeAppended());
-      }
-      stack.add(new Document("context", permission.getContext()).append("permissions", nodes));
-    }
-    return stack;
-  }
-
-  /**
-   * Convert the users from a ticket into a document
-   *
-   * @param ticket the ticket to get the document from
-   * @return the document
-   */
-  @NotNull
-  private Document usersToDocument(@NotNull Ticket ticket) {
-    Document document = new Document();
-    ticket.getUsers().forEach((user, role) -> document.append(String.valueOf(user.getId()), role));
-    return document;
-  }
-
-  /**
-   * Get the details of a ticket as a document. {@link
-   * com.starfishst.bot.handlers.questions.QuestionRole} simple starts with 'role' so it is safe to
-   * cast
-   *
-   * @param ticket the ticket to get the document from
-   * @return the document
-   */
-  @NotNull
-  @SuppressWarnings("unchecked")
-  private Document detailsToDocument(@NotNull Ticket ticket) {
-    Document document = new Document();
-    ticket
-        .getDetails()
-        .getMap()
-        .forEach(
-            (key, value) -> {
-              if (value instanceof List) {
-                Class<?> clazz = Lots.getClazz((List<?>) value);
-                if (clazz != null) {
-                  if (Role.class.isAssignableFrom(clazz)) {
-                    List<Long> ids = new ArrayList<>();
-                    for (Role role : ((List<Role>) value)) {
-                      ids.add(role.getIdLong());
-                    }
-                    document.append(key, ids);
-                  }
-                }
-              } else {
-                document.append(key, value);
-              }
-            });
-    return document;
-  }
-
-  /**
-   * Convert the preferences of a user into a mongo document
-   *
-   * @param user the user to get the document from
-   * @return the document
-   */
-  @NotNull
-  private Document preferencesToDocument(@NotNull BotUser user) {
-    Document document = new Document();
-    user.getPreferences().getMap().forEach(document::append);
-    return document;
-  }
-
-  /**
-   * Get a responsive message from a query
-   *
-   * @param query the query to get the message from
-   * @return the message if found else null
-   */
-  @Nullable
-  public ResponsiveMessage getResponsiveMessage(@NotNull Document query) {
-    Document first = this.messages.find(query).first();
-    if (first != null) {
-      return this.deserializers
-          .get(first.getString("type"))
-          .getMessage(first.getLong("id"), this.getPreferences(first, "data"), first);
-    } else {
-      return null;
-    }
-  }
-
   @Override
   public boolean acceptBots() {
     return false;
   }
 
-  @Override
-  public @NotNull Collection<ResponsiveMessage> getResponsiveMessages(@Nullable Guild guild) {
-    return new ArrayList<>();
+  /**
+   * Just as {@link #getObjectFromQuery(Class, MongoCollection, Document)} but given as a supplier
+   *
+   * @param clazz the class of the object to get
+   * @param collection the collection that contains that type of object
+   * @param query the query to get the object from the collection
+   * @param <T> the type of object to get
+   * @return the supplier of the object
+   */
+  @NonNull
+  private <T> Supplier<T> supplyObjectFromQuery(
+      @NonNull Class<T> clazz,
+      @NonNull MongoCollection<Document> collection,
+      @NonNull Document query) {
+    return () -> getObjectFromQuery(clazz, collection, query);
   }
 
-  @Override
-  @Nullable
-  public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
-    StarfishResponsiveMessage message =
-        Cache.get(StarfishResponsiveMessage.class, catchable -> catchable.getId() == messageId);
-    if (message != null) {
-      return message.refresh();
-    }
-    return this.getResponsiveMessage(new Document("id", messageId));
-  }
-
-  @Override
-  public void onUnload() {
-    this.client.close();
-  }
-
-  @Override
-  public String getName() {
-    return "mongo-data-loader";
-  }
-
-  @Override
-  public @Nullable Ticket getTicket(long id) {
-    StarfishTicket ticket = Cache.get(StarfishTicket.class, catchable -> catchable.getId() == id);
-    if (ticket != null) {
-      return ticket;
-    }
-    return this.getTicket(new Document("id", id));
-  }
-
-  @Override
-  public @Nullable Ticket getTicketByChannel(long channelId) {
-    StarfishTicket ticket =
-        Cache.get(
-            StarfishTicket.class,
-            catchable -> {
-              TextChannel channel = catchable.getTextChannel();
-              return channel != null && channel.getIdLong() == channelId;
-            });
-    if (ticket != null) {
-      return ticket;
-    }
-    return this.getTicket(new Document("channel", channelId));
-  }
-
-  @Override
-  public @NotNull BotUser getStarfishUser(long id) {
-    BotUser user = Cache.get(StarfishUser.class, catchable -> catchable.getId() == id);
-    if (user != null) {
-      return user;
-    }
-    user = this.getStarfishUser(new Document("id", id));
-    if (user != null) {
-      return user;
+  /**
+   * Get an object from a query. This works for getting one object only
+   *
+   * @param typeOfT the type of object to supply
+   * @param collection the collection to get the object from
+   * @param query the query to match the object
+   * @param <T> the type of the object
+   * @return the supplier of the object
+   */
+  private <T> T getObjectFromQuery(
+      @NotNull Class<T> typeOfT,
+      @NotNull MongoCollection<Document> collection,
+      @NotNull Document query) {
+    Document first = collection.find(query).first();
+    if (first != null) {
+      T t = this.getObjectFromDocument(typeOfT, first);
+      if (t instanceof StarfishCatchable) {
+        ((StarfishCatchable) t).cache();
+      }
+      return t;
     } else {
-      return new StarfishUser(
-          id, new StarfishValuesMap(Maps.singleton("lang", "en")), new HashSet<>());
-    }
-  }
-
-  @Override
-  public @NotNull BotRole getStarfishRole(long id) {
-    BotRole role = Cache.get(StarfishRole.class, catchable -> catchable.getId() == id);
-    if (role != null) {
-      return role;
-    }
-    role = this.getStarfishRole(new Document("id", id));
-    if (role != null) {
-      return role;
-    } else {
-      return new StarfishRole(id, new HashSet<>());
+      return null;
     }
   }
 
   /**
-   * Get all the offers sent to a ticket
+   * Saves an object into the mongo collection
    *
-   * @param ticket the ticket querying offers
-   * @return the offers found
+   * @param collection the mongo collection to save the document to
+   * @param query the query to replace in case that the document already exists
+   * @param object the object to save
    */
-  @Override
-  public @NotNull Collection<Offer> getOffers(@NotNull Ticket ticket) {
-    List<OfferMessage> offers = new ArrayList<>();
-    for (ICatchable catchable : Cache.getCache()) {
-      if (catchable instanceof OfferMessage) {
-        if (((OfferMessage) catchable).getTicket() == ticket.getId()) {
-          offers.add((OfferMessage) catchable);
-        }
-      }
-    }
-    MongoCursor<Document> cursor =
-        this.messages.find(new Document("data.ticket", ticket.getId())).cursor();
-    while (cursor.hasNext()) {
-      Document document = cursor.next();
-      boolean contains = false;
-      for (OfferMessage offer : offers) {
-        if (document.getLong("id") == offer.getId()) {
-          contains = true;
-        }
-      }
-      if (!contains) {
-        StarfishResponsiveMessage message =
-            this.deserializers
-                .get("offer")
-                .getMessage(
-                    document.getLong("id"), this.getPreferences(document, "data"), document);
-        if (message instanceof OfferMessage) {
-          offers.add((OfferMessage) message);
-        }
-      }
-    }
-    return new ArrayList<>(offers);
-  }
-
-  @Override
-  public void deleteMessage(@NotNull ResponsiveMessage message) {
-    Document query = new Document("id", message.getId());
-    this.messages.deleteOne(query);
-  }
-
-  @Override
-  public @NotNull StarfishFreelancerRating getRating(long id) {
-    StarfishFreelancerRating rating =
-        Cache.get(StarfishFreelancerRating.class, catchable -> catchable.getId() == id);
-    if (rating != null) return rating;
-    rating = this.getFreelancerRating(new Document("id", id));
-    if (rating != null) {
-      return rating;
+  private void save(
+      @NonNull MongoCollection<Document> collection,
+      @NonNull Document query,
+      @NonNull Object object) {
+    Document document = Document.parse(this.gson.toJson(object));
+    Document first = collection.find(query).first();
+    if (first != null) {
+      collection.replaceOne(query, document);
     } else {
-      return new StarfishFreelancerRating(id, new TreeMap<>());
+      collection.insertOne(document);
     }
+  }
+
+  /**
+   * Get an object given a document
+   *
+   * @param typeOfT the type of object to get from document
+   * @param document the document to get the object from
+   * @param <T> the type of the object
+   * @return the object given by json
+   */
+  private <T> T getObjectFromDocument(@NotNull Type typeOfT, @NotNull Document document) {
+    return this.gson.fromJson(document.toJson(), typeOfT);
+  }
+
+  /**
+   * Get the objects from cache or search them in a collection
+   *
+   * @param <T> the type of the object
+   * @param clazz the class of the object to get
+   * @param collection the collection to get the objects from
+   * @param query the query to match the objects
+   * @return the list containing the object
+   */
+  @NonNull
+  private <T extends Catchable> List<T> supplyManyAndCache(
+      @NonNull Class<T> clazz,
+      @NonNull MongoCollection<Document> collection,
+      @NonNull Document query,
+      @NonNull Predicate<T> predicate) {
+    Cache cache = Starfish.getCache();
+    List<T> list = this.supplyManyFromQuery(clazz, collection, query);
+    List<T> toAdd = new ArrayList<>();
+    list.removeIf(
+        data -> {
+          if (!cache.contains(data)) {
+            cache.add(data);
+          } else {
+            T catchable = cache.get(clazz, data::equals);
+            if (catchable != null) {
+              if (predicate.test(catchable)) {
+                toAdd.add(catchable);
+              }
+              return true;
+            }
+          }
+          return false;
+        });
+    list.addAll(toAdd);
+    return list;
+  }
+
+  /**
+   * Supply all the objects matching the query. If the limit and skip are < 1 there will be no
+   * elements skipped nor limited
+   *
+   * @param typeOfT the type of objects to supply
+   * @param collection the collection to find the objects from
+   * @param query the query to find the documents
+   * @param <T> the type of objects to get
+   * @return the list of objects
+   */
+  private <T> List<T> supplyManyFromQuery(
+      @NonNull Type typeOfT,
+      @NonNull MongoCollection<Document> collection,
+      @NonNull Document query) {
+    List<T> list = new ArrayList<>();
+    MongoCursor<Document> cursor = collection.find(query).cursor();
+    while (cursor.hasNext()) {
+      T obj = this.getObjectFromDocument(typeOfT, cursor.next());
+      if (obj != null) {
+        list.add(obj);
+      }
+    }
+    return list;
+  }
+
+  @Override
+  public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
+    return this.getObject(
+        StarfishResponsiveMessage.class,
+        message -> message.getId() == messageId,
+        this.messages,
+        new Document("id", messageId));
+  }
+
+  @Override
+  public @NonNull Collection<ResponsiveMessage> getResponsiveMessages(Guild guild) {
+    return new ArrayList<>();
+  }
+
+  @Override
+  public void onUnload() {}
+
+  @Override
+  public String getName() {
+    return "mongo-database";
+  }
+
+  @Override
+  public Ticket getTicket(long id) {
+    return this.getObject(
+        StarfishTicket.class, ticket -> ticket.getId() == id, this.tickets, new Document("id", id));
+  }
+
+  @Override
+  public Ticket getTicketByChannel(long channelId) {
+    return this.getObject(
+        StarfishTicket.class,
+        ticket -> ticket.getTextChannelId() == channelId,
+        this.tickets,
+        new Document("channel", channelId));
+  }
+
+  @Override
+  public @NonNull BotUser getStarfishUser(long id) {
+    return this.getObject(
+        StarfishUser.class, user -> user.getId() == id, this.users, new Document("id", id));
+  }
+
+  @Override
+  public @NonNull BotRole getStarfishRole(long id) {
+    return this.getObject(
+        StarfishRole.class, role -> role.getId() == id, this.roles, new Document("id", id));
+  }
+
+  @Override
+  public @NonNull Collection<Offer> getOffers(@NonNull Ticket ticket) {
+    return new ArrayList<>(
+        this.supplyManyAndCache(
+            OfferMessage.class,
+            this.messages,
+            new Document("data.ticket", ticket.getId()),
+            offer -> offer.getTicket() == ticket.getId()));
+  }
+
+  @Override
+  public void deleteMessage(@NonNull StarfishResponsiveMessage message) {
+    message.unload(false);
+    this.messages.deleteOne(new Document("id", message.getId()));
+  }
+
+  @Override
+  public @NonNull FreelancerRating getRating(long id) {
+    return this.getObject(
+        StarfishFreelancerRating.class,
+        rating -> rating.getId() == id,
+        this.ratings,
+        new Document("id", id));
+  }
+
+  @Listener(priority = ListenPriority.HIGH)
+  @Override
+  public void onRoleUnloadedEvent(@NonNull BotRoleUnloadedEvent event) {
+    BotRole role = event.getRole();
+    this.save(this.roles, new Document("id", role.getId()), role);
+  }
+
+  @Listener(priority = ListenPriority.HIGH)
+  @Override
+  public void onTicketUnloadedEvent(@NonNull TicketUnloadedEvent event) {
+    Ticket ticket = event.getTicket();
+    this.save(this.tickets, new Document("id", ticket.getId()), ticket);
+  }
+
+  @Listener(priority = ListenPriority.HIGH)
+  @Override
+  public void onFreelancerRatingUnloaded(@NonNull FreelancerRatingUnloadedEvent event) {
+    FreelancerRating rating = event.getRating();
+    this.save(this.ratings, new Document("id", rating.getId()), rating);
+  }
+
+  @Listener(priority = ListenPriority.HIGH)
+  @Override
+  public void onTicketStatusUpdated(@NonNull TicketStatusUpdatedEvent event) {
+    Ticket ticket = event.getTicket();
+    this.save(this.tickets, new Document("id", ticket.getId()), ticket);
+  }
+
+  @Listener(priority = ListenPriority.HIGH)
+  @Override
+  public void onBotUserUnloaded(@NonNull BotUserUnloadedEvent event) {
+    BotUser user = event.getUser();
+    this.save(this.users, new Document("id", user.getId()), user);
+  }
+
+  @Override
+  @Listener(priority = ListenPriority.HIGH)
+  public void onBotMessageUnloaded(@NonNull BotMessageUnloadedEvent event) {
+    BotResponsiveMessage message = event.getMessage();
+    this.save(this.messages, new Document("id", message.getId()), message);
   }
 
   @SubscribeEvent
   @Override
   public void onMessageReactionAdd(MessageReactionAddEvent event) {
-    StarfishLoader.super.onMessageReactionAdd(event);
+    ResponsiveMessageController.super.onMessageReactionAdd(event);
   }
 }

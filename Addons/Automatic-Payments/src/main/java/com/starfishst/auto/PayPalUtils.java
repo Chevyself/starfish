@@ -12,6 +12,8 @@ import com.starfishst.bot.commands.invoices.Fee;
 import com.starfishst.bot.util.SimpleMath;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,14 +32,14 @@ public class PayPalUtils {
    * @return the created payment
    * @throws PayPalRESTException in case the api context could not be connected
    */
-  @NotNull
+  @NonNull
   public static Payment createPayment(
-      @NotNull String total,
-      @NotNull List<Transaction> transactions,
-      @NotNull String note,
-      @NotNull String cancelUrl,
-      @NotNull String returnUrl,
-      @NotNull APIContext context)
+      @NonNull String total,
+      @NonNull List<Transaction> transactions,
+      @NonNull String note,
+      @NonNull String cancelUrl,
+      @NonNull String returnUrl,
+      @NonNull APIContext context)
       throws PayPalRESTException {
     Amount amount = new Amount();
     amount.setCurrency("USD");
@@ -67,8 +69,7 @@ public class PayPalUtils {
    * @return the payment if found else null
    * @throws PayPalRESTException in case the context could not connect with PayPal
    */
-  @Nullable
-  public static Payment getPayment(@NotNull APIContext context, @NotNull String paymentId)
+  public static Payment getPayment(@NonNull APIContext context, @NonNull String paymentId)
       throws PayPalRESTException {
     return Payment.get(context, paymentId);
   }
@@ -81,9 +82,9 @@ public class PayPalUtils {
    * @param mode the mode of the context
    * @return the context
    */
-  @NotNull
+  @NonNull
   public static APIContext getApiContext(
-      @NotNull String clientId, @NotNull String clientSecret, @NotNull String mode) {
+          @NonNull String clientId, @NonNull String clientSecret, @NonNull String mode) {
     return new APIContext(clientId, clientSecret, mode);
   }
 
@@ -98,8 +99,8 @@ public class PayPalUtils {
    * @param url the rul to get
    * @return the url if found else
    */
-  @NotNull
-  public static String getUrl(@NotNull Payment payment, @NotNull String url) {
+  @NonNull
+  public static String getUrl(@NonNull Payment payment, @NonNull String url) {
     Links link =
         payment.getLinks().stream()
             .filter(loadedLink -> loadedLink.getRel().equalsIgnoreCase("approval_url"))
@@ -121,7 +122,7 @@ public class PayPalUtils {
    * @return the list of transactions
    */
   public static List<Transaction> getTransactions(
-      double subtotal, @NotNull String service, @NotNull List<Fee> applyingFees) {
+          double subtotal, @NonNull String service, @NonNull List<Fee> applyingFees) {
     List<Transaction> transactions = new ArrayList<>();
     transactions.add(getTotalTransaction(subtotal, applyingFees, service));
     // currently only one transaction is supported
@@ -139,7 +140,7 @@ public class PayPalUtils {
    * @return the total
    */
   private static Transaction getTotalTransaction(
-      double subtotal, @NotNull List<Fee> applyingFees, @NotNull String service) {
+          double subtotal, @NonNull List<Fee> applyingFees, @NonNull String service) {
     Transaction transaction = new Transaction();
     transaction.setAmount(new Amount("USD", SimpleMath.getTotalFormatted(subtotal, applyingFees)));
     transaction.setDescription(service);
@@ -153,7 +154,7 @@ public class PayPalUtils {
    * @param fee the fee to get the transaction from
    * @return the transaction
    */
-  private static Transaction getTransactionFromFee(double subtotal, @NotNull Fee fee) {
+  private static Transaction getTransactionFromFee(double subtotal, @NonNull Fee fee) {
     Transaction transaction = new Transaction();
     transaction.setAmount(new Amount("USD", String.format("%.02f", subtotal)));
     transaction.setDescription(fee.getDescription());
@@ -167,8 +168,8 @@ public class PayPalUtils {
    * @param service the service to get the transaction form
    * @return the transaction
    */
-  @NotNull
-  private static Transaction getTransactionFromService(double subtotal, @NotNull String service) {
+  @NonNull
+  private static Transaction getTransactionFromService(double subtotal, @NonNull String service) {
     Transaction serviceTransaction = new Transaction();
     serviceTransaction.setAmount(new Amount("USD", String.format("%.02f", subtotal)));
     serviceTransaction.setDescription(service);

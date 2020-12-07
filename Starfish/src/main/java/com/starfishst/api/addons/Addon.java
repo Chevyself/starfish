@@ -1,35 +1,21 @@
 package com.starfishst.api.addons;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
-/** Every addon should extend this in the main class */
-public class Addon {
+/** This object represents an addon created to expand the Starfish bot */
+public interface Addon {
 
-  /** The addon information */
-  @NotNull private final AddonInformation information;
+  /** Called when the addon is enabled */
+  void onEnable() throws Throwable;
 
-  /**
-   * Create the addon.
-   *
-   * @param information The addon information;
-   */
-  public Addon(@NotNull AddonInformation information) {
-    this.information = information;
-  }
-
-  /** Executed when the addon is loaded */
-  public void onEnable() {}
-
-  /** Executed when the addon is unloaded */
-  public void onDisable() {}
+  /** Called when the addon is disabled */
+  void onDisable() throws Throwable;
 
   /**
    * Get the addon information
    *
    * @return the addon information
    */
-  @NotNull
-  public AddonInformation getInformation() {
-    return information;
-  }
+  @NonNull
+  JavaAddonInformation getInformation();
 }

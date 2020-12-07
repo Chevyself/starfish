@@ -3,11 +3,10 @@ package com.starfishst.bot.handlers.questions;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;
+import lombok.NonNull;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * If the {@link Question#getSimple()} starts with 'image-' it will be a question image which means
@@ -24,7 +23,7 @@ public class QuestionImage extends Question {
    * @param limit the limit of the question
    */
   public QuestionImage(
-      @NotNull String title, @NotNull String simple, @NotNull String description, int limit) {
+      @NonNull String title, @NonNull String simple, @NonNull String description, int limit) {
     super(title, simple, description, limit);
   }
 
@@ -34,13 +33,12 @@ public class QuestionImage extends Question {
    * @param url the embed to validate
    * @return true if it is a valid url
    */
-  public boolean checkUrl(@NotNull String url) {
+  public boolean checkUrl(@NonNull String url) {
     return EmbedBuilder.URL_PATTERN.matcher(url).matches();
   }
 
   @Override
-  public @Nullable String getAnswer(
-      @NotNull GuildMessageReceivedEvent event, @NotNull BotUser user) {
+  public String getAnswer(@NonNull GuildMessageReceivedEvent event, @NonNull BotUser user) {
     String raw = event.getMessage().getContentRaw();
     if (this.checkUrl(raw)) {
       return raw;
@@ -55,7 +53,7 @@ public class QuestionImage extends Question {
   }
 
   @Override
-  public @NotNull String getSimple() {
+  public @NonNull String getSimple() {
     return super.getSimple();
   }
 }

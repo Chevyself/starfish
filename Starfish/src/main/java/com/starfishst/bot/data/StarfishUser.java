@@ -1,25 +1,23 @@
 package com.starfishst.bot.data;
 
-import com.starfishst.api.PermissionStack;
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.data.user.FreelancerRating;
-import com.starfishst.api.events.user.BotUserLoadedEvent;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.bot.Starfish;
+import com.starfishst.api.permissions.PermissionStack;
 import java.util.Set;
-import me.googas.commons.cache.thread.Catchable;
+import lombok.NonNull;
 import me.googas.commons.time.Time;
-import org.jetbrains.annotations.NotNull;
 
 /** An implementation for {@link com.starfishst.api.data.user.BotUser} */
-public class StarfishUser extends Catchable implements BotUser {
+public class StarfishUser implements BotUser {
 
   /** The discord id of the user */
   private final long id;
 
   /** The preferences of the user */
-  @NotNull private final StarfishValuesMap preferences;
+  @NonNull private final StarfishValuesMap preferences;
 
   /** The set of permissions that the user has */
   private final Set<PermissionStack> permissions;
@@ -32,12 +30,10 @@ public class StarfishUser extends Catchable implements BotUser {
    * @param permissions the set of permissions that the user has
    */
   public StarfishUser(
-      long id, @NotNull StarfishValuesMap preferences, Set<PermissionStack> permissions) {
+      long id, @NonNull StarfishValuesMap preferences, Set<PermissionStack> permissions) {
     this.id = id;
     this.preferences = preferences;
     this.permissions = permissions;
-    this.addToCache();
-    new BotUserLoadedEvent(this).call();
   }
 
   /**
@@ -46,7 +42,7 @@ public class StarfishUser extends Catchable implements BotUser {
    * @param user the user that is supposed to be a freelancer
    * @throws IllegalArgumentException if the user is not a freelancer
    */
-  public StarfishUser(@NotNull BotUser user) {
+  public StarfishUser(@NonNull BotUser user) {
     if (!user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
       throw new IllegalArgumentException(user + " is not a freelancer!");
     }
@@ -55,24 +51,20 @@ public class StarfishUser extends Catchable implements BotUser {
     this.permissions = user.getPermissions();
     this.getPreferences().removeValue("freelancer");
     this.getPreferences().removeValue("portfolio");
-    new BotUserLoadedEvent(this).call();
     try {
       user.unload(false);
     } catch (Throwable ignored) {
     }
-    this.addToCache();
+    this.cache();
   }
 
   @Override
-  public @NotNull Set<PermissionStack> getPermissions() {
+  public @NonNull Set<PermissionStack> getPermissions() {
     return this.permissions;
   }
 
   @Override
-  public void setLang(@NotNull String lang) {}
-
-  @Override
-  public void onSecondPassed() {}
+  public void setLang(@NonNull String lang) {}
 
   @Override
   public void onRemove() {
@@ -80,7 +72,7 @@ public class StarfishUser extends Catchable implements BotUser {
   }
 
   @Override
-  public @NotNull Time getToRemove() {
+  public @NonNull Time getToRemove() {
     return Starfish.getConfiguration().toUnloadUser();
   }
 
@@ -95,12 +87,12 @@ public class StarfishUser extends Catchable implements BotUser {
   }
 
   @Override
-  public @NotNull StarfishValuesMap getPreferences() {
+  public @NonNull StarfishValuesMap getPreferences() {
     return this.preferences;
   }
 
   @Override
-  public @NotNull LocaleFile getLocaleFile() {
+  public @NonNull LocaleFile getLocaleFile() {
     return Starfish.getLanguageHandler().getFile(this.getLang());
   }
 

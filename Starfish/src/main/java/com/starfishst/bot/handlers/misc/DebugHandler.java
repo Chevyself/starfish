@@ -1,15 +1,15 @@
 package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.events.StarfishEvent;
-import com.starfishst.bot.handlers.StarfishEventHandler;
+import com.starfishst.api.events.StarfishHandler;
+import lombok.NonNull;
 import me.googas.commons.events.Listener;
-import org.jetbrains.annotations.NotNull;
 
 /** Handler for debugging */
-public class DebugHandler implements StarfishEventHandler {
+public class DebugHandler implements StarfishHandler {
 
   @Listener(priority = -1)
-  public void onStarfishEvent(@NotNull StarfishEvent event) {
+  public void onStarfishEvent(@NonNull StarfishEvent event) {
     // System.out.println(event);
   }
 

@@ -1,27 +1,27 @@
 package com.starfishst.bot.data.messages.offer;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.Starfish;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.responsive.ReactionResponse;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
-import org.jetbrains.annotations.NotNull;
 
 /** The reaction to accept an offer */
 public class OfferAcceptReactionResponse implements ReactionResponse {
 
   /** The message of the offer */
-  @NotNull private final OfferMessage message;
+  @NonNull private final OfferMessage message;
 
   /**
    * Create the reaction response
    *
    * @param message the message of the offer
    */
-  public OfferAcceptReactionResponse(@NotNull OfferMessage message) {
+  public OfferAcceptReactionResponse(@NonNull OfferMessage message) {
     this.message = message;
   }
 
@@ -31,7 +31,7 @@ public class OfferAcceptReactionResponse implements ReactionResponse {
   }
 
   @Override
-  public void onReaction(@NotNull MessageReactionAddEvent event) {
+  public boolean onReaction(@NonNull MessageReactionAddEvent event) {
     Ticket ticket =
         Starfish.getTicketManager()
             .getDataLoader()
@@ -53,10 +53,11 @@ public class OfferAcceptReactionResponse implements ReactionResponse {
         }
       }
     }
+    return true;
   }
 
   @Override
-  public @NotNull String getUnicode() {
+  public @NonNull String getUnicode() {
     return Starfish.getLanguageHandler().getFile("en").get("unicode.accept-offer");
   }
 }

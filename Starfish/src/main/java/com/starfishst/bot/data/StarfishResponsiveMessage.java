@@ -1,29 +1,23 @@
 package com.starfishst.bot.data;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.messages.BotResponsiveMessage;
-import com.starfishst.api.events.messages.BotMessageLoadedEvent;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
-import com.starfishst.bot.Starfish;
 import com.starfishst.jda.utils.responsive.ReactionResponse;
 import com.starfishst.jda.utils.responsive.SimpleResponsiveMessage;
 import java.util.Set;
+import lombok.NonNull;
 import me.googas.commons.time.Time;
-import me.googas.commons.time.Unit;
 import net.dv8tion.jda.api.entities.Message;
-import org.jetbrains.annotations.NotNull;
 
 /** An implementation of {@link BotResponsiveMessage} */
 public class StarfishResponsiveMessage extends SimpleResponsiveMessage
     implements BotResponsiveMessage {
 
-  /** The time to remove the message from cache */
-  @NotNull private final Time start;
   /** The type of the responsive message */
-  @NotNull private final String type;
+  @NonNull private final String type;
   /** The data of the message */
-  @NotNull private final StarfishValuesMap data;
-  /** The seconds left */
-  private long secondsLeft;
+  @NonNull private final StarfishValuesMap data;
 
   /**
    * Create the responsive message. This constructor should be used when creating the responsive
@@ -36,15 +30,12 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
    */
   public StarfishResponsiveMessage(
       long id,
-      @NotNull Set<ReactionResponse> reactions,
-      @NotNull String type,
-      @NotNull StarfishValuesMap data) {
+      @NonNull Set<ReactionResponse> reactions,
+      @NonNull String type,
+      @NonNull StarfishValuesMap data) {
     super(id, reactions);
     this.type = type;
     this.data = data;
-    this.start = Starfish.getConfiguration().toUnloadMessages();
-    this.addToCache();
-    new BotMessageLoadedEvent(this).call();
   }
 
   /**
@@ -57,16 +48,13 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
    * @param data the data of the message
    */
   public StarfishResponsiveMessage(
-      @NotNull Message message,
-      @NotNull Set<ReactionResponse> reactions,
-      @NotNull String type,
-      @NotNull StarfishValuesMap data) {
+      @NonNull Message message,
+      @NonNull Set<ReactionResponse> reactions,
+      @NonNull String type,
+      @NonNull StarfishValuesMap data) {
     super(message, reactions);
     this.type = type;
     this.data = data;
-    this.start = Starfish.getConfiguration().toUnloadMessages();
-    this.addToCache();
-    new BotMessageLoadedEvent(this).call();
   }
 
   /**
@@ -75,24 +63,10 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
    * @return the type of responsive message
    */
   @Override
-  @NotNull
+  @NonNull
   public String getType() {
     return type;
   }
-
-  @Override
-  public @NotNull StarfishResponsiveMessage refresh() {
-    this.secondsLeft = this.start.getValue(Unit.SECONDS);
-    return this;
-  }
-
-  @Override
-  public void reduceTime(long l) {
-    this.secondsLeft -= l;
-  }
-
-  @Override
-  public void onSecondPassed() {}
 
   @Override
   public void onRemove() {
@@ -100,16 +74,11 @@ public class StarfishResponsiveMessage extends SimpleResponsiveMessage
   }
 
   @Override
-  public @NotNull Time getToRemove() {
+  public @NonNull Time getToRemove() {
     return Starfish.getConfiguration().toUnloadMessages();
   }
 
-  @Override
-  public long getSecondsLeft() {
-    return this.secondsLeft;
-  }
-
-  @NotNull
+  @NonNull
   @Override
   public StarfishValuesMap getData() {
     return this.data;

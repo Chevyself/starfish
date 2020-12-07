@@ -2,20 +2,20 @@ package com.starfishst.api.events.messages;
 
 import com.starfishst.api.data.messages.BotResponsiveMessage;
 import com.starfishst.api.events.StarfishEvent;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** An event that has a {@link com.starfishst.api.data.messages.BotResponsiveMessage} involved */
 public class BotMessageEvent implements StarfishEvent {
 
   /** The message involved in the event */
-  @NotNull private final BotResponsiveMessage message;
+  @NonNull private final BotResponsiveMessage message;
 
   /**
    * Create the event
    *
    * @param message the responsive message involved in the event
    */
-  public BotMessageEvent(@NotNull BotResponsiveMessage message) {
+  public BotMessageEvent(@NonNull BotResponsiveMessage message) {
     this.message = message;
   }
 
@@ -24,7 +24,7 @@ public class BotMessageEvent implements StarfishEvent {
    *
    * @return the message involved in the event
    */
-  @NotNull
+  @NonNull
   public BotResponsiveMessage getMessage() {
     return message;
   }

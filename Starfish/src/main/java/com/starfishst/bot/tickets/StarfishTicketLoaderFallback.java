@@ -5,11 +5,17 @@ import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.data.user.FreelancerRating;
+import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
+import com.starfishst.api.events.role.BotRoleUnloadedEvent;
+import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
+import com.starfishst.api.events.tickets.TicketUnloadedEvent;
+import com.starfishst.api.events.user.BotUserUnloadedEvent;
+import com.starfishst.api.events.user.FreelancerRatingUnloadedEvent;
+import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import java.util.Collection;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Guild;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** A fallback for the starfish ticket loader */
 public class StarfishTicketLoaderFallback implements StarfishLoader {
@@ -20,7 +26,7 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
   }
 
   @Override
-  public @NotNull Collection<ResponsiveMessage> getResponsiveMessages(@Nullable Guild guild) {
+  public @NonNull Collection<ResponsiveMessage> getResponsiveMessages(Guild guild) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
@@ -34,25 +40,25 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
   }
 
   @Override
-  public @Nullable Ticket getTicket(long id) {
+  public Ticket getTicket(long id) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
 
   @Override
-  public @Nullable Ticket getTicketByChannel(long channelId) {
+  public Ticket getTicketByChannel(long channelId) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
 
   @Override
-  public @NotNull BotUser getStarfishUser(long id) {
+  public @NonNull BotUser getStarfishUser(long id) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
 
   @Override
-  public @NotNull BotRole getStarfishRole(long id) {
+  public @NonNull BotRole getStarfishRole(long id) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
@@ -64,13 +70,13 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
    * @return the offers found
    */
   @Override
-  public @NotNull Collection<Offer> getOffers(@NotNull Ticket ticket) {
+  public @NonNull Collection<Offer> getOffers(@NonNull Ticket ticket) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
 
   @Override
-  public void deleteMessage(@NotNull ResponsiveMessage message) {
+  public void deleteMessage(@NonNull StarfishResponsiveMessage message) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
@@ -82,8 +88,26 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
    * @return the rating of the freelancer
    */
   @Override
-  public @NotNull FreelancerRating getRating(long id) {
+  public @NonNull FreelancerRating getRating(long id) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
+
+  @Override
+  public void onRoleUnloadedEvent(@NonNull BotRoleUnloadedEvent event) {}
+
+  @Override
+  public void onTicketUnloadedEvent(@NonNull TicketUnloadedEvent event) {}
+
+  @Override
+  public void onFreelancerRatingUnloaded(@NonNull FreelancerRatingUnloadedEvent event) {}
+
+  @Override
+  public void onTicketStatusUpdated(@NonNull TicketStatusUpdatedEvent event) {}
+
+  @Override
+  public void onBotUserUnloaded(@NonNull BotUserUnloadedEvent event) {}
+
+  @Override
+  public void onBotMessageUnloaded(@NonNull BotMessageUnloadedEvent event) {}
 }

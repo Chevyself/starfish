@@ -4,9 +4,8 @@ import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishValuesMap;
 import java.util.HashSet;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Message;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** A message sent to a quote ticket */
 public class OfferMessage extends StarfishResponsiveMessage implements Offer {
@@ -14,21 +13,10 @@ public class OfferMessage extends StarfishResponsiveMessage implements Offer {
   /**
    * Create the offer message
    *
-   * @param id the id of the message
-   * @param data the data of the message
-   */
-  public OfferMessage(long id, @NotNull StarfishValuesMap data) {
-    super(id, new HashSet<>(), "offer", data);
-    this.addReactionResponse(new OfferAcceptReactionResponse(this));
-  }
-
-  /**
-   * Create the offer message
-   *
    * @param message the the message
    * @param data the data of the message
    */
-  public OfferMessage(@NotNull Message message, @NotNull StarfishValuesMap data) {
+  public OfferMessage(@NonNull Message message, @NonNull StarfishValuesMap data) {
     super(message, new HashSet<>(), "offer", data);
     this.addReactionResponse(new OfferAcceptReactionResponse(this), message);
   }
@@ -49,7 +37,7 @@ public class OfferMessage extends StarfishResponsiveMessage implements Offer {
    * @return the offer as a string
    */
   @Override
-  public @NotNull String getOffer() {
+  public @NonNull String getOffer() {
     return this.getData().getValueOr("offer", String.class, "No offer");
   }
 
@@ -72,7 +60,7 @@ public class OfferMessage extends StarfishResponsiveMessage implements Offer {
   }
 
   @Override
-  public boolean equals(@Nullable Object obj) {
+  public boolean equals(Object obj) {
     if (obj == this) {
       return true;
     }

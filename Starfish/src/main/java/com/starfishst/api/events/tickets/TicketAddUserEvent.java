@@ -3,16 +3,16 @@ package com.starfishst.api.events.tickets;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishCancellable;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** Called when a {@link BotUser} is added to a ticket */
 public class TicketAddUserEvent extends TicketEvent implements StarfishCancellable {
 
   /** The user that is being added */
-  @NotNull private final BotUser user;
+  @NonNull private final BotUser user;
 
   /** The role that the user will take in the ticket */
-  @NotNull private final String role;
+  @NonNull private final String role;
 
   /** Whether the event is cancelled */
   private boolean cancelled;
@@ -24,7 +24,7 @@ public class TicketAddUserEvent extends TicketEvent implements StarfishCancellab
    * @param user the user that will be added
    * @param role the role that the user will take in the ticket
    */
-  public TicketAddUserEvent(@NotNull Ticket ticket, @NotNull BotUser user, @NotNull String role) {
+  public TicketAddUserEvent(@NonNull Ticket ticket, @NonNull BotUser user, @NonNull String role) {
     super(ticket);
     this.user = user;
     this.role = role;
@@ -45,7 +45,7 @@ public class TicketAddUserEvent extends TicketEvent implements StarfishCancellab
    *
    * @return the user that is being added
    */
-  @NotNull
+  @NonNull
   public BotUser getUser() {
     return user;
   }
@@ -55,7 +55,7 @@ public class TicketAddUserEvent extends TicketEvent implements StarfishCancellab
    *
    * @return the role to which the user is being added
    */
-  @NotNull
+  @NonNull
   public String getRole() {
     return role;
   }

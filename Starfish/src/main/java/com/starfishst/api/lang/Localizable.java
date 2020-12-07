@@ -1,6 +1,6 @@
 package com.starfishst.api.lang;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** This objects represents an entity that can be localized */
 public interface Localizable {
@@ -10,13 +10,13 @@ public interface Localizable {
    *
    * @param lang the new language that this entity must use
    */
-  void setLang(@NotNull String lang);
+  void setLang(@NonNull String lang);
 
   /**
    * Get the language that this entity is using
    *
    * @return the language that this entity is using
    */
-  @NotNull
+  @NonNull
   String getLang();
 }

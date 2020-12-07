@@ -1,14 +1,13 @@
 package com.starfishst.api.data.user;
 
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.utility.StarfishCatchable;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import me.googas.commons.cache.thread.ICatchable;
+import lombok.NonNull;
 import me.googas.commons.maps.Maps;
-import org.jetbrains.annotations.NotNull;
 
 /** This object represents a map that contains rating given to a freelancer */
-public interface FreelancerRating extends ICatchable {
+public interface FreelancerRating extends StarfishCatchable {
 
   /**
    * Adds a rating
@@ -26,8 +25,8 @@ public interface FreelancerRating extends ICatchable {
    * @param locale the locale which will read the rating
    * @return the readable rating
    */
-  @NotNull
-  default String getReadable(@NotNull LocaleFile locale) {
+  @NonNull
+  default String getReadable(@NonNull LocaleFile locale) {
     if (this.getMap().isEmpty()) {
       return locale.get("freelancer-rating.empty");
     } else {
@@ -47,13 +46,11 @@ public interface FreelancerRating extends ICatchable {
     if (this.getMap().isEmpty()) {
       return 0;
     } else {
-      AtomicInteger sum = new AtomicInteger(0);
-      this.getMap()
-          .forEach(
-              (user, rating) -> {
-                sum.addAndGet(rating);
-              });
-      return sum.get() / this.getMap().size();
+      int sum = 0;
+      for (Integer value : this.getMap().values()) {
+        if (value != null) sum += value;
+      }
+      return sum / this.getMap().size();
     }
   }
 

@@ -1,28 +1,23 @@
 package com.starfishst.api.data.user;
 
-import com.starfishst.api.Permissible;
-import com.starfishst.api.ValuesMap;
+import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.lang.Localizable;
+import com.starfishst.api.permissions.Permissible;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.Starfish;
-import com.starfishst.jda.result.ResultType;
+import com.starfishst.api.utility.StarfishCatchable;
+import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import me.googas.commons.Lots;
-import me.googas.commons.cache.thread.ICatchable;
+import lombok.NonNull;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** An user that uses the Starfish Studios services */
-public interface BotUser extends Localizable, Permissible, ICatchable {
+public interface BotUser extends Localizable, Permissible, StarfishCatchable {
 
   /**
    * Get the complete information of the user
@@ -30,35 +25,9 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    * @param user the user that will read the information
    * @return the complete information of the user
    */
-  @NotNull
-  default EmbedQuery toCompleteInformation(@NotNull BotUser user) {
-    LocaleFile locale = user.getLocaleFile();
-    Map<String, String> placeholders = this.getPlaceholders();
-    EmbedQuery embedQuery =
-        Messages.build(
-            locale.get("user-info.title", placeholders),
-            locale.get("user-info.description", placeholders),
-            ResultType.GENERIC,
-            user);
-    HashMap<String, String> fields = new HashMap<>();
-    this.getPreferences()
-        .getMap()
-        .forEach(
-            (key, value) -> {
-              if (!key.equalsIgnoreCase("lang") && !key.equalsIgnoreCase("freelancer")) {
-                if (value instanceof Collection) {
-                  fields.put(key, Lots.pretty((Collection<?>) value));
-                } else {
-                  fields.put(key, value.toString());
-                }
-              }
-            });
-    fields.put("Rating", this.getRating().getReadable(user.getLocaleFile()));
-    fields.forEach(
-        (key, value) -> {
-          embedQuery.getEmbedBuilder().addField(key, value, true);
-        });
-    return embedQuery;
+  @NonNull
+  default EmbedQuery toCompleteInformation(@NonNull BotUser user) {
+    return Messages.build(this, user);
   }
 
   /**
@@ -73,7 +42,7 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    *
    * @return the mention of the user
    */
-  @NotNull
+  @NonNull
   default String getMention() {
     User user = this.getDiscord();
     if (user != null) {
@@ -88,7 +57,7 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    *
    * @return the tag of the user
    */
-  @NotNull
+  @NonNull
   default String getDiscordTag() {
     User user = this.getDiscord();
     if (user != null) {
@@ -109,7 +78,7 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    *
    * @return the preferences
    */
-  @NotNull
+  @NonNull
   ValuesMap getPreferences();
 
   /**
@@ -117,7 +86,7 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    *
    * @return the language file
    */
-  @NotNull
+  @NonNull
   LocaleFile getLocaleFile();
 
   /**
@@ -134,9 +103,8 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    *
    * @return the discord user if found else null
    */
-  @Nullable
   default User getDiscord() {
-    JDA jda = Starfish.getConnection().getJda();
+    JDA jda = Starfish.getJdaConnection().getJda();
     if (jda != null) {
       return jda.getUserById(this.getId());
     }
@@ -148,7 +116,6 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    *
    * @return the discord user if found else null
    */
-  @Nullable
   default Member getMember() {
     Guild guild = Starfish.getDiscordConfiguration().getGuild();
     if (guild != null) {
@@ -157,18 +124,12 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
     return null;
   }
 
-  @Override
-  @NotNull
-  default String getLang() {
-    return this.getPreferences().getValueOr("lang", String.class, "en");
-  }
-
   /**
    * Get the user as a discord mention
    *
    * @return the mention of the user
    */
-  @NotNull
+  @NonNull
   default String getName() {
     Member member = this.getMember();
     if (member != null) {
@@ -187,12 +148,18 @@ public interface BotUser extends Localizable, Permissible, ICatchable {
    *
    * @return the placeholders of the user
    */
-  @NotNull
+  @NonNull
   default Map<String, String> getPlaceholders() {
     return Maps.builder("id", String.valueOf(this.getId()))
         .append("mention", this.getMention())
         .append("name", this.getName())
         .append("tag", this.getDiscordTag())
         .build();
+  }
+
+  @Override
+  @NonNull
+  default String getLang() {
+    return this.getPreferences().getValueOr("lang", String.class, "en");
   }
 }

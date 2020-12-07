@@ -6,7 +6,7 @@
 
     <groupId>com.starfish.starfish</groupId>
     <artifactId>Starfish-Bot</artifactId>
-    <version>3.0.0-Release</version>
+    <version>3.1.0-Release</version>
     <description>The bot of the Starfish Studios</description>
     <packaging>pom</packaging>
 
@@ -19,5 +19,30 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+
+    <build>
+        <plugins>
+            <!-- Maven java version plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- Dependency to the Lombok annotations -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.16</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 </project>

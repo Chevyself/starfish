@@ -1,10 +1,10 @@
 package com.starfishst.api.data.tickets;
 
-import com.starfishst.bot.Starfish;
+import com.starfishst.api.Starfish;
+import lombok.Getter;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** There's many different type of tickets and the way to differentiate them is this enum */
 public enum TicketType {
@@ -33,15 +33,13 @@ public enum TicketType {
   PRODUCT("products", "products"),
   /** The ticket that is created when a customer wants to buy a product from a freelancer */
   CHECK_OUT("checkout", "checkout"),
-  /** Creates a suggestion that later the user can either send it or cancel it */
-  SUGGESTION("suggestions", "suggestions"),
-  /** Create a report ticket */
-  REPORT("reports", "reports");
+  /** A custom type of ticket */
+  CUSTOM("custom", "custom");
 
   /** The name of the category where this tickets can be stored */
-  @NotNull private final String categoryName;
+  @NonNull @Getter private final String categoryName;
   /** The name of the channel where this tickets can be announced */
-  @NotNull private final String channelName;
+  @NonNull @Getter private final String channelName;
 
   /**
    * The type of ticket
@@ -49,7 +47,7 @@ public enum TicketType {
    * @param categoryName the name of the category where the ticket can be stored
    * @param channelName the name of the channel where the ticket can be stored
    */
-  TicketType(@NotNull String categoryName, @NotNull String channelName) {
+  TicketType(@NonNull String categoryName, @NonNull String channelName) {
     this.categoryName = categoryName;
     this.channelName = channelName;
   }
@@ -60,7 +58,6 @@ public enum TicketType {
    *
    * @return he category where the ticket can be created
    */
-  @Nullable
   public Category getCategory() {
     return Starfish.getDiscordConfiguration().requireCategory(this.getCategoryName());
   }
@@ -71,28 +68,7 @@ public enum TicketType {
    *
    * @return he text channel where the ticket can be announced
    */
-  @Nullable
   public TextChannel getChannel() {
     return Starfish.getDiscordConfiguration().requireChannel(this.getChannelName());
-  }
-
-  /**
-   * Get the key of the category of the ticket type
-   *
-   * @return the key of the category
-   */
-  @NotNull
-  public String getCategoryName() {
-    return categoryName;
-  }
-
-  /**
-   * Get the key of the channel of the ticket type
-   *
-   * @return the key of the channel
-   */
-  @NotNull
-  public String getChannelName() {
-    return channelName;
   }
 }

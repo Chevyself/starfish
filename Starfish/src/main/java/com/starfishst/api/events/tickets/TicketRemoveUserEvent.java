@@ -3,13 +3,13 @@ package com.starfishst.api.events.tickets;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishCancellable;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** Called when a {@link BotUser} is removed from a ticket */
 public class TicketRemoveUserEvent extends TicketEvent implements StarfishCancellable {
 
   /** The user that is being removed */
-  @NotNull private final BotUser user;
+  @NonNull private final BotUser user;
 
   /** Whether the event is cancelled */
   private boolean cancelled;
@@ -20,7 +20,7 @@ public class TicketRemoveUserEvent extends TicketEvent implements StarfishCancel
    * @param ticket the ticket involved in the event
    * @param user the user that is being removed
    */
-  public TicketRemoveUserEvent(@NotNull Ticket ticket, @NotNull BotUser user) {
+  public TicketRemoveUserEvent(@NonNull Ticket ticket, @NonNull BotUser user) {
     super(ticket);
     this.user = user;
   }
@@ -40,7 +40,7 @@ public class TicketRemoveUserEvent extends TicketEvent implements StarfishCancel
    *
    * @return the user that is joining the ticket
    */
-  @NotNull
+  @NonNull
   public BotUser getUser() {
     return user;
   }

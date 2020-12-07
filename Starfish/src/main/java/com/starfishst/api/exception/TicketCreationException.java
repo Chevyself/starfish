@@ -1,6 +1,6 @@
 package com.starfishst.api.exception;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** An exception thrown when a ticket cannot be created */
 public class TicketCreationException extends StarfishException {
@@ -10,7 +10,7 @@ public class TicketCreationException extends StarfishException {
    *
    * @param message why was the exception thrown
    */
-  public TicketCreationException(@NotNull String message) {
+  public TicketCreationException(@NonNull String message) {
     super(message);
   }
 }

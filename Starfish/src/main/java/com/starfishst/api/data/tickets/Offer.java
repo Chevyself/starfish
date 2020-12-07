@@ -1,6 +1,6 @@
 package com.starfishst.api.data.tickets;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** An offer is sent to */
 public interface Offer {
@@ -17,7 +17,7 @@ public interface Offer {
    *
    * @return the offer as a string
    */
-  @NotNull
+  @NonNull
   String getOffer();
 
   /**

@@ -4,19 +4,18 @@ import com.starfishst.api.configuration.DiscordConfiguration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Guild;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** An implementation for {@link DiscordConfiguration} */
 public class StarfishDiscordConfiguration implements DiscordConfiguration {
 
   /** The roles that the bot can use */
-  @NotNull private final Map<String, List<Long>> roles;
+  @NonNull private final Map<String, List<Long>> roles;
   /** The categories that the bot can use */
-  @NotNull private final Map<String, Long> categories;
+  @NonNull private final Map<String, Long> categories;
   /** The channels that the bot can use */
-  @NotNull private final Map<String, Long> channels;
+  @NonNull private final Map<String, Long> channels;
   /** The guild where the bot is working */
   private long guild;
 
@@ -30,9 +29,9 @@ public class StarfishDiscordConfiguration implements DiscordConfiguration {
    */
   public StarfishDiscordConfiguration(
       long guild,
-      @NotNull Map<String, List<Long>> roles,
-      @NotNull Map<String, Long> categories,
-      @NotNull Map<String, Long> channels) {
+      @NonNull Map<String, List<Long>> roles,
+      @NonNull Map<String, Long> categories,
+      @NonNull Map<String, Long> channels) {
     this.guild = guild;
     this.roles = roles;
     this.categories = categories;
@@ -50,28 +49,28 @@ public class StarfishDiscordConfiguration implements DiscordConfiguration {
    *
    * @return a discord configuration for fallback
    */
-  @NotNull
+  @NonNull
   public static StarfishDiscordConfiguration fallback() {
     return new StarfishDiscordConfiguration(-1, new HashMap<>(), new HashMap<>(), new HashMap<>());
   }
 
   @Override
-  public @NotNull Map<String, List<Long>> getRoles() {
+  public @NonNull Map<String, List<Long>> getRoles() {
     return this.roles;
   }
 
   @Override
-  public @NotNull Map<String, Long> getCategories() {
+  public @NonNull Map<String, Long> getCategories() {
     return this.categories;
   }
 
   @Override
-  public @NotNull Map<String, Long> getChannels() {
+  public @NonNull Map<String, Long> getChannels() {
     return this.channels;
   }
 
   @Override
-  public void setGuild(@Nullable Guild guild) {
+  public void setGuild(Guild guild) {
     this.guild = guild == null ? -1 : guild.getIdLong();
   }
 

@@ -6,29 +6,28 @@ import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishCancellable;
 import com.starfishst.api.events.StarfishEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import lombok.NonNull;
 
 /** Called before a ticket is created by a {@link com.starfishst.api.data.loader.TicketManager} */
 public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellable {
 
   /** The ticket manager creating the ticket */
-  @NotNull private final TicketManager manager;
+  @NonNull private final TicketManager manager;
 
   /** The type of ticket that is being created */
-  @NotNull private final TicketType type;
+  @NonNull private final TicketType type;
 
   /** The user creating the ticket */
-  @NotNull private final BotUser user;
+  @NonNull private final BotUser user;
 
   /** The parent of the ticket */
-  @Nullable private final Ticket parent;
+  private final Ticket parent;
 
   /** Whether the event is cancelled */
   private boolean cancelled;
 
   /** Why is it cancelled */
-  @NotNull private String reason = "Ticket creation cancelled: No reason given";
+  @NonNull private String reason = "Ticket creation cancelled: No reason given";
 
   /**
    * Create the event
@@ -39,10 +38,10 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
    * @param parent the parent of the ticket
    */
   public TicketPreCreationEvent(
-      @NotNull TicketManager manager,
-      @NotNull TicketType type,
-      @NotNull BotUser user,
-      @Nullable Ticket parent) {
+      @NonNull TicketManager manager,
+      @NonNull TicketType type,
+      @NonNull BotUser user,
+      Ticket parent) {
     this.manager = manager;
     this.type = type;
     this.user = user;
@@ -54,7 +53,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
    *
    * @param reason the reason why it was cancelled
    */
-  public void setReason(@NotNull String reason) {
+  public void setReason(@NonNull String reason) {
     this.reason = reason;
   }
 
@@ -63,7 +62,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
    *
    * @return the manager
    */
-  @NotNull
+  @NonNull
   public TicketManager getManager() {
     return manager;
   }
@@ -73,7 +72,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
    *
    * @return the type of ticket that is being created
    */
-  @NotNull
+  @NonNull
   public TicketType getType() {
     return this.type;
   }
@@ -83,7 +82,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
    *
    * @return the user creating the ticket
    */
-  @NotNull
+  @NonNull
   public BotUser getUser() {
     return user;
   }
@@ -93,7 +92,6 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
    *
    * @return the parent
    */
-  @Nullable
   public Ticket getParent() {
     return parent;
   }
@@ -103,7 +101,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
    *
    * @return the reason why it was cancelled
    */
-  @NotNull
+  @NonNull
   public String getReason() {
     return reason;
   }

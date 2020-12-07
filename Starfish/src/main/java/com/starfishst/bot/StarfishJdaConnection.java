@@ -1,24 +1,43 @@
 package com.starfishst.bot;
 
-import com.starfishst.api.utility.console.Console;
+import com.starfishst.api.Starfish;
+import com.starfishst.api.configuration.Configuration;
+import com.starfishst.api.utility.JdaConnection;
 import java.util.Scanner;
+import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
+import lombok.NonNull;
 import me.googas.commons.Lots;
 import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** Setups connection with JDA */
-public class StarfishJdaConnection {
+public class StarfishJdaConnection implements JdaConnection {
+
+  private final Logger log;
+
+  private final Configuration configuration;
 
   /** The jda instance used by the bot. */
-  @Nullable private JDA jda;
+  private JDA jda;
 
   /** Whether getting the token from config failed */
   boolean config = false;
+
+  /**
+   * The logger used to print important messages
+   *
+   * @param log the logger to use
+   * @param configuration the configuration used to get the token in case that the bot cannot get it
+   *     from arguments
+   */
+  public StarfishJdaConnection(Logger log, Configuration configuration) {
+    this.log = log;
+    this.configuration = configuration;
+  }
 
   /**
    * Get a token from the input of the console
@@ -26,9 +45,9 @@ public class StarfishJdaConnection {
    * @param scanner to get the input from
    * @return the token if an input was made
    */
-  @NotNull
-  public static String getTokenFromInput(@NotNull Scanner scanner) {
-    Console.info("Insert the bot token");
+  @NonNull
+  public String getTokenFromInput(@NonNull Scanner scanner) {
+    log.info("Insert the bot token");
     while (true) {
       if (scanner.hasNext()) {
         String input = scanner.nextLine();
@@ -49,15 +68,15 @@ public class StarfishJdaConnection {
    * @param token the initial token
    * @return the jda api connection
    */
-  @NotNull
-  public JDA createConnection(@NotNull String token) {
+  @NonNull
+  public JDA createConnection(@NonNull String token) {
     jda = null;
     while (jda == null) {
       try {
         jda = this.connect(token);
       } catch (LoginException e) {
-        Console.info("Discord authentication failed");
-        Console.info("Getting token from config");
+        log.info("Discord authentication failed");
+        log.info("Getting token from config");
         token = getToken();
       }
     }
@@ -71,22 +90,16 @@ public class StarfishJdaConnection {
    */
   private String getToken() {
     if (config) {
-      Console.info("Getting from configuration failed trying to get from input");
+      log.info("Getting from configuration failed trying to get from input");
       return getTokenFromInput(new Scanner(System.in));
     } else {
       config = true;
-      return Starfish.getConfiguration().getToken();
+      return configuration.getToken();
     }
   }
 
-  /**
-   * Connects to discord
-   *
-   * @param token the discord bot token
-   * @return the jda api
-   * @throws LoginException if the discord token is wrong and authentication failed
-   */
-  public JDA connect(@NotNull String token) throws LoginException {
+  @Override
+  public JDA connect(@NonNull String token) throws LoginException {
     JDA jda = JDABuilder.create(token, Lots.list(GatewayIntent.values())).build();
     long millis = 0;
     while (jda.getStatus() != JDA.Status.CONNECTED) {
@@ -94,19 +107,15 @@ public class StarfishJdaConnection {
         Thread.sleep(1);
         millis++;
       } catch (InterruptedException e) {
-        Console.exception(e, "InterruptedException: Discord connection failed");
+        Starfish.getFallback().process(e, "InterruptedException: Discord connection failed");
       }
     }
-    Console.info("Discord took " + Time.fromMillis(millis).toEffectiveString() + " to connect");
+    log.info("Discord took " + Time.fromMillis(millis).toEffectiveString() + " to connect");
+    jda.setEventManager(new AnnotatedEventManager());
     return jda;
   }
 
-  /**
-   * Get the connection with jda
-   *
-   * @return the connection with jda
-   */
-  @Nullable
+  @Override
   public JDA getJda() {
     return jda;
   }

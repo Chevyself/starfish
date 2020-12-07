@@ -2,22 +2,22 @@ package com.starfishst.api.events.tickets;
 
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.events.StarfishCancellable;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** Called when a detail is gong to be added to a ticket */
 public class TicketAddDetailEvent extends TicketEvent implements StarfishCancellable {
 
   /** The simple of the detail that is being added */
-  @NotNull private final String simple;
+  @NonNull private final String simple;
 
   /** The value of the detail */
-  @NotNull private final Object detail;
+  @NonNull private final Object detail;
 
   /** Whether the event is cancelled */
   private boolean cancelled;
 
   /** The reason to why it was cancelled */
-  @NotNull private String reason = "No reason given";
+  @NonNull private final String reason = "No reason given";
 
   /**
    * Create the event
@@ -27,7 +27,7 @@ public class TicketAddDetailEvent extends TicketEvent implements StarfishCancell
    * @param detail the value of the detail
    */
   public TicketAddDetailEvent(
-      @NotNull Ticket ticket, @NotNull String simple, @NotNull Object detail) {
+      @NonNull Ticket ticket, @NonNull String simple, @NonNull Object detail) {
     super(ticket);
     this.simple = simple;
     this.detail = detail;
@@ -38,7 +38,7 @@ public class TicketAddDetailEvent extends TicketEvent implements StarfishCancell
    *
    * @return the simple of the value
    */
-  @NotNull
+  @NonNull
   public String getSimple() {
     return simple;
   }
@@ -48,7 +48,7 @@ public class TicketAddDetailEvent extends TicketEvent implements StarfishCancell
    *
    * @return the value
    */
-  @NotNull
+  @NonNull
   public Object getDetail() {
     return detail;
   }
@@ -58,7 +58,7 @@ public class TicketAddDetailEvent extends TicketEvent implements StarfishCancell
    *
    * @return the reason
    */
-  @NotNull
+  @NonNull
   public String getReason() {
     return reason;
   }

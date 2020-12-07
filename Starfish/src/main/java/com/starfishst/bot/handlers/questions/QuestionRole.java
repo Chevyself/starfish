@@ -1,20 +1,19 @@
 package com.starfishst.bot.handlers.questions;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.Starfish;
 import com.starfishst.jda.result.ResultType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import lombok.NonNull;
 import me.googas.commons.Lots;
 import me.googas.commons.Strings;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * This represents a role question
@@ -27,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public class QuestionRole extends Question {
 
   /** The key of the roles */
-  @NotNull private final String role;
+  @NonNull private final String role;
 
   /**
    * Create an instance
@@ -39,23 +38,13 @@ public class QuestionRole extends Question {
    * @param limit the limit of roles in the answer
    */
   public QuestionRole(
-      @NotNull String title,
-      @NotNull String simple,
-      @NotNull String description,
-      @NotNull String role,
+      @NonNull String title,
+      @NonNull String simple,
+      @NonNull String description,
+      @NonNull String role,
       int limit) {
     super(title, simple, description, limit);
     this.role = role;
-  }
-
-  /**
-   * 'role' is a string to identify a list of roles inside 'discord.json'
-   *
-   * @return the identification for roles that can be used in the answer of this question
-   */
-  @NotNull
-  public String getRole() {
-    return role;
   }
 
   /**
@@ -64,8 +53,8 @@ public class QuestionRole extends Question {
    * @param toCheck the list to check
    * @return a list of the roles mentioned that cannot be
    */
-  @NotNull
-  private List<Role> getNotMentionableRoles(@NotNull List<Role> toCheck) {
+  @NonNull
+  private List<Role> getNotMentionableRoles(@NonNull List<Role> toCheck) {
     List<Role> notMentionable = new ArrayList<>();
     toCheck.forEach(
         role -> {
@@ -77,11 +66,21 @@ public class QuestionRole extends Question {
   }
 
   /**
+   * 'role' is a string to identify a list of roles inside 'discord.json'
+   *
+   * @return the identification for roles that can be used in the answer of this question
+   */
+  @NonNull
+  public String getRole() {
+    return role;
+  }
+
+  /**
    * Gets the list of roles as actual ones
    *
    * @return the list of roles
    */
-  @NotNull
+  @NonNull
   public List<Role> getRoles() {
     return Starfish.getDiscordConfiguration().getRoles(role);
   }
@@ -92,17 +91,19 @@ public class QuestionRole extends Question {
    * @return the new description
    */
   @Override
-  public @NotNull String getBuiltDescription() {
+  public @NonNull String getBuiltDescription() {
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("roles", Lots.pretty(Discord.getAsMention(getRoles())));
     placeholders.put("limit", String.valueOf(limit));
-    return Strings.buildMessage(super.getBuiltDescription(), placeholders);
+    return Strings.build(super.getBuiltDescription(), placeholders);
   }
 
   @Override
-  public @Nullable Object getAnswer(
-      @NotNull GuildMessageReceivedEvent event, @NotNull BotUser user) {
-    List<Role> roles = event.getMessage().getMentionedRoles();
+  public Object getAnswer(@NonNull GuildMessageReceivedEvent event, @NonNull BotUser user) {
+    List<Long> roles = new ArrayList<>();
+    for (Role role : event.getMessage().getMentionedRoles()) {
+      roles.add(role.getIdLong());
+    }
     if (roles.isEmpty()) {
       Messages.build(user.getLocaleFile().get("questions.empty-roles"), ResultType.ERROR, user)
           .send(event.getChannel(), Messages.getErrorConsumer());
@@ -118,7 +119,7 @@ public class QuestionRole extends Question {
           .send(event.getChannel(), Messages.getErrorConsumer());
       return null;
     }
-    List<Role> notMentionable = this.getNotMentionableRoles(roles);
+    List<Role> notMentionable = this.getNotMentionableRoles(event.getMessage().getMentionedRoles());
     if (notMentionable.isEmpty()) {
       return new ArrayList<>(roles);
     } else {

@@ -6,25 +6,24 @@ import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.data.StarfishFreelancer;
+import com.starfishst.bot.commands.objects.Freelancer;
+import com.starfishst.bot.data.StarfishTicket;
 import com.starfishst.bot.data.StarfishUser;
 import com.starfishst.bot.data.StarfishValuesMap;
 import com.starfishst.bot.data.messages.offer.OfferMessage;
 import com.starfishst.bot.data.messages.rating.ReviewFreelancer;
-import com.starfishst.bot.tickets.StarfishTicket;
 import com.starfishst.core.annotations.Multiple;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.Map;
+import lombok.NonNull;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.jetbrains.annotations.NotNull;
 
 /** Commands related to freelancing */
 public class FreelancerCommands {
@@ -36,15 +35,12 @@ public class FreelancerCommands {
    * @param user the user that is not a freelancer
    * @return the result of the promotion
    */
-  @Command(
-      aliases = "promote",
-      description = "promote.desc",
-      permission = @Perm(node = "starfish.promote"))
+  @Command(aliases = "promote", description = "promote.desc", node = "starfish.promote")
   public Result promote(
       BotUser sender, @Required(name = "user", description = "The user to promote") BotUser user) {
-    Map<String, @NotNull String> placeholders = user.getPlaceholders();
-    if (!user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
-      StarfishFreelancer.promote(user);
+    Map<String, @NonNull String> placeholders = user.getPlaceholders();
+    if (!user.isFreelancer()) {
+      user.getPreferences().addValue("freelancer", true);
       return new Result(sender.getLocaleFile().get("user.promoted", placeholders));
     } else {
       return new Result(sender.getLocaleFile().get("user.already-freelancer", placeholders));
@@ -58,13 +54,10 @@ public class FreelancerCommands {
    * @param user the user to demote
    * @return the result of the command
    */
-  @Command(
-      aliases = "demote",
-      description = "demote.desc",
-      permission = @Perm(node = "starfish.demote"))
+  @Command(aliases = "demote", description = "demote.desc", node = "starfish.demote")
   public Result demote(
       BotUser sender, @Required(name = "user", description = "demote.desc") BotUser user) {
-    Map<String, @NotNull String> placeholders = user.getPlaceholders();
+    Map<String, @NonNull String> placeholders = user.getPlaceholders();
     if (user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
       new StarfishUser(user);
       return new Result(sender.getLocaleFile().get("user.demoted", placeholders));
@@ -83,11 +76,11 @@ public class FreelancerCommands {
   @Command(
       aliases = {"freelancerinfo", "fi"},
       description = "freelancerinfo.desc",
-      permission = @Perm(node = "starfish.freelancerinfo"))
+      node = "starfish.freelancerinfo")
   public Result freelancerInfo(
       BotUser sender,
       @Required(name = "freelancer", description = "The freelancer to view")
-          StarfishFreelancer freelancer) {
+          Freelancer freelancer) {
     return new Result(freelancer.toCompleteInformation(sender));
   }
 
@@ -103,7 +96,7 @@ public class FreelancerCommands {
       aliases = {"quote", "offer"},
       description = "quote.desc")
   public Result quote(
-      StarfishFreelancer freelancer,
+      Freelancer freelancer,
       @Required(name = "quote.ticket", description = "quote.ticket.desc") Ticket ticket,
       @Multiple @Required(name = "quote.offer", description = "quote.offer.desc")
           JoinedStrings strings) {
@@ -133,7 +126,7 @@ public class FreelancerCommands {
                 map.addValue("offer", strings.getString());
                 map.addValue("freelancer", freelancer.getId());
                 map.addValue("ticket", ticket.getId());
-                new OfferMessage(msg, map);
+                new OfferMessage(msg, map).cache();
               });
         }
       }
@@ -141,10 +134,7 @@ public class FreelancerCommands {
     return new Result(locale.get("quote.sent", ticket.getPlaceholders()));
   }
 
-  @Command(
-      aliases = "review",
-      description = "freelancer.review.desc",
-      permission = @Perm(node = "starfish.review"))
+  @Command(aliases = "review", description = "freelancer.review.desc", node = "starfish.review")
   public Result review(LocaleFile locale, Ticket ticket) {
     if (!(ticket instanceof StarfishTicket))
       return new Result(ResultType.ERROR, "This ticket is not an starfish ticket");
@@ -158,14 +148,14 @@ public class FreelancerCommands {
     Map<String, String> placeholders = freelancer.getPlaceholders();
     placeholders.put("user", member.getAsMention());
     LocaleFile ownerLocale = owner.getLocaleFile();
-      return new Result(
+    return new Result(
         Messages.build(
             ownerLocale.get("review.title", placeholders),
             ownerLocale.get("review.description", placeholders),
             ResultType.GENERIC,
             owner),
         msg -> {
-          new ReviewFreelancer(msg, freelancer.getId(), owner.getId());
+          new ReviewFreelancer(msg, freelancer.getId(), owner.getId()).cache();
         });
   }
 }

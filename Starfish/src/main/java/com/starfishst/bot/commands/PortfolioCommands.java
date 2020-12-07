@@ -1,6 +1,6 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.bot.data.StarfishFreelancer;
+import com.starfishst.bot.commands.objects.Freelancer;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.jda.annotations.Command;
@@ -20,7 +20,7 @@ public class PortfolioCommands {
    */
   @Parent
   @Command(aliases = "portfolio", description = "portfolio.desc")
-  public Result portfolio(StarfishFreelancer freelancer) {
+  public Result portfolio(Freelancer freelancer) {
     String string;
     if (freelancer.getPreferences().getLisValue("portfolio").isEmpty()) {
       string = "Empty";
@@ -42,7 +42,7 @@ public class PortfolioCommands {
    */
   @Command(aliases = "add", description = "portfolio.add")
   public Result add(
-      StarfishFreelancer freelancer,
+      Freelancer freelancer,
       @Required(name = "portfolio.value", description = "portfolio.value.desc") String value) {
     List<Object> portfolio = freelancer.getPreferences().getLisValue("portfolio");
     portfolio.add(value);
@@ -60,7 +60,7 @@ public class PortfolioCommands {
    */
   @Command(aliases = "remove", description = "portfolio.remove")
   public Result remove(
-      StarfishFreelancer freelancer,
+      Freelancer freelancer,
       @Required(name = "portfolio.value", description = "portfolio.value.remove.desc")
           String value) {
     List<String> portfolio = freelancer.getPreferences().getLisValue("portfolio");

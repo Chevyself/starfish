@@ -1,12 +1,11 @@
 package com.starfishst.bot.commands;
 
+import com.starfishst.api.Starfish;
+import com.starfishst.api.data.loader.DataLoader;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.utility.Discord;
-import com.starfishst.bot.Starfish;
-import com.starfishst.bot.tickets.StarfishLoader;
 import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
@@ -29,15 +28,12 @@ public class ChannelsCommands {
    * @param context the context of the command
    * @return the result of the command execution
    */
-  @Command(
-      aliases = "add",
-      description = "add.description",
-      permission = @Perm(node = "starfish.add"))
+  @Command(aliases = "add", description = "add.description", node = "starfish.add")
   public Result add(BotUser user, Message message, CommandContext context) {
     List<IMentionable> mentions = new ArrayList<>(message.getMentionedRoles());
     mentions.addAll(message.getMentionedMembers());
     TextChannel channel = message.getTextChannel();
-    StarfishLoader loader = Starfish.getLoader();
+    DataLoader loader = Starfish.getLoader();
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("add.mentions-empty"));
     }
@@ -91,15 +87,12 @@ public class ChannelsCommands {
    * @param context the context of the message
    * @return the result of the command execution
    */
-  @Command(
-      aliases = "remove",
-      description = "remove.description",
-      permission = @Perm(node = "starfish.remove"))
+  @Command(aliases = "remove", description = "remove.description", node = "starfish.remove")
   public Result remove(BotUser user, Message message, CommandContext context) {
     List<IMentionable> mentions = new ArrayList<>(message.getMentionedRoles());
     mentions.addAll(message.getMentionedMembers());
     TextChannel channel = message.getTextChannel();
-    StarfishLoader loader = Starfish.getLoader();
+    DataLoader loader = Starfish.getLoader();
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("remove.mentions-empty"));
     }

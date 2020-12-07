@@ -1,16 +1,16 @@
 package com.starfishst.bot.data;
 
-import com.starfishst.api.Permission;
-import org.jetbrains.annotations.NotNull;
+import com.starfishst.api.permissions.Permission;
+import lombok.NonNull;
 
 /** An implementation for {@link Permission} */
 public class StarfishPermission implements Permission {
 
   /** The node of the permission */
-  @NotNull private final String node;
+  @NonNull private final String node;
 
   /** Whether the permission is enabled */
-  private boolean enabled;
+  private final boolean enabled;
 
   /**
    * Create the permission
@@ -18,13 +18,13 @@ public class StarfishPermission implements Permission {
    * @param node the node of the permission
    * @param enabled whether the permission is enabled
    */
-  public StarfishPermission(@NotNull String node, boolean enabled) {
+  public StarfishPermission(@NonNull String node, boolean enabled) {
     this.node = node;
     this.enabled = enabled;
   }
 
   @Override
-  public @NotNull String getNode() {
+  public @NonNull String getNode() {
     return this.node;
   }
 

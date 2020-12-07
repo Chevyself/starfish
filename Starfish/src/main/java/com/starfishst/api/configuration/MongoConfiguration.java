@@ -1,6 +1,6 @@
 package com.starfishst.api.configuration;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** The configuration for the mongo loader */
 public interface MongoConfiguration {
@@ -10,7 +10,7 @@ public interface MongoConfiguration {
    *
    * @return the uri
    */
-  @NotNull
+  @NonNull
   String getUri();
 
   /**
@@ -18,6 +18,6 @@ public interface MongoConfiguration {
    *
    * @return the name of the database
    */
-  @NotNull
+  @NonNull
   String getDatabase();
 }

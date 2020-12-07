@@ -1,14 +1,13 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.api.Permissible;
-import com.starfishst.api.Permission;
-import com.starfishst.api.PermissionStack;
+import com.starfishst.api.permissions.Permissible;
+import com.starfishst.api.permissions.Permission;
+import com.starfishst.api.permissions.PermissionStack;
 import com.starfishst.bot.data.StarfishPermission;
 import com.starfishst.bot.tickets.StarfishPermissionStack;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.result.Result;
 import java.util.HashSet;
 import me.googas.commons.Strings;
@@ -26,7 +25,7 @@ public class PermissionCommands {
   @Command(
       aliases = {"permissions", "perms"},
       description = "permissions.desc",
-      permission = @Perm(node = "starfish.permissions"))
+      node = "starfish.permissions")
   public Result permissions(
       @Required(name = "permissions.permissible", description = "permissions.permissible.desc")
           Permissible permissible) {

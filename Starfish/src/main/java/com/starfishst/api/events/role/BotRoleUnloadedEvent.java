@@ -1,7 +1,7 @@
 package com.starfishst.api.events.role;
 
 import com.starfishst.api.data.role.BotRole;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 /** Called when a role is loaded */
 public class BotRoleUnloadedEvent extends BotRoleEvent {
@@ -11,7 +11,7 @@ public class BotRoleUnloadedEvent extends BotRoleEvent {
    *
    * @param role the role involved in the event
    */
-  public BotRoleUnloadedEvent(@NotNull BotRole role) {
+  public BotRoleUnloadedEvent(@NonNull BotRole role) {
     super(role);
   }
 }

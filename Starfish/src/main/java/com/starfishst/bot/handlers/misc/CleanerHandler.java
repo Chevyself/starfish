@@ -1,38 +1,38 @@
 package com.starfishst.bot.handlers.misc;
 
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.api.utility.console.Console;
-import com.starfishst.bot.Starfish;
-import com.starfishst.bot.handlers.StarfishEventHandler;
 import com.starfishst.jda.result.ResultType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 import java.util.TimerTask;
+import lombok.NonNull;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import me.googas.commons.maps.Maps;
 import me.googas.commons.time.Time;
 import me.googas.commons.time.Unit;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.jetbrains.annotations.NotNull;
 
 /** Cleans the discord server from unloaded tickets, etc. */
-public class CleanerHandler extends TimerTask implements StarfishEventHandler {
+public class CleanerHandler extends TimerTask implements StarfishHandler {
 
   /** The map that contains the ticket id and the time left */
-  @NotNull private final Map<Long, Long> map = new HashMap<>();
+  @NonNull private final Map<Long, Long> map = new HashMap<>();
 
   public CleanerHandler() {
-    Starfish.TIMER.schedule(this, 0, 1000);
+    new Timer().schedule(this, 0, 1000);
   }
 
-  public void unload(@NotNull Ticket ticket) {
+  public void unload(@NonNull Ticket ticket) {
     ticket.setTicketStatus(TicketStatus.CLOSED);
     /*
     if (channel != null
@@ -51,7 +51,7 @@ public class CleanerHandler extends TimerTask implements StarfishEventHandler {
     this.map.remove(ticket.getId());
   }
 
-  public void onSecondPass(@NotNull Ticket ticket, @NotNull Time time) {
+  public void onSecondPass(@NonNull Ticket ticket, @NonNull Time time) {
     if (this.getPreferences().getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)
         && ticket.getTicketStatus() == TicketStatus.CREATING) {
       if (this.containsTime(time)) {
@@ -81,10 +81,10 @@ public class CleanerHandler extends TimerTask implements StarfishEventHandler {
     }
   }
 
-  @NotNull
-  public Time getTime() {
-    return Time.fromString(
-        this.getPreferences().getValueOr("to-delete-ticket", String.class, "3m"));
+  @NonNull
+  public Ticket refresh(@NonNull Ticket ticket) {
+    this.map.put(ticket.getId(), this.getTime().getValue(Unit.SECONDS));
+    return ticket;
   }
 
   /**
@@ -93,13 +93,19 @@ public class CleanerHandler extends TimerTask implements StarfishEventHandler {
    * @param compare the time to compare
    * @return true if times contains it
    */
-  private boolean containsTime(@NotNull Time compare) {
+  private boolean containsTime(@NonNull Time compare) {
     for (Time time : this.getTimes()) {
       if (time.equals(compare)) {
         return true;
       }
     }
     return false;
+  }
+
+  @NonNull
+  public Time getTime() {
+    return Time.fromString(
+        this.getPreferences().getValueOr("to-delete-ticket", String.class, "3m"));
   }
 
   @Override
@@ -125,7 +131,7 @@ public class CleanerHandler extends TimerTask implements StarfishEventHandler {
    *
    * @return the times
    */
-  @NotNull
+  @NonNull
   private List<Time> getTimes() {
     List<String> timeStrings = this.getPreferences().getLisValue("time-to-announce-deletion");
     List<Time> times = new ArrayList<>();
@@ -133,7 +139,7 @@ public class CleanerHandler extends TimerTask implements StarfishEventHandler {
       try {
         times.add(Time.fromString(timeString));
       } catch (IllegalArgumentException e) {
-        Console.exception(e, "Cleaner: " + timeString + " is not valid time!");
+        Starfish.getFallback().process(e, "Cleaner: " + timeString + " is not valid time!");
       }
     }
     return times;

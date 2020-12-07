@@ -1,16 +1,15 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.api.Fee;
+import com.starfishst.api.Starfish;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.utility.Fee;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.Starfish;
 import com.starfishst.core.annotations.Multiple;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.jda.annotations.Command;
 import com.starfishst.jda.annotations.Exclude;
-import com.starfishst.jda.annotations.Perm;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
@@ -31,10 +30,7 @@ public class InvoiceCommands {
    * @return a successful result sending the invoice
    */
   @Exclude
-  @Command(
-      aliases = "invoice",
-      description = "Generates an invoice",
-      permission = @Perm(node = "starfish.invoice"))
+  @Command(aliases = "invoice", description = "Generates an invoice", node = "starfish.invoice")
   public Result invoice(
       BotUser user,
       TextChannel channel,
@@ -58,10 +54,8 @@ public class InvoiceCommands {
             ResultType.GENERIC,
             user);
     for (Fee fee : applyingFees) {
-      query
-          .getEmbedBuilder()
-          .addField(
-              fee.getDescription(), "+" + String.format("%.2f", fee.getApply(subtotal)), false);
+      query.addField(
+          fee.getDescription(), "+" + String.format("%.2f", fee.getApply(subtotal)), false);
     }
     return new Result(query);
   }

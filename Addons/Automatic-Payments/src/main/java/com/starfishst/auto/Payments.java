@@ -19,11 +19,10 @@ import java.util.Properties;
 
 import com.starfishst.api.data.loader.TicketManager;
 import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.utility.console.Console;
+import lombok.NonNull;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.Strings;
 import me.googas.commons.maps.Maps;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -36,8 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import javax.security.auth.login.Configuration;
 
 /**
  * This class handles all the requests made to the server from PayPal
@@ -52,9 +49,9 @@ import javax.security.auth.login.Configuration;
 public class Payments implements ErrorController, WebMvcConfigurer {
 
   /** The pages and their html */
-  @NotNull private static final Map<String, String> pages = new HashMap<>();
+  @NonNull private static final Map<String, String> pages = new HashMap<>();
   /** The configuration for payments */
-  @NotNull
+  @NonNull
   private static final PaymentsConfiguration config = new PaymentsConfiguration();
   /**
    * Initializes the spring listener
@@ -120,7 +117,7 @@ public class Payments implements ErrorController, WebMvcConfigurer {
    * @param name the name of the page
    * @return true if it should be registered
    */
-  private static boolean isNotIgnored(@NotNull String name) {
+  private static boolean isNotIgnored(@NonNull String name) {
     return !pages.containsKey(name);
   }
 
@@ -133,12 +130,12 @@ public class Payments implements ErrorController, WebMvcConfigurer {
    * @param keyAlias the ssl certificate alias
    * @return the properties that can be used to run the spring application
    */
-  @NotNull
+  @NonNull
   private static Properties getProperties(
       int port,
-      @NotNull String keyStore,
-      @NotNull String keystorePassword,
-      @NotNull String keyAlias) {
+      @NonNull String keyStore,
+      @NonNull String keystorePassword,
+      @NonNull String keyAlias) {
     Properties properties = new Properties();
     properties.setProperty("server.port", String.valueOf(port));
     properties.setProperty("server.ssl.key-store-type", "PKCS12");
@@ -156,8 +153,8 @@ public class Payments implements ErrorController, WebMvcConfigurer {
    * @return the html of the page
    * @throws IOException in case something goes wrong
    */
-  @NotNull
-  public static String getPage(@NotNull String name) throws IOException {
+  @NonNull
+  public static String getPage(@NonNull String name) throws IOException {
     InputStream stream =
         new FileInputStream(CoreFiles.getFileOrResource("page" + File.separator + name + ".html"));
     BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -176,9 +173,9 @@ public class Payments implements ErrorController, WebMvcConfigurer {
    * @return the payment
    * @throws PayPalRESTException in case the api context could not be connected
    */
-  @NotNull
+  @NonNull
   public static Payment createPayment(
-      @NotNull String total, @NotNull List<Transaction> transactions) throws PayPalRESTException {
+          @NonNull String total, @NonNull List<Transaction> transactions) throws PayPalRESTException {
     return PayPalUtils.createPayment(
         total,
         transactions,
@@ -291,7 +288,7 @@ public class Payments implements ErrorController, WebMvcConfigurer {
    *
    * @return the PayPal context
    */
-  @NotNull
+  @NonNull
   public static APIContext getContext() {
     return PayPalUtils.getApiContext(
         config.getClientId(), config.getClientSecret(), config.getMode());

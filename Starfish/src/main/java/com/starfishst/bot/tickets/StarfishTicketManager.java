@@ -10,22 +10,23 @@ import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketPreCreationEvent;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.utility.Discord;
+import com.starfishst.bot.data.StarfishTicket;
+import com.starfishst.bot.data.StarfishValuesMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import lombok.NonNull;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** An implementation for {@link TicketManager} */
 public class StarfishTicketManager implements TicketManager {
 
   /** The data loader */
-  @NotNull private DataLoader loader;
+  @NonNull private DataLoader loader;
 
   /** The configuration to keep track of the total of tickets and other stuff */
-  @NotNull private Configuration configuration;
+  @NonNull private Configuration configuration;
 
   /**
    * Create the ticket manager
@@ -33,27 +34,27 @@ public class StarfishTicketManager implements TicketManager {
    * @param loader the data loader to get the tickets
    * @param configuration the configuration that the bot is using
    */
-  public StarfishTicketManager(@NotNull DataLoader loader, @NotNull Configuration configuration) {
+  public StarfishTicketManager(@NonNull DataLoader loader, @NonNull Configuration configuration) {
     this.loader = loader;
     this.configuration = configuration;
   }
 
   @Override
-  public @NotNull Ticket createTicket(
-      @NotNull TicketType type, @NotNull BotUser user, @Nullable Ticket parent)
+  public @NonNull Ticket createTicket(
+      @NonNull TicketType type, @NonNull BotUser user, Ticket parent)
       throws TicketCreationException {
     TicketPreCreationEvent preCreationEvent = new TicketPreCreationEvent(this, type, user, parent);
     if (preCreationEvent.callAndGet()) {
       throw new TicketCreationException(preCreationEvent.getReason());
     } else {
       Category category = type.getCategory();
-      Map<BotUser, String> users;
+      Map<Long, String> users;
       if (parent != null) {
-        users = parent.getUsers();
+        users = parent.getUsersIdMap();
       } else {
-        users = Maps.singleton(user, "owner");
+        users = Maps.singleton(user.getId(), "owner");
       }
-      StarfishTicketDetails details = new StarfishTicketDetails(new LinkedHashMap<>());
+      StarfishValuesMap details = new StarfishValuesMap(new LinkedHashMap<>());
       if (parent != null) {
         details.addValues(parent.getDetails());
       }
@@ -86,7 +87,7 @@ public class StarfishTicketManager implements TicketManager {
   }
 
   @Override
-  public @NotNull DataLoader getDataLoader() {
+  public @NonNull DataLoader getDataLoader() {
     return this.loader;
   }
 
@@ -96,12 +97,12 @@ public class StarfishTicketManager implements TicketManager {
   }
 
   @Override
-  public void setDataLoader(@NotNull DataLoader loader) {
+  public void setDataLoader(@NonNull DataLoader loader) {
     this.loader = loader;
   }
 
   @Override
-  public void setConfiguration(@NotNull Configuration configuration) {
+  public void setConfiguration(@NonNull Configuration configuration) {
     this.configuration = configuration;
   }
 

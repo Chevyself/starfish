@@ -11,18 +11,35 @@ import com.starfishst.bot.handlers.questions.QuestionImage;
 import com.starfishst.bot.handlers.questions.QuestionInformation;
 import com.starfishst.bot.handlers.questions.QuestionRole;
 import java.lang.reflect.Type;
+import lombok.NonNull;
 import me.googas.commons.Validate;
 import me.googas.commons.gson.adapters.JsonAdapter;
 
-/** Adapts questions in JSON */
 public class QuestionAdapter implements JsonAdapter<Question> {
+
+  @NonNull
+  private static Question getQuestion(
+      @NonNull JsonObject object,
+      @NonNull String title,
+      @NonNull String description,
+      @NonNull String simple,
+      int limit) {
+    if (simple.toLowerCase().startsWith("info")) {
+      return new QuestionInformation(title, simple, description, limit);
+    } else if (simple.toLowerCase().startsWith("image")) {
+      return new QuestionImage(title, simple, description, limit);
+    } else if (object.get("role") != null) {
+      return new QuestionRole(title, simple, description, object.get("role").getAsString(), limit);
+    } else {
+      return new Question(title, simple, description, limit);
+    }
+  }
 
   @Override
   public Question deserialize(
       JsonElement jsonElement, Type type, JsonDeserializationContext context)
       throws JsonParseException {
     JsonObject object = jsonElement.getAsJsonObject();
-
     String title =
         Validate.notNullOr(
                 object.get("title"),
@@ -47,16 +64,7 @@ public class QuestionAdapter implements JsonAdapter<Question> {
                 new JsonPrimitive(50),
                 "Questions must have a limit. In: " + object)
             .getAsInt();
-
-    if (simple.toLowerCase().startsWith("info")) {
-      return new QuestionInformation(title, simple, description, limit);
-    } else if (simple.toLowerCase().startsWith("image")) {
-      return new QuestionImage(title, simple, description, limit);
-    } else if (object.get("role") != null) {
-      return new QuestionRole(title, simple, description, object.get("role").getAsString(), limit);
-    } else {
-      return new Question(title, simple, description, limit);
-    }
+    return getQuestion(object, title, description, simple, limit);
   }
 
   @Override

@@ -1,12 +1,13 @@
 package com.starfishst.auto.commands.invoices;
 
+import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 
 /** A fee is applied to the final invoice if its inside the min and the max */
 public class Fee {
 
   /** A brief description of the fee */
-  @NotNull private final String description;
+  @NonNull private final String description;
   /** The percentage to add according to the subtotal */
   private final double percentage;
   /** The addition to the subtotal */
@@ -26,7 +27,7 @@ public class Fee {
    * @param max the max amount to apply
    */
   public Fee(
-      @NotNull String description, double percentage, double addition, double min, double max) {
+          @NonNull String description, double percentage, double addition, double min, double max) {
     this.description = description;
     this.percentage = percentage;
     this.addition = addition;
@@ -64,7 +65,7 @@ public class Fee {
    *
    * @return the description of the fee
    */
-  @NotNull
+  @NonNull
   public String getDescription() {
     return description;
   }
