@@ -3,6 +3,8 @@ package com.starfishst.api.data.loader;
 import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.StarfishHandler;
@@ -78,6 +80,22 @@ public interface DataLoader extends StarfishHandler {
    */
   @NonNull
   FreelancerRating getRating(long id);
+
+  /**
+   * Get the tickets by some user with certain role in the given types that are in the given status
+   *
+   * @param user the user to match
+   * @param role the role to match
+   * @param types the types to match
+   * @param statuses the statuses to match
+   * @return the collection of tickets found else null
+   */
+  @NonNull
+  Collection<Ticket> getTickets(
+      @NonNull BotUser user,
+      @NonNull String role,
+      @NonNull Collection<TicketType> types,
+      TicketStatus... statuses);
 
   /**
    * Listen to a role being unloaded to save it to the database

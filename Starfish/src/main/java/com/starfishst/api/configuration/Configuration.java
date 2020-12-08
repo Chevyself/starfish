@@ -10,7 +10,7 @@ import java.util.List;
 import lombok.NonNull;
 import me.googas.commons.time.Time;
 
-/** The configuration for {@link Starfish} */
+/** The configuration for {@link com.starfishst.api.StarfishBot} */
 public interface Configuration {
 
   /**

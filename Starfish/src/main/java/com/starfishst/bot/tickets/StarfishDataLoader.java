@@ -13,6 +13,8 @@ import com.starfishst.api.data.messages.BotResponsiveMessage;
 import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
@@ -28,15 +30,19 @@ import com.starfishst.bot.data.StarfishRole;
 import com.starfishst.bot.data.StarfishTicket;
 import com.starfishst.bot.data.StarfishUser;
 import com.starfishst.bot.data.messages.offer.OfferMessage;
+import com.starfishst.bot.utility.EnumUtils;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import com.starfishst.jda.utils.responsive.controller.ResponsiveMessageController;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import lombok.NonNull;
+import me.googas.commons.Lots;
 import me.googas.commons.cache.Cache;
 import me.googas.commons.cache.Catchable;
 import me.googas.commons.events.ListenPriority;
@@ -322,6 +328,31 @@ public class StarfishDataLoader implements DataLoader, ResponsiveMessageControll
         rating -> rating.getId() == id,
         this.ratings,
         new Document("id", id));
+  }
+
+  @Override
+  public @NonNull Collection<Ticket> getTickets(
+      @NonNull BotUser user,
+      @NonNull String role,
+      @NonNull Collection<TicketType> types,
+      TicketStatus... statuses) {
+    Set<TicketType> typesToCheck =
+        types.isEmpty() ? Lots.set(TicketType.values()) : new HashSet<>(types);
+    Set<TicketStatus> statusSet =
+        statuses.length == 0 ? Lots.set(TicketStatus.values()) : Lots.set(statuses);
+    return new ArrayList<>(
+        this.supplyManyAndCache(
+            StarfishTicket.class,
+            this.tickets,
+            new Document("users." + user.getId(), role)
+                .append(
+                    "type",
+                    new Document("$in", EnumUtils.getNames(typesToCheck)))
+               .append("status", new Document("$in", EnumUtils.getNames(statusSet))),
+            ticket ->
+                ticket.hasUser(user, role)
+                    && typesToCheck.contains(ticket.getTicketType())
+                    && statusSet.contains(ticket.getTicketStatus())));
   }
 
   @Listener(priority = ListenPriority.HIGH)

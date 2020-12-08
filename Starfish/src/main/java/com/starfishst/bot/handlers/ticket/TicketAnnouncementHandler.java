@@ -73,7 +73,7 @@ public class TicketAnnouncementHandler implements StarfishHandler {
                 Class<?> clazz = Lots.getClazz((List<?>) value);
                 if (clazz != null) {
                   if (Long.class.isAssignableFrom(clazz)) {
-                    toMention.addAll(Discord.getRoles(ticket.getDetails().getLisValue(key)));
+                    toMention.addAll(Discord.getRoles(ticket.getDetails().getListValue(key)));
                   }
                 }
               }
@@ -92,7 +92,8 @@ public class TicketAnnouncementHandler implements StarfishHandler {
         msg -> {
           if (ticket.getTicketType() == TicketType.ORDER) {
             new ClaimOrderResponsiveMessage(
-                msg, new StarfishValuesMap(Maps.singleton("id", ticket.getId()))).cache();
+                    msg, new StarfishValuesMap(Maps.singleton("id", ticket.getId())))
+                .cache();
           }
         });
   }
@@ -105,7 +106,7 @@ public class TicketAnnouncementHandler implements StarfishHandler {
   @NonNull
   private Set<TicketType> getAnnounceTypes() {
     Set<TicketType> announceTypes = new HashSet<>();
-    List<String> names = this.getPreferences().getLisValue("announce-types");
+    List<String> names = this.getPreferences().getListValue("announce-types");
     for (String name : names) {
       try {
         announceTypes.add(TicketType.valueOf(name));

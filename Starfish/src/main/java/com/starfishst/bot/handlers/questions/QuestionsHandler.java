@@ -48,7 +48,6 @@ public class QuestionsHandler implements StarfishHandler {
   public QuestionsHandler(@NonNull DataLoader loader) {
     this.loader = loader;
     this.questions = new HashMap<>();
-    this.loadQuestions();
   }
 
   /** Loads the questions */
@@ -73,10 +72,14 @@ public class QuestionsHandler implements StarfishHandler {
         reader.close();
         // TODO print that questions were loaded
       } catch (IOException e) {
-        // TODO add fallback
-        e.printStackTrace();
+        Starfish.getFallback().process(e, "Questions for " + type + " could not be loaded");
       }
     }
+  }
+
+  @Override
+  public void onEnable() {
+    this.loadQuestions();
   }
 
   /**

@@ -3,6 +3,8 @@ package com.starfishst.bot.tickets;
 import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.data.tickets.Offer;
 import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
@@ -89,6 +91,16 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
    */
   @Override
   public @NonNull FreelancerRating getRating(long id) {
+    throw new UnsupportedOperationException(
+        "Operations are not permitted in fallback ticket loader");
+  }
+
+  @Override
+  public @NonNull Collection<Ticket> getTickets(
+      @NonNull BotUser user,
+      @NonNull String role,
+      @NonNull Collection<TicketType> types,
+      TicketStatus... statuses) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }

@@ -133,7 +133,7 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
    */
   @NonNull
   private List<Time> getTimes() {
-    List<String> timeStrings = this.getPreferences().getLisValue("time-to-announce-deletion");
+    List<String> timeStrings = this.getPreferences().getListValue("time-to-announce-deletion");
     List<Time> times = new ArrayList<>();
     for (String timeString : timeStrings) {
       try {

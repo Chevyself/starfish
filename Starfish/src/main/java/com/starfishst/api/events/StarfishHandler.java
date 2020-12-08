@@ -35,10 +35,10 @@ public interface StarfishHandler {
   /** Called on {@link #unregister(JDA)} */
   default void onUnload() {}
 
-    /** Called when the bot is ready to use */
+  /** Called when the bot is ready to use */
   default void onEnable() {}
 
-    /**
+  /**
    * Get the name of this handler
    *
    * @return the name of the handler

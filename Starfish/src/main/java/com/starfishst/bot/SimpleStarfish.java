@@ -40,6 +40,7 @@ import com.starfishst.bot.tickets.StarfishTicketLoaderFallback;
 import com.starfishst.bot.tickets.StarfishTicketManager;
 import com.starfishst.bot.utility.Mongo;
 import com.starfishst.jda.CommandManager;
+import com.starfishst.jda.commands.FallbackCommands;
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
@@ -48,8 +49,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.sun.org.glassfish.gmbal.ParameterNames;
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.commons.CoreFiles;
@@ -107,6 +106,7 @@ public class SimpleStarfish implements StarfishBot {
     this.manager = manager;
     this.listenerManager = listenerManager;
     this.loader = loader;
+    this.scheduler = scheduler;
   }
 
   public static void main(String[] args) {
@@ -188,6 +188,7 @@ public class SimpleStarfish implements StarfishBot {
             new StarfishPermissionChecker(languageHandler, loader));
     for (Object command :
         Lots.list(
+            new FallbackCommands(fallback),
             new ChannelsCommands(),
             new DeveloperCommands(),
             new FreelancerCommands(),
@@ -220,7 +221,7 @@ public class SimpleStarfish implements StarfishBot {
             new StarfishTicketManager(loader, configuration),
             handlers,
             addonLoader,
-                scheduler);
+            scheduler);
     Starfish.setInstance(starfish);
     starfish.getHandlers().forEach(StarfishHandler::onEnable);
     log.info("Bot is ready to use");
@@ -325,7 +326,7 @@ public class SimpleStarfish implements StarfishBot {
   }
 
   @Override
-  public @ParameterNames AddonLoader getAddonLoader() {
+  public @NonNull AddonLoader getAddonLoader() {
     return loader;
   }
 

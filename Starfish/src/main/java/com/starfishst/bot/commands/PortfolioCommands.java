@@ -22,10 +22,10 @@ public class PortfolioCommands {
   @Command(aliases = "portfolio", description = "portfolio.desc")
   public Result portfolio(Freelancer freelancer) {
     String string;
-    if (freelancer.getPreferences().getLisValue("portfolio").isEmpty()) {
+    if (freelancer.getPreferences().getListValue("portfolio").isEmpty()) {
       string = "Empty";
     } else {
-      string = Lots.pretty(freelancer.getPreferences().getLisValue("portfolio"));
+      string = Lots.pretty(freelancer.getPreferences().getListValue("portfolio"));
     }
     return new Result(
         freelancer
@@ -44,7 +44,7 @@ public class PortfolioCommands {
   public Result add(
       Freelancer freelancer,
       @Required(name = "portfolio.value", description = "portfolio.value.desc") String value) {
-    List<Object> portfolio = freelancer.getPreferences().getLisValue("portfolio");
+    List<Object> portfolio = freelancer.getPreferences().getListValue("portfolio");
     portfolio.add(value);
     freelancer.getPreferences().addValue("portfolio", portfolio);
     return new Result(
@@ -63,7 +63,7 @@ public class PortfolioCommands {
       Freelancer freelancer,
       @Required(name = "portfolio.value", description = "portfolio.value.remove.desc")
           String value) {
-    List<String> portfolio = freelancer.getPreferences().getLisValue("portfolio");
+    List<String> portfolio = freelancer.getPreferences().getListValue("portfolio");
     portfolio.removeIf(string -> string.equalsIgnoreCase(value));
     freelancer.getPreferences().addValue("portfolio", portfolio);
     return new Result(

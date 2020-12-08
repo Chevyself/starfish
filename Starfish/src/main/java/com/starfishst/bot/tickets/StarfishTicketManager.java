@@ -64,6 +64,7 @@ public class StarfishTicketManager implements TicketManager {
                 this.getNewId(parent), type, details, TicketStatus.LOADING, users, -1);
         TextChannel channel;
         if (parent != null && parent.getTextChannel() != null) {
+          parent.unload(false);
           channel = parent.getTextChannel();
           channel.getManager().setParent(category).queue();
         } else {
@@ -78,7 +79,7 @@ public class StarfishTicketManager implements TicketManager {
           Discord.allow(channel, user.getMember(), Discord.ALLOWED);
         }
         ticket.setTicketStatus(TicketStatus.CREATING);
-        return ticket;
+        return ticket.cache();
       } else {
         throw new TicketCreationException(
             "The channel for the ticket could not be created. Has the guild been set yet?");

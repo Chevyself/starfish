@@ -3,9 +3,11 @@ package com.starfishst.bot.handlers.ticket;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.data.tickets.TicketStatus;
+import com.starfishst.api.data.tickets.TicketType;
 import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
+import com.starfishst.api.events.tickets.TicketPreCreationEvent;
 import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
@@ -14,9 +16,17 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import com.starfishst.jda.utils.message.MessageQuery;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
+import me.googas.commons.Lots;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
+import me.googas.commons.maps.Maps;
 import me.googas.commons.time.ClassicTime;
 import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.entities.Member;
@@ -24,6 +34,48 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 /** A generic handler for tickets */
 public class TicketHandler implements StarfishHandler {
+
+  @Getter private final Set<TicketType> bannedTypes = new HashSet<>();
+  @Getter @Setter private int limit = 2;
+
+  @Listener(priority = ListenPriority.LOWEST)
+  public void onTicketPreCreation(TicketPreCreationEvent event) {
+    if (event.isCancelled()) return;
+    LocaleFile locale = event.getUser().getLocaleFile();
+    if (bannedTypes.contains(event.getType())) {
+      event.setCancelled(true);
+      event.setReason(locale.get("tickets.banned-type", Maps.singleton("type", event.getType().toString().toLowerCase())));
+      return;
+    }
+    Collection<Ticket> creating =
+        Starfish.getLoader()
+            .getTickets(
+                event.getUser(), "customer", Lots.set(TicketType.values()), TicketStatus.CREATING);
+    if (!creating.isEmpty()
+        && !event.getUser().hasPermission("starfish.tickets.override-creating", "discord")) {
+      event.setCancelled(true);
+      event.setReason(locale.get("tickets.finish-creating"));
+      return;
+    }
+    Collection<Ticket> open =
+        Starfish.getLoader()
+            .getTickets(
+                event.getUser(),
+                "customer",
+                Lots.set(TicketType.values()),
+                TicketStatus.CREATING,
+                TicketStatus.OPEN,
+                TicketStatus.LOADING);
+    if (open.size() >= limit
+        && !event.getUser().hasPermission("starfish.tickets.override-limit", "discord")) {
+      event.setCancelled(true);
+      event.setReason(
+          locale.get(
+              "tickets.limit",
+              Maps.builder("limit", String.valueOf(this.limit))
+                  .append("size", String.valueOf(open.size()))));
+    }
+  }
 
   /**
    * Listen when the status of a ticket is updated to apply some changes
@@ -138,6 +190,20 @@ public class TicketHandler implements StarfishHandler {
             query.setTitle(locale.get("user-left-ticket.title", user.getPlaceholders()));
           }
           query.send(channel);
+        }
+      }
+    }
+  }
+
+  @Override
+  public void onEnable() {
+    limit = this.getPreferences().getValueOr("open-limit", Double.class, 2D).intValue();
+    for (Object banned : this.getPreferences().getListValue("banned")) {
+      if (banned != null) {
+        try {
+          bannedTypes.add(TicketType.valueOf(banned.toString()));
+        } catch (IllegalArgumentException e) {
+          Starfish.getFallback().process(e, banned.toString() + " is not a valid ticket type");
         }
       }
     }

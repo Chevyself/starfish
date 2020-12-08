@@ -7,6 +7,8 @@ import com.starfishst.bot.data.StarfishResponsiveMessage;
 import com.starfishst.bot.data.StarfishValuesMap;
 import java.util.HashSet;
 import java.util.List;
+
+import com.starfishst.bot.handlers.ticket.TicketHandler;
 import lombok.NonNull;
 import me.googas.commons.Lots;
 import me.googas.commons.maps.Maps;
@@ -42,13 +44,15 @@ public class TicketCreatorMessage extends StarfishResponsiveMessage {
   private static List<TicketCreatorReactionResponse> getReactionResponses(
       @NonNull TicketCreatorMessage message) {
     LocaleFile en = Starfish.getLanguageHandler().getFile("en");
-    return Lots.list(
-        new TicketCreatorReactionResponse(
-            TicketType.ORDER, en.get("unicode.tickets.order"), message),
-        new TicketCreatorReactionResponse(
-            TicketType.APPLY, en.get("unicode.tickets.apply"), message),
-        new TicketCreatorReactionResponse(
-            TicketType.SUPPORT, en.get("unicode.tickets.support"), message));
+    List<TicketCreatorReactionResponse> messages = Lots.list(
+            new TicketCreatorReactionResponse(
+                    TicketType.ORDER, en.get("unicode.tickets.order"), message),
+            new TicketCreatorReactionResponse(
+                    TicketType.APPLY, en.get("unicode.tickets.apply"), message),
+            new TicketCreatorReactionResponse(
+                    TicketType.SUPPORT, en.get("unicode.tickets.support"), message));
+    messages.removeIf(msg -> Starfish.getHandler(TicketHandler.class).getBannedTypes().contains(msg.getType()));
+    return messages;
   }
 
   @Override

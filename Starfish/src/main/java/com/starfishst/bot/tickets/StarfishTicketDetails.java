@@ -39,7 +39,7 @@ public class StarfishTicketDetails implements ValuesMap {
               if (value instanceof List) {
                 Class<?> clazz = Lots.getClazz((List<?>) value);
                 if (clazz != null && Role.class.isAssignableFrom(clazz)) {
-                  stringMap.put(key, Lots.pretty(Discord.getRolesAsMention(this.getLisValue(key))));
+                  stringMap.put(key, Lots.pretty(Discord.getRolesAsMention(this.getListValue(key))));
                 }
               } else {
                 stringMap.put(key, value.toString());

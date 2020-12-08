@@ -49,7 +49,9 @@
     "tickets": {
       "preferences": {
         "announce-all-users-joining": false,
-        "time-to-delete-closed-tickets": "15s"
+        "time-to-delete-closed-tickets": "15s",
+        "open-limit": 2,
+        "banned": ["ORDER"]
       }
     },
     "welcome": {

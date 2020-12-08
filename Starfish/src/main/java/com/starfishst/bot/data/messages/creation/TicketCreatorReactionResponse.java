@@ -7,6 +7,7 @@ import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.utils.responsive.ReactionResponse;
+import lombok.Getter;
 import lombok.NonNull;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
@@ -14,7 +15,9 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 public class TicketCreatorReactionResponse implements ReactionResponse {
 
   /** The ticket type to create */
-  @NonNull private final TicketType type;
+  @NonNull
+  @Getter
+  private final TicketType type;
 
   /** The unicode of the reaction */
   @NonNull private final String unicode;
@@ -49,19 +52,12 @@ public class TicketCreatorReactionResponse implements ReactionResponse {
     if (ticket != null) {
       try {
         Starfish.getTicketManager().createTicket(type, user, ticket);
+        ticket.unload(false);
+        message.unload(false);
+
       } catch (TicketCreationException e) {
         e.toQuery(user).send(event.getTextChannel(), Messages.getErrorConsumer());
       }
-      try {
-        ticket.unload(false);
-      } catch (Throwable throwable) {
-        throwable.printStackTrace();
-      }
-    }
-    try {
-      message.unload(false);
-    } catch (Throwable throwable) {
-      throwable.printStackTrace();
     }
     return true;
   }

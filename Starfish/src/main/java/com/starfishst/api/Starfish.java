@@ -18,6 +18,7 @@ import me.googas.commons.Validate;
 import me.googas.commons.cache.Cache;
 import me.googas.commons.events.ListenerManager;
 import me.googas.commons.fallback.Fallback;
+import me.googas.commons.scheduler.Scheduler;
 import org.jetbrains.annotations.NotNull;
 
 /** This class contains delegated static methods of {@link StarfishBot} */
@@ -114,5 +115,9 @@ public class Starfish {
 
   public static @NonNull JdaConnection getJdaConnection() {
     return validated().getJdaConnection();
+  }
+
+  public static @NonNull Scheduler getScheduler() {
+    return validated().getScheduler();
   }
 }

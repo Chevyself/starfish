@@ -2,14 +2,12 @@ package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.events.StarfishHandler;
-import java.util.Timer;
-import java.util.TimerTask;
 import lombok.NonNull;
 import me.googas.commons.time.Time;
 import me.googas.commons.time.Unit;
 
 /** A task to auto-save the config */
-public class AutoSaveHandler extends TimerTask implements StarfishHandler {
+public class AutoSaveHandler implements StarfishHandler, Runnable {
 
   /**
    * Get the time to auto save
@@ -34,7 +32,7 @@ public class AutoSaveHandler extends TimerTask implements StarfishHandler {
   @Override
   public void onEnable() {
     if (this.getPreferences().getValueOr("enabled", Boolean.class, false)) {
-      new Timer().schedule(this, this.getTime().millis(), this.getTime().millis());
+      Starfish.getScheduler().repeat(this.getTime(), this.getTime(), this);
     }
   }
 
@@ -48,7 +46,7 @@ public class AutoSaveHandler extends TimerTask implements StarfishHandler {
 
   @Override
   public void run() {
-    System.out.println("Saving...");
     Starfish.save();
+    Starfish.getLogger().fine("Auto-Save completed");
   }
 }

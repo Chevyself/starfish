@@ -11,6 +11,9 @@ import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.starfishst.api.utility.StarfishCatchable;
 import lombok.NonNull;
 import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.JDA;
@@ -58,6 +61,28 @@ public class StarfishTicket implements Ticket {
     this.status = status;
     this.users = users;
     this.channel = channel;
+  }
+
+  /**
+   * Check whether an user with a role is in this ticket
+   *
+   * @param user the user to check if it is inside the ticket
+   * @param role the role to check
+   * @return true if the user and the given role is inside the ticket
+   */
+  public boolean hasUser(BotUser user, String role) {
+    if (user == null || role == null) return false;
+    AtomicBoolean bol = new AtomicBoolean(false);
+    this.getUsersIdMap()
+        .forEach(
+            (id, userRole) -> {
+              if (id != null) {
+                if (id == user.getId() && userRole.equalsIgnoreCase(role)) {
+                  bol.set(true);
+                }
+              }
+            });
+    return bol.get();
   }
 
   @Override
@@ -139,6 +164,11 @@ public class StarfishTicket implements Ticket {
     if (!new TicketStatusUpdatedEvent(this, status).callAndGet()) {
       this.status = status;
     }
+  }
+
+  @Override
+  public @NonNull StarfishTicket cache() {
+    return (StarfishTicket) Ticket.super.cache();
   }
 
   @Override

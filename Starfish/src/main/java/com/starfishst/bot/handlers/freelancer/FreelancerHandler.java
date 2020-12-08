@@ -74,7 +74,7 @@ public class FreelancerHandler implements StarfishHandler {
                   if (value instanceof List) {
                     Class<?> clazz = Lots.getClazz((List<?>) value);
                     if (clazz != null && Long.class.isAssignableFrom(clazz)) {
-                      allowedRoles.addAll(Discord.getRoles(ticket.getDetails().getLisValue(key)));
+                      allowedRoles.addAll(Discord.getRoles(ticket.getDetails().getListValue(key)));
                     }
                   }
                 });

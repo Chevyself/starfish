@@ -214,7 +214,8 @@ public interface StarfishBot {
    *
    * @return the scheduler
    */
-  @NonNull Scheduler getScheduler();
+  @NonNull
+  Scheduler getScheduler();
 
   /**
    * Get the language handler that the bot is using
