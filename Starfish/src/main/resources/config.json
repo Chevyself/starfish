@@ -1,8 +1,9 @@
 {
   "lang": "en",
-  "ticket-unload": "25m",
-  "users-unload": "2m",
-  "messages-unload": "10m",
+  "token": "The discord token",
+  "ticket-unload": "3m",
+  "users-unload": "3m",
+  "messages-unload": "3m",
   "fees": [
     {
       "description": "Commission Fee",
@@ -51,7 +52,7 @@
         "announce-all-users-joining": false,
         "time-to-delete-closed-tickets": "15s",
         "open-limit": 2,
-        "banned": ["ORDER"]
+        "banned": ["REPORT", "SUGGESTIONS"]
       }
     },
     "welcome": {

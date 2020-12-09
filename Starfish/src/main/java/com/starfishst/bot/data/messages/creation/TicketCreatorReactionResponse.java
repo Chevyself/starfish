@@ -15,9 +15,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 public class TicketCreatorReactionResponse implements ReactionResponse {
 
   /** The ticket type to create */
-  @NonNull
-  @Getter
-  private final TicketType type;
+  @NonNull @Getter private final TicketType type;
 
   /** The unicode of the reaction */
   @NonNull private final String unicode;

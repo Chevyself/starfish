@@ -17,6 +17,7 @@ import com.starfishst.bot.commands.ChannelsCommands;
 import com.starfishst.bot.commands.DeveloperCommands;
 import com.starfishst.bot.commands.FreelancerCommands;
 import com.starfishst.bot.commands.InvoiceCommands;
+import com.starfishst.bot.commands.ModerationCommands;
 import com.starfishst.bot.commands.PermissionCommands;
 import com.starfishst.bot.commands.PortfolioCommands;
 import com.starfishst.bot.commands.SetCommands;
@@ -35,6 +36,7 @@ import com.starfishst.bot.handlers.ticket.QuoteHandler;
 import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
 import com.starfishst.bot.handlers.ticket.TicketCreatorHandler;
 import com.starfishst.bot.handlers.ticket.TicketHandler;
+import com.starfishst.bot.handlers.ticket.transcript.TicketTranscriptHandler;
 import com.starfishst.bot.tickets.StarfishDataLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoaderFallback;
 import com.starfishst.bot.tickets.StarfishTicketManager;
@@ -170,6 +172,7 @@ public class SimpleStarfish implements StarfishBot {
             new DebugHandler(),
             new UpdateTicketName(),
             new QuestionsHandler(loader),
+            new TicketTranscriptHandler(),
             new QuoteHandler(),
             new TicketAnnouncementHandler(),
             new TicketCreatorHandler(),
@@ -193,7 +196,8 @@ public class SimpleStarfish implements StarfishBot {
             new DeveloperCommands(),
             new FreelancerCommands(),
             new InvoiceCommands(),
-            new PermissionCommands(),
+            new ModerationCommands(),
+                new PermissionCommands(),
             new PortfolioCommands(),
             new SetCommands(),
             new TicketCommands())) {

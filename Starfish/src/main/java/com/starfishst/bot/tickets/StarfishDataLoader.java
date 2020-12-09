@@ -345,10 +345,8 @@ public class StarfishDataLoader implements DataLoader, ResponsiveMessageControll
             StarfishTicket.class,
             this.tickets,
             new Document("users." + user.getId(), role)
-                .append(
-                    "type",
-                    new Document("$in", EnumUtils.getNames(typesToCheck)))
-               .append("status", new Document("$in", EnumUtils.getNames(statusSet))),
+                .append("type", new Document("$in", EnumUtils.getNames(typesToCheck)))
+                .append("status", new Document("$in", EnumUtils.getNames(statusSet))),
             ticket ->
                 ticket.hasUser(user, role)
                     && typesToCheck.contains(ticket.getTicketType())

@@ -11,6 +11,9 @@ import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.IPermissionHolder;
 import net.dv8tion.jda.api.entities.Member;
@@ -29,10 +32,10 @@ public class ChannelsCommands {
    * @return the result of the command execution
    */
   @Command(aliases = "add", description = "add.description", node = "starfish.add")
-  public Result add(BotUser user, Message message, CommandContext context) {
+  public Result add(BotUser user, Member member, Message message, CommandContext context) {
     List<IMentionable> mentions = new ArrayList<>(message.getMentionedRoles());
     mentions.addAll(message.getMentionedMembers());
-    TextChannel channel = message.getTextChannel();
+    GuildChannel channel = message.getTextChannel();
     DataLoader loader = Starfish.getLoader();
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("add.mentions-empty"));
@@ -54,6 +57,10 @@ public class ChannelsCommands {
       }
       return new Result(user.getLocaleFile().get("add.members-added"));
     } else {
+      GuildVoiceState state = member.getVoiceState();
+      if (state != null && state.getChannel() != null) {
+        channel = state.getChannel();
+      }
       for (IMentionable mentionable : mentions) {
         if (mentionable instanceof Member) {
           BotUser starfishUser = loader.getStarfishUser(mentionable.getIdLong());

@@ -33,6 +33,10 @@ public enum TicketType {
   PRODUCT("products", "products"),
   /** The ticket that is created when a customer wants to buy a product from a freelancer */
   CHECK_OUT("checkout", "checkout"),
+  /** Created to report an user */
+  REPORT("reports", "reports"),
+  /** Used for customers to suggest stuff for the service */
+  SUGGESTION("suggestions", "suggestions"),
   /** A custom type of ticket */
   CUSTOM("custom", "custom");
 

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
 import me.googas.commons.Lots;
@@ -44,7 +43,10 @@ public class TicketHandler implements StarfishHandler {
     LocaleFile locale = event.getUser().getLocaleFile();
     if (bannedTypes.contains(event.getType())) {
       event.setCancelled(true);
-      event.setReason(locale.get("tickets.banned-type", Maps.singleton("type", event.getType().toString().toLowerCase())));
+      event.setReason(
+          locale.get(
+              "tickets.banned-type",
+              Maps.singleton("type", event.getType().toString().toLowerCase())));
       return;
     }
     Collection<Ticket> creating =

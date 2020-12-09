@@ -25,6 +25,10 @@ public class Discord {
   @NonNull
   public static final List<Permission> ALLOWED =
       Lots.list(
+              Permission.VOICE_CONNECT,
+              Permission.VOICE_SPEAK,
+          Permission.VOICE_STREAM,
+          Permission.VOICE_USE_VAD,
           Permission.MESSAGE_READ,
           Permission.MESSAGE_WRITE,
           Permission.MESSAGE_EMBED_LINKS,
@@ -33,7 +37,7 @@ public class Discord {
   /** This list contains the permissions needed for a user to read inside a channel */
   @NonNull
   public static final List<Permission> ALLOWED_SEE =
-      Lots.list(Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
+      Lots.list(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
 
   /**
    * Validates a category by checking that it is not null and is not full. If it is full it will

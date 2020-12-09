@@ -53,7 +53,13 @@ public class QuestionsHandler implements StarfishHandler {
   /** Loads the questions */
   private void loadQuestions() {
     List<TicketType> questionable =
-        Lots.list(TicketType.APPLY, TicketType.ORDER, TicketType.PRODUCT, TicketType.SUPPORT);
+        Lots.list(
+            TicketType.APPLY,
+            TicketType.ORDER,
+            TicketType.PRODUCT,
+            TicketType.SUPPORT,
+            TicketType.REPORT,
+            TicketType.SUGGESTION);
     for (TicketType type : questionable) {
       try {
         File file =

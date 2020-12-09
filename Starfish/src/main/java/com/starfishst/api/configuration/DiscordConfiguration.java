@@ -34,7 +34,7 @@ public interface DiscordConfiguration {
               true,
               this.getRoles("allowed-in-categories"),
               this.getRoles("allowed-to-see-in-categories"));
-      if (validated.getIdLong() != this.getCategories().get(key)) {
+      if (validated.getIdLong() != this.getCategories().getOrDefault(key, -1L)) {
         this.getCategories().put(key, validated.getIdLong());
       }
       return validated;
@@ -59,7 +59,7 @@ public interface DiscordConfiguration {
               true,
               this.getRoles("allowed-in-channels"),
               this.getRoles("allowed-to-see-in-channels"));
-      if (validated.getIdLong() != this.getChannels().get(key)) {
+      if (validated.getIdLong() != this.getChannels().getOrDefault(key, -1L)) {
         this.getChannels().put(key, validated.getIdLong());
       }
       return validated;

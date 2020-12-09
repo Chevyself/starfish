@@ -110,7 +110,8 @@ public interface ValuesMap {
               if (value instanceof List) {
                 Class<?> clazz = Lots.getClazz((List<?>) value);
                 if (clazz != null && Long.class.isAssignableFrom(clazz)) {
-                  stringMap.put(key, Lots.pretty(Discord.getRolesAsMention(this.getListValue(key))));
+                  stringMap.put(
+                      key, Lots.pretty(Discord.getRolesAsMention(this.getListValue(key))));
                   return;
                 }
               } else if (value instanceof Collection) {

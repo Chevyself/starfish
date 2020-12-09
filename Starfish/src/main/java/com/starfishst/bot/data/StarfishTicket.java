@@ -12,8 +12,6 @@ import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.starfishst.api.utility.StarfishCatchable;
 import lombok.NonNull;
 import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.JDA;

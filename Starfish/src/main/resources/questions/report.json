@@ -1,18 +1,6 @@
 {
   "questions": [
     {
-      "title": "What's your username?",
-      "description": "",
-      "simple": "username",
-      "limit": 50
-    },
-    {
-      "title": "What's your email?",
-      "description": "",
-      "simple": "email",
-      "limit": 50
-    },
-    {
       "title": "Who do you want to report?",
       "description": "",
       "simple": "reported",
@@ -23,6 +11,12 @@
       "description": "",
       "simple": "reason",
       "limit": 50
+    },
+    {
+      "title": "Do you have any proof of the user that cheated?",
+      "description": "",
+      "simple": "proof",
+      "limit": 1000
     }
   ]
 }

@@ -8,6 +8,7 @@ import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
+import com.starfishst.bot.handlers.ticket.transcript.TicketTranscript;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import java.util.ArrayList;
@@ -148,7 +149,8 @@ public interface Ticket extends StarfishCatchable {
     return size;
   }
 
-  /**
+
+    /**
    * Get the id to identify the ticket
    *
    * @return the id to identify the ticket
