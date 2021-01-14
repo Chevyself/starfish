@@ -1,5 +1,6 @@
 package com.starfishst.api.addons;
 
+import com.starfishst.bot.utility.Mongo;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,10 +9,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-
-import com.starfishst.bot.utility.Mongo;
 import lombok.NonNull;
-import me.googas.commons.gson.GsonProvider;
 
 /** The class loader for addons */
 public class JavaAddonClassLoader extends URLClassLoader {

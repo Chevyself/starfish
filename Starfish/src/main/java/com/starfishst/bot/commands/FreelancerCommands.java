@@ -21,7 +21,6 @@ import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.Map;
 import lombok.NonNull;
-import me.googas.commons.Lots;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -128,10 +127,10 @@ public class FreelancerCommands {
                 map.addValue("offer", strings.getString());
                 map.addValue("freelancer", freelancer.getId());
                 map.addValue("ticket", ticket.getId());
-                BotResponsiveMessage responsiveMessage = new BotResponsiveMessage(
-                        msg.getIdLong())
-                        .cache();
-                responsiveMessage.addReactionResponse(new OfferAcceptReactionResponse(responsiveMessage), msg);
+                BotResponsiveMessage responsiveMessage =
+                    new BotResponsiveMessage(msg.getIdLong()).cache();
+                responsiveMessage.addReactionResponse(
+                    new OfferAcceptReactionResponse(responsiveMessage), msg);
               });
         }
       }

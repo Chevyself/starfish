@@ -10,7 +10,6 @@ import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import me.googas.commons.Strings;
-import me.googas.commons.cache.Cache;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;

@@ -45,7 +45,6 @@ public interface TicketManager {
     }
   }
 
-
   /**
    * Set the total of tickets created
    *

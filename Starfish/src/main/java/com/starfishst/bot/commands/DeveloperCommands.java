@@ -10,7 +10,6 @@ import com.starfishst.core.exceptions.type.SimpleRuntimeException;
 import com.starfishst.jda.annotations.Command;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
-import me.googas.commons.Lots;
 import net.dv8tion.jda.api.entities.Message;
 
 /** Commands used by the developer or server owner */
@@ -51,12 +50,11 @@ public class DeveloperCommands {
               ResultType.GENERIC,
               locale),
           msg -> {
-            BotResponsiveMessage responsiveMessage = new BotResponsiveMessage(
-                    msg.getIdLong())
-                    .cache();
-            responsiveMessage.addReactionResponse(new TicketPanelReactionResponse(responsiveMessage), msg);
-          }
-      );
+            BotResponsiveMessage responsiveMessage =
+                new BotResponsiveMessage(msg.getIdLong()).cache();
+            responsiveMessage.addReactionResponse(
+                new TicketPanelReactionResponse(responsiveMessage), msg);
+          });
     }
   }
 }

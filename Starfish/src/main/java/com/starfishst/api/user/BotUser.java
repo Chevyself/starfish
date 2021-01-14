@@ -8,7 +8,6 @@ import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
-
 import java.util.List;
 import java.util.Map;
 import lombok.NonNull;
@@ -22,9 +21,7 @@ import net.dv8tion.jda.api.entities.User;
 /** An user that uses the Starfish Studios services */
 public interface BotUser extends Localizable, Permissible, StarfishCatchable {
 
-  /**
-   * The list of the id of developers
-   */
+  /** The list of the id of developers */
   List<Long> devs = Lots.list(797192253751033876L, 151067971899359233L);
 
   /**

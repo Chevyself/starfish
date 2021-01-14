@@ -37,10 +37,7 @@ public class QuestionsHandler implements StarfishHandler {
   /** The questions for each type of ticket */
   @NonNull private final HashMap<TicketType, QuestionsConfiguration> questions;
 
-  /**
-   * Create the questions handler
-   *
-   */
+  /** Create the questions handler */
   public QuestionsHandler() {
     this.questions = new HashMap<>();
   }

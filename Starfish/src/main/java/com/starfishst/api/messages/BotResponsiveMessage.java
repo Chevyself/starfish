@@ -73,10 +73,10 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
   @Override
   public String toString() {
     return new ToStringBuilder(this)
-            .append("id", id)
-            .append("reactions", reactions)
-            .append("data", data)
-            .build();
+        .append("id", id)
+        .append("reactions", reactions)
+        .append("data", data)
+        .build();
   }
 
   @Override

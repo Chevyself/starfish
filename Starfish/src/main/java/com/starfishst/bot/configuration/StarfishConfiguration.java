@@ -24,35 +24,43 @@ public class StarfishConfiguration implements Configuration {
   @NonNull @Getter private final String token;
 
   @NonNull @Getter private final String lang;
+
   @SerializedName("mongo")
   @NonNull
   @Getter
   private final StarfishMongoConfiguration mongoConfiguration;
+
   @NonNull @Getter private final List<Fee> fees;
   @Getter private final String prefix;
+
   @SerializedName("commands")
   @NonNull
   @Getter
   private final ManagerOptions managerOptions;
+
   @SerializedName("handlers")
   @NonNull
   @Getter
   private final HashMap<String, StarfishHandlerValuesMap> handlerPreferences;
+
   @SerializedName("ticket-unload")
   @NonNull
   @Setter
   @Getter
   private Time unloadTickets;
+
   @SerializedName("users-unload")
   @NonNull
   @Setter
   @Getter
   private Time unloadUsers;
+
   @SerializedName("messages-unload")
   @NonNull
   @Setter
   @Getter
   private Time unloadMessages;
+
   @Setter @Getter private long total;
 
   /**

@@ -87,7 +87,8 @@ public class StarfishTicketManager implements TicketManager {
     if (category != null) {
       if (parent != null) parent.unload(false);
       StarfishTicket ticket =
-          new StarfishTicket(this.getNewId(parent), type, details, TicketStatus.LOADING, users, -1).cache();
+          new StarfishTicket(this.getNewId(parent), type, details, TicketStatus.LOADING, users, -1)
+              .cache();
       TextChannel channel = getChannel(user, parent, category, ticket);
       ticket.setTextChannel(channel);
       if (user.getMember() != null) {
