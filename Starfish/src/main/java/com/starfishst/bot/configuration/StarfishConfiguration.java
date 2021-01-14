@@ -2,61 +2,58 @@ package com.starfishst.bot.configuration;
 
 import com.google.gson.annotations.SerializedName;
 import com.starfishst.api.configuration.Configuration;
-import com.starfishst.api.configuration.MongoConfiguration;
 import com.starfishst.api.utility.Fee;
 import com.starfishst.bot.handlers.StarfishHandlerValuesMap;
+import com.starfishst.bot.utility.Mongo;
 import com.starfishst.jda.ManagerOptions;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import me.googas.commons.CoreFiles;
 import me.googas.commons.time.Time;
 import me.googas.commons.time.Unit;
 
 /** An implementation for {@link com.starfishst.api.configuration.Configuration} */
 public class StarfishConfiguration implements Configuration {
 
-  /** The token to use to connect with discord */
-  @NonNull private final String token;
+  @NonNull @Getter private final String token;
 
-  /** The default lang */
-  @NonNull private final String lang;
-
-  /** The time to unload tickets */
-  @SerializedName("ticket-unload")
+  @NonNull @Getter private final String lang;
+  @SerializedName("mongo")
   @NonNull
-  private final Time ticketUnload;
-  /** The time to unload users */
-  @SerializedName("users-unload")
-  @NonNull
-  private final Time usersUnload;
-  /** The time to unload users */
-  @SerializedName("messages-unload")
-  @NonNull
-  private final Time messagesUnload;
-
-  /** The configuration for mongo */
-  @NonNull private final StarfishMongoConfiguration mongo;
-
-  /** The fees that can be applied */
-  @NonNull private final List<Fee> fees;
-
-  /** The options for commands */
+  @Getter
+  private final StarfishMongoConfiguration mongoConfiguration;
+  @NonNull @Getter private final List<Fee> fees;
+  @Getter private final String prefix;
   @SerializedName("commands")
   @NonNull
-  private final ManagerOptions options;
-
-  /** The preferences for handlers */
+  @Getter
+  private final ManagerOptions managerOptions;
   @SerializedName("handlers")
   @NonNull
-  private final HashMap<String, StarfishHandlerValuesMap> handlersPreferences;
-
-  /** The total of tickets created */
-  private long total;
-
-  /** The prefix used in commands */
-  private final String prefix;
+  @Getter
+  private final HashMap<String, StarfishHandlerValuesMap> handlerPreferences;
+  @SerializedName("ticket-unload")
+  @NonNull
+  @Setter
+  @Getter
+  private Time unloadTickets;
+  @SerializedName("users-unload")
+  @NonNull
+  @Setter
+  @Getter
+  private Time unloadUsers;
+  @SerializedName("messages-unload")
+  @NonNull
+  @Setter
+  @Getter
+  private Time unloadMessages;
+  @Setter @Getter private long total;
 
   /**
    * This constructor is used for gson. Use {@link me.googas.commons.fallback.Fallback} for a
@@ -85,12 +82,12 @@ public class StarfishConfiguration implements Configuration {
    * @param lang the default lang that the bot runs at
    * @param total the total of tickets created
    * @param fees the fees that can be applied
-   * @param ticketUnload the time to unload a ticket
-   * @param usersUnload the time to unload users
-   * @param messagesUnload the time to unload messages
-   * @param mongo the configuration for mongo
-   * @param options the options for commands
-   * @param handlersPreferences the preferences for handlers
+   * @param unloadTickets the time to unload a ticket
+   * @param unloadUsers the time to unload users
+   * @param unloadMessages the time to unload messages
+   * @param mongoConfiguration the configuration for mongo
+   * @param managerOptions the options for commands
+   * @param handlerPreferences the preferences for handlers
    * @param prefix
    */
   public StarfishConfiguration(
@@ -98,23 +95,23 @@ public class StarfishConfiguration implements Configuration {
       @NonNull String lang,
       long total,
       @NonNull List<Fee> fees,
-      @NonNull Time ticketUnload,
-      @NonNull Time usersUnload,
-      @NonNull Time messagesUnload,
-      @NonNull StarfishMongoConfiguration mongo,
-      @NonNull ManagerOptions options,
-      @NonNull HashMap<String, StarfishHandlerValuesMap> handlersPreferences,
+      @NonNull Time unloadTickets,
+      @NonNull Time unloadUsers,
+      @NonNull Time unloadMessages,
+      @NonNull StarfishMongoConfiguration mongoConfiguration,
+      @NonNull ManagerOptions managerOptions,
+      @NonNull HashMap<String, StarfishHandlerValuesMap> handlerPreferences,
       @NonNull String prefix) {
     this.token = token;
     this.lang = lang;
     this.total = total;
     this.fees = fees;
-    this.ticketUnload = ticketUnload;
-    this.usersUnload = usersUnload;
-    this.messagesUnload = messagesUnload;
-    this.mongo = mongo;
-    this.options = options;
-    this.handlersPreferences = handlersPreferences;
+    this.unloadTickets = unloadTickets;
+    this.unloadUsers = unloadUsers;
+    this.unloadMessages = unloadMessages;
+    this.mongoConfiguration = mongoConfiguration;
+    this.managerOptions = managerOptions;
+    this.handlerPreferences = handlerPreferences;
     this.prefix = prefix;
   }
 
@@ -139,73 +136,24 @@ public class StarfishConfiguration implements Configuration {
         "-");
   }
 
-  @Override
-  public void setTotal(long total) {
-    this.total = total;
-  }
-
-  @Override
-  public long getTotal() {
-    return this.total;
-  }
-
-  @Override
-  public @NonNull Collection<Fee> getFees() {
-    return this.fees;
-  }
-
-  /**
-   * Get the token to connect with discord
-   *
-   * @return the token
-   */
-  @Override
-  public @NonNull String getToken() {
-    return this.token;
-  }
-
-  @Override
-  public @NonNull String getPrefix() {
-    return this.prefix;
-  }
-
-  /**
-   * Get the default lang to which the bot will be running on
-   *
-   * @return the default lang
-   */
-  @Override
-  public @NonNull String getDefaultLang() {
-    return this.lang;
-  }
-
-  @Override
-  public @NonNull Time toUnloadTickets() {
-    return this.ticketUnload;
-  }
-
-  @Override
-  public @NonNull Time toUnloadUser() {
-    return this.usersUnload;
-  }
-
-  @Override
-  public @NonNull Time toUnloadMessages() {
-    return this.messagesUnload;
-  }
-
-  @Override
-  public @NonNull MongoConfiguration getMongoConfiguration() {
-    return this.mongo;
-  }
-
-  @Override
-  public @NonNull ManagerOptions getManagerOptions() {
-    return this.options;
-  }
-
-  @Override
-  public @NonNull HashMap<String, StarfishHandlerValuesMap> getHandlerPreferences() {
-    return this.handlersPreferences;
+  @NonNull
+  public static StarfishConfiguration init() {
+    FileReader reader = null;
+    StarfishConfiguration configuration = fallback();
+    try {
+      reader =
+          new FileReader(CoreFiles.getFileOrResource(CoreFiles.currentDirectory(), "config.json"));
+      configuration = Mongo.GSON.fromJson(reader, StarfishConfiguration.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    if (reader != null) {
+      try {
+        reader.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return configuration;
   }
 }

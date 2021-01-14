@@ -1,38 +1,44 @@
 package com.starfishst.bot.configuration;
 
+import com.google.gson.annotations.SerializedName;
 import com.starfishst.api.configuration.DiscordConfiguration;
+import com.starfishst.bot.utility.Mongo;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
 import lombok.NonNull;
-import net.dv8tion.jda.api.entities.Guild;
+import lombok.Setter;
+import me.googas.commons.CoreFiles;
 
 /** An implementation for {@link DiscordConfiguration} */
 public class StarfishDiscordConfiguration implements DiscordConfiguration {
 
-  /** The roles that the bot can use */
-  @NonNull private final Map<String, List<Long>> roles;
-  /** The categories that the bot can use */
-  @NonNull private final Map<String, Long> categories;
-  /** The channels that the bot can use */
-  @NonNull private final Map<String, Long> channels;
-  /** The guild where the bot is working */
-  private long guild;
+  @NonNull @Getter private final Map<String, List<Long>> roles;
+  @NonNull @Getter private final Map<String, Long> categories;
+  @NonNull @Getter private final Map<String, Long> channels;
+
+  @SerializedName("guild")
+  @Setter
+  @Getter
+  private long guildId;
 
   /**
    * Create the discord configuration
    *
-   * @param guild the guild where the bot will work
+   * @param guildId the guild where the bot will work
    * @param roles the roles that the bot can use
    * @param categories the categories that the bot can use
    * @param channels the channels that the bot can use
    */
   public StarfishDiscordConfiguration(
-      long guild,
+      long guildId,
       @NonNull Map<String, List<Long>> roles,
       @NonNull Map<String, Long> categories,
       @NonNull Map<String, Long> channels) {
-    this.guild = guild;
+    this.guildId = guildId;
     this.roles = roles;
     this.categories = categories;
     this.channels = channels;
@@ -54,33 +60,24 @@ public class StarfishDiscordConfiguration implements DiscordConfiguration {
     return new StarfishDiscordConfiguration(-1, new HashMap<>(), new HashMap<>(), new HashMap<>());
   }
 
-  @Override
-  public @NonNull Map<String, List<Long>> getRoles() {
-    return this.roles;
-  }
-
-  @Override
-  public @NonNull Map<String, Long> getCategories() {
-    return this.categories;
-  }
-
-  @Override
-  public @NonNull Map<String, Long> getChannels() {
-    return this.channels;
-  }
-
-  @Override
-  public void setGuild(Guild guild) {
-    this.guild = guild == null ? -1 : guild.getIdLong();
-  }
-
-  /**
-   * Get the id of the guild where the bot is working
-   *
-   * @return the id of guild where the bot is working
-   */
-  @Override
-  public long getGuildId() {
-    return this.guild;
+  @NonNull
+  public static StarfishDiscordConfiguration init() {
+    FileReader reader = null;
+    StarfishDiscordConfiguration configuration = fallback();
+    try {
+      reader =
+          new FileReader(CoreFiles.getFileOrResource(CoreFiles.currentDirectory(), "discord.json"));
+      configuration = Mongo.GSON.fromJson(reader, StarfishDiscordConfiguration.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    if (reader != null) {
+      try {
+        reader.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return configuration;
   }
 }

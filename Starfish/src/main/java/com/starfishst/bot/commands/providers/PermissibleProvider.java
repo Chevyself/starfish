@@ -1,9 +1,9 @@
 package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.loader.Loader;
 import com.starfishst.api.permissions.Permissible;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.core.providers.type.IArgumentProvider;
 import com.starfishst.jda.context.CommandContext;
@@ -24,7 +24,7 @@ public class PermissibleProvider implements IArgumentProvider<Permissible, Comma
   public Permissible fromString(@NonNull String string, @NonNull CommandContext context)
       throws ArgumentProviderException {
     Permissible permissible = null;
-    DataLoader loader = Starfish.getLoader();
+    Loader loader = Starfish.getLoader();
     BotUser sender = loader.getStarfishUser(context.getSender().getIdLong());
     List<User> mentionedUsers = context.getMessage().getMentionedUsers();
     for (User mentionedUser : mentionedUsers) {

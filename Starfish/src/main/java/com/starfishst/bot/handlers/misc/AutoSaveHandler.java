@@ -2,11 +2,13 @@ package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.events.StarfishHandler;
+import lombok.CustomLog;
 import lombok.NonNull;
 import me.googas.commons.time.Time;
 import me.googas.commons.time.Unit;
 
 /** A task to auto-save the config */
+@CustomLog
 public class AutoSaveHandler implements StarfishHandler, Runnable {
 
   /**
@@ -47,6 +49,6 @@ public class AutoSaveHandler implements StarfishHandler, Runnable {
   @Override
   public void run() {
     Starfish.save();
-    Starfish.getLogger().fine("Auto-Save completed");
+    log.fine("Auto-Save completed");
   }
 }

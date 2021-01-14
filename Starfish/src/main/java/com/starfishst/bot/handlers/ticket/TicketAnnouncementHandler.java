@@ -1,15 +1,16 @@
 package com.starfishst.bot.handlers.ticket;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
+import com.starfishst.api.messages.BotResponsiveMessage;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.bot.data.StarfishValuesMap;
-import com.starfishst.bot.data.messages.order.ClaimOrderResponsiveMessage;
+import com.starfishst.bot.messages.ClaimOrderReactionResponse;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
 import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import lombok.NonNull;
 import me.googas.commons.Lots;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
-import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -35,7 +35,7 @@ public class TicketAnnouncementHandler implements StarfishHandler {
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketStatusUpdated(TicketStatusUpdatedEvent event) {
     Ticket ticket = event.getTicket();
-    TicketType type = ticket.getTicketType();
+    TicketType type = ticket.getType();
     if (!event.isCancelled() && event.getStatus() == TicketStatus.OPEN) {
       BotUser owner = ticket.getOwner();
       TextChannel textChannel = ticket.getTextChannel();
@@ -79,7 +79,7 @@ public class TicketAnnouncementHandler implements StarfishHandler {
               }
             });
     EmbedQuery embedQuery = ticket.toCompleteInformation(user, false);
-    if (ticket.getTicketType() == TicketType.QUOTE) {
+    if (ticket.getType() == TicketType.QUOTE) {
       String footer = this.getPreferences().getValueOr("quote-footer", String.class, "none");
       if (!footer.equalsIgnoreCase("none")) {
         embedQuery.setFooter(user.getLocaleFile().get(footer, ticket.getPlaceholders()));
@@ -90,10 +90,13 @@ public class TicketAnnouncementHandler implements StarfishHandler {
     query.send(
         channel,
         msg -> {
-          if (ticket.getTicketType() == TicketType.ORDER) {
-            new ClaimOrderResponsiveMessage(
-                    msg, new StarfishValuesMap(Maps.singleton("id", ticket.getId())))
-                .cache();
+          if (ticket.getType() == TicketType.ORDER) {
+            new BotResponsiveMessage(
+                    msg.getIdLong(),
+                    Lots.set(new ClaimOrderReactionResponse(null)),
+                    new StarfishValuesMap("id", ticket.getId()))
+                .cache()
+                .update();
           }
         });
   }

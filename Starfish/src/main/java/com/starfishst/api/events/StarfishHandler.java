@@ -27,7 +27,6 @@ public interface StarfishHandler {
    * @param api the api to unregister the handler from
    */
   default void unregister(@NonNull JDA api) {
-    this.onUnload();
     api.removeEventListener(this);
     Starfish.getListenerManager().unregister(this);
   }

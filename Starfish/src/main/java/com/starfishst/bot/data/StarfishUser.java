@@ -1,26 +1,23 @@
 package com.starfishst.bot.data;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.user.BotUser;
-import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.permissions.PermissionStack;
+import com.starfishst.api.user.BotUser;
+import com.starfishst.api.user.FreelancerRating;
+import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commons.time.Time;
 
-/** An implementation for {@link com.starfishst.api.data.user.BotUser} */
+/** An implementation for {@link BotUser} */
 public class StarfishUser implements BotUser {
 
-  /** The discord id of the user */
-  private final long id;
-
-  /** The preferences of the user */
-  @NonNull private final StarfishValuesMap preferences;
-
-  /** The set of permissions that the user has */
-  private final Set<PermissionStack> permissions;
+  @Getter private final long id;
+  @NonNull @Getter private final StarfishValuesMap preferences;
+  @Getter private final Set<PermissionStack> permissions;
 
   /**
    * Create the starfish user
@@ -36,31 +33,8 @@ public class StarfishUser implements BotUser {
     this.permissions = permissions;
   }
 
-  /**
-   * Create an starfish user from a freelancer
-   *
-   * @param user the user that is supposed to be a freelancer
-   * @throws IllegalArgumentException if the user is not a freelancer
-   */
-  public StarfishUser(@NonNull BotUser user) {
-    if (!user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
-      throw new IllegalArgumentException(user + " is not a freelancer!");
-    }
-    this.id = user.getId();
-    this.preferences = new StarfishValuesMap(user.getPreferences().getMap());
-    this.permissions = user.getPermissions();
-    this.getPreferences().removeValue("freelancer");
-    this.getPreferences().removeValue("portfolio");
-    try {
-      user.unload(false);
-    } catch (Throwable ignored) {
-    }
-    this.cache();
-  }
-
-  @Override
-  public @NonNull Set<PermissionStack> getPermissions() {
-    return this.permissions;
+  public StarfishUser(long id) {
+    this(id, new StarfishValuesMap(), new HashSet<>());
   }
 
   @Override
@@ -73,22 +47,12 @@ public class StarfishUser implements BotUser {
 
   @Override
   public @NonNull Time getToRemove() {
-    return Starfish.getConfiguration().toUnloadUser();
+    return Starfish.getConfiguration().getUnloadUsers();
   }
 
   @Override
   public FreelancerRating getRating() {
     return Starfish.getLoader().getRating(this.id);
-  }
-
-  @Override
-  public long getId() {
-    return this.id;
-  }
-
-  @Override
-  public @NonNull StarfishValuesMap getPreferences() {
-    return this.preferences;
   }
 
   @Override
@@ -109,5 +73,10 @@ public class StarfishUser implements BotUser {
   @Override
   public int hashCode() {
     return (int) (id ^ (id >>> 32));
+  }
+
+  @Override
+  public @NonNull StarfishUser cache() {
+    return (StarfishUser) BotUser.super.cache();
   }
 }

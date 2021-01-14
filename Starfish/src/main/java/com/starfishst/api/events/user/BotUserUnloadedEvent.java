@@ -1,6 +1,6 @@
 package com.starfishst.api.events.user;
 
-import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.user.BotUser;
 import lombok.NonNull;
 
 /** Called when a bot user gets unloaded */

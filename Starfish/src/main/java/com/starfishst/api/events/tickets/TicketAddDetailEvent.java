@@ -1,23 +1,18 @@
 package com.starfishst.api.events.tickets;
 
-import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.events.StarfishCancellable;
+import com.starfishst.api.tickets.Ticket;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 /** Called when a detail is gong to be added to a ticket */
 public class TicketAddDetailEvent extends TicketEvent implements StarfishCancellable {
 
-  /** The simple of the detail that is being added */
-  @NonNull private final String simple;
-
-  /** The value of the detail */
-  @NonNull private final Object detail;
-
-  /** Whether the event is cancelled */
-  private boolean cancelled;
-
-  /** The reason to why it was cancelled */
-  @NonNull private final String reason = "No reason given";
+  @NonNull @Getter private final String simple;
+  @NonNull @Getter private final Object detail;
+  @Getter @Setter private boolean cancelled;
+  @NonNull @Getter @Setter private String reason = "No reason given";
 
   /**
    * Create the event
@@ -31,45 +26,5 @@ public class TicketAddDetailEvent extends TicketEvent implements StarfishCancell
     super(ticket);
     this.simple = simple;
     this.detail = detail;
-  }
-
-  /**
-   * Get the key of the value being added
-   *
-   * @return the simple of the value
-   */
-  @NonNull
-  public String getSimple() {
-    return simple;
-  }
-
-  /**
-   * Get the value of the detail that was added
-   *
-   * @return the value
-   */
-  @NonNull
-  public Object getDetail() {
-    return detail;
-  }
-
-  /**
-   * Get the reason to why the event was cancelled
-   *
-   * @return the reason
-   */
-  @NonNull
-  public String getReason() {
-    return reason;
-  }
-
-  @Override
-  public boolean isCancelled() {
-    return this.cancelled;
-  }
-
-  @Override
-  public void setCancelled(boolean bol) {
-    this.cancelled = bol;
   }
 }

@@ -3,14 +3,13 @@ package com.starfishst.api;
 import com.starfishst.api.addons.AddonLoader;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.loader.LanguageHandler;
-import com.starfishst.api.data.loader.TicketManager;
 import com.starfishst.api.events.StarfishHandler;
+import com.starfishst.api.loader.LanguageHandler;
+import com.starfishst.api.loader.Loader;
+import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
 import com.starfishst.jda.CommandManager;
 import java.util.Collection;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -65,10 +64,6 @@ public class Starfish {
     instance = bot;
   }
 
-  public static @NonNull Logger getLogger() {
-    return validated().getLogger();
-  }
-
   public static @NonNull Configuration getConfiguration() {
     return validated().getConfiguration();
   }
@@ -81,7 +76,7 @@ public class Starfish {
     return validated().getCache();
   }
 
-  public static @NonNull DataLoader getLoader() {
+  public static @NonNull Loader getLoader() {
     return validated().getLoader();
   }
 

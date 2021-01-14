@@ -1,18 +1,17 @@
 package com.starfishst.api.events.tickets;
 
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
 import com.starfishst.api.events.StarfishCancellable;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
-/** Called when a {@link com.starfishst.api.data.tickets.Ticket} changes of status */
+/** Called when a {@link Ticket} changes of status */
 public class TicketStatusUpdatedEvent extends TicketEvent implements StarfishCancellable {
 
-  /** The new status of the ticket */
-  @NonNull private final TicketStatus status;
-
-  /** Whether the event is cancelled */
-  private boolean cancelled;
+  @NonNull @Getter private final TicketStatus status;
+  @Getter @Setter private boolean cancelled;
 
   /**
    * Create the event
@@ -23,25 +22,5 @@ public class TicketStatusUpdatedEvent extends TicketEvent implements StarfishCan
   public TicketStatusUpdatedEvent(@NonNull Ticket ticket, @NonNull TicketStatus status) {
     super(ticket);
     this.status = status;
-  }
-
-  /**
-   * Get the new status of the ticket
-   *
-   * @return the new status of the ticket
-   */
-  @NonNull
-  public TicketStatus getStatus() {
-    return status;
-  }
-
-  @Override
-  public boolean isCancelled() {
-    return this.cancelled;
-  }
-
-  @Override
-  public void setCancelled(boolean bol) {
-    this.cancelled = bol;
   }
 }

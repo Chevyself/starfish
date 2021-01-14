@@ -1,6 +1,6 @@
 package com.starfishst.api.events.messages;
 
-import com.starfishst.api.data.messages.BotResponsiveMessage;
+import com.starfishst.api.messages.BotResponsiveMessage;
 import lombok.NonNull;
 
 /** Called when a bot message is unloaded */

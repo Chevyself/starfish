@@ -1,18 +1,21 @@
 package com.starfishst.bot.data;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.events.tickets.TicketNewChannelEvent;
 import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.Getter;
 import lombok.NonNull;
+import me.googas.commons.builder.ToStringBuilder;
 import me.googas.commons.time.Time;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -20,21 +23,12 @@ import net.dv8tion.jda.api.entities.TextChannel;
 /** Represents a StarfishTicket. TODO This documentation has to be a little bit more done. */
 public class StarfishTicket implements Ticket {
 
-  /** The id of the ticket */
-  private final long id;
-
-  /** The type of ticket */
-  @NonNull private final TicketType type;
-  /** The map of users inside the ticket */
+  @Getter private final long id;
+  @NonNull @Getter private final TicketType type;
   @NonNull private final Map<Long, String> users;
-
-  /** The details of the ticket */
-  @NonNull private final StarfishValuesMap details;
-
-  /** The channel where the ticket is happening */
-  private long channel;
-  /** The status of the ticket */
-  @NonNull private TicketStatus status;
+  @NonNull @Getter private final StarfishValuesMap details;
+  @Getter private long channel;
+  @NonNull @Getter private TicketStatus status;
 
   /**
    * Create the ticket
@@ -90,27 +84,12 @@ public class StarfishTicket implements Ticket {
 
   @Override
   public @NonNull Time getToRemove() {
-    return Starfish.getConfiguration().toUnloadTickets();
-  }
-
-  @Override
-  public long getId() {
-    return this.id;
-  }
-
-  @Override
-  public @NonNull TicketType getTicketType() {
-    return this.type;
+    return Starfish.getConfiguration().getUnloadTickets();
   }
 
   @Override
   public @NonNull Map<Long, String> getUsersIdMap() {
     return this.users;
-  }
-
-  @Override
-  public @NonNull StarfishValuesMap getDetails() {
-    return this.details;
   }
 
   @Override
@@ -120,11 +99,6 @@ public class StarfishTicket implements Ticket {
       return jda.getTextChannelById(this.channel);
     }
     return null;
-  }
-
-  @Override
-  public @NonNull TicketStatus getTicketStatus() {
-    return this.status;
   }
 
   @Override
@@ -158,8 +132,10 @@ public class StarfishTicket implements Ticket {
   }
 
   @Override
-  public void setTicketStatus(@NonNull TicketStatus status) {
-    if (!new TicketStatusUpdatedEvent(this, status).callAndGet()) {
+  public void setStatus(@NonNull TicketStatus status) {
+    TicketStatusUpdatedEvent event = new TicketStatusUpdatedEvent(this, status);
+    boolean updated = event.callAndGet();
+    if (!updated) {
       this.status = status;
     }
   }
@@ -170,20 +146,27 @@ public class StarfishTicket implements Ticket {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    StarfishTicket that = (StarfishTicket) o;
+    return id == that.id;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  @Override
   public String toString() {
-    return "StarfishTicket{"
-        + "id="
-        + id
-        + ", type="
-        + type
-        + ", users="
-        + users
-        + ", details="
-        + details
-        + ", channel="
-        + channel
-        + ", status="
-        + status
-        + "} ";
+    return new ToStringBuilder(this)
+        .append("id", id)
+        .append("type", type)
+        .append("users", users)
+        .append("details", details)
+        .append("channel", channel)
+        .append("status", status)
+        .build();
   }
 }

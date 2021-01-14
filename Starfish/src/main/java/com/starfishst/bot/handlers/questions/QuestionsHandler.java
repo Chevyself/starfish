@@ -1,17 +1,17 @@
 package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.handlers.misc.CleanerHandler;
+import com.starfishst.bot.utility.Mongo;
 import com.starfishst.jda.result.ResultType;
 import java.io.File;
 import java.io.FileReader;
@@ -19,11 +19,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import lombok.NonNull;
+import me.googas.annotations.Nullable;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.Lots;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
-import me.googas.commons.gson.GsonProvider;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
@@ -32,10 +32,7 @@ import net.dv8tion.jda.api.hooks.SubscribeEvent;
 public class QuestionsHandler implements StarfishHandler {
 
   /** The map of the ticket and the current question it is in */
-  @NonNull private final HashMap<Ticket, Integer> current = new HashMap<>();
-
-  /** The loader to get users */
-  @NonNull private final DataLoader loader;
+  @NonNull private final HashMap<Long, Integer> current = new HashMap<>();
 
   /** The questions for each type of ticket */
   @NonNull private final HashMap<TicketType, QuestionsConfiguration> questions;
@@ -43,10 +40,8 @@ public class QuestionsHandler implements StarfishHandler {
   /**
    * Create the questions handler
    *
-   * @param loader the loader to get users
    */
-  public QuestionsHandler(@NonNull DataLoader loader) {
-    this.loader = loader;
+  public QuestionsHandler() {
     this.questions = new HashMap<>();
   }
 
@@ -71,7 +66,7 @@ public class QuestionsHandler implements StarfishHandler {
                 CoreFiles.getResource("questions/" + type.toString().toLowerCase() + ".json"));
         FileReader reader =
             new FileReader(file); //  This can't throw an exception for not finding the file
-        this.questions.put(type, GsonProvider.GSON.fromJson(reader, QuestionsConfiguration.class));
+        this.questions.put(type, Mongo.GSON.fromJson(reader, QuestionsConfiguration.class));
         this.questions.put(
             TicketType.QUOTE,
             this.questions.get(TicketType.ORDER)); // Copy the questions from orders
@@ -98,18 +93,18 @@ public class QuestionsHandler implements StarfishHandler {
     if (!event.isCancelled() && event.getStatus() == TicketStatus.CREATING) {
       Ticket ticket = this.refresh(event.getTicket());
       TextChannel channel = ticket.getTextChannel();
-      QuestionsConfiguration questions = this.questions.get(ticket.getTicketType());
+      QuestionsConfiguration questions = this.questions.get(ticket.getType());
       BotUser owner = event.getTicket().getOwner();
-      if (!current.containsKey(ticket)
+      if (!current.containsKey(ticket.getId())
           && owner != null
           && questions != null
           && !questions.getQuestions().isEmpty()
           && channel != null) {
         Ticket parent = this.getTicketByChannel(channel);
         if (parent != null) {
-          current.put(ticket, current.get(parent));
+          current.put(ticket.getId(), current.get(parent.getId()));
         } else {
-          current.put(ticket, 0);
+          current.put(ticket.getId(), 0);
           questions.getQuestions().get(0).getQuery(owner).send(channel);
         }
       }
@@ -126,9 +121,9 @@ public class QuestionsHandler implements StarfishHandler {
     if (!event.getAuthor().isBot()) {
       Ticket ticket = this.getTicketByChannel(event.getChannel());
       if (ticket != null) {
-        BotUser user = loader.getStarfishUser(event.getAuthor().getIdLong());
-        List<Question> questions = this.questions.get(ticket.getTicketType()).getQuestions();
-        Question current = questions.get(this.current.get(ticket));
+        BotUser user = Starfish.getLoader().getStarfishUser(event.getAuthor().getIdLong());
+        List<Question> questions = this.questions.get(ticket.getType()).getQuestions();
+        Question current = questions.get(this.current.get(ticket.getId()));
         Object answer = current.getAnswer(event, user);
         if (answer != null) {
           TicketAddDetailEvent addDetailEvent =
@@ -138,8 +133,6 @@ public class QuestionsHandler implements StarfishHandler {
             if (ticket != null) {
               ticket.getDetails().addValue(current.getSimple(), answer);
               this.sendNextQuestion(event, ticket, user, questions);
-            } else {
-              // TODO ?
             }
           } else {
             Messages.build(addDetailEvent.getReason(), ResultType.ERROR, user);
@@ -163,12 +156,12 @@ public class QuestionsHandler implements StarfishHandler {
       @NonNull BotUser user,
       @NonNull List<Question> questions) {
     Question current;
-    this.current.put(ticket, this.current.get(ticket) + 1);
-    if (this.current.get(ticket) >= questions.size()) {
-      this.refresh(ticket).setTicketStatus(TicketStatus.OPEN);
-      this.current.remove(ticket);
+    this.current.put(ticket.getId(), this.current.get(ticket.getId()) + 1);
+    if (this.current.get(ticket.getId()) >= questions.size()) {
+      this.refresh(ticket).setStatus(TicketStatus.OPEN);
+      this.current.remove(ticket.getId());
     } else {
-      current = questions.get(this.current.get(this.refresh(ticket)));
+      current = questions.get(this.current.get(this.refresh(ticket).getId()));
       current.getQuery(user).send(event.getChannel());
       if (current instanceof QuestionInformation) {
         this.sendNextQuestion(event, ticket, user, questions);
@@ -190,7 +183,7 @@ public class QuestionsHandler implements StarfishHandler {
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketUnloaded(@NonNull TicketUnloadedEvent event) {
     Ticket ticket = event.getTicket();
-    this.current.remove(ticket);
+    this.current.remove(ticket.getId());
   }
 
   /**
@@ -199,8 +192,11 @@ public class QuestionsHandler implements StarfishHandler {
    * @param channel the channel to get the ticket from
    * @return the ticket if found else null
    */
+  @Nullable
   private Ticket getTicketByChannel(@NonNull TextChannel channel) {
-    for (Ticket ticket : this.current.keySet()) {
+    for (Long id : this.current.keySet()) {
+      if (id == null) return null;
+      Ticket ticket = Starfish.getLoader().getTicket(id);
       TextChannel textChannel = ticket.getTextChannel();
       if (textChannel != null && textChannel.equals(channel)) {
         return ticket;

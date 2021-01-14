@@ -1,6 +1,6 @@
 package com.starfishst.bot.commands.objects;
 
-import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.user.BotUser;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Delegate;

@@ -1,11 +1,11 @@
 package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
   }
 
   public void unload(@NonNull Ticket ticket) {
-    ticket.setTicketStatus(TicketStatus.CLOSED);
+    ticket.setStatus(TicketStatus.CLOSED);
     /*
     if (channel != null
             && this.getPreferences()
@@ -53,7 +53,7 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
 
   public void onSecondPass(@NonNull Ticket ticket, @NonNull Time time) {
     if (this.getPreferences().getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)
-        && ticket.getTicketStatus() == TicketStatus.CREATING) {
+        && ticket.getStatus() == TicketStatus.CREATING) {
       if (this.containsTime(time)) {
         BotUser owner = ticket.getOwner();
         TextChannel channel = ticket.getTextChannel();
@@ -116,7 +116,7 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
           long left = secondsLeft - 1;
           Ticket ticket = Starfish.getLoader().getTicket(id);
           this.map.put(id, left);
-          if (ticket != null && ticket.getTicketStatus() == TicketStatus.CREATING) {
+          if (ticket != null && ticket.getStatus() == TicketStatus.CREATING) {
             if (left > 0) {
               this.onSecondPass(ticket, new Time(left, Unit.SECONDS));
             } else {

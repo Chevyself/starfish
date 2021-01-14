@@ -1,15 +1,15 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Fee;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.core.annotations.Multiple;
 import com.starfishst.core.annotations.Required;
+import com.starfishst.core.annotations.Settings;
 import com.starfishst.core.objects.JoinedStrings;
 import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.annotations.Exclude;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedQuery;
@@ -29,7 +29,7 @@ public class InvoiceCommands {
    * @param strings the service
    * @return a successful result sending the invoice
    */
-  @Exclude
+  @Settings("exclude")
   @Command(aliases = "invoice", description = "Generates an invoice", node = "starfish.invoice")
   public Result invoice(
       BotUser user,

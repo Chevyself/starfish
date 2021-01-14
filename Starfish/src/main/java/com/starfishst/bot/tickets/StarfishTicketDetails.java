@@ -9,7 +9,7 @@ import lombok.NonNull;
 import me.googas.commons.Lots;
 import net.dv8tion.jda.api.entities.Role;
 
-/** An implementation for {@link TicketDetails} */
+/** An implementation for {@link ValuesMap} */
 public class StarfishTicketDetails implements ValuesMap {
 
   /** The map of preferences */

@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.Validate;
@@ -14,8 +15,7 @@ import me.googas.commons.Validate;
 /** The locale file for the guido bot. It is loaded using {@link Properties} */
 public class StarfishLocaleFile implements LocaleFile {
 
-  /** The actual file that this is using */
-  @NonNull private final File file;
+  @NonNull @Getter private final File file;
   /** The properties used to get the strings */
   @NonNull private final Properties properties = new Properties();
 
@@ -83,10 +83,5 @@ public class StarfishLocaleFile implements LocaleFile {
   @Override
   public String getRaw(@NonNull String path) {
     return this.properties.getProperty(path);
-  }
-
-  @Override
-  public @NonNull File getFile() {
-    return this.file;
   }
 }

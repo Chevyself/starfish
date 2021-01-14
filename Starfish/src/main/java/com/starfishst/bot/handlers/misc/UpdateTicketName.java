@@ -1,11 +1,11 @@
 package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.user.BotUser;
 import lombok.NonNull;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;

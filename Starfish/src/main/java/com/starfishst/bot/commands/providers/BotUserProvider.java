@@ -1,7 +1,7 @@
 package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.providers.type.JdaArgumentProvider;

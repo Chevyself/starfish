@@ -1,8 +1,8 @@
 package com.starfishst.bot;
 
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.role.BotRole;
-import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.loader.Loader;
+import com.starfishst.api.role.BotRole;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.context.GuildCommandContext;
 import com.starfishst.jda.messages.MessagesProvider;
@@ -21,7 +21,7 @@ public class StarfishPermissionChecker implements PermissionChecker {
   @NonNull private final MessagesProvider messagesProvider;
 
   /** The data loader to get the permissions */
-  @NonNull private final DataLoader dataLoader;
+  @NonNull private final Loader dataLoader;
 
   /**
    * Create the permission checker
@@ -30,7 +30,7 @@ public class StarfishPermissionChecker implements PermissionChecker {
    * @param dataLoader the data loader to get the permissions from the user
    */
   public StarfishPermissionChecker(
-      @NonNull MessagesProvider messagesProvider, @NonNull DataLoader dataLoader) {
+      @NonNull MessagesProvider messagesProvider, @NonNull Loader dataLoader) {
     this.messagesProvider = messagesProvider;
     this.dataLoader = dataLoader;
   }

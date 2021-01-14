@@ -1,7 +1,7 @@
 package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;

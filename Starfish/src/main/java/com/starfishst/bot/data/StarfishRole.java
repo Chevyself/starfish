@@ -1,20 +1,19 @@
 package com.starfishst.bot.data;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.events.role.BotRoleUnloadedEvent;
 import com.starfishst.api.permissions.PermissionStack;
+import com.starfishst.api.role.BotRole;
 import java.util.Set;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commons.time.Time;
 
 /** An implementation for {@link BotRole} */
 public class StarfishRole implements BotRole {
 
-  /** The id of the role */
-  private final long id;
-  /** The set of permissions that the role has */
-  private final Set<PermissionStack> permissions;
+  @Getter private final long id;
+  @NonNull @Getter private final Set<PermissionStack> permissions;
 
   /**
    * Create the starfish role
@@ -22,7 +21,7 @@ public class StarfishRole implements BotRole {
    * @param id the unique id of the role given by discord
    * @param permissions the permissions that the role has
    */
-  public StarfishRole(long id, Set<PermissionStack> permissions) {
+  public StarfishRole(long id, @NonNull Set<PermissionStack> permissions) {
     this.id = id;
     this.permissions = permissions;
   }
@@ -34,16 +33,11 @@ public class StarfishRole implements BotRole {
 
   @Override
   public @NonNull Time getToRemove() {
-    return Starfish.getConfiguration().toUnloadUser();
+    return Starfish.getConfiguration().getUnloadUsers();
   }
 
   @Override
-  public long getId() {
-    return this.id;
-  }
-
-  @Override
-  public @NonNull Set<PermissionStack> getPermissions() {
-    return this.permissions;
+  public @NonNull StarfishRole cache() {
+    return (StarfishRole) BotRole.super.cache();
   }
 }

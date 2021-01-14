@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import com.starfishst.bot.utility.Mongo;
 import lombok.NonNull;
 import me.googas.commons.gson.GsonProvider;
 
@@ -42,7 +44,7 @@ public class JavaAddonClassLoader extends URLClassLoader {
     InputStream resourceAsStream = this.getResourceAsStream("addon.json");
     if (resourceAsStream != null) {
       InputStreamReader reader = new InputStreamReader(resourceAsStream);
-      JavaAddonInformation info = GsonProvider.GSON.fromJson(reader, JavaAddonInformation.class);
+      JavaAddonInformation info = Mongo.GSON.fromJson(reader, JavaAddonInformation.class);
       reader.close();
       return info;
     } else {

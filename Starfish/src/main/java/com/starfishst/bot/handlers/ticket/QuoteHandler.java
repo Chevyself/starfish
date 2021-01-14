@@ -1,15 +1,16 @@
 package com.starfishst.bot.handlers.ticket;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddDetailEvent;
 import com.starfishst.api.exception.TicketCreationException;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import me.googas.commons.Strings;
+import me.googas.commons.cache.Cache;
 import me.googas.commons.events.ListenPriority;
 import me.googas.commons.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -32,14 +33,13 @@ public class QuoteHandler implements StarfishHandler {
         && event.getSimple().startsWith("budget")
         && detail instanceof String
         && Strings.containsIgnoreCase((String) detail, "quote")
-        && ticket.getTicketStatus() == TicketStatus.CREATING
-        && ticket.getTicketType() != TicketType.QUOTE
+        && ticket.getStatus() == TicketStatus.CREATING
+        && ticket.getType() != TicketType.QUOTE
         && owner != null) {
       try {
         Starfish.getTicketManager().createTicket(TicketType.QUOTE, owner, ticket);
         try {
           ticket.unload(false);
-          ticket.unload();
         } catch (Throwable throwable) {
           throwable.printStackTrace();
         }

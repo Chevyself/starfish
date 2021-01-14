@@ -1,8 +1,8 @@
 package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.loader.Loader;
+import com.starfishst.api.tickets.Ticket;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.providers.type.JdaArgumentProvider;
@@ -21,7 +21,7 @@ public class TicketProvider implements JdaArgumentProvider<Ticket> {
   @Override
   public Ticket fromString(@NonNull String s, @NonNull CommandContext context)
       throws ArgumentProviderException {
-    DataLoader loader = Starfish.getLoader();
+    Loader loader = Starfish.getLoader();
     Object id = context.getRegistry().fromString(s, long.class, context);
     if (id instanceof Long) {
       Ticket ticket = loader.getTicket((long) id);

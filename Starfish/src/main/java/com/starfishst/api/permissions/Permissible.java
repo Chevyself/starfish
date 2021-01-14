@@ -1,7 +1,9 @@
 package com.starfishst.api.permissions;
 
+import java.util.List;
 import java.util.Set;
 import lombok.NonNull;
+import me.googas.commons.Lots;
 
 /** This is an entity which may posses node permissions */
 public interface Permissible {

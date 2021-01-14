@@ -9,7 +9,6 @@ import com.starfishst.bot.tickets.StarfishPermissionStack;
 import java.lang.reflect.Type;
 import me.googas.commons.gson.adapters.JsonAdapter;
 
-/** Deserializes permission stacks */
 public class PermissionStackDeserializer implements JsonAdapter<PermissionStack> {
 
   @Override

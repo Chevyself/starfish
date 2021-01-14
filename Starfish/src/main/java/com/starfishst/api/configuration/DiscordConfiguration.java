@@ -127,7 +127,16 @@ public interface DiscordConfiguration {
    *
    * @param guild the new guild
    */
-  void setGuild(Guild guild);
+  default void setGuild(Guild guild) {
+    this.setGuildId(guild == null ? 0 : guild.getIdLong());
+  }
+
+  /**
+   * Set the guild id in the configuration
+   *
+   * @param id the id of the guild
+   */
+  void setGuildId(long id);
 
   /**
    * Get the id of the guild where the bot is working

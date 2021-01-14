@@ -1,8 +1,8 @@
 package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.loader.Loader;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.bot.commands.objects.Freelancer;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.jda.context.CommandContext;
@@ -23,7 +23,7 @@ public class FreelancerProvider implements JdaArgumentProvider<Freelancer> {
   public Freelancer fromString(@NonNull String s, @NonNull CommandContext context)
       throws ArgumentProviderException {
     Object user = context.getRegistry().fromString(s, User.class, context);
-    DataLoader loader = Starfish.getLoader();
+    Loader loader = Starfish.getLoader();
     BotUser sender = loader.getStarfishUser(context.getSender().getIdLong());
     if (user instanceof User) {
       BotUser botUser = loader.getStarfishUser(((User) user).getIdLong());

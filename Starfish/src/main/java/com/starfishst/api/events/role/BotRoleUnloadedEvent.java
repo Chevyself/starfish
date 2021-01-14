@@ -1,6 +1,6 @@
 package com.starfishst.api.events.role;
 
-import com.starfishst.api.data.role.BotRole;
+import com.starfishst.api.role.BotRole;
 import lombok.NonNull;
 
 /** Called when a role is loaded */

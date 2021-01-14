@@ -2,13 +2,15 @@ package com.starfishst.bot.commands;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.data.messages.panel.TicketPanelMessage;
+import com.starfishst.bot.messages.TicketPanelReactionResponse;
 import com.starfishst.core.annotations.Optional;
 import com.starfishst.core.exceptions.type.SimpleRuntimeException;
 import com.starfishst.jda.annotations.Command;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
+import me.googas.commons.Lots;
 import net.dv8tion.jda.api.entities.Message;
 
 /** Commands used by the developer or server owner */
@@ -35,7 +37,6 @@ public class DeveloperCommands {
           long number) {
     if (number != -1) {
       try {
-        System.out.println(number);
         message.getTextChannel().retrieveMessageById(number).complete();
         return new Result();
       } catch (Exception e) {
@@ -49,7 +50,13 @@ public class DeveloperCommands {
               locale.get("ticket-panel.description"),
               ResultType.GENERIC,
               locale),
-          msg -> new TicketPanelMessage(msg).cache());
+          msg -> {
+            BotResponsiveMessage responsiveMessage = new BotResponsiveMessage(
+                    msg.getIdLong())
+                    .cache();
+            responsiveMessage.addReactionResponse(new TicketPanelReactionResponse(responsiveMessage), msg);
+          }
+      );
     }
   }
 }

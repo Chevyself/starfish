@@ -10,7 +10,6 @@ import com.starfishst.bot.data.StarfishPermission;
 import java.lang.reflect.Type;
 import me.googas.commons.gson.adapters.JsonAdapter;
 
-/** Adapts permission in json */
 public class PermissionAdapter implements JsonAdapter<Permission> {
   @Override
   public JsonElement serialize(Permission src, Type typeOfSrc, JsonSerializationContext context) {

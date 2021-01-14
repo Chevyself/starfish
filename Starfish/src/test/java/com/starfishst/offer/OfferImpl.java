@@ -1,6 +1,6 @@
 package com.starfishst.offer;
 
-import com.starfishst.api.data.tickets.Offer;
+import com.starfishst.api.tickets.Offer;
 import lombok.NonNull;
 
 public class OfferImpl implements Offer {

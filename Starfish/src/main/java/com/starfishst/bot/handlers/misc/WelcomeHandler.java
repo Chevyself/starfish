@@ -1,9 +1,9 @@
 package com.starfishst.bot.handlers.misc;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
+import com.starfishst.api.loader.Loader;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;
 import lombok.NonNull;
@@ -15,14 +15,14 @@ import net.dv8tion.jda.api.hooks.SubscribeEvent;
 public class WelcomeHandler implements StarfishHandler {
 
   /** The data loader to get the user of the joined user */
-  @NonNull private final DataLoader loader;
+  @NonNull private final Loader loader;
 
   /**
    * Create the welcome handler
    *
    * @param loader the data loader to get the user joined
    */
-  public WelcomeHandler(@NonNull DataLoader loader) {
+  public WelcomeHandler(@NonNull Loader loader) {
     this.loader = loader;
   }
 

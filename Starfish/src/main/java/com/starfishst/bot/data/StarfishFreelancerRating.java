@@ -1,9 +1,10 @@
 package com.starfishst.bot.data;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.user.FreelancerRatingUnloadedEvent;
+import com.starfishst.api.user.FreelancerRating;
 import java.util.Map;
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commons.time.Time;
 
@@ -11,10 +12,10 @@ import me.googas.commons.time.Time;
 public class StarfishFreelancerRating implements FreelancerRating {
 
   /** The id of the freelancer that owns this */
-  private final long id;
+  @Getter private final long id;
 
   /** The map that contains the rating of the freelancer */
-  @NonNull private final Map<Long, Integer> map;
+  @Getter @NonNull private final Map<Long, Integer> map;
 
   /**
    * Create the freelancer rating
@@ -25,7 +26,6 @@ public class StarfishFreelancerRating implements FreelancerRating {
   public StarfishFreelancerRating(long id, @NonNull Map<Long, Integer> map) {
     this.id = id;
     this.map = map;
-    this.cache();
   }
 
   @Override
@@ -35,17 +35,11 @@ public class StarfishFreelancerRating implements FreelancerRating {
 
   @Override
   public @NonNull Time getToRemove() {
-    return Starfish.getConfiguration().toUnloadUser();
+    return Starfish.getConfiguration().getUnloadUsers();
   }
 
   @Override
-  public long getId() {
-    return this.id;
-  }
-
-  @NonNull
-  @Override
-  public Map<Long, Integer> getMap() {
-    return this.map;
+  public @NonNull StarfishFreelancerRating cache() {
+    return (StarfishFreelancerRating) FreelancerRating.super.cache();
   }
 }

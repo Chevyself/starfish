@@ -3,20 +3,20 @@ package com.starfishst.api;
 import com.starfishst.api.addons.AddonLoader;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.loader.LanguageHandler;
-import com.starfishst.api.data.loader.TicketManager;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.loader.LanguageHandler;
+import com.starfishst.api.loader.Loader;
+import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
 import com.starfishst.api.utility.StarfishCatchable;
+import com.starfishst.bot.utility.Mongo;
 import com.starfishst.jda.CommandManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.Collection;
-import java.util.logging.Logger;
 import lombok.NonNull;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.Validate;
@@ -68,7 +68,7 @@ public interface StarfishBot {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "config.json");
       FileWriter writer = new FileWriter(file);
       try {
-        GsonProvider.GSON.toJson(this.getConfiguration(), writer);
+        Mongo.GSON.toJson(this.getConfiguration(), writer);
       } catch (Exception e) {
         fallback.process(e, "'config.json' could not be written!");
       }
@@ -80,7 +80,7 @@ public interface StarfishBot {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "discord.json");
       FileWriter writer = new FileWriter(file);
       try {
-        GsonProvider.GSON.toJson(this.getDiscordConfiguration(), writer);
+        Mongo.GSON.toJson(this.getDiscordConfiguration(), writer);
       } catch (Exception e) {
         fallback.process(e, "'discord.json' could not be written!");
       }
@@ -120,14 +120,6 @@ public interface StarfishBot {
   }
 
   /**
-   * Get the logger that the bot is using
-   *
-   * @return the logger
-   */
-  @NonNull
-  Logger getLogger();
-
-  /**
    * Get the configuration of the bot
    *
    * @return the configuration
@@ -165,8 +157,8 @@ public interface StarfishBot {
    * @return the data loader
    */
   @NonNull
-  default DataLoader getLoader() {
-    return this.requireHandler(DataLoader.class);
+  default Loader getLoader() {
+    return this.requireHandler(Loader.class);
   }
 
   /**

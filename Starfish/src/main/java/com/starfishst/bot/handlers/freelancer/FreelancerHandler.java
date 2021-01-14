@@ -1,8 +1,9 @@
 package com.starfishst.bot.handlers.freelancer;
 
-import com.starfishst.api.data.tickets.Ticket;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;
@@ -26,28 +27,26 @@ public class FreelancerHandler implements StarfishHandler {
   @Listener(priority = ListenPriority.LOWEST)
   public void onTicketAddUserEvent(TicketAddUserEvent event) {
     Ticket ticket = event.getTicket();
-    if (!event.getRole().equalsIgnoreCase("freelancer")) {
-      return;
-    }
-    if (!event.getUser().isFreelancer()) {
+    if (!event.getRole().equalsIgnoreCase("freelancer")) return;
+    BotUser botUser = event.getUser();
+    if (!botUser.isFreelancer()) {
       event.setCancelled(true);
-      User user = event.getUser().getDiscord();
+      User user = botUser.getDiscord();
       if (user != null) {
         user.openPrivateChannel()
             .queue(
                 privateChannel ->
                     Messages.build(
-                            event
-                                .getUser()
+                            botUser
                                 .getLocaleFile()
                                 .get("user.not-freelancer", ticket.getPlaceholders()),
                             ResultType.PERMISSION,
-                            event.getUser())
+                            botUser)
                         .send(privateChannel));
       }
     } else {
       if (ticket.hasFreelancers()) {
-        Member member = event.getUser().getMember();
+        Member member = botUser.getMember();
         if (member != null) {
           member
               .getUser()
@@ -55,12 +54,11 @@ public class FreelancerHandler implements StarfishHandler {
               .queue(
                   channel ->
                       Messages.build(
-                              event
-                                  .getUser()
+                              botUser
                                   .getLocaleFile()
                                   .get("freelancer.ticket-claimed", ticket.getPlaceholders()),
                               ResultType.PERMISSION,
-                              event.getUser())
+                              botUser)
                           .send(channel));
         }
         event.setCancelled(true);
@@ -78,7 +76,7 @@ public class FreelancerHandler implements StarfishHandler {
                     }
                   }
                 });
-        Member member = event.getUser().getMember();
+        Member member = botUser.getMember();
         if (member != null) {
           // Check if the freelancer has an allowed role
           boolean allowed = false;
@@ -95,12 +93,11 @@ public class FreelancerHandler implements StarfishHandler {
                 .queue(
                     privateChannel ->
                         Messages.build(
-                                event
-                                    .getUser()
+                                botUser
                                     .getLocaleFile()
                                     .get("freelancer.not-roles", ticket.getPlaceholders()),
                                 ResultType.PERMISSION,
-                                event.getUser())
+                                botUser)
                             .send(privateChannel));
             event.setCancelled(true);
           }

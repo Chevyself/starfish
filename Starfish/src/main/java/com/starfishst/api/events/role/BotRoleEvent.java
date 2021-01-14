@@ -1,14 +1,14 @@
 package com.starfishst.api.events.role;
 
-import com.starfishst.api.data.role.BotRole;
 import com.starfishst.api.events.StarfishEvent;
+import com.starfishst.api.role.BotRole;
+import lombok.Getter;
 import lombok.NonNull;
 
 /** An event that has a bot role involved on it */
 public class BotRoleEvent implements StarfishEvent {
 
-  /** The role involved in the event */
-  @NonNull private final BotRole role;
+  @NonNull @Getter private final BotRole role;
 
   /**
    * Create the event
@@ -17,15 +17,5 @@ public class BotRoleEvent implements StarfishEvent {
    */
   public BotRoleEvent(@NonNull BotRole role) {
     this.role = role;
-  }
-
-  /**
-   * Get the role involved in the event
-   *
-   * @return the role involved in the event
-   */
-  @NonNull
-  public BotRole getRole() {
-    return role;
   }
 }

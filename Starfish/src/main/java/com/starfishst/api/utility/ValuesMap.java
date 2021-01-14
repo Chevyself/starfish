@@ -65,8 +65,10 @@ public interface ValuesMap {
    * @param name the name of the value
    * @param value the value to add
    */
-  default void addValue(@NonNull String name, @NonNull Object value) {
+  @NonNull
+  default ValuesMap addValue(@NonNull String name, @NonNull Object value) {
     this.getMap().put(name, value);
+    return this;
   }
 
   /**
@@ -74,8 +76,10 @@ public interface ValuesMap {
    *
    * @param map the map to add the values from
    */
-  default void addValues(@NonNull Map<String, Object> map) {
+  @NonNull
+  default ValuesMap addValues(@NonNull Map<String, Object> map) {
     map.forEach(this::addValue);
+    return this;
   }
 
   /**
@@ -83,8 +87,10 @@ public interface ValuesMap {
    *
    * @param map the map to add the values from
    */
-  default void addValues(@NonNull ValuesMap map) {
+  @NonNull
+  default ValuesMap addValues(@NonNull ValuesMap map) {
     this.addValues(map.getMap());
+    return this;
   }
 
   /**

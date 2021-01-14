@@ -1,7 +1,7 @@
 package com.starfishst.bot.handlers.lang;
 
-import com.starfishst.api.data.loader.LanguageHandler;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.loader.LanguageHandler;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;

@@ -1,8 +1,8 @@
 package com.starfishst.api.utility;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.embeds.EmbedFactory;

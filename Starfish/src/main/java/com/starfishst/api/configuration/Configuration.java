@@ -19,7 +19,7 @@ public interface Configuration {
    * @return the time to unload tickets from cache
    */
   @NonNull
-  Time toUnloadTickets();
+  Time getUnloadTickets();
 
   /**
    * Get the time to unload users
@@ -27,7 +27,7 @@ public interface Configuration {
    * @return the time to unload users from cache
    */
   @NonNull
-  Time toUnloadUser();
+  Time getUnloadUsers();
 
   /**
    * Get the time to unload messages
@@ -35,7 +35,7 @@ public interface Configuration {
    * @return the time to unload messages from cache
    */
   @NonNull
-  Time toUnloadMessages();
+  Time getUnloadMessages();
 
   /**
    * Get the fees applying to a value inside the config
@@ -83,7 +83,7 @@ public interface Configuration {
    * @return the default lang
    */
   @NonNull
-  String getDefaultLang();
+  String getLang();
 
   /**
    * Get the total of tickets created

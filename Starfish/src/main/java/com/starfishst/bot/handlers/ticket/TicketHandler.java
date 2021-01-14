@@ -1,16 +1,16 @@
 package com.starfishst.bot.handlers.ticket;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.events.tickets.TicketPreCreationEvent;
 import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.jda.result.ResultType;
@@ -41,7 +41,7 @@ public class TicketHandler implements StarfishHandler {
   public void onTicketPreCreation(TicketPreCreationEvent event) {
     if (event.isCancelled()) return;
     LocaleFile locale = event.getUser().getLocaleFile();
-    if (bannedTypes.contains(event.getType())) {
+    if (event.getParent() == null && bannedTypes.contains(event.getType())) {
       event.setCancelled(true);
       event.setReason(
           locale.get(
@@ -52,8 +52,10 @@ public class TicketHandler implements StarfishHandler {
     Collection<Ticket> creating =
         Starfish.getLoader()
             .getTickets(
-                event.getUser(), "customer", Lots.set(TicketType.values()), TicketStatus.CREATING);
-    if (!creating.isEmpty()
+                event.getUser(), "owner", Lots.set(TicketType.values()), TicketStatus.CREATING);
+    creating.removeIf(ticket -> ticket.getTextChannel() == null);
+    if (event.getParent() == null
+        && !creating.isEmpty()
         && !event.getUser().hasPermission("starfish.tickets.override-creating", "discord")) {
       event.setCancelled(true);
       event.setReason(locale.get("tickets.finish-creating"));
@@ -63,11 +65,15 @@ public class TicketHandler implements StarfishHandler {
         Starfish.getLoader()
             .getTickets(
                 event.getUser(),
-                "customer",
+                "owner",
                 Lots.set(TicketType.values()),
                 TicketStatus.CREATING,
                 TicketStatus.OPEN,
                 TicketStatus.LOADING);
+    open.removeIf(
+        ticket ->
+            ticket.getTextChannel() == null
+                || (event.getParent() != null && event.getParent().getId() == ticket.getId()));
     if (open.size() >= limit
         && !event.getUser().hasPermission("starfish.tickets.override-limit", "discord")) {
       event.setCancelled(true);

@@ -42,7 +42,7 @@
     },
     "announcer": {
       "preferences": {
-        "quote-footer": "none",
+        "quote-footer": "quote.help-footer",
         "announce-types": ["ORDER", "QUOTE"],
         "pin-copy-in-channel": true
       }

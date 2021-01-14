@@ -1,19 +1,19 @@
 package com.starfishst.bot.tickets;
 
-import com.starfishst.api.data.role.BotRole;
-import com.starfishst.api.data.tickets.Offer;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
-import com.starfishst.api.data.user.FreelancerRating;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
 import com.starfishst.api.events.role.BotRoleUnloadedEvent;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.events.tickets.TicketUnloadedEvent;
 import com.starfishst.api.events.user.BotUserUnloadedEvent;
 import com.starfishst.api.events.user.FreelancerRatingUnloadedEvent;
-import com.starfishst.bot.data.StarfishResponsiveMessage;
+import com.starfishst.api.messages.BotResponsiveMessage;
+import com.starfishst.api.role.BotRole;
+import com.starfishst.api.tickets.Offer;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
+import com.starfishst.api.user.FreelancerRating;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import java.util.Collection;
 import lombok.NonNull;
@@ -65,12 +65,6 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
         "Operations are not permitted in fallback ticket loader");
   }
 
-  /**
-   * Get all the offers sent to a ticket
-   *
-   * @param ticket the ticket querying offers
-   * @return the offers found
-   */
   @Override
   public @NonNull Collection<Offer> getOffers(@NonNull Ticket ticket) {
     throw new UnsupportedOperationException(
@@ -78,17 +72,11 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
   }
 
   @Override
-  public void deleteMessage(@NonNull StarfishResponsiveMessage message) {
+  public void deleteMessage(@NonNull BotResponsiveMessage message) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
 
-  /**
-   * Get the rating of a freelancer by its id
-   *
-   * @param id the id of the freelancer
-   * @return the rating of the freelancer
-   */
   @Override
   public @NonNull FreelancerRating getRating(long id) {
     throw new UnsupportedOperationException(

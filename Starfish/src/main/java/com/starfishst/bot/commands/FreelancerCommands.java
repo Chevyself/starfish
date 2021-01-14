@@ -1,17 +1,17 @@
 package com.starfishst.bot.commands;
 
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.messages.BotResponsiveMessage;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.commands.objects.Freelancer;
 import com.starfishst.bot.data.StarfishTicket;
-import com.starfishst.bot.data.StarfishUser;
 import com.starfishst.bot.data.StarfishValuesMap;
-import com.starfishst.bot.data.messages.offer.OfferMessage;
-import com.starfishst.bot.data.messages.rating.ReviewFreelancer;
+import com.starfishst.bot.messages.OfferAcceptReactionResponse;
+import com.starfishst.bot.messages.ReviewReactionResponse;
 import com.starfishst.core.annotations.Multiple;
 import com.starfishst.core.annotations.Required;
 import com.starfishst.core.objects.JoinedStrings;
@@ -21,6 +21,7 @@ import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.Map;
 import lombok.NonNull;
+import me.googas.commons.Lots;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -59,7 +60,8 @@ public class FreelancerCommands {
       BotUser sender, @Required(name = "user", description = "demote.desc") BotUser user) {
     Map<String, @NonNull String> placeholders = user.getPlaceholders();
     if (user.getPreferences().getValueOr("freelancer", Boolean.class, false)) {
-      new StarfishUser(user);
+      user.getPreferences().removeValue("freelancer");
+      user.getPreferences().removeValue("portfolio");
       return new Result(sender.getLocaleFile().get("user.demoted", placeholders));
     } else {
       return new Result(sender.getLocaleFile().get("user.is-not-freelancer", placeholders));
@@ -101,13 +103,13 @@ public class FreelancerCommands {
       @Multiple @Required(name = "quote.offer", description = "quote.offer.desc")
           JoinedStrings strings) {
     LocaleFile locale = freelancer.getLocaleFile();
-    if (ticket.getTicketType() != TicketType.QUOTE) {
+    if (ticket.getType() != TicketType.QUOTE) {
       return new Result(locale.get("quote.ticket-not-quote", ticket.getPlaceholders()));
     } else {
       TextChannel channel = ticket.getTextChannel();
-      if (ticket.getTicketStatus() == TicketStatus.CLOSED && channel == null) {
+      if (ticket.getStatus() == TicketStatus.CLOSED && channel == null) {
         return new Result(locale.get("quote.closed", ticket.getPlaceholders()));
-      } else if (channel != null && ticket.getTicketStatus() == TicketStatus.OPEN) {
+      } else if (channel != null && ticket.getStatus() == TicketStatus.OPEN) {
         Map<String, String> placeholders = Maps.singleton("offer", strings.getString());
         BotUser owner = ticket.getOwner();
         if (owner != null) {
@@ -126,7 +128,10 @@ public class FreelancerCommands {
                 map.addValue("offer", strings.getString());
                 map.addValue("freelancer", freelancer.getId());
                 map.addValue("ticket", ticket.getId());
-                new OfferMessage(msg, map).cache();
+                BotResponsiveMessage responsiveMessage = new BotResponsiveMessage(
+                        msg.getIdLong())
+                        .cache();
+                responsiveMessage.addReactionResponse(new OfferAcceptReactionResponse(responsiveMessage), msg);
               });
         }
       }
@@ -154,8 +159,13 @@ public class FreelancerCommands {
             ownerLocale.get("review.description", placeholders),
             ResultType.GENERIC,
             owner),
-        msg -> {
-          new ReviewFreelancer(msg, freelancer.getId(), owner.getId()).cache();
-        });
+        msg ->
+            ReviewReactionResponse.add(
+                    new BotResponsiveMessage(
+                        msg.getIdLong(),
+                        new StarfishValuesMap("freelancer", freelancer.getId())
+                            .addValue("user", owner.getId())),
+                    msg)
+                .cache());
   }
 }

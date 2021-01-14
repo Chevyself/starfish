@@ -1,14 +1,14 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.tickets.Offer;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.loader.Loader;
+import com.starfishst.api.tickets.Offer;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
 import com.starfishst.core.annotations.Optional;
 import com.starfishst.jda.annotations.Command;
@@ -64,7 +64,7 @@ public class TicketCommands {
               description = "The id of the ticket to see the information",
               suggestions = "-1")
           Ticket ticket) {
-    TicketType type = ticket.getTicketType();
+    TicketType type = ticket.getType();
     TextChannel channel = type.getChannel();
     if (channel != null) {
       Starfish.getHandler(TicketAnnouncementHandler.class).announce(channel, user, ticket);
@@ -89,10 +89,10 @@ public class TicketCommands {
       BotUser sender,
       @Optional(name = "close.ticket", description = "close.ticket.desc", suggestions = "-1")
           Ticket ticket) {
-    if (ticket.getTicketStatus() == TicketStatus.CLOSED) {
+    if (ticket.getStatus() == TicketStatus.CLOSED) {
       return new Result(sender.getLocaleFile().get("closed.already", ticket.getPlaceholders()));
     } else {
-      ticket.setTicketStatus(TicketStatus.CLOSED);
+      ticket.setStatus(TicketStatus.CLOSED);
       return new Result();
     }
   }
@@ -104,7 +104,7 @@ public class TicketCommands {
       @Optional(name = "offers.ticket", description = "offers.ticket.desc", suggestions = "-1")
           Ticket ticket) {
     LocaleFile locale = sender.getLocaleFile();
-    if (ticket.getTicketType() != TicketType.QUOTE) {
+    if (ticket.getType() != TicketType.QUOTE) {
       return new Result(
           ResultType.ERROR, locale.get("offers.ticket-not-quote", ticket.getPlaceholders()));
     } else {
@@ -112,7 +112,7 @@ public class TicketCommands {
       if (context.hasFlag("-u") && sender.hasPermission("offers.see-users", "discord")) {
         appendUsers = true;
       }
-      DataLoader loader = Starfish.getLoader();
+      Loader loader = Starfish.getLoader();
       Collection<Offer> offers = loader.getOffers(ticket);
       StringBuilder builder = Strings.getBuilder();
       builder.append(locale.get("offers.title", ticket.getPlaceholders()));

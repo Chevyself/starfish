@@ -1,7 +1,7 @@
 package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.tickets.Ticket;
 import com.starfishst.core.exceptions.ArgumentProviderException;
 import com.starfishst.jda.context.CommandContext;
 import com.starfishst.jda.providers.type.JdaExtraArgumentProvider;

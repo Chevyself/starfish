@@ -1,7 +1,5 @@
 package com.starfishst.api.addons;
 
-import com.starfishst.api.Starfish;
-import com.starfishst.api.utility.BotLog;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -9,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import lombok.CustomLog;
 import lombok.NonNull;
 
+@CustomLog
 public class JavaAddonLoader implements AddonLoader {
 
   /** The directory in which this loader will be working */
@@ -44,7 +44,7 @@ public class JavaAddonLoader implements AddonLoader {
    * @return the addon if it was initialized null otherwise
    */
   private JavaAddon initializeAddon(@NonNull File file) {
-    BotLog log = new BotLog(String.format("Initializing addon in %s", file.getName()));
+    log.info(String.format("Initializing addon in %s", file.getName()));
     try {
       JavaAddonClassLoader addonLoader = new JavaAddonClassLoader(file, parentLoader);
       JavaAddonInformation info = addonLoader.getAddonInfo();
@@ -57,7 +57,7 @@ public class JavaAddonLoader implements AddonLoader {
         | ClassNotFoundException
         | NoSuchMethodException
         | IOException e) {
-      Starfish.getLogger().log(Level.SEVERE, e, null);
+      log.log(Level.SEVERE, e, null);
     }
     return null;
   }
@@ -88,10 +88,10 @@ public class JavaAddonLoader implements AddonLoader {
         try {
           addon.onEnable();
         } catch (Throwable e) {
-          Starfish.getLogger().log(Level.SEVERE, e, null);
+          log.log(Level.SEVERE, e, null);
         }
       } else {
-        Starfish.getLogger().info("Addon in " + file.getName() + " could not be loaded");
+        log.info("Addon in " + file.getName() + " could not be loaded");
       }
     }
     return loaded;

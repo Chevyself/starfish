@@ -22,7 +22,6 @@ public interface StarfishCatchable extends Catchable {
    *
    * @throws Throwable in case something goes wrong while unloading the object
    */
-  @NonNull
   default void unload() {
     this.unload(true);
   }

@@ -1,14 +1,16 @@
 package com.starfishst.bot.handlers.ticket;
 
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.tickets.TicketStatus;
-import com.starfishst.api.data.tickets.TicketType;
-import com.starfishst.api.data.user.BotUser;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.messages.BotResponsiveMessage;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.tickets.TicketStatus;
+import com.starfishst.api.tickets.TicketType;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.bot.data.messages.creation.TicketCreatorMessage;
+import com.starfishst.bot.data.StarfishValuesMap;
+import com.starfishst.bot.messages.TicketCreatorReactionResponse;
 import com.starfishst.jda.result.ResultType;
 import com.starfishst.jda.utils.message.MessageQuery;
 import java.util.List;
@@ -33,7 +35,7 @@ public class TicketCreatorHandler implements StarfishHandler {
     if (!event.isCancelled()
         && event.getStatus() == TicketStatus.CREATING
         && channel != null
-        && ticket.getTicketType() == TicketType.TICKET_CREATOR
+        && ticket.getType() == TicketType.TICKET_CREATOR
         && owner != null) {
       LocaleFile locale = owner.getLocaleFile();
       Map<String, String> placeholders = ticket.getPlaceholders();
@@ -48,7 +50,15 @@ public class TicketCreatorHandler implements StarfishHandler {
       for (BotUser customer : customers) {
         query.getBuilder().append(customer.getMention());
       }
-      query.send(channel, msg -> new TicketCreatorMessage(msg, ticket.getId()).cache());
+      query.send(
+          channel,
+          msg -> {
+            TicketCreatorReactionResponse.add(
+                new BotResponsiveMessage(
+                        msg.getIdLong(), new StarfishValuesMap("ticket", ticket.getId()))
+                    .cache(),
+                msg);
+          });
     }
   }
 

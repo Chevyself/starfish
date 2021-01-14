@@ -1,9 +1,9 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.api.Starfish;
-import com.starfishst.api.data.loader.DataLoader;
-import com.starfishst.api.data.tickets.Ticket;
-import com.starfishst.api.data.user.BotUser;
+import com.starfishst.api.loader.Loader;
+import com.starfishst.api.tickets.Ticket;
+import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.jda.annotations.Command;
 import com.starfishst.jda.context.CommandContext;
@@ -11,7 +11,6 @@ import com.starfishst.jda.result.Result;
 import com.starfishst.jda.result.ResultType;
 import java.util.ArrayList;
 import java.util.List;
-
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.IMentionable;
@@ -36,12 +35,16 @@ public class ChannelsCommands {
     List<IMentionable> mentions = new ArrayList<>(message.getMentionedRoles());
     mentions.addAll(message.getMentionedMembers());
     GuildChannel channel = message.getTextChannel();
-    DataLoader loader = Starfish.getLoader();
+    Loader loader = Starfish.getLoader();
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("add.mentions-empty"));
     }
     Ticket ticket = loader.getTicketByChannel(channel.getIdLong());
     if (ticket == null) {
+      GuildVoiceState state = member.getVoiceState();
+      if (state != null && state.getChannel() != null) {
+        channel = state.getChannel();
+      }
       if (context.hasFlag("-v")) {
         for (IMentionable mentionable : mentions) {
           if (mentionable instanceof IPermissionHolder) {
@@ -57,10 +60,6 @@ public class ChannelsCommands {
       }
       return new Result(user.getLocaleFile().get("add.members-added"));
     } else {
-      GuildVoiceState state = member.getVoiceState();
-      if (state != null && state.getChannel() != null) {
-        channel = state.getChannel();
-      }
       for (IMentionable mentionable : mentions) {
         if (mentionable instanceof Member) {
           BotUser starfishUser = loader.getStarfishUser(mentionable.getIdLong());
@@ -99,7 +98,7 @@ public class ChannelsCommands {
     List<IMentionable> mentions = new ArrayList<>(message.getMentionedRoles());
     mentions.addAll(message.getMentionedMembers());
     TextChannel channel = message.getTextChannel();
-    DataLoader loader = Starfish.getLoader();
+    Loader loader = Starfish.getLoader();
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("remove.mentions-empty"));
     }

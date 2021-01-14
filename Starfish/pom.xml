@@ -12,7 +12,7 @@
 
     <groupId>com.starfish.bot</groupId>
     <artifactId>Starfish</artifactId>
-    <version>3.2.0-0</version>
+    <version>3.2.0_1</version>
     <description>The actual Discord Bot and an API for Addons</description>
 
     <build>
@@ -37,7 +37,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.starfishst.bot.Starfish</mainClass>
+                            <mainClass>com.starfishst.bot.SimpleStarfish</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -147,7 +147,7 @@
         <dependency>
             <groupId>com.starfishst.jda</groupId>
             <artifactId>JDA</artifactId>
-            <version>1.0.10-SNAPSHOT</version>
+            <version>1.0.12-SNAPSHOT</version>
         </dependency>
         <!-- Gson -->
         <dependency>

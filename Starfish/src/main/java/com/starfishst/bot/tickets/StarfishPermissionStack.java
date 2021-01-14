@@ -2,18 +2,15 @@ package com.starfishst.bot.tickets;
 
 import com.starfishst.api.permissions.Permission;
 import com.starfishst.api.permissions.PermissionStack;
-import java.util.Collection;
 import java.util.Set;
+import lombok.Getter;
 import lombok.NonNull;
 
 /** An implementation for {@link PermissionStack} */
 public class StarfishPermissionStack implements PermissionStack {
 
-  /** The context of the stack */
-  @NonNull private final String context;
-
-  /** The permissions in the stack */
-  @NonNull private final Set<Permission> permissions;
+  @NonNull @Getter private final String context;
+  @NonNull @Getter private final Set<Permission> permissions;
 
   /**
    * Create the permission stack
@@ -24,15 +21,5 @@ public class StarfishPermissionStack implements PermissionStack {
   public StarfishPermissionStack(@NonNull String context, @NonNull Set<Permission> permissions) {
     this.context = context;
     this.permissions = permissions;
-  }
-
-  @Override
-  public @NonNull String getContext() {
-    return this.context;
-  }
-
-  @Override
-  public @NonNull Collection<Permission> getPermissions() {
-    return this.permissions;
   }
 }

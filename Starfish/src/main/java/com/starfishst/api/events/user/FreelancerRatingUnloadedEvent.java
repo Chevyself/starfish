@@ -1,6 +1,6 @@
 package com.starfishst.api.events.user;
 
-import com.starfishst.api.data.user.FreelancerRating;
+import com.starfishst.api.user.FreelancerRating;
 import lombok.NonNull;
 
 /** Called when the freelancer rating is unloaded */
