@@ -15,6 +15,7 @@ import lombok.NonNull;
 import me.googas.commons.builder.ToStringBuilder;
 import me.googas.commons.time.Time;
 import me.googas.commons.time.Unit;
+import net.dv8tion.jda.api.entities.Message;
 
 /** An implementation for {@link ResponsiveMessage} */
 public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchable {
@@ -30,6 +31,16 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
     this.id = id;
     this.reactions = new HashSet<>(reactions);
     this.data = data;
+  }
+
+  public BotResponsiveMessage(
+      @NonNull Message message,
+      @NonNull Set<? extends ReactionResponse> reactions,
+      @NonNull ValuesMap data) {
+    this(message.getIdLong(), new HashSet<>(), data);
+    for (ReactionResponse reaction : reactions) {
+      this.addReactionResponse(reaction, message);
+    }
   }
 
   public BotResponsiveMessage(long id, @NonNull ValuesMap data) {

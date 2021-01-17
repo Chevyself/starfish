@@ -1,6 +1,5 @@
 package com.starfishst.addons;
 
-import com.starfishst.api.addons.JavaAddonInformation;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import me.googas.addons.java.JavaAddonInformation;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.gson.GsonProvider;
 

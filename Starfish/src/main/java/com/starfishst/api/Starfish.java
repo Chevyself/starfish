@@ -1,6 +1,5 @@
 package com.starfishst.api;
 
-import com.starfishst.api.addons.AddonLoader;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.events.StarfishHandler;
@@ -13,6 +12,7 @@ import java.util.Collection;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import me.googas.addons.AddonLoader;
 import me.googas.commons.Validate;
 import me.googas.commons.cache.Cache;
 import me.googas.commons.events.ListenerManager;

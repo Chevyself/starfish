@@ -92,7 +92,7 @@ public class TicketAnnouncementHandler implements StarfishHandler {
         msg -> {
           if (ticket.getType() == TicketType.ORDER) {
             new BotResponsiveMessage(
-                    msg.getIdLong(),
+                    msg,
                     Lots.set(new ClaimOrderReactionResponse(null)),
                     new StarfishValuesMap("id", ticket.getId()))
                 .cache()

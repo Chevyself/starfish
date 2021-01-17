@@ -1,6 +1,5 @@
 package com.starfishst.api;
 
-import com.starfishst.api.addons.AddonLoader;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.events.StarfishHandler;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.Collection;
 import lombok.NonNull;
+import me.googas.addons.AddonLoader;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.Validate;
 import me.googas.commons.cache.Cache;

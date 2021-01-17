@@ -2,8 +2,6 @@ package com.starfishst.bot;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.StarfishBot;
-import com.starfishst.api.addons.AddonLoader;
-import com.starfishst.api.addons.JavaAddonLoader;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.events.StarfishHandler;
@@ -37,6 +35,7 @@ import com.starfishst.bot.handlers.ticket.transcript.TicketTranscriptHandler;
 import com.starfishst.bot.tickets.StarfishDataLoader;
 import com.starfishst.bot.tickets.StarfishTicketLoaderFallback;
 import com.starfishst.bot.tickets.StarfishTicketManager;
+import com.starfishst.bot.utility.Mongo;
 import com.starfishst.jda.CommandManager;
 import com.starfishst.jda.commands.FallbackCommands;
 import java.io.IOException;
@@ -47,6 +46,8 @@ import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import me.googas.addons.AddonLoader;
+import me.googas.addons.java.JavaAddonLoader;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.Lots;
 import me.googas.commons.ProgramArguments;
@@ -60,6 +61,10 @@ import me.googas.commons.scheduler.Scheduler;
 import net.dv8tion.jda.api.JDA;
 
 public class SimpleStarfish implements StarfishBot {
+
+  static {
+    new StarfishDependencies().load();
+  }
 
   @NonNull @Getter
   private static final Formatter formatter =
@@ -113,6 +118,7 @@ public class SimpleStarfish implements StarfishBot {
     log.addHandler(
         LoggerFactory.getFileHandler(
             SimpleStarfish.getFormatter(), null, "log-" + System.currentTimeMillis()));
+    log.info("Downloading dependencies");
     Fallback fallback = new StarfishFallback(log, new ArrayList<>());
     ListenerManager listenerManager = new ListenerManager();
     Scheduler scheduler = new StarfishScheduler();
@@ -177,7 +183,8 @@ public class SimpleStarfish implements StarfishBot {
       commandManager.registerCommand(command);
     }
     AddonLoader addonLoader =
-        new JavaAddonLoader(CoreFiles.directoryOrCreate(CoreFiles.currentDirectory() + "/addons"));
+        new JavaAddonLoader(
+            CoreFiles.directoryOrCreate(CoreFiles.currentDirectory() + "/addons"), Mongo.GSON);
     SimpleStarfish starfish =
         new SimpleStarfish(
             configuration,
