@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.starfish</groupId>
+    <groupId>com.starfishst</groupId>
     <artifactId>starfish</artifactId>
     <version>3.2.0</version>
     <description>The bot of the Starfish Studios</description>
@@ -13,8 +13,6 @@
     <modules>
         <module>api</module>
         <module>bot</module>
-        <module>Starfish</module>
-        <module>Addons</module>
     </modules>
 
     <properties>
@@ -46,5 +44,13 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub xChevy Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/xChevy/Starfish/</url>
+        </repository>
+    </distributionManagement>
 
 </project>

@@ -3,6 +3,7 @@ package com.starfishst.api.utility;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commons.Lots;
 import me.googas.commons.Validate;
+import me.googas.commons.maps.Maps;
 
 /** This object represents certain changes and configurations for an object */
 public class ValuesMap {
@@ -22,7 +24,12 @@ public class ValuesMap {
   }
 
   public ValuesMap() {
-    this.map = new HashMap<>();
+    this.map = new LinkedHashMap<>();
+  }
+
+  public ValuesMap(@NonNull String key, @NonNull Object value) {
+    this();
+    this.map.put(key, value);
   }
 
   /**
