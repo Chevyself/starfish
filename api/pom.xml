@@ -14,6 +14,15 @@
     <artifactId>api</artifactId>
     <version>3.0.0</version>
 
+    <repositories>
+        <!-- Starfish -->
+        <repository>
+            <id>bintray-xchevy-Starfish</id>
+            <name>xchevy-Starfish</name>
+            <url>https://dl.bintray.com/xchevy/Starfish</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>me.googas.addons</groupId>
@@ -21,9 +30,9 @@
             <version>1.0.0_0</version>
         </dependency>
         <dependency>
-            <groupId>com.starfishst.jda</groupId>
-            <artifactId>JDA</artifactId>
-            <version>1.0.12-SNAPSHOT</version>
+            <groupId>com.starfishst.commands.jda</groupId>
+            <artifactId>jda</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

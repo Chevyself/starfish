@@ -3,8 +3,8 @@ package com.starfishst.api.exception;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.core.exceptions.type.SimpleException;
-import com.starfishst.jda.result.ResultType;
-import com.starfishst.jda.utils.embeds.EmbedQuery;
+import com.starfishst.commands.jda.result.ResultType;
+import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
 import lombok.NonNull;
 
 /** An implementation for {@link SimpleException} */

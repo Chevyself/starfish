@@ -11,7 +11,7 @@ import com.starfishst.bot.messages.OfferAcceptReactionResponse;
 import com.starfishst.bot.messages.ReviewReactionResponse;
 import com.starfishst.bot.messages.TicketCreatorReactionResponse;
 import com.starfishst.bot.messages.TicketPanelReactionResponse;
-import com.starfishst.jda.utils.responsive.ReactionResponse;
+import com.starfishst.commands.jda.utils.responsive.ReactionResponse;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;

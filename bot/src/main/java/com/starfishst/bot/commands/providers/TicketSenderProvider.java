@@ -2,9 +2,9 @@ package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.tickets.Ticket;
+import com.starfishst.commands.jda.context.CommandContext;
+import com.starfishst.commands.jda.providers.type.JdaExtraArgumentProvider;
 import com.starfishst.core.exceptions.ArgumentProviderException;
-import com.starfishst.jda.context.CommandContext;
-import com.starfishst.jda.providers.type.JdaExtraArgumentProvider;
 import lombok.NonNull;
 
 /** Provides tickets as an extra argument in commands */

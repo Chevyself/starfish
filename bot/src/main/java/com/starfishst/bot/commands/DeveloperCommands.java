@@ -5,11 +5,11 @@ import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.messages.TicketPanelReactionResponse;
+import com.starfishst.commands.jda.annotations.Command;
+import com.starfishst.commands.jda.result.Result;
+import com.starfishst.commands.jda.result.ResultType;
 import com.starfishst.core.annotations.Optional;
 import com.starfishst.core.exceptions.type.SimpleRuntimeException;
-import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.result.Result;
-import com.starfishst.jda.result.ResultType;
 import net.dv8tion.jda.api.entities.Message;
 
 /** Commands used by the developer or server owner */

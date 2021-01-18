@@ -8,10 +8,10 @@ import com.starfishst.bot.commands.providers.LocaleFileProvider;
 import com.starfishst.bot.commands.providers.PermissibleProvider;
 import com.starfishst.bot.commands.providers.TicketProvider;
 import com.starfishst.bot.commands.providers.TicketSenderProvider;
+import com.starfishst.commands.jda.context.CommandContext;
+import com.starfishst.commands.jda.messages.MessagesProvider;
+import com.starfishst.commands.jda.providers.registry.JdaProvidersRegistry;
 import com.starfishst.core.providers.type.IContextualProvider;
-import com.starfishst.jda.context.CommandContext;
-import com.starfishst.jda.messages.MessagesProvider;
-import com.starfishst.jda.providers.registry.JdaProvidersRegistry;
 import lombok.NonNull;
 import me.googas.commons.Lots;
 

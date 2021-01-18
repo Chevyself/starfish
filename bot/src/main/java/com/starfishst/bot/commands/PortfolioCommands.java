@@ -1,10 +1,10 @@
 package com.starfishst.bot.commands;
 
 import com.starfishst.bot.commands.objects.Freelancer;
+import com.starfishst.commands.jda.annotations.Command;
+import com.starfishst.commands.jda.result.Result;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
-import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.result.Result;
 import java.util.List;
 import me.googas.commons.Lots;
 import me.googas.commons.maps.Maps;

@@ -7,7 +7,7 @@ import com.starfishst.api.loader.LanguageHandler;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
-import com.starfishst.jda.CommandManager;
+import com.starfishst.commands.jda.CommandManager;
 import java.util.Collection;
 import lombok.Getter;
 import lombok.NonNull;
@@ -34,23 +34,23 @@ public class Starfish {
   @NonNull
   public static StarfishBot validated() {
     return Validate.notNull(
-        instance, new IllegalStateException("A bot instance hasn't been set yet"));
+            Starfish.instance, new IllegalStateException("A bot instance hasn't been set yet"));
   }
 
   public static <T extends StarfishHandler> T getHandler(@NotNull Class<T> clazz) {
-    return validated().getHandler(clazz);
+    return Starfish.validated().getHandler(clazz);
   }
 
   public static <T extends StarfishHandler> @NonNull T requireHandler(@NonNull Class<T> clazz) {
-    return validated().requireHandler(clazz);
+    return Starfish.validated().requireHandler(clazz);
   }
 
   public static void save() {
-    validated().save();
+      Starfish.validated().save();
   }
 
   public static void stop() {
-    validated().stop();
+      Starfish.validated().stop();
   }
 
   /**
@@ -60,59 +60,59 @@ public class Starfish {
    * @throws IllegalStateException if attempted to set when there's already an isntance
    */
   public void set(@NonNull StarfishBot bot) {
-    if (instance != null) throw new IllegalStateException("Bot has been already initialized");
-    instance = bot;
+    if (Starfish.instance != null) throw new IllegalStateException("Bot has been already initialized");
+      Starfish.instance = bot;
   }
 
   public static @NonNull Configuration getConfiguration() {
-    return validated().getConfiguration();
+    return Starfish.validated().getConfiguration();
   }
 
   public static @NonNull Fallback getFallback() {
-    return validated().getFallback();
+    return Starfish.validated().getFallback();
   }
 
   public static @NonNull Cache getCache() {
-    return validated().getCache();
+    return Starfish.validated().getCache();
   }
 
   public static @NonNull Loader getLoader() {
-    return validated().getLoader();
+    return Starfish.validated().getLoader();
   }
 
   public static @NonNull CommandManager getCommandManager() {
-    return validated().getCommandManager();
+    return Starfish.validated().getCommandManager();
   }
 
   public static @NonNull ListenerManager getListenerManager() {
-    return validated().getListenerManager();
+    return Starfish.validated().getListenerManager();
   }
 
   public static @NonNull DiscordConfiguration getDiscordConfiguration() {
-    return validated().getDiscordConfiguration();
+    return Starfish.validated().getDiscordConfiguration();
   }
 
   public static @NonNull Collection<StarfishHandler> getHandlers() {
-    return validated().getHandlers();
+    return Starfish.validated().getHandlers();
   }
 
   public static @NonNull TicketManager getTicketManager() {
-    return validated().getTicketManager();
+    return Starfish.validated().getTicketManager();
   }
 
   public static AddonLoader getAddonLoader() {
-    return validated().getAddonLoader();
+    return Starfish.validated().getAddonLoader();
   }
 
   public static @NonNull LanguageHandler getLanguageHandler() {
-    return validated().getLanguageHandler();
+    return Starfish.validated().getLanguageHandler();
   }
 
   public static @NonNull JdaConnection getJdaConnection() {
-    return validated().getJdaConnection();
+    return Starfish.validated().getJdaConnection();
   }
 
   public static @NonNull Scheduler getScheduler() {
-    return validated().getScheduler();
+    return Starfish.validated().getScheduler();
   }
 }

@@ -4,9 +4,9 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.bot.commands.objects.Freelancer;
+import com.starfishst.commands.jda.context.CommandContext;
+import com.starfishst.commands.jda.providers.type.JdaExtraArgumentProvider;
 import com.starfishst.core.exceptions.ArgumentProviderException;
-import com.starfishst.jda.context.CommandContext;
-import com.starfishst.jda.providers.type.JdaExtraArgumentProvider;
 import lombok.NonNull;
 
 /** Provides freelancers as a sender */

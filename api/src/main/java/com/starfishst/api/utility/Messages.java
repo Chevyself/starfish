@@ -3,10 +3,10 @@ package com.starfishst.api.utility;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.user.BotUser;
-import com.starfishst.jda.result.Result;
-import com.starfishst.jda.result.ResultType;
-import com.starfishst.jda.utils.embeds.EmbedFactory;
-import com.starfishst.jda.utils.embeds.EmbedQuery;
+import com.starfishst.commands.jda.result.Result;
+import com.starfishst.commands.jda.result.ResultType;
+import com.starfishst.commands.jda.utils.embeds.EmbedFactory;
+import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -185,7 +185,7 @@ public class Messages {
   public static EmbedQuery build(@NonNull BotUser user, @NonNull BotUser viewer) {
     Map<String, String> placeholders = user.getPlaceholders();
     EmbedQuery build =
-        build("user-info.title", "user-info.description", placeholders, viewer.getLocaleFile());
+            Messages.build("user-info.title", "user-info.description", placeholders, viewer.getLocaleFile());
     user.getPreferences()
         .getMap()
         .forEach(

@@ -5,7 +5,7 @@ import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.utility.Fee;
 import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.bot.utility.Mongo;
-import com.starfishst.jda.ManagerOptions;
+import com.starfishst.commands.jda.ManagerOptions;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;

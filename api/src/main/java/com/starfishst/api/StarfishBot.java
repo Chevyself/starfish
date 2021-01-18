@@ -10,7 +10,7 @@ import com.starfishst.api.loader.Loader;
 import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
 import com.starfishst.api.utility.StarfishCatchable;
-import com.starfishst.jda.CommandManager;
+import com.starfishst.commands.jda.CommandManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -67,7 +67,7 @@ public interface StarfishBot {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "config.json");
       FileWriter writer = new FileWriter(file);
       try {
-        getGson().toJson(this.getConfiguration(), writer);
+        this.getGson().toJson(this.getConfiguration(), writer);
       } catch (Exception e) {
         fallback.process(e, "'config.json' could not be written!");
       }
@@ -79,7 +79,7 @@ public interface StarfishBot {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "discord.json");
       FileWriter writer = new FileWriter(file);
       try {
-        getGson().toJson(this.getDiscordConfiguration(), writer);
+        this.getGson().toJson(this.getDiscordConfiguration(), writer);
       } catch (Exception e) {
         fallback.process(e, "'discord.json' could not be written!");
       }

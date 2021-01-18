@@ -3,9 +3,9 @@ package com.starfishst.bot.commands.providers;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.tickets.Ticket;
+import com.starfishst.commands.jda.context.CommandContext;
+import com.starfishst.commands.jda.providers.type.JdaArgumentProvider;
 import com.starfishst.core.exceptions.ArgumentProviderException;
-import com.starfishst.jda.context.CommandContext;
-import com.starfishst.jda.providers.type.JdaArgumentProvider;
 import lombok.NonNull;
 import me.googas.commons.maps.Maps;
 

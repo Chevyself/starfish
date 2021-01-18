@@ -5,10 +5,10 @@ import com.starfishst.api.permissions.Permission;
 import com.starfishst.api.permissions.PermissionStack;
 import com.starfishst.bot.data.StarfishPermission;
 import com.starfishst.bot.tickets.StarfishPermissionStack;
+import com.starfishst.commands.jda.annotations.Command;
+import com.starfishst.commands.jda.result.Result;
 import com.starfishst.core.annotations.Parent;
 import com.starfishst.core.annotations.Required;
-import com.starfishst.jda.annotations.Command;
-import com.starfishst.jda.result.Result;
 import java.util.HashSet;
 import me.googas.commons.Strings;
 

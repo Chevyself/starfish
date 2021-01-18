@@ -12,7 +12,7 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.handlers.misc.CleanerHandler;
 import com.starfishst.bot.utility.Mongo;
-import com.starfishst.jda.result.ResultType;
+import com.starfishst.commands.jda.result.ResultType;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

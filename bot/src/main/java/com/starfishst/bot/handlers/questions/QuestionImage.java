@@ -2,7 +2,7 @@ package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.jda.result.ResultType;
+import com.starfishst.commands.jda.result.ResultType;
 import lombok.NonNull;
 import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.EmbedBuilder;

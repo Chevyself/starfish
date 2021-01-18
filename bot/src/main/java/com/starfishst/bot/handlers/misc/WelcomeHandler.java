@@ -5,7 +5,7 @@ import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.jda.result.ResultType;
+import com.starfishst.commands.jda.result.ResultType;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;

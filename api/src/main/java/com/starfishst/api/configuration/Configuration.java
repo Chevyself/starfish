@@ -2,7 +2,7 @@ package com.starfishst.api.configuration;
 
 import com.starfishst.api.utility.Fee;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.jda.ManagerOptions;
+import com.starfishst.commands.jda.ManagerOptions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

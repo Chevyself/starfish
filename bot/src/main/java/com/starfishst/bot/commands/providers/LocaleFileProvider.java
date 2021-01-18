@@ -2,8 +2,8 @@ package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.jda.context.CommandContext;
-import com.starfishst.jda.providers.type.JdaExtraArgumentProvider;
+import com.starfishst.commands.jda.context.CommandContext;
+import com.starfishst.commands.jda.providers.type.JdaExtraArgumentProvider;
 import lombok.NonNull;
 
 /** Provides the locale file in commands */

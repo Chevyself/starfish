@@ -7,7 +7,7 @@ import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.jda.result.ResultType;
+import com.starfishst.commands.jda.result.ResultType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

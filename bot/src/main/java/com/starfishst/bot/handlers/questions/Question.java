@@ -2,8 +2,8 @@ package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.jda.result.ResultType;
-import com.starfishst.jda.utils.embeds.EmbedQuery;
+import com.starfishst.commands.jda.result.ResultType;
+import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
 import java.util.HashMap;
 import lombok.NonNull;
 import me.googas.commons.Strings;

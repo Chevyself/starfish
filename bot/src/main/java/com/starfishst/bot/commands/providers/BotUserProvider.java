@@ -2,9 +2,9 @@ package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.user.BotUser;
+import com.starfishst.commands.jda.context.CommandContext;
+import com.starfishst.commands.jda.providers.type.JdaArgumentProvider;
 import com.starfishst.core.exceptions.ArgumentProviderException;
-import com.starfishst.jda.context.CommandContext;
-import com.starfishst.jda.providers.type.JdaArgumentProvider;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.User;
 

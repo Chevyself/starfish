@@ -3,8 +3,8 @@ package com.starfishst.api.messages;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.jda.utils.responsive.ReactionResponse;
-import com.starfishst.jda.utils.responsive.ResponsiveMessage;
+import com.starfishst.commands.jda.utils.responsive.ReactionResponse;
+import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -82,22 +82,22 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
   @Override
   public String toString() {
     return new ToStringBuilder(this)
-        .append("id", id)
-        .append("reactions", reactions)
-        .append("data", data)
+        .append("id", this.id)
+        .append("reactions", this.reactions)
+        .append("data", this.data)
         .build();
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (o == null || this.getClass() != o.getClass()) return false;
     BotResponsiveMessage that = (BotResponsiveMessage) o;
-    return id == that.id;
+    return this.id == that.id;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id);
+    return Objects.hash(this.id);
   }
 }

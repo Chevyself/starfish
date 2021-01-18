@@ -6,7 +6,7 @@ import com.starfishst.api.messages.StarfishReactionResponse;
 import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.jda.result.ResultType;
+import com.starfishst.commands.jda.result.ResultType;
 import lombok.NonNull;
 import me.googas.annotations.Nullable;
 import net.dv8tion.jda.api.entities.TextChannel;

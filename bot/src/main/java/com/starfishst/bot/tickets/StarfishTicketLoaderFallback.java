@@ -14,7 +14,7 @@ import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.user.FreelancerRating;
-import com.starfishst.jda.utils.responsive.ResponsiveMessage;
+import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
 import java.util.Collection;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Guild;

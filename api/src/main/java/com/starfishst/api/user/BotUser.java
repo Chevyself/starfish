@@ -7,7 +7,7 @@ import com.starfishst.api.permissions.Permissible;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.jda.utils.embeds.EmbedQuery;
+import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
 import java.util.List;
 import java.util.Map;
 import lombok.NonNull;
@@ -170,7 +170,7 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
 
   @Override
   default boolean hasPermission(@NonNull String node, @NonNull String context) {
-    if (devs.contains(this.getId())) return true;
+    if (BotUser.devs.contains(this.getId())) return true;
     return Permissible.super.hasPermission(node, context);
   }
 }
