@@ -1,3 +1,5 @@
+![Java CI with Maven](https://github.com/xChevy/Starfish/workflows/Java%20CI%20with%20Maven/badge.svg?event=push)
+
 # Starfish-Network
 
 The Starfish Network is a Service Team that operates using Discord. In order to work correctly it needs to use a bot that maganages members, freelancers and tickets.
