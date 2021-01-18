@@ -1,5 +1,6 @@
 package com.starfishst.api;
 
+import com.google.gson.Gson;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.events.StarfishHandler;
@@ -9,7 +10,6 @@ import com.starfishst.api.loader.Loader;
 import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
 import com.starfishst.api.utility.StarfishCatchable;
-import com.starfishst.bot.utility.Mongo;
 import com.starfishst.jda.CommandManager;
 import java.io.File;
 import java.io.FileWriter;
@@ -67,7 +67,7 @@ public interface StarfishBot {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "config.json");
       FileWriter writer = new FileWriter(file);
       try {
-        Mongo.GSON.toJson(this.getConfiguration(), writer);
+        getGson().toJson(this.getConfiguration(), writer);
       } catch (Exception e) {
         fallback.process(e, "'config.json' could not be written!");
       }
@@ -79,7 +79,7 @@ public interface StarfishBot {
       File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "discord.json");
       FileWriter writer = new FileWriter(file);
       try {
-        Mongo.GSON.toJson(this.getDiscordConfiguration(), writer);
+        getGson().toJson(this.getDiscordConfiguration(), writer);
       } catch (Exception e) {
         fallback.process(e, "'discord.json' could not be written!");
       }
@@ -207,6 +207,14 @@ public interface StarfishBot {
    */
   @NonNull
   Scheduler getScheduler();
+
+  /**
+   * The gson instance that the bot is using to deserialize stuff
+   *
+   * @return the gson instance
+   */
+  @NonNull
+  Gson getGson();
 
   /**
    * Get the language handler that the bot is using

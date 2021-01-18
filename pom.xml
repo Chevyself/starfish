@@ -4,13 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.starfish.starfish</groupId>
-    <artifactId>Starfish-Bot</artifactId>
-    <version>3.1.0-Release</version>
+    <groupId>com.starfish</groupId>
+    <artifactId>starfish</artifactId>
+    <version>3.2.0</version>
     <description>The bot of the Starfish Studios</description>
     <packaging>pom</packaging>
 
     <modules>
+        <module>api</module>
+        <module>bot</module>
         <module>Starfish</module>
         <module>Addons</module>
     </modules>

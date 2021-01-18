@@ -1,4 +1,4 @@
-package com.starfishst.bot.messages;
+package com.starfishst.api.messages;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.messages.BotReactionResponse;

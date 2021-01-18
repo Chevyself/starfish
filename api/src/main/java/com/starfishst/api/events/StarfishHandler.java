@@ -2,7 +2,6 @@ package com.starfishst.api.events;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.bot.handlers.StarfishHandlerValuesMap;
 import java.util.HashMap;
 import lombok.NonNull;
 import me.googas.commons.events.ListenerManager;
@@ -55,7 +54,7 @@ public interface StarfishHandler {
     if (valuesMap != null) {
       return valuesMap;
     } else {
-      return new StarfishHandlerValuesMap(new HashMap<>());
+      return new ValuesMap(new HashMap<>());
     }
   }
 }

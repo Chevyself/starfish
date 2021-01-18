@@ -3,8 +3,6 @@ package com.starfishst.api.messages;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.bot.data.StarfishValuesMap;
-import com.starfishst.bot.messages.StarfishReactionResponse;
 import com.starfishst.jda.utils.responsive.ReactionResponse;
 import com.starfishst.jda.utils.responsive.ResponsiveMessage;
 import java.util.HashSet;
@@ -48,11 +46,11 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
   }
 
   public BotResponsiveMessage(long id, @NonNull Set<? extends ReactionResponse> reactions) {
-    this(id, new HashSet<>(reactions), new StarfishValuesMap());
+    this(id, new HashSet<>(reactions), new ValuesMap());
   }
 
   public BotResponsiveMessage(long id) {
-    this(id, new StarfishValuesMap());
+    this(id, new ValuesMap());
   }
 
   /** Deletes the responsive message */
@@ -62,7 +60,7 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
 
   /**
    * Makes all the reactions that are {@link
-   * com.starfishst.bot.messages.StarfishReactionResponse#setMessage(BotResponsiveMessage)}
+   * StarfishReactionResponse#setMessage(BotResponsiveMessage)}
    */
   public void update() {
     for (ReactionResponse reaction : this.reactions) {

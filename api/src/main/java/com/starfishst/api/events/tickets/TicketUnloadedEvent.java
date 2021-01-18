@@ -1,6 +1,6 @@
 package com.starfishst.api.events.tickets;
 
-import com.starfishst.bot.data.StarfishTicket;
+import com.starfishst.api.tickets.Ticket;
 import lombok.NonNull;
 
 /** Called when an event gets unloaded */
@@ -10,7 +10,7 @@ public class TicketUnloadedEvent extends TicketEvent {
    *
    * @param ticket the ticket involved in the event
    */
-  public TicketUnloadedEvent(@NonNull StarfishTicket ticket) {
+  public TicketUnloadedEvent(@NonNull Ticket ticket) {
     super(ticket);
   }
 }

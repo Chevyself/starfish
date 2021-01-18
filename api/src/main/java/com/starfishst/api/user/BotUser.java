@@ -100,7 +100,7 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    * @return true if the user is a freelancer
    */
   default boolean isFreelancer() {
-    return this.getPreferences().getValueOr("freelancer", Boolean.class, false);
+    return this.getPreferences().getOr("freelancer", Boolean.class, false);
   }
 
   /**
@@ -165,7 +165,7 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
   @Override
   @NonNull
   default String getLang() {
-    return this.getPreferences().getValueOr("lang", String.class, "en");
+    return this.getPreferences().getOr("lang", String.class, "en");
   }
 
   @Override

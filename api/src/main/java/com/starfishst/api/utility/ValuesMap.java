@@ -5,12 +5,25 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commons.Lots;
 import me.googas.commons.Validate;
 
 /** This object represents certain changes and configurations for an object */
-public interface ValuesMap {
+public class ValuesMap {
+
+  @NonNull @Getter
+  private final Map<String, Object> map;
+
+  public ValuesMap(@NonNull Map<String, Object> map) {
+    this.map = map;
+  }
+
+  public ValuesMap() {
+    this.map = new HashMap<>();
+  }
 
   /**
    * Get the preference casted to certain class or null if the preference is not inside the map
@@ -20,7 +33,7 @@ public interface ValuesMap {
    * @param <T> the type of the clazz to which the value of the preference will be casted to
    * @return the value of the preference or null if it does not have one
    */
-  default <T> T getValue(@NonNull String name, @NonNull Class<T> clazz) {
+  public <T> T get(@NonNull String name, @NonNull Class<T> clazz) {
     Object obj = this.getMap().get(name);
     if (obj != null) {
       return clazz.cast(obj);
@@ -38,10 +51,10 @@ public interface ValuesMap {
    */
   @SuppressWarnings("unchecked")
   @NonNull
-  default <T> List<T> getListValue(@NonNull String name) {
+  public <T> List<T> getList(@NonNull String name) {
     List<T> list = new ArrayList<>();
     Class<List<T>> aClass = (Class<List<T>>) list.getClass();
-    list.addAll(this.getValueOr(name, aClass, new ArrayList<>()));
+    list.addAll(this.getOr(name, aClass, new ArrayList<>()));
     return list;
   }
 
@@ -55,8 +68,8 @@ public interface ValuesMap {
    * @return the value of the preference or null if it does not have one
    */
   @NonNull
-  default <T> T getValueOr(@NonNull String name, @NonNull Class<T> clazz, @NonNull T def) {
-    return Validate.notNullOr(this.getValue(name, clazz), def);
+  public <T> T getOr(@NonNull String name, @NonNull Class<T> clazz, @NonNull T def) {
+    return Validate.notNullOr(this.get(name, clazz), def);
   }
 
   /**
@@ -66,7 +79,7 @@ public interface ValuesMap {
    * @param value the value to add
    */
   @NonNull
-  default ValuesMap addValue(@NonNull String name, @NonNull Object value) {
+  public ValuesMap add(@NonNull String name, @NonNull Object value) {
     this.getMap().put(name, value);
     return this;
   }
@@ -77,8 +90,8 @@ public interface ValuesMap {
    * @param map the map to add the values from
    */
   @NonNull
-  default ValuesMap addValues(@NonNull Map<String, Object> map) {
-    map.forEach(this::addValue);
+  public ValuesMap add(@NonNull Map<String, Object> map) {
+    map.forEach(this::add);
     return this;
   }
 
@@ -88,8 +101,8 @@ public interface ValuesMap {
    * @param map the map to add the values from
    */
   @NonNull
-  default ValuesMap addValues(@NonNull ValuesMap map) {
-    this.addValues(map.getMap());
+  public ValuesMap add(@NonNull ValuesMap map) {
+    this.add(map.getMap());
     return this;
   }
 
@@ -98,7 +111,7 @@ public interface ValuesMap {
    *
    * @param key the key inside the map
    */
-  default void removeValue(@NonNull String key) {
+  public void remove(@NonNull String key) {
     this.getMap().remove(key);
   }
 
@@ -108,7 +121,7 @@ public interface ValuesMap {
    * @return the string map
    */
   @NonNull
-  default Map<String, String> toStringMap() {
+  public Map<String, String> toStringMap() {
     HashMap<String, String> stringMap = new HashMap<>();
     this.getMap()
         .forEach(
@@ -117,7 +130,7 @@ public interface ValuesMap {
                 Class<?> clazz = Lots.getClazz((List<?>) value);
                 if (clazz != null && Long.class.isAssignableFrom(clazz)) {
                   stringMap.put(
-                      key, Lots.pretty(Discord.getRolesAsMention(this.getListValue(key))));
+                      key, Lots.pretty(Discord.getRolesAsMention(this.getList(key))));
                   return;
                 }
               } else if (value instanceof Collection) {
@@ -128,12 +141,4 @@ public interface ValuesMap {
             });
     return stringMap;
   }
-
-  /**
-   * The main preferences map to get the preferences from
-   *
-   * @return the preferences map
-   */
-  @NonNull
-  Map<String, Object> getMap();
 }
