@@ -1,0 +1,10 @@
+{
+  "questions": [
+    {
+      "title": "What's your suggestion?",
+      "description": "",
+      "simple": "suggestion",
+      "limit": 50
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "questions": [
+    {
+      "title": "Who do you want to report?",
+      "description": "",
+      "simple": "reported",
+      "limit": 50
+    },
+    {
+      "title": "Which rules did the user break?",
+      "description": "",
+      "simple": "reason",
+      "limit": 50
+    },
+    {
+      "title": "Do you have any proof of the user that cheated?",
+      "description": "",
+      "simple": "proof",
+      "limit": 1000
+    }
+  ]
+}
