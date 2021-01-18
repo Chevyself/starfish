@@ -1,5 +1,7 @@
 package com.starfishst.auto;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.paypal.api.payments.Payment;
 import com.paypal.api.payments.PaymentExecution;
 import com.paypal.api.payments.Transaction;
@@ -17,9 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.starfishst.api.data.loader.TicketManager;
-import com.starfishst.api.data.tickets.Ticket;
+import com.starfishst.api.Starfish;
+import com.starfishst.api.tickets.Ticket;
 import lombok.NonNull;
+import me.googas.addons.java.JavaAddon;
 import me.googas.commons.CoreFiles;
 import me.googas.commons.Strings;
 import me.googas.commons.maps.Maps;
@@ -46,45 +49,34 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RestController
 @org.springframework.context.annotation.Configuration
 @EnableWebMvc
-public class Payments implements ErrorController, WebMvcConfigurer {
+public class Payments extends JavaAddon implements ErrorController, WebMvcConfigurer {
 
+  @NonNull
+  public static final Gson GSON = new GsonBuilder().create();
   /** The pages and their html */
   @NonNull private static final Map<String, String> pages = new HashMap<>();
   /** The configuration for payments */
   @NonNull
-  private static final PaymentsConfiguration config = new PaymentsConfiguration();
+  private static final PaymentsConfiguration config = PaymentsConfiguration.init();
+
   /**
    * Initializes the spring listener
    *
    * @throws IOException if one of the pages could not be loaded
    */
   public static void initialize() throws IOException {
-    Console.info("Starting spring application");
+    // Console.info("Starting spring application");
     SpringApplication app = new SpringApplication(Payments.class);
     Properties properties =
         getProperties(
             config.getPort(),
-            config.getKeyStore(),
-            config.getKeyStorePassword(),
-            config.getKeyAlias());
+            config.getKey(),
+            config.getPassword(),
+            config.getAlias());
     app.setDefaultProperties(properties);
-    Console.info("Loading html");
+    // Console.info("Loading html");
     loadPages();
     app.run();
-  }
-
-  /**
-   * Loads the html pages for response
-   *
-   * @throws IOException in case a page could not be loaded
-   */
-  private static void loadPages() throws IOException {
-    pages.put("cancel", getPage("cancel"));
-    pages.put("confirm", getPage("confirm"));
-    pages.put("error", getPage("error"));
-    pages.put("not-found", getPage("not-found"));
-    pages.put("index", getPage("index"));
-    registerExtraPages();
   }
 
   /**
@@ -103,11 +95,77 @@ public class Payments implements ErrorController, WebMvcConfigurer {
             name = name.replace(".html", "");
             if (isNotIgnored(name)) {
               pages.put(name, getPage(name));
-              Console.info(name + ".html has also been registered");
+              // Console.info(name + ".html has also been registered");
             }
           }
         }
       }
+    }
+  }
+
+  /**
+   * Loads the html pages for response
+   *
+   * @throws IOException in case a page could not be loaded
+   */
+  private static void loadPages() throws IOException {
+    pages.put("cancel", getPage("cancel"));
+    pages.put("confirm", getPage("confirm"));
+    pages.put("error", getPage("error"));
+    pages.put("not-found", getPage("not-found"));
+    pages.put("index", getPage("index"));
+    registerExtraPages();
+  }
+
+  /**
+   * Checks if a payment was completed
+   *
+   * @param paymentId the id of the payment
+   * @param token the token of the payment
+   * @param payerId the payer id
+   * @return the html response
+   */
+  @GetMapping("/return")
+  public String returnMap(
+      @RequestParam(value = "paymentId") String paymentId,
+      @RequestParam(value = "token") String token,
+      @RequestParam(value = "PayerID") String payerId) {
+    try {
+      Payment payment = PayPalUtils.getPayment(getContext(), paymentId);
+      if (payment != null) {
+
+        Ticket ticket = Starfish.getLoader().getTicketByPayment(payment.getId());
+        if (ticket != null) {
+          if (payment.getState().equalsIgnoreCase("CREATED")) {
+            HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
+            ticket.sendMessage(
+                OldMessages.create(
+                        "PAYMENT_RECEIVED_TITLE",
+                        "PAYMENT_RECEIVED_DESCRIPTION",
+                        placeholders,
+                        placeholders)
+                    .getAsMessageQuery()
+                    .getMessage());
+            PaymentExecution execution = new PaymentExecution();
+            execution.setPayerId(payerId);
+            payment.execute(getContext(), execution);
+            return Strings.build(pages.get("confirm"), Tickets.getPlaceholders(ticket));
+          } else {
+            return Strings.build(
+                pages.get("error"), Maps.singleton("error", Lang.get("PAYMENT_UNPAID")));
+          }
+        } else {
+          return Strings.build(
+              pages.get("returnError"), Maps.singleton("error", Lang.get("TICKET_NULL")));
+        }
+      } else {
+        return Strings.build(
+            pages.get("returnError"), Maps.singleton("error", Lang.get("PAYMENT_NULL")));
+      }
+    } catch (PayPalRESTException e) {
+      e.printStackTrace();
+      return Strings.build(
+          pages.get("returnError"), Maps.singleton("error", e.getMessage()));
     }
   }
 
@@ -185,55 +243,9 @@ public class Payments implements ErrorController, WebMvcConfigurer {
         getContext());
   }
 
-  /**
-   * Checks if a payment was completed
-   *
-   * @param paymentId the id of the payment
-   * @param token the token of the payment
-   * @param payerId the payer id
-   * @return the html response
-   */
-  @GetMapping("/return")
-  public String returnMap(
-      @RequestParam(value = "paymentId") String paymentId,
-      @RequestParam(value = "token") String token,
-      @RequestParam(value = "PayerID") String payerId) {
-    try {
-      Payment payment = PayPalUtils.getPayment(getContext(), paymentId);
-      if (payment != null) {
-        Ticket ticket = TicketManager.getInstance().getLoader().getTicketByPayment(payment.getId());
-        if (ticket != null) {
-          if (payment.getState().equalsIgnoreCase("CREATED")) {
-            HashMap<String, String> placeholders = Tickets.getPlaceholders(ticket);
-            ticket.sendMessage(
-                OldMessages.create(
-                        "PAYMENT_RECEIVED_TITLE",
-                        "PAYMENT_RECEIVED_DESCRIPTION",
-                        placeholders,
-                        placeholders)
-                    .getAsMessageQuery()
-                    .getMessage());
-            PaymentExecution execution = new PaymentExecution();
-            execution.setPayerId(payerId);
-            payment.execute(getContext(), execution);
-            return Strings.buildMessage(pages.get("confirm"), Tickets.getPlaceholders(ticket));
-          } else {
-            return Strings.buildMessage(
-                pages.get("error"), Maps.singleton("error", Lang.get("PAYMENT_UNPAID")));
-          }
-        } else {
-          return Strings.buildMessage(
-              pages.get("returnError"), Maps.singleton("error", Lang.get("TICKET_NULL")));
-        }
-      } else {
-        return Strings.buildMessage(
-            pages.get("returnError"), Maps.singleton("error", Lang.get("PAYMENT_NULL")));
-      }
-    } catch (PayPalRESTException e) {
-      e.printStackTrace();
-      return Strings.buildMessage(
-          pages.get("returnError"), Maps.singleton("error", e.getMessage()));
-    }
+  @Override
+  public void onEnable() throws IOException {
+    initialize();
   }
 
   /**

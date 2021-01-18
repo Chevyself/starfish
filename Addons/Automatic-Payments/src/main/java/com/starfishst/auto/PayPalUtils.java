@@ -8,14 +8,12 @@ import com.paypal.api.payments.RedirectUrls;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
-import com.starfishst.bot.commands.invoices.Fee;
-import com.starfishst.bot.util.SimpleMath;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import com.starfishst.api.utility.Fee;
 import lombok.NonNull;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /** Utilities for PayPal */
 public class PayPalUtils {
@@ -122,7 +120,7 @@ public class PayPalUtils {
    * @return the list of transactions
    */
   public static List<Transaction> getTransactions(
-          double subtotal, @NonNull String service, @NonNull List<Fee> applyingFees) {
+          double subtotal, @NonNull String service, @NonNull Collection<Fee> applyingFees) {
     List<Transaction> transactions = new ArrayList<>();
     transactions.add(getTotalTransaction(subtotal, applyingFees, service));
     // currently only one transaction is supported
@@ -140,7 +138,7 @@ public class PayPalUtils {
    * @return the total
    */
   private static Transaction getTotalTransaction(
-          double subtotal, @NonNull List<Fee> applyingFees, @NonNull String service) {
+          double subtotal, @NonNull Collection<Fee> applyingFees, @NonNull String service) {
     Transaction transaction = new Transaction();
     transaction.setAmount(new Amount("USD", SimpleMath.getTotalFormatted(subtotal, applyingFees)));
     transaction.setDescription(service);

@@ -184,7 +184,12 @@ public class SimpleStarfish implements StarfishBot {
     }
     AddonLoader addonLoader =
         new JavaAddonLoader(
-            CoreFiles.directoryOrCreate(CoreFiles.currentDirectory() + "/addons"), Mongo.GSON);
+            CoreFiles.directoryOrCreate(CoreFiles.currentDirectory() + "/addons"),
+            Mongo.GSON,
+            (info) -> {
+              // TODO
+              return Logger.getLogger(info.getName());
+            });
     SimpleStarfish starfish =
         new SimpleStarfish(
             configuration,

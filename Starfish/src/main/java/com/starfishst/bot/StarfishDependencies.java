@@ -3,6 +3,7 @@ package com.starfishst.bot;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.addons.Addon;
@@ -48,5 +49,10 @@ public class StarfishDependencies implements DependencyManager {
     File fi = DependencyManager.super.getDependencyFile(information);
     System.out.println("fi.getPath() = " + fi.getAbsolutePath());
     return fi;
+  }
+
+  @Override
+  public Logger getLogger() {
+    return SimpleStarfish.getLog();
   }
 }
