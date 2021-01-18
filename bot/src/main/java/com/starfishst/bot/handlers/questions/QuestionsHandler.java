@@ -99,9 +99,9 @@ public class QuestionsHandler implements StarfishHandler {
           && channel != null) {
         Ticket parent = this.getTicketByChannel(channel);
         if (parent != null) {
-            this.current.put(ticket.getId(), this.current.get(parent.getId()));
+          this.current.put(ticket.getId(), this.current.get(parent.getId()));
         } else {
-            this.current.put(ticket.getId(), 0);
+          this.current.put(ticket.getId(), 0);
           questions.getQuestions().get(0).getQuery(owner).send(channel);
         }
       }

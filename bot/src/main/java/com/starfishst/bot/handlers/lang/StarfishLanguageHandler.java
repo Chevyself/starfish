@@ -24,7 +24,7 @@ public class StarfishLanguageHandler implements LanguageHandler {
   public StarfishLanguageHandler load(@NonNull Fallback fallback, String... toLoad) {
     for (String lang : toLoad) {
       try {
-          this.files.add(
+        this.files.add(
             new StarfishLocaleFile(
                 CoreFiles.getFileOrResource(
                     CoreFiles.currentDirectory() + "/assets/lang/" + lang + ".properties",

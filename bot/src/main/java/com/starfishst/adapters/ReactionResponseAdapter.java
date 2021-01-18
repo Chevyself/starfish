@@ -36,7 +36,8 @@ public class ReactionResponseAdapter implements JsonAdapter<ReactionResponse> {
   public JsonElement serialize(
       ReactionResponse src, Type typeOfSrc, JsonSerializationContext context) {
     if (!(src instanceof BotReactionResponse)) return null;
-    Class<? extends ReactionResponse> aClass = ReactionResponseAdapter.map.get(((BotReactionResponse) src).getType());
+    Class<? extends ReactionResponse> aClass =
+        ReactionResponseAdapter.map.get(((BotReactionResponse) src).getType());
     if (aClass == null) return null;
     return context.serialize(src, aClass);
   }

@@ -72,7 +72,7 @@ public class StarfishLocaleFile implements LocaleFile {
   public void save() {
     try {
       FileWriter writer = new FileWriter(this.file);
-        this.properties.store(writer, "No comments");
+      this.properties.store(writer, "No comments");
       writer.close();
     } catch (IOException e) {
       Starfish.getFallback()

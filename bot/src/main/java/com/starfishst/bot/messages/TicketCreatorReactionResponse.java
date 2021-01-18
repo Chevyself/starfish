@@ -70,6 +70,7 @@ public class TicketCreatorReactionResponse extends StarfishReactionResponse {
 
   @Override
   public @NonNull String getUnicode() {
-    return StarfishReactionResponse.getUnicode("unicode.tickets." + this.ticketType.name().toLowerCase());
+    return StarfishReactionResponse.getUnicode(
+        "unicode.tickets." + this.ticketType.name().toLowerCase());
   }
 }

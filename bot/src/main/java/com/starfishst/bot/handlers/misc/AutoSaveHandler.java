@@ -49,6 +49,6 @@ public class AutoSaveHandler implements StarfishHandler, Runnable {
   @Override
   public void run() {
     Starfish.save();
-      AutoSaveHandler.log.fine("Auto-Save completed");
+    AutoSaveHandler.log.fine("Auto-Save completed");
   }
 }

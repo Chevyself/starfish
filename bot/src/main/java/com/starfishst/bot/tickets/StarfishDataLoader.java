@@ -113,7 +113,7 @@ public class StarfishDataLoader implements Loader, ResponsiveMessageController {
   public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
     return Mongo.get(
         BotResponsiveMessage.class,
-            this.messages(),
+        this.messages(),
         new Document("id", messageId),
         message -> message.getId() == messageId);
   }
@@ -121,14 +121,17 @@ public class StarfishDataLoader implements Loader, ResponsiveMessageController {
   @Override
   public Ticket getTicket(long id) {
     return Mongo.get(
-        StarfishTicket.class, this.tickets(), new Document("id", id), ticket -> ticket.getId() == id);
+        StarfishTicket.class,
+        this.tickets(),
+        new Document("id", id),
+        ticket -> ticket.getId() == id);
   }
 
   @Override
   public Ticket getTicketByChannel(long channelId) {
     return Mongo.get(
         StarfishTicket.class,
-            this.tickets(),
+        this.tickets(),
         new Document("channel", channelId),
         ticket -> ticket.getTextChannelId() == channelId);
   }
@@ -136,7 +139,8 @@ public class StarfishDataLoader implements Loader, ResponsiveMessageController {
   @Override
   public @NonNull BotUser getStarfishUser(long id) {
     StarfishUser starfishUser =
-        Mongo.get(StarfishUser.class, this.users(), new Document("id", id), user -> user.getId() == id);
+        Mongo.get(
+            StarfishUser.class, this.users(), new Document("id", id), user -> user.getId() == id);
     if (starfishUser != null) return starfishUser;
     return new StarfishUser(id).cache();
   }
@@ -144,7 +148,8 @@ public class StarfishDataLoader implements Loader, ResponsiveMessageController {
   @Override
   public @NonNull BotRole getStarfishRole(long id) {
     StarfishRole starfishRole =
-        Mongo.get(StarfishRole.class, this.roles(), new Document("id", id), role -> role.getId() == id);
+        Mongo.get(
+            StarfishRole.class, this.roles(), new Document("id", id), role -> role.getId() == id);
     if (starfishRole != null) return starfishRole;
     return new StarfishRole(id, new HashSet<>()).cache();
   }
@@ -154,7 +159,7 @@ public class StarfishDataLoader implements Loader, ResponsiveMessageController {
     return Offers.fromMessages(
         Mongo.getMany(
             BotResponsiveMessage.class,
-                this.messages(),
+            this.messages(),
             new Document("data.ticket", ticket.getId()),
             null,
             -1,
@@ -172,7 +177,7 @@ public class StarfishDataLoader implements Loader, ResponsiveMessageController {
     StarfishFreelancerRating freelancerRating =
         Mongo.get(
             StarfishFreelancerRating.class,
-                this.ratings(),
+            this.ratings(),
             new Document("id", id),
             rating -> rating.getId() == id);
     if (freelancerRating != null) return freelancerRating;
@@ -196,7 +201,7 @@ public class StarfishDataLoader implements Loader, ResponsiveMessageController {
     return new ArrayList<>(
         Mongo.getMany(
             StarfishTicket.class,
-                this.tickets(),
+            this.tickets(),
             query,
             null,
             -1,

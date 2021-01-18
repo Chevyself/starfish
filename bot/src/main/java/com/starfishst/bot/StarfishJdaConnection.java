@@ -47,7 +47,7 @@ public class StarfishJdaConnection implements JdaConnection {
    */
   @NonNull
   public String getTokenFromInput(@NonNull Scanner scanner) {
-      this.log.info("Insert the bot token");
+    this.log.info("Insert the bot token");
     while (true) {
       if (scanner.hasNext()) {
         String input = scanner.nextLine();
@@ -70,13 +70,13 @@ public class StarfishJdaConnection implements JdaConnection {
    */
   @NonNull
   public JDA createConnection(@NonNull String token) {
-      this.jda = null;
+    this.jda = null;
     while (this.jda == null) {
       try {
-          this.jda = this.connect(token);
+        this.jda = this.connect(token);
       } catch (LoginException e) {
-          this.log.info("Discord authentication failed");
-          this.log.info("Getting token from config");
+        this.log.info("Discord authentication failed");
+        this.log.info("Getting token from config");
         token = this.getToken();
       }
     }
@@ -90,10 +90,10 @@ public class StarfishJdaConnection implements JdaConnection {
    */
   private String getToken() {
     if (this.config) {
-        this.log.info("Getting from configuration failed trying to get from input");
+      this.log.info("Getting from configuration failed trying to get from input");
       return this.getTokenFromInput(new Scanner(System.in));
     } else {
-        this.config = true;
+      this.config = true;
       return this.configuration.getToken();
     }
   }
@@ -110,7 +110,7 @@ public class StarfishJdaConnection implements JdaConnection {
         Starfish.getFallback().process(e, "InterruptedException: Discord connection failed");
       }
     }
-      this.log.info("Discord took " + Time.fromMillis(millis).toEffectiveString() + " to connect");
+    this.log.info("Discord took " + Time.fromMillis(millis).toEffectiveString() + " to connect");
     jda.setEventManager(new AnnotatedEventManager());
     return jda;
   }
