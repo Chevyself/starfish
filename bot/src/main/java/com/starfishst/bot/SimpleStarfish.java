@@ -10,6 +10,7 @@ import com.starfishst.api.loader.LanguageHandler;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
+import com.starfishst.bot.commands.CacheCommands;
 import com.starfishst.bot.commands.ChannelsCommands;
 import com.starfishst.bot.commands.DeveloperCommands;
 import com.starfishst.bot.commands.FreelancerCommands;
@@ -59,13 +60,11 @@ import me.googas.commons.fallback.Fallback;
 import me.googas.commons.log.LoggerFactory;
 import me.googas.commons.log.formatters.CustomFormatter;
 import me.googas.commons.scheduler.Scheduler;
+import me.googas.commons.time.Time;
+import me.googas.commons.time.Unit;
 import net.dv8tion.jda.api.JDA;
 
 public class SimpleStarfish implements StarfishBot {
-
-  static {
-    new StarfishDependencies().load();
-  }
 
   @NonNull @Getter
   private static final Formatter formatter =
@@ -119,13 +118,11 @@ public class SimpleStarfish implements StarfishBot {
     SimpleStarfish.log.addHandler(
         LoggerFactory.getFileHandler(
             SimpleStarfish.getFormatter(), null, "log-" + System.currentTimeMillis()));
-    SimpleStarfish.log.info("Downloading dependencies");
     Fallback fallback = new StarfishFallback(SimpleStarfish.log, new ArrayList<>());
     ListenerManager listenerManager = new ListenerManager();
     Scheduler scheduler = new StarfishScheduler();
     Thread.setDefaultUncaughtExceptionHandler(
         (thread, e) -> fallback.process(e, "Uncaught exception"));
-
     Configuration configuration = StarfishConfiguration.init();
     DiscordConfiguration discordConfiguration = StarfishDiscordConfiguration.init();
     StarfishJdaConnection connection = new StarfishJdaConnection(SimpleStarfish.log, configuration);
@@ -172,6 +169,7 @@ public class SimpleStarfish implements StarfishBot {
     for (Object command :
         Lots.list(
             new FallbackCommands(fallback),
+            new CacheCommands(),
             new ChannelsCommands(),
             new DeveloperCommands(),
             new FreelancerCommands(),
@@ -190,12 +188,14 @@ public class SimpleStarfish implements StarfishBot {
               // TODO
               return Logger.getLogger(info.getName());
             });
+    MemoryCache memoryCache = new MemoryCache();
+    scheduler.repeat(new Time(1, Unit.SECONDS), new Time(1, Unit.SECONDS), memoryCache);
     SimpleStarfish starfish =
         new SimpleStarfish(
             configuration,
             discordConfiguration,
             fallback,
-            new MemoryCache(),
+            memoryCache,
             connection,
             commandManager,
             listenerManager,

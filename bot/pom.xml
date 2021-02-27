@@ -12,7 +12,7 @@
 
     <groupId>com.starfishst.bot</groupId>
     <artifactId>bot</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.0_1</version>
 
     <build>
         <finalName>${project.artifactId}-${git.commit.id.describe-short}</finalName>
@@ -36,7 +36,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.starfishst.bot.SimpleStarfish</mainClass>
+                            <mainClass>com.starfishst.bot.StarfishDependencies</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -56,8 +56,10 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
-                                    <include>com.starfishst.jda:JDA</include>
-                                    <include>me.googas.addons:Addons</include>
+                                    <include>com.starfishst.api:api</include>
+                                    <include>me.googas.addons:addons</include>
+                                    <include>com.starfishst.commands.jda:jda</include>
+                                    <include>com.starfishst.commands.core:core</include>
                                     <include>me.googas.commons:commons</include>
                                 </includes>
                             </artifactSet>

@@ -92,20 +92,24 @@ public interface StarfishBot {
     }
   }
 
-  /** Stops the bot */
-  default void stop() {
+  default void saveCache() {
     Collection<SoftReference<Catchable>> cacheCopy = this.getCache().copy();
     cacheCopy.forEach(
-        reference -> {
-          Catchable catchable = reference.get();
-          if (catchable instanceof StarfishCatchable) {
-            try {
-              ((StarfishCatchable) catchable).unload();
-            } catch (Throwable throwable) {
-              throwable.printStackTrace();
-            }
-          }
-        });
+            reference -> {
+              Catchable catchable = reference.get();
+              if (catchable instanceof StarfishCatchable) {
+                try {
+                  ((StarfishCatchable) catchable).unload();
+                } catch (Throwable throwable) {
+                  throwable.printStackTrace();
+                }
+              }
+            });
+  }
+
+  /** Stops the bot */
+  default void stop() {
+    this.saveCache();
     Collection<StarfishHandler> handlers = this.getHandlers();
     JDA jda = this.getJdaConnection().getJda();
     if (jda != null) {

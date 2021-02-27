@@ -1,6 +1,7 @@
 package com.starfishst.api.messages;
 
 import com.starfishst.api.Starfish;
+import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.commands.jda.utils.responsive.ReactionResponse;
@@ -99,5 +100,10 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
   @Override
   public int hashCode() {
     return Objects.hash(this.id);
+  }
+
+  @Override
+  public void onRemove() {
+    new BotMessageUnloadedEvent(this).call();
   }
 }

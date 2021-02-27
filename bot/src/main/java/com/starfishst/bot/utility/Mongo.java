@@ -15,6 +15,7 @@ import com.starfishst.adapters.ReactionResponseAdapter;
 import com.starfishst.adapters.ResponsiveMessageDeserializer;
 import com.starfishst.adapters.ValuesMapAdapter;
 import com.starfishst.api.Starfish;
+import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.permissions.Permission;
 import com.starfishst.api.permissions.PermissionStack;
 import com.starfishst.api.utility.StarfishCatchable;
@@ -61,6 +62,7 @@ public class Mongo {
         .registerTypeAdapter(Question.class, new QuestionAdapter())
         .registerTypeAdapter(ReactionResponse.class, new ReactionResponseAdapter())
         .registerTypeAdapter(ResponsiveMessage.class, new ResponsiveMessageDeserializer())
+        .registerTypeAdapter(BotResponsiveMessage.class, new ResponsiveMessageDeserializer())
         .registerTypeAdapter(ValuesMap.class, valuesMapAdapter)
         .registerTypeAdapter(Time.class, new TimeAdapter())
         .create();

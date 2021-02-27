@@ -39,7 +39,14 @@ public class ReactionResponseAdapter implements JsonAdapter<ReactionResponse> {
     Class<? extends ReactionResponse> aClass =
         ReactionResponseAdapter.map.get(((BotReactionResponse) src).getType());
     if (aClass == null) return null;
-    return context.serialize(src, aClass);
+    JsonElement serialize = context.serialize(src, aClass);
+    if (serialize.isJsonObject()) {
+      JsonObject object = serialize.getAsJsonObject();
+      if (object.get("type") == null) {
+        object.addProperty("type", ((BotReactionResponse) src).getType());
+      }
+    }
+    return serialize;
   }
 
   @Override
@@ -48,6 +55,7 @@ public class ReactionResponseAdapter implements JsonAdapter<ReactionResponse> {
       throws JsonParseException {
     if (!json.isJsonObject()) return null;
     JsonObject jsonObject = json.getAsJsonObject();
+    if (jsonObject.get("type") == null) return null;
     String type = jsonObject.get("type").getAsString();
     if (type == null) return null;
     Class<? extends ReactionResponse> aClass = ReactionResponseAdapter.map.get(type);

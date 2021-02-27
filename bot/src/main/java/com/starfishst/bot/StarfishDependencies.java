@@ -1,6 +1,7 @@
 package com.starfishst.bot;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -54,5 +55,11 @@ public class StarfishDependencies implements DependencyManager {
   @Override
   public Logger getLogger() {
     return SimpleStarfish.getLog();
+  }
+
+  public static void main(String[] args) throws IOException {
+    StarfishDependencies dependencies = new StarfishDependencies();
+    dependencies.load();
+    SimpleStarfish.main(args);
   }
 }

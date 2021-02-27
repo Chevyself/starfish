@@ -26,7 +26,8 @@ public class ClaimOrderReactionResponse extends StarfishReactionResponse {
   public boolean onReaction(@NonNull MessageReactionAddEvent event) {
     if (this.message == null) return true;
     Ticket ticket =
-        Starfish.getLoader().getTicket(this.message.getData().getOr("id", Long.class, -1L));
+        Starfish.getLoader()
+            .getTicket(this.message.getData().getOr("id", Number.class, -1L).longValue());
     BotUser user = Starfish.getLoader().getStarfishUser(event.getUserIdLong());
     LocaleFile locale = Starfish.getLanguageHandler().getDefault();
     if (ticket != null) {
