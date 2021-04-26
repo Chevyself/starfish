@@ -6,10 +6,27 @@ The Starfish Network is a Service Team that operates using Discord. In order to 
 
 ## Contents
 
+* [Features](#features)
 * [Usage](#usage)
   * [Dependencies](#dependencies)
   * [Hosting Requirements](#hosting-requirements)
   * [Running](#running)
+
+## Features
+
+- [X] Commands for adding and removing people in channels: `-add` and `-remove`, both commands do also work to add and remove freelancers
+- [X] Ticket panel for easy ticket creation
+- [X] Custom freelancing system with `-promote` and `-demote` commands. Check the freelancer with `-freelancerInfo|fi @tag`
+- [X] Custom quotes system in which freelancers can send offers to `quote` ticket with the command: `-quote <ticket id> <offer>`
+- [X] Freelancers can have reviews from customers
+- [X] Generate invoices with `paypal.me` with the command `-invoice <subtotal> <service>`
+- [X] `-clear <amount>` command which helps keeping a channel clear. Note: It cannot be executed inside ticket.
+- [X] Custom permission system which improves Discord's by adding nodes to the bot's commands
+- [X] Freelancers have portfolio commands
+- [X] Fantastic ticket system with commands to announce, see ticket information, close and check previous offers.
+- [X] Highly configurable and customizable, change the questions for every ticket type, every message sent by the bot, the command output and each channel purpose.
+- [X] Mongo database is required to run the bot
+- [X] Ticket transcript system to save the conversation of a ticket in files.
 
 ## Installation
 

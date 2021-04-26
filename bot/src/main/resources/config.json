@@ -45,27 +45,27 @@
         "5s"
       ],
       "to-delete-ticket": "25m"
+    },
+    "announcer": {
+      "quote-footer": "quote.help-footer",
+      "announce-types": [
+        "ORDER",
+        "QUOTE"
+      ],
+      "pin-copy-in-channel": true
+    },
+    "tickets": {
+      "announce-all-users-joining": false,
+      "time-to-delete-closed-tickets": "15s",
+      "open-limit": 2,
+      "banned": [
+        "REPORT",
+        "SUGGESTIONS"
+      ]
+    },
+    "welcome": {
+      "enabled": true
     }
-  },
-  "announcer": {
-    "quote-footer": "quote.help-footer",
-    "announce-types": [
-      "ORDER",
-      "QUOTE"
-    ],
-    "pin-copy-in-channel": true
-  },
-  "tickets": {
-    "announce-all-users-joining": false,
-    "time-to-delete-closed-tickets": "15s",
-    "open-limit": 2,
-    "banned": [
-      "REPORT",
-      "SUGGESTIONS"
-    ]
-  },
-  "welcome": {
-    "enabled": true
   },
   "total": 0
 }
