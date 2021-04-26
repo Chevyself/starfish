@@ -16,12 +16,14 @@ import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.user.FreelancerRating;
 import java.util.Collection;
+
+import com.starfishst.commands.jda.utils.responsive.controller.ResponsiveMessageController;
 import lombok.NonNull;
 import me.googas.commons.events.Listener;
 
 /** Loads and saves data */
 // TODO create modules for each data
-public interface Loader extends StarfishHandler {
+public interface Loader extends StarfishHandler, ResponsiveMessageController {
 
   /**
    * Get a ticket by its id

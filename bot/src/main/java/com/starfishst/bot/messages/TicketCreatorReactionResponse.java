@@ -8,6 +8,7 @@ import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
+import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.annotations.Nullable;
@@ -61,6 +62,9 @@ public class TicketCreatorReactionResponse extends StarfishReactionResponse {
     if (ticket != null) {
       try {
         Starfish.getTicketManager().createTicket(this.ticketType, user, ticket);
+        ResponsiveMessage message =
+            Starfish.getLoader().getResponsiveMessage(event.getGuild(), event.getMessageIdLong());
+        if (message instanceof BotResponsiveMessage) ((BotResponsiveMessage) message).delete();
       } catch (TicketCreationException e) {
         e.toQuery(user).send(event.getTextChannel(), Messages.getErrorConsumer());
       }

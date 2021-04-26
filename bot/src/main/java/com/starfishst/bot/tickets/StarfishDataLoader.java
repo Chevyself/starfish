@@ -28,7 +28,6 @@ import com.starfishst.bot.utility.Enums;
 import com.starfishst.bot.utility.Mongo;
 import com.starfishst.bot.utility.Offers;
 import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
-import com.starfishst.commands.jda.utils.responsive.controller.ResponsiveMessageController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,7 +43,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
 import org.bson.Document;
 
-public class StarfishDataLoader implements Loader, ResponsiveMessageController {
+public class StarfishDataLoader implements Loader {
 
   @NonNull @Getter private final MongoClient client;
   @NonNull @Getter private final MongoDatabase database;
@@ -222,7 +221,7 @@ public class StarfishDataLoader implements Loader, ResponsiveMessageController {
   @SubscribeEvent
   @Override
   public void onMessageReactionAdd(MessageReactionAddEvent event) {
-    ResponsiveMessageController.super.onMessageReactionAdd(event);
+    Loader.super.onMessageReactionAdd(event);
   }
 
   @Listener(priority = ListenPriority.HIGH)
