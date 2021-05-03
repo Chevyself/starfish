@@ -46,15 +46,13 @@ public class StarfishDependencies implements DependencyManager {
 
   @Override
   public @NonNull File getDependencyFile(@NonNull DependencyInformation information) {
-    System.out.println("this.parent.getAbsolutePath() = " + this.parent.getAbsolutePath());
     File fi = DependencyManager.super.getDependencyFile(information);
-    System.out.println("fi.getPath() = " + fi.getAbsolutePath());
     return fi;
   }
 
   @Override
   public Logger getLogger() {
-    return SimpleStarfish.getLog();
+   return SimpleStarfish.getLog();
   }
 
   public static void main(String[] args) throws IOException {
