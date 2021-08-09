@@ -7,12 +7,13 @@ import com.starfishst.api.permissions.Permissible;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
+
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.NonNull;
-import me.googas.commons.Lots;
-import me.googas.commons.maps.Maps;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -22,7 +23,7 @@ import net.dv8tion.jda.api.entities.User;
 public interface BotUser extends Localizable, Permissible, StarfishCatchable {
 
   /** The list of the id of developers */
-  List<Long> devs = Lots.list(797192253751033876L, 151067971899359233L);
+  List<Long> devs = Arrays.asList(797192253751033876L, 151067971899359233L);
 
   /**
    * Get the complete information of the user
@@ -31,7 +32,7 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    * @return the complete information of the user
    */
   @NonNull
-  default EmbedQuery toCompleteInformation(@NonNull BotUser user) {
+  default EmbedBuilder toCompleteInformation(@NonNull BotUser user) {
     return Messages.build(this, user);
   }
 
@@ -155,11 +156,12 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    */
   @NonNull
   default Map<String, String> getPlaceholders() {
-    return Maps.builder("id", String.valueOf(this.getId()))
-        .append("mention", this.getMention())
-        .append("name", this.getName())
-        .append("tag", this.getDiscordTag())
-        .build();
+    Map<String, String> map = new HashMap<>();
+    map.put("id", String.valueOf(this.getId()));
+    map.put("mention", this.getMention());
+    map.put("name", this.getName());
+    map.put("tag", this.getDiscordTag());
+    return map;
   }
 
   @Override

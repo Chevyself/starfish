@@ -1,21 +1,18 @@
 package com.starfishst.bot;
 
-import java.util.List;
+import com.starfishst.api.Fallback;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.commons.fallback.Fallback;
 
-public class StarfishFallback implements Fallback {
+public class StarfishFallback extends Fallback {
 
-  @NonNull private final List<String> errors;
   @Getter @Setter @NonNull private Logger log;
 
-  public StarfishFallback(@NonNull Logger log, @NonNull List<String> errors) {
+  public StarfishFallback(@NonNull Logger log) {
     this.log = log;
-    this.errors = errors;
   }
 
   @Override
@@ -25,11 +22,9 @@ public class StarfishFallback implements Fallback {
 
   @Override
   public void process(Throwable throwable, String s) {
-    this.log.log(Level.SEVERE, throwable, () -> s);
-  }
-
-  @Override
-  public @NonNull List<String> getErrors() {
-    return this.errors;
+    if (throwable != null) {
+      this.log.log(Level.SEVERE, throwable, () -> s == null ? "" : s);
+      this.getErrors().add(s == null ? throwable.getMessage() : s);
+    }
   }
 }

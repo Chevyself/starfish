@@ -4,14 +4,13 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import lombok.NonNull;
-import me.googas.commons.Lots;
-import me.googas.commons.Strings;
-import me.googas.commons.maps.Maps;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.starbox.Strings;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -93,9 +92,9 @@ public class QuestionRole extends Question {
   @Override
   public @NonNull String getBuiltDescription() {
     HashMap<String, String> placeholders = new HashMap<>();
-    placeholders.put("roles", Lots.pretty(Discord.getAsMention(this.getRoles())));
+    placeholders.put("roles", Strings.pretty(Discord.getAsMention(this.getRoles())));
     placeholders.put("limit", String.valueOf(this.limit));
-    return Strings.build(super.getBuiltDescription(), placeholders);
+    return Strings.format(super.getBuiltDescription(), placeholders);
   }
 
   @Override
@@ -105,32 +104,46 @@ public class QuestionRole extends Question {
       roles.add(role.getIdLong());
     }
     if (roles.isEmpty()) {
-      Messages.build(user.getLocaleFile().get("questions.empty-roles"), ResultType.ERROR, user)
-          .send(event.getChannel(), Messages.getErrorConsumer());
+      event
+          .getChannel()
+          .sendMessage(
+              Messages.build(
+                      user.getLocaleFile().get("questions.empty-roles"), ResultType.ERROR, user)
+                  .build())
+          .queue(Messages.getErrorConsumer());
       return null;
     } else if (roles.size() > this.limit) {
-      Messages.build(
-              user.getLocaleFile()
-                  .get(
-                      "questions.more-roles-than-limit",
-                      Maps.singleton("limit", String.valueOf(this.getLimit()))),
-              ResultType.ERROR,
-              user)
-          .send(event.getChannel(), Messages.getErrorConsumer());
+      event
+          .getChannel()
+          .sendMessage(
+              Messages.build(
+                      user.getLocaleFile()
+                          .get(
+                              "questions.more-roles-than-limit",
+                              Collections.singletonMap("limit", String.valueOf(this.getLimit()))),
+                      ResultType.ERROR,
+                      user)
+                  .build())
+          .queue(Messages.getErrorConsumer());
       return null;
     }
     List<Role> notMentionable = this.getNotMentionableRoles(event.getMessage().getMentionedRoles());
     if (notMentionable.isEmpty()) {
       return new ArrayList<>(roles);
     } else {
-      Messages.build(
-              user.getLocaleFile()
-                  .get(
-                      "questions.roles-not-mentionable",
-                      Maps.singleton("roles", Lots.pretty(Discord.getAsMention(notMentionable)))),
-              ResultType.ERROR,
-              user)
-          .send(event.getChannel(), Messages.getErrorConsumer());
+      event
+          .getChannel()
+          .sendMessage(
+              Messages.build(
+                      user.getLocaleFile()
+                          .get(
+                              "questions.roles-not-mentionable",
+                              Collections.singletonMap(
+                                  "roles", Strings.pretty(Discord.getAsMention(notMentionable)))),
+                      ResultType.ERROR,
+                      user)
+                  .build())
+          .queue(Messages.getErrorConsumer());
       return null;
     }
   }

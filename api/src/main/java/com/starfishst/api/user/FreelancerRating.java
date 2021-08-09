@@ -2,9 +2,10 @@ package com.starfishst.api.user;
 
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.StarfishCatchable;
+
+import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
-import me.googas.commons.maps.Maps;
 
 /** This object represents a map that contains rating given to a freelancer */
 public interface FreelancerRating extends StarfishCatchable {
@@ -30,10 +31,11 @@ public interface FreelancerRating extends StarfishCatchable {
     if (this.getMap().isEmpty()) {
       return locale.get("freelancer-rating.empty");
     } else {
+      Map<String, String> map = new HashMap<>();
+      map.put("average", String.valueOf(this.getRating()));
+      map.put("total", String.valueOf(this.getMap().size()));
       return locale.get(
-          "freelancer-rating.rating",
-          Maps.builder("average", String.valueOf(this.getRating()))
-              .append("total", String.valueOf(this.getMap().size())));
+          "freelancer-rating.rating", map);
     }
   }
 

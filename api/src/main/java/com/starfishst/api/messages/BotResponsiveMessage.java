@@ -4,16 +4,17 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.commands.jda.utils.responsive.ReactionResponse;
-import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
+
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.builder.ToStringBuilder;
-import me.googas.commons.time.Time;
-import me.googas.commons.time.Unit;
+import me.googas.commands.jda.utils.responsive.ReactionResponse;
+import me.googas.commands.jda.utils.responsive.ResponsiveMessage;
+import me.googas.starbox.time.Time;
+import me.googas.starbox.time.unit.Unit;
 import net.dv8tion.jda.api.entities.Message;
 
 /** An implementation for {@link ResponsiveMessage} */
@@ -72,7 +73,7 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
 
   @Override
   public @NonNull Time getToRemove() {
-    return new Time(3, Unit.MINUTES);
+    return Time.of(3, Unit.MINUTES);
   }
 
   @Override
@@ -82,11 +83,11 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
-        .append("id", this.id)
-        .append("reactions", this.reactions)
-        .append("data", this.data)
-        .build();
+    return new StringJoiner(", ", BotResponsiveMessage.class.getSimpleName() + "[", "]")
+            .add("id=" + this.id)
+            .add("reactions=" + this.reactions)
+            .add("data=" + this.data)
+            .toString();
   }
 
   @Override

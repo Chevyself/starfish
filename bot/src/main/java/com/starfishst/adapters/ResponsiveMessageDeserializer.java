@@ -7,9 +7,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.commands.jda.utils.responsive.ReactionResponse;
 import java.lang.reflect.Type;
-import me.googas.commons.Lots;
+import java.util.Arrays;
+import java.util.HashSet;
+import me.googas.commands.jda.utils.responsive.ReactionResponse;
 
 public class ResponsiveMessageDeserializer implements JsonDeserializer<BotResponsiveMessage> {
 
@@ -25,7 +26,10 @@ public class ResponsiveMessageDeserializer implements JsonDeserializer<BotRespon
     BotResponsiveMessage message =
         new BotResponsiveMessage(
             (Long) context.deserialize(object.get("id"), Long.class),
-            Lots.set(context.deserialize(object.get("reactions"), ReactionResponse[].class)),
+            // TODO fix
+            new HashSet<>(
+                Arrays.asList(
+                    context.deserialize(object.get("reactions"), ReactionResponse[].class))),
             context.deserialize(object.get("data"), ValuesMap.class));
     message.update();
     return message;

@@ -1,16 +1,17 @@
 package com.starfishst.adapters;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
-import me.googas.commons.gson.adapters.JsonAdapter;
 
 /** The adapter for mongo longs */
-public class LongMongoAdapter implements JsonAdapter<Long> {
+public class LongMongoAdapter implements JsonSerializer<Long>, JsonDeserializer<Long> {
 
   @Override
   public JsonElement serialize(Long src, Type typeOfSrc, JsonSerializationContext context) {

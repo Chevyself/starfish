@@ -2,29 +2,31 @@ package com.starfishst.adapters;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.starfishst.api.utility.ValuesMap;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.NonNull;
-import me.googas.commons.gson.adapters.JsonAdapter;
-import me.googas.commons.maps.Maps;
 
 /** Adapts values map */
-public class ValuesMapAdapter implements JsonAdapter<ValuesMap> {
+public class ValuesMapAdapter implements JsonSerializer<ValuesMap>, JsonDeserializer<ValuesMap> {
 
   /**
    * Objects in mongo have a prefix when its not a json primitive that's why this contains the given
    * mongo name and the type to deserialize
    */
   @NonNull
-  static final Map<String, Type> objectId = Maps.builder("numberLong", (Type) Long.class).build();
+  static final Map<String, Type> objectId =
+      Collections.singletonMap("numberLong", Long.class);
 
   /**
    * Add the values from a json object to a guido values map

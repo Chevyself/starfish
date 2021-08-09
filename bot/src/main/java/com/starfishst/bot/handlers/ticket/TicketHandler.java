@@ -13,21 +13,22 @@ import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
-import com.starfishst.commands.jda.utils.message.MessageQuery;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import lombok.Getter;
 import lombok.Setter;
-import me.googas.commons.Lots;
-import me.googas.commons.events.ListenPriority;
-import me.googas.commons.events.Listener;
-import me.googas.commons.maps.Maps;
-import me.googas.commons.time.ClassicTime;
-import me.googas.commons.time.Time;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.starbox.builders.MapBuilder;
+import me.googas.starbox.events.ListenPriority;
+import me.googas.starbox.events.Listener;
+import me.googas.starbox.time.Time;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -46,13 +47,16 @@ public class TicketHandler implements StarfishHandler {
       event.setReason(
           locale.get(
               "tickets.banned-type",
-              Maps.singleton("type", event.getType().toString().toLowerCase())));
+              Collections.singletonMap("type", event.getType().toString().toLowerCase())));
       return;
     }
     Collection<Ticket> creating =
         Starfish.getLoader()
             .getTickets(
-                event.getUser(), "owner", Lots.set(TicketType.values()), TicketStatus.CREATING);
+                event.getUser(),
+                "owner",
+                Arrays.asList(TicketType.values()),
+                TicketStatus.CREATING);
     creating.removeIf(ticket -> ticket.getTextChannel() == null);
     if (event.getParent() == null
         && !creating.isEmpty()
@@ -66,7 +70,7 @@ public class TicketHandler implements StarfishHandler {
             .getTickets(
                 event.getUser(),
                 "owner",
-                Lots.set(TicketType.values()),
+                new HashSet<>(Arrays.asList(TicketType.values())),
                 TicketStatus.CREATING,
                 TicketStatus.OPEN,
                 TicketStatus.LOADING);
@@ -80,8 +84,8 @@ public class TicketHandler implements StarfishHandler {
       event.setReason(
           locale.get(
               "tickets.limit",
-              Maps.builder("limit", String.valueOf(this.limit))
-                  .append("size", String.valueOf(open.size()))));
+              MapBuilder.of("limit", String.valueOf(this.limit))
+                  .put("size", String.valueOf(open.size()))));
     }
   }
 
@@ -116,17 +120,19 @@ public class TicketHandler implements StarfishHandler {
         if (!timeString.equalsIgnoreCase("none")) {
           try {
             LocaleFile file = owner.getLocaleFile();
-            Time time = Time.fromString(timeString);
-            ClassicTime classicTime = time.toClassicTime();
+            Time time = Time.parse(timeString, true);
             Map<String, String> placeholders = ticket.getPlaceholders();
-            placeholders.put("time", time.toEffectiveString());
-            Messages.build(
-                    file.get("ticket.closed.title", placeholders),
-                    file.get("ticket.closed.desc", placeholders),
-                    ResultType.GENERIC,
-                    owner)
-                .send(channel);
-            channel.delete().queueAfter(classicTime.getValue(), classicTime.getUnit().toTimeUnit());
+            placeholders.put("time", time.toString());
+            channel
+                .sendMessage(
+                    Messages.build(
+                            file.get("ticket.closed.title", placeholders),
+                            file.get("ticket.closed.desc", placeholders),
+                            ResultType.GENERIC,
+                            owner)
+                        .build())
+                .queue();
+            channel.delete().queueAfter(time.toMillisRound(), TimeUnit.MILLISECONDS);
           } catch (IllegalArgumentException e) {
             Starfish.getFallback().process(e, timeString + " is not valid time");
           }
@@ -153,19 +159,19 @@ public class TicketHandler implements StarfishHandler {
                 && this.getPreferences()
                     .getOr("announce-all-users-joining-leaving", Boolean.class, false)
             || owner != null && user.isFreelancer()) {
-          EmbedQuery query = user.toCompleteInformation(owner);
+          EmbedBuilder embed = user.toCompleteInformation(owner);
           LocaleFile locale = owner.getLocaleFile();
           if (user.isFreelancer()) {
-            query.setTitle(locale.get("freelancer-joined-ticket.title", user.getPlaceholders()));
+            embed.setTitle(locale.get("freelancer-joined-ticket.title", user.getPlaceholders()));
           } else {
-            query.setTitle(locale.get("user-joined-ticket.title", user.getPlaceholders()));
+            embed.setTitle(locale.get("user-joined-ticket.title", user.getPlaceholders()));
           }
           if (user.isFreelancer()) {
-            MessageQuery message = query.getAsMessageQuery();
-            message.getBuilder().append(channel.getGuild().getPublicRole());
-            message.send(channel);
+            MessageBuilder messageBuilder =
+                new MessageBuilder(embed).append(channel.getGuild().getPublicRole());
+            channel.sendMessage(messageBuilder.build()).queue();
           } else {
-            query.send(channel);
+            channel.sendMessageEmbeds(embed.build()).queue();
           }
         }
       }
@@ -190,14 +196,14 @@ public class TicketHandler implements StarfishHandler {
                 && this.getPreferences()
                     .getOr("announce-all-users-joining-leaving", Boolean.class, false)
             || owner != null && user.isFreelancer()) {
-          EmbedQuery query = user.toCompleteInformation(owner);
+          EmbedBuilder embed = user.toCompleteInformation(owner);
           LocaleFile locale = owner.getLocaleFile();
           if (user.isFreelancer()) {
-            query.setTitle(locale.get("freelancer-left-ticket.title", user.getPlaceholders()));
+            embed.setTitle(locale.get("freelancer-left-ticket.title", user.getPlaceholders()));
           } else {
-            query.setTitle(locale.get("user-left-ticket.title", user.getPlaceholders()));
+            embed.setTitle(locale.get("user-left-ticket.title", user.getPlaceholders()));
           }
-          query.send(channel);
+          channel.sendMessageEmbeds(embed.build()).queue();
         }
       }
     }

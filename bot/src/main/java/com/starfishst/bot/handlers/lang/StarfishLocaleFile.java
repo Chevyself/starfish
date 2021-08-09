@@ -1,23 +1,22 @@
 package com.starfishst.bot.handlers.lang;
 
 import com.starfishst.api.Starfish;
+import com.starfishst.api.StarfishFiles;
 import com.starfishst.api.lang.LocaleFile;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.CoreFiles;
-import me.googas.commons.Validate;
+import me.googas.io.StarboxFile;
+import me.googas.io.context.PropertiesContext;
 
 /** The locale file for the guido bot. It is loaded using {@link Properties} */
 public class StarfishLocaleFile implements LocaleFile {
 
-  @NonNull @Getter private final File file;
+  @NonNull @Getter private final StarboxFile file;
   /** The properties used to get the strings */
-  @NonNull private final Properties properties = new Properties();
+  @NonNull private Properties properties;
 
   /**
    * Create the guido locale file
@@ -25,28 +24,41 @@ public class StarfishLocaleFile implements LocaleFile {
    * @param file the properties file to get the properties
    * @throws IOException in case that the properties file cannot be read
    */
-  public StarfishLocaleFile(@NonNull File file) throws IOException {
+  public StarfishLocaleFile(@NonNull StarboxFile file) {
     this.file = file;
-    FileReader reader = new FileReader(this.file);
-    this.properties.load(reader);
-    reader.close();
-    this.copyDefaults();
+    this.properties = new Properties();
   }
 
-  /** Copies the default (missing keys) to the file. */
-  public void copyDefaults() {
-    try {
-      Properties defaults = new Properties();
-      defaults.load(CoreFiles.getResource("lang/" + this.getLang() + ".properties"));
-      for (Object key : defaults.keySet()) {
-        if (this.properties.get(key) == null) {
-          this.properties.put(key, defaults.get(key));
-        }
-      }
-    } catch (IOException e) {
-      Starfish.getFallback()
-          .process(e, "IOException: The defaults for " + this + " could not be saved");
-    }
+  public StarfishLocaleFile load() {
+    PropertiesContext context = StarfishFiles.Contexts.PROPERTIES;
+    String lang = this.getLang();
+    Properties resource =
+        context
+            .read(StarfishFiles.Resources.getLangResource(lang))
+            .handle(
+                e -> {
+                  Starfish.getFallback()
+                      .process(e, "Could not read language resource: " + lang + ".properties");
+                })
+            .provide()
+            .orElseGet(Properties::new);
+    this.properties =
+        this.file
+            .read(context)
+            .handle(
+                e -> {
+                  Starfish.getFallback()
+                      .process(e, "Could not read language resource: " + lang + ".properties");
+                })
+            .provide()
+            .orElse(resource);
+    resource.forEach(
+        (key, value) -> {
+          if (!this.properties.containsKey(key)) {
+            this.properties.put(key, value);
+          }
+        });
+    return this;
   }
 
   /**
@@ -55,7 +67,7 @@ public class StarfishLocaleFile implements LocaleFile {
    * @return the unicode to differentiate this language
    */
   public @NonNull String getUnicode() {
-    return Validate.notNull(this.getRaw("unicode"), this + " has a null unicode property");
+    return Objects.requireNonNull(this.getRaw("unicode"), this + " has a null unicode property");
   }
 
   @Override
@@ -65,19 +77,13 @@ public class StarfishLocaleFile implements LocaleFile {
 
   @Override
   public @NonNull String getLang() {
-    return Validate.notNull(this.getRaw("lang"), this + " has a null lang property!");
+    return Objects.requireNonNull(this.getRaw("lang"), this + " has a null lang property!");
   }
 
   @Override
-  public void save() {
-    try {
-      FileWriter writer = new FileWriter(this.file);
-      this.properties.store(writer, "No comments");
-      writer.close();
-    } catch (IOException e) {
-      Starfish.getFallback()
-          .process(e, "IOException: Lang file from " + this + " could not be saved");
-    }
+  public StarfishLocaleFile save() {
+    StarfishFiles.Contexts.PROPERTIES.write(this.file, this.properties, "");
+    return this;
   }
 
   @Override

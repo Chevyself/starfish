@@ -3,14 +3,16 @@ package com.starfishst.bot.commands.providers;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.tickets.Ticket;
-import com.starfishst.commands.jda.context.CommandContext;
-import com.starfishst.commands.jda.providers.type.JdaArgumentProvider;
-import com.starfishst.core.exceptions.ArgumentProviderException;
+import java.util.Collections;
 import lombok.NonNull;
-import me.googas.commons.maps.Maps;
+import me.googas.commands.exceptions.ArgumentProviderException;
+import me.googas.commands.jda.context.CommandContext;
+import me.googas.commands.jda.providers.type.JdaArgumentProvider;
+import me.googas.commands.jda.providers.type.JdaExtraArgumentProvider;
 
 /** Provides the registry with {@link Ticket}! */
-public class TicketProvider implements JdaArgumentProvider<Ticket> {
+public class TicketProvider
+    implements JdaArgumentProvider<Ticket>, JdaExtraArgumentProvider<Ticket> {
 
   @Override
   public @NonNull Class<Ticket> getClazz() {
@@ -37,6 +39,17 @@ public class TicketProvider implements JdaArgumentProvider<Ticket> {
         loader
             .getStarfishUser(context.getSender().getIdLong())
             .getLocaleFile()
-            .get("ticket.invalid", Maps.singleton("id", id.toString())));
+            .get("ticket.invalid", Collections.singletonMap("id", id.toString())));
+  }
+
+  @NonNull
+  @Override
+  public Ticket getObject(@NonNull CommandContext context) throws ArgumentProviderException {
+    Ticket ticket = Starfish.getLoader().getTicketByChannel(context.getChannel().getIdLong());
+    if (ticket != null) {
+      return ticket;
+    }
+    throw new ArgumentProviderException(
+        Starfish.getLanguageHandler().getFile(context).get("ticket.invalid-channel"));
   }
 }

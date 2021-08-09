@@ -5,16 +5,16 @@ import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Fee;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.annotations.Command;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
-import com.starfishst.core.annotations.Multiple;
-import com.starfishst.core.annotations.Required;
-import com.starfishst.core.annotations.Settings;
-import com.starfishst.core.objects.JoinedStrings;
 import java.util.Collection;
 import java.util.HashMap;
+import me.googas.commands.annotations.Multiple;
+import me.googas.commands.annotations.Required;
+import me.googas.commands.jda.annotations.Command;
+import me.googas.commands.jda.result.Result;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.commands.objects.JoinedStrings;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Commands for invoicing */
@@ -29,8 +29,11 @@ public class InvoiceCommands {
    * @param strings the service
    * @return a successful result sending the invoice
    */
-  @Settings("exclude")
-  @Command(aliases = "invoice", description = "Generates an invoice", node = "starfish.invoice")
+  @Command(
+      aliases = "invoice",
+      description = "Generates an invoice",
+      node = "starfish.invoice",
+      excluded = true)
   public Result invoice(
       BotUser user,
       TextChannel channel,
@@ -47,16 +50,16 @@ public class InvoiceCommands {
     placeholders.put("total", String.format("%.2f", total));
     placeholders.put("service", strings.getString());
     LocaleFile locale = user.getLocaleFile();
-    EmbedQuery query =
+    EmbedBuilder embedBuilder =
         Messages.build(
             locale.get("invoice.title", placeholders),
             locale.get("invoice.description", placeholders),
             ResultType.GENERIC,
             user);
     for (Fee fee : applyingFees) {
-      query.addField(
+      embedBuilder.addField(
           fee.getDescription(), "+" + String.format("%.2f", fee.getApply(subtotal)), false);
     }
-    return new Result(query);
+    return Result.builder().setMessage(new MessageBuilder(embedBuilder)).build();
   }
 }

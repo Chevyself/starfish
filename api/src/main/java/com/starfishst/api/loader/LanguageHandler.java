@@ -3,13 +3,16 @@ package com.starfishst.api.loader;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.commands.jda.context.CommandContext;
-import com.starfishst.commands.jda.messages.MessagesProvider;
-import com.starfishst.commands.jda.result.ResultType;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import lombok.NonNull;
-import me.googas.commons.maps.Maps;
-import me.googas.commons.time.Time;
+import me.googas.commands.jda.context.CommandContext;
+import me.googas.commands.jda.messages.MessagesProvider;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.starbox.time.Time;
 
 /** This object is in charge of handling the language of the bot and the users of it */
 public interface LanguageHandler extends MessagesProvider, StarfishHandler {
@@ -108,44 +111,52 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
 
   @Override
   default @NonNull String invalidLong(@NonNull String s, @NonNull CommandContext context) {
-    return this.getFile(context).get("invalid.number", Maps.singleton("string", s));
+    return this.getFile(context).get("invalid.number", Collections.singletonMap("string", s));
   }
 
   @Override
   default @NonNull String invalidInteger(@NonNull String s, @NonNull CommandContext context) {
-    return this.getFile(context).get("invalid.number", Maps.singleton("string", s));
+    return this.getFile(context).get("invalid.number", Collections.singletonMap("string", s));
   }
 
   @Override
   default @NonNull String invalidDouble(@NonNull String s, @NonNull CommandContext context) {
-    return this.getFile(context).get("invalid.double", Maps.singleton("string", s));
+    return this.getFile(context).get("invalid.double", Collections.singletonMap("string", s));
   }
 
   @Override
   default @NonNull String invalidBoolean(@NonNull String s, @NonNull CommandContext context) {
-    return this.getFile(context).get("invalid.boolean", Maps.singleton("string", s));
+    return this.getFile(context).get("invalid.boolean", Collections.singletonMap("string", s));
+  }
+
+  @Override
+  @NonNull
+  default String cooldown(long timeLeft, CommandContext context) {
+    return this.getFile(context).get("cooldown", Collections.singletonMap("cooldown", Time.ofMillis(timeLeft, true).toString()));
   }
 
   @Override
   default @NonNull String invalidTime(@NonNull String s, @NonNull CommandContext context) {
-    return this.getFile(context).get("invalid.time", Maps.singleton("string", s));
+    return this.getFile(context).get("invalid.time", Collections.singletonMap("string", s));
   }
 
   @Override
   default @NonNull String missingArgument(
-      @NonNull String s, @NonNull String s1, int i, CommandContext context) {
-    return this.getFile(context)
+      @NonNull String name, @NonNull String description, int position, CommandContext context) {
+    LocaleFile file = this.getFile(context);
+    Map<String, String> placeholders = new HashMap<>();
+    placeholders.put("name", file.get(name));
+    placeholders.put("description", file.get(description));
+    placeholders.put("position", String.valueOf(position));
+    return file
         .get(
-            "missing-argument",
-            Maps.builder("name", this.getFile(context).get(s))
-                .append("description", this.getFile(context).get(s1))
-                .append("position", String.valueOf(i)));
+            "missing-argument", placeholders);
   }
 
   @Override
   default @NonNull String commandNotFound(
       @NonNull String s, @NonNull CommandContext commandContext) {
-    return this.getFile(commandContext).get("command-not-found", Maps.builder("name", s));
+    return this.getFile(commandContext).get("command-not-found", Collections.singletonMap("name", s));
   }
 
   @Override
@@ -173,9 +184,12 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
 
   @Override
   default @NonNull String response(
-      @NonNull String s, @NonNull String s1, CommandContext commandContext) {
+      @NonNull String title, @NonNull String description, CommandContext commandContext) {
+    Map<String, String> placeholders = new HashMap<>();
+    placeholders.put("title", title);
+    placeholders.put("description",description);
     return this.getFile(commandContext)
-        .get("response", Maps.builder("title", s).append("description", s1));
+        .get("response", placeholders);
   }
 
   @Override
@@ -194,46 +208,41 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
   }
 
   @Override
-  default @NonNull String cooldown(@NonNull Time time, CommandContext commandContext) {
-    return this.getFile(commandContext)
-        .get("cooldown", Maps.singleton("left", time.toEffectiveString()));
-  }
-
-  @Override
   default @NonNull String invalidUser(@NonNull String s, @NonNull CommandContext commandContext) {
-    return this.getFile(commandContext).get("invalid.user", Maps.singleton("string", s));
+    return this.getFile(commandContext).get("invalid.user", Collections.singletonMap("string", s));
   }
 
   @Override
   default @NonNull String invalidMember(@NonNull String s, @NonNull CommandContext commandContext) {
-    return this.getFile(commandContext).get("invalid.member", Maps.singleton("string", s));
+    return this.getFile(commandContext).get("invalid.member", Collections.singletonMap("string", s));
   }
 
   @Override
   default @NonNull String invalidRole(@NonNull String s, @NonNull CommandContext commandContext) {
-    return this.getFile(commandContext).get("invalid.role", Maps.singleton("string", s));
+    return this.getFile(commandContext).get("invalid.role", Collections.singletonMap("string", s));
   }
 
   @Override
   default @NonNull String invalidTextChannel(String s, CommandContext commandContext) {
-    return this.getFile(commandContext).get("invalid.channel", Maps.singleton("string", s));
+    return this.getFile(commandContext).get("invalid.channel", Collections.singletonMap("string", s));
   }
 
   @Override
   default @NonNull String missingStrings(
-      @NonNull String s,
-      @NonNull String s1,
-      int i,
-      int i1,
-      int i2,
+      @NonNull String name,
+      @NonNull String description,
+      int position,
+      int min,
+      int missing,
       @NonNull CommandContext context) {
+    Map<String, String> placeholders = new HashMap<>();
+    placeholders.put("name", name);
+    placeholders.put("description", description);
+    placeholders.put("position", String.valueOf(position));
+    placeholders.put("min", String.valueOf(min));
+    placeholders.put("missing", String.valueOf(missing));
     return this.getFile(context)
         .get(
-            "invalid.strings",
-            Maps.builder("name", s)
-                .append("description", s1)
-                .append("position", String.valueOf(i))
-                .append("min", String.valueOf(i1))
-                .append("missing", String.valueOf(i2)));
+            "invalid.strings", placeholders);
   }
 }

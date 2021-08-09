@@ -8,11 +8,10 @@ import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
+import java.util.Arrays;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.annotations.Nullable;
-import me.googas.commons.Lots;
+import me.googas.commands.jda.utils.responsive.ResponsiveMessage;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
@@ -22,16 +21,16 @@ public class TicketCreatorReactionResponse extends StarfishReactionResponse {
   @NonNull @Getter private final TicketType ticketType;
 
   protected TicketCreatorReactionResponse(
-      @Nullable BotResponsiveMessage message, @NonNull TicketType ticketType) {
+      BotResponsiveMessage message, @NonNull TicketType ticketType) {
     super(message);
     this.ticketType = ticketType;
   }
 
   @NonNull
   public static BotResponsiveMessage add(
-      @NonNull BotResponsiveMessage responsiveMessage, @Nullable Message message) {
+      @NonNull BotResponsiveMessage responsiveMessage, Message message) {
     for (TicketType ticketType :
-        Lots.list(
+        Arrays.asList(
             TicketType.ORDER,
             TicketType.APPLY,
             TicketType.SUPPORT,
@@ -66,7 +65,10 @@ public class TicketCreatorReactionResponse extends StarfishReactionResponse {
             Starfish.getLoader().getResponsiveMessage(event.getGuild(), event.getMessageIdLong());
         if (message instanceof BotResponsiveMessage) ((BotResponsiveMessage) message).delete();
       } catch (TicketCreationException e) {
-        e.toQuery(user).send(event.getTextChannel(), Messages.getErrorConsumer());
+        event
+            .getTextChannel()
+            .sendMessage(e.toQuery(user).build())
+            .queue(Messages.getErrorConsumer());
       }
     }
     return true;

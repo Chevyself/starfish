@@ -1,25 +1,27 @@
 package com.starfishst.adapters;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.starfishst.api.messages.BotReactionResponse;
 import com.starfishst.bot.messages.ClaimOrderReactionResponse;
 import com.starfishst.bot.messages.OfferAcceptReactionResponse;
 import com.starfishst.bot.messages.ReviewReactionResponse;
 import com.starfishst.bot.messages.TicketCreatorReactionResponse;
 import com.starfishst.bot.messages.TicketPanelReactionResponse;
-import com.starfishst.commands.jda.utils.responsive.ReactionResponse;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.gson.adapters.JsonAdapter;
+import me.googas.commands.jda.utils.responsive.ReactionResponse;
 
-public class ReactionResponseAdapter implements JsonAdapter<ReactionResponse> {
+public class ReactionResponseAdapter
+    implements JsonSerializer<ReactionResponse>, JsonDeserializer<ReactionResponse> {
 
   @NonNull @Getter
   private static final Map<String, Class<? extends ReactionResponse>> map = new HashMap<>();

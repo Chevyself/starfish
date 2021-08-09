@@ -22,4 +22,12 @@ public interface JdaConnection {
    * @return the jda connection
    */
   JDA getJda();
+
+  /**
+   * Get the jda connection validated as not-null
+   *
+   * @return the jda connection
+   */
+  @NonNull
+  JDA getJdaValidated();
 }

@@ -1,17 +1,15 @@
 package com.starfishst.bot.configuration;
 
 import com.google.gson.annotations.SerializedName;
+import com.starfishst.api.Starfish;
+import com.starfishst.api.StarfishFiles;
 import com.starfishst.api.configuration.DiscordConfiguration;
-import com.starfishst.bot.utility.Mongo;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.commons.CoreFiles;
 
 /** An implementation for {@link DiscordConfiguration} */
 public class StarfishDiscordConfiguration implements DiscordConfiguration {
@@ -62,22 +60,13 @@ public class StarfishDiscordConfiguration implements DiscordConfiguration {
 
   @NonNull
   public static StarfishDiscordConfiguration init() {
-    FileReader reader = null;
-    StarfishDiscordConfiguration configuration = StarfishDiscordConfiguration.fallback();
-    try {
-      reader =
-          new FileReader(CoreFiles.getFileOrResource(CoreFiles.currentDirectory(), "discord.json"));
-      configuration = Mongo.GSON.fromJson(reader, StarfishDiscordConfiguration.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    if (reader != null) {
-      try {
-        reader.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    return configuration;
+    return StarfishFiles.DISCORD
+        .read(Starfish.getJson(), StarfishDiscordConfiguration.class)
+        .handle(
+            e -> {
+              Starfish.getFallback().process(e, "Could not config.json");
+            })
+        .provide()
+        .orElseGet(StarfishDiscordConfiguration::fallback);
   }
 }

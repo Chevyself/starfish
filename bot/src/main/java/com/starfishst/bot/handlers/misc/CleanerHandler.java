@@ -7,19 +7,19 @@ import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import lombok.NonNull;
-import me.googas.commons.events.ListenPriority;
-import me.googas.commons.events.Listener;
-import me.googas.commons.maps.Maps;
-import me.googas.commons.time.Time;
-import me.googas.commons.time.Unit;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.starbox.events.ListenPriority;
+import me.googas.starbox.events.Listener;
+import me.googas.starbox.time.Time;
+import me.googas.starbox.time.unit.Unit;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Cleans the discord server from unloaded tickets, etc. */
@@ -58,13 +58,18 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
         BotUser owner = ticket.getOwner();
         TextChannel channel = ticket.getTextChannel();
         if (owner != null && channel != null) {
-          Map<String, String> placeholders = Maps.singleton("time", time.toEffectiveString());
-          Messages.build(
-                  owner.getLocaleFile().get("cleaner.delete-time.title", placeholders),
-                  owner.getLocaleFile().get("cleaner.delete-time.description", placeholders),
-                  ResultType.GENERIC,
-                  owner)
-              .send(channel, Messages.getErrorConsumer());
+          Map<String, String> placeholders = Collections.singletonMap("time", time.toString());
+          channel
+              .sendMessage(
+                  Messages.build(
+                          owner.getLocaleFile().get("cleaner.delete-time.title", placeholders),
+                          owner
+                              .getLocaleFile()
+                              .get("cleaner.delete-time.description", placeholders),
+                          ResultType.GENERIC,
+                          owner)
+                      .build())
+              .queue(Messages.getErrorConsumer());
         }
       }
     }
@@ -74,7 +79,7 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
   public void onTicketStatusUpdated(TicketStatusUpdatedEvent event) {
     if (event.isCancelled()) return;
     if (event.getStatus() == TicketStatus.CREATING) {
-      this.map.put(event.getTicket().getId(), this.getTime().getValue(Unit.SECONDS));
+      this.map.put(event.getTicket().getId(), this.getTime().getAs(Unit.SECONDS).getValueRound());
     }
     if (event.getStatus() != TicketStatus.CREATING) {
       this.map.remove(event.getTicket().getId());
@@ -83,7 +88,7 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
 
   @NonNull
   public Ticket refresh(@NonNull Ticket ticket) {
-    this.map.put(ticket.getId(), this.getTime().getValue(Unit.SECONDS));
+    this.map.put(ticket.getId(), this.getTime().getAs(Unit.SECONDS).getValueRound());
     return ticket;
   }
 
@@ -104,25 +109,7 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
 
   @NonNull
   public Time getTime() {
-    return Time.fromString(this.getPreferences().getOr("to-delete-ticket", String.class, "3m"));
-  }
-
-  @Override
-  public void run() {
-    HashMap<Long, Long> copy = new HashMap<>(this.map);
-    copy.forEach(
-        (id, secondsLeft) -> {
-          long left = secondsLeft - 1;
-          Ticket ticket = Starfish.getLoader().getTicket(id);
-          this.map.put(id, left);
-          if (ticket != null && ticket.getStatus() == TicketStatus.CREATING) {
-            if (left > 0) {
-              this.onSecondPass(ticket, new Time(left, Unit.SECONDS));
-            } else {
-              this.unload(ticket);
-            }
-          }
-        });
+    return Time.parse(this.getPreferences().getOr("to-delete-ticket", String.class, "3m"), false);
   }
 
   /**
@@ -136,12 +123,30 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
     List<Time> times = new ArrayList<>();
     for (String timeString : timeStrings) {
       try {
-        times.add(Time.fromString(timeString));
+        times.add(Time.parse(timeString, true));
       } catch (IllegalArgumentException e) {
         Starfish.getFallback().process(e, "Cleaner: " + timeString + " is not valid time!");
       }
     }
     return times;
+  }
+
+  @Override
+  public void run() {
+    HashMap<Long, Long> copy = new HashMap<>(this.map);
+    copy.forEach(
+        (id, secondsLeft) -> {
+          long left = secondsLeft - 1;
+          Ticket ticket = Starfish.getLoader().getTicket(id);
+          this.map.put(id, left);
+          if (ticket != null && ticket.getStatus() == TicketStatus.CREATING) {
+            if (left > 0) {
+              this.onSecondPass(ticket, Time.of(left, Unit.SECONDS));
+            } else {
+              this.unload(ticket);
+            }
+          }
+        });
   }
 
   @Override

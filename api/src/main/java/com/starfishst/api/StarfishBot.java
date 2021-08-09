@@ -10,23 +10,19 @@ import com.starfishst.api.loader.Loader;
 import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
 import com.starfishst.api.utility.StarfishCatchable;
-import com.starfishst.commands.jda.CommandManager;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.ref.SoftReference;
-import java.util.Collection;
 import lombok.NonNull;
-import me.googas.addons.AddonLoader;
-import me.googas.commons.CoreFiles;
-import me.googas.commons.Validate;
-import me.googas.commons.cache.Cache;
-import me.googas.commons.cache.Catchable;
-import me.googas.commons.events.ListenerManager;
-import me.googas.commons.fallback.Fallback;
-import me.googas.commons.scheduler.Scheduler;
+import me.googas.commands.jda.CommandManager;
+import me.googas.io.context.Json;
+import me.googas.net.cache.Cache;
+import me.googas.net.cache.Catchable;
+import me.googas.starbox.addons.AddonLoader;
+import me.googas.starbox.events.ListenerManager;
+import me.googas.starbox.scheduler.Scheduler;
 import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collection;
+import java.util.Objects;
 
 /** This object represents an Starfish bot instance */
 public interface StarfishBot {
@@ -56,55 +52,30 @@ public interface StarfishBot {
    */
   @NonNull
   default <T extends StarfishHandler> T requireHandler(@NonNull Class<T> clazz) {
-    T handler = this.getHandler(clazz);
-    return Validate.notNull(handler, "The handler " + clazz + " has not been registered");
+    return Objects.requireNonNull(this.getHandler(clazz), "The handler " + clazz + " has not been registered");
   }
 
   /** Saves the bot */
   default void save() {
     Fallback fallback = this.getFallback();
-    try {
-      File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "config.json");
-      FileWriter writer = new FileWriter(file);
-      try {
-        this.getGson().toJson(this.getConfiguration(), writer);
-      } catch (Exception e) {
-        fallback.process(e, "'config.json' could not be written!");
-      }
-      writer.close();
-    } catch (IOException e) {
-      fallback.process(e, "IOException: config.json could not be saved");
-    }
-    try {
-      File file = CoreFiles.getOrCreate(CoreFiles.currentDirectory(), "discord.json");
-      FileWriter writer = new FileWriter(file);
-      try {
-        this.getGson().toJson(this.getDiscordConfiguration(), writer);
-      } catch (Exception e) {
-        fallback.process(e, "'discord.json' could not be written!");
-      }
-      writer.close();
-    } catch (IOException e) {
-      fallback.process(e, "IOException: discord.json could not be saved");
-    }
+    StarfishFiles.CONFIG.write(this.getJson(), this.getConfiguration()).handle(e -> {
+      fallback.process(e, "There's been an error while trying to save 'config.json'");
+    }).provide();
+    StarfishFiles.DISCORD.write(this.getJson(), this.getDiscordConfiguration()).handle(e -> {
+      fallback.process(e, "There's been an error while trying to save 'discord.json'");
+    });
     for (LocaleFile file : this.getLanguageHandler().getFiles()) {
       file.save();
     }
   }
 
   default void saveCache() {
-    Collection<SoftReference<Catchable>> cacheCopy = this.getCache().copy();
-    cacheCopy.forEach(
-            reference -> {
-              Catchable catchable = reference.get();
-              if (catchable instanceof StarfishCatchable) {
-                try {
-                  ((StarfishCatchable) catchable).unload();
-                } catch (Throwable throwable) {
-                  throwable.printStackTrace();
-                }
-              }
-            });
+    this.getCache().keySetCopy().forEach(reference -> {
+      Catchable catchable = reference.get();
+      if (catchable instanceof StarfishCatchable) {
+        ((StarfishCatchable) catchable).unload();
+      }
+    });
   }
 
   /** Stops the bot */
@@ -217,8 +188,11 @@ public interface StarfishBot {
    *
    * @return the gson instance
    */
-  @NonNull
+  @NonNull @Deprecated
   Gson getGson();
+
+  @NonNull
+  Json getJson();
 
   /**
    * Get the language handler that the bot is using

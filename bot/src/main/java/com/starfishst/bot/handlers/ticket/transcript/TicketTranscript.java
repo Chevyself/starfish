@@ -1,19 +1,19 @@
 package com.starfishst.bot.handlers.ticket.transcript;
 
 import com.starfishst.api.Starfish;
+import com.starfishst.api.StarfishFiles;
 import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.utility.StarfishCatchable;
-import java.io.File;
+import com.starfishst.bot.CustomFormatter;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.CoreFiles;
-import me.googas.commons.log.LoggerFactory;
-import me.googas.commons.log.formatters.CustomFormatter;
-import me.googas.commons.time.Time;
+import me.googas.io.StarboxFile;
+import me.googas.starbox.builders.LoggerBuilder;
+import me.googas.starbox.time.Time;
 
 public class TicketTranscript implements StarfishCatchable {
 
@@ -24,21 +24,28 @@ public class TicketTranscript implements StarfishCatchable {
   @NonNull @Getter private final Logger logger;
 
   /** The file where the transcript is saved */
-  @NonNull @Getter private final File file;
+  @NonNull @Getter private final StarboxFile file;
 
   public TicketTranscript(@NonNull Ticket ticket) throws IOException {
-    String url =
-        CoreFiles.validatePath(
-            CoreFiles.currentDirectory() + "/transcripts/ticket-" + ticket.getId() + ".txt");
+    this.file = StarfishFiles.Transcripts.getTicketFile(ticket.getId());
+    if (!this.file.exists()) {
+      this.file.getParentFile().mkdirs();
+      if (!this.file.createNewFile()) throw new IOException(this.file + " could not be created");
+    }
     CustomFormatter formatter =
         new CustomFormatter(Starfish.getLanguageHandler().getDefault().get("transcript-log"));
-    this.file = CoreFiles.getOrCreate(url);
-    FileHandler fileHandler = new FileHandler(url, true);
+    FileHandler fileHandler = new FileHandler(this.file.getPath(), true);
     fileHandler.setFormatter(formatter);
     this.id = ticket.getId();
     this.logger =
-        LoggerFactory.start(
-            "Ticket-" + ticket.getId(), LoggerFactory.getConsoleHandler(formatter), fileHandler);
+        LoggerBuilder.of("Ticket-" + ticket.getId())
+            .saveAt(
+                this.file,
+                e -> {
+                  Starfish.getFallback()
+                      .process(e, "Could not save transcript of Ticket-" + ticket.getId());
+                })
+            .build();
   }
 
   @Override

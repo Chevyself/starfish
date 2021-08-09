@@ -2,16 +2,16 @@ package com.starfishst.api.configuration;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.utility.Discord;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import lombok.NonNull;
-import me.googas.commons.Validate;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /** The configuration for discord */
 public interface DiscordConfiguration {
@@ -106,8 +106,9 @@ public interface DiscordConfiguration {
   @NonNull
   default List<Role> getRoles(@NonNull String key) {
     List<Role> roles = new ArrayList<>();
-    List<Long> validated = Validate.notNullOr(this.getRoles().get(key), new ArrayList<>());
-    if (validated != this.getRoles().get(key)) {
+    List<Long> stored = this.getRoles().get(key);
+    List<Long> validated = stored == null ? new ArrayList<>() : stored;
+    if (validated != stored) {
       this.getRoles().put(key, validated);
     }
     JDA jda = Starfish.getJdaConnection().getJda();

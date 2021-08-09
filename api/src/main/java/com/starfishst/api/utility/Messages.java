@@ -3,18 +3,17 @@ package com.starfishst.api.utility;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.user.BotUser;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.commands.jda.utils.embeds.EmbedFactory;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
+import lombok.NonNull;
+import me.googas.commands.jda.result.ResultType;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-import lombok.NonNull;
-import me.googas.commons.Lots;
-import net.dv8tion.jda.api.entities.Message;
 
+@Deprecated
 public class Messages {
 
   /**
@@ -31,7 +30,7 @@ public class Messages {
    * @return the embed query
    */
   @NonNull
-  public static EmbedQuery build(
+  public static EmbedBuilder build(
       String title,
       String description,
       String thumbnail,
@@ -40,15 +39,11 @@ public class Messages {
       ResultType type,
       LinkedHashMap<String, String> fields,
       boolean inline) {
-    return EmbedFactory.newEmbed(
-        title,
-        description,
-        thumbnail,
-        image,
-        footer,
-        type == null ? null : type.getColor(Starfish.getConfiguration().getManagerOptions()),
-        fields,
-        inline);
+    EmbedBuilder builder = new EmbedBuilder().setTitle(title).setDescription(description).setThumbnail(thumbnail).setImage(image).setFooter(footer);
+    if (fields != null) {
+      fields.forEach((key, value) -> builder.addField(key, value, inline));
+    }
+    return builder;
   }
 
   /**
@@ -82,7 +77,7 @@ public class Messages {
    * @param locale the locale that will read the message
    * @return the embed query
    */
-  public static EmbedQuery build(
+  public static EmbedBuilder build(
       @NonNull String title,
       @NonNull String description,
       @NonNull ResultType type,
@@ -108,7 +103,7 @@ public class Messages {
    * @return the embed query
    */
   @NonNull
-  public static EmbedQuery build(
+  public static EmbedBuilder build(
       @NonNull String title,
       @NonNull String description,
       @NonNull ResultType type,
@@ -125,7 +120,7 @@ public class Messages {
    * @return the embed query
    */
   @NonNull
-  public static EmbedQuery build(
+  public static EmbedBuilder build(
       @NonNull String description, @NonNull ResultType type, @NonNull LocaleFile locale) {
     return Messages.build(
         type.getTitle(Starfish.getLanguageHandler(), null),
@@ -147,7 +142,7 @@ public class Messages {
    * @return the embed query
    */
   @NonNull
-  public static EmbedQuery build(
+  public static EmbedBuilder build(
       @NonNull String description, @NonNull ResultType type, @NonNull BotUser user) {
     return Messages.build(description, type, user.getLocaleFile());
   }
@@ -162,7 +157,7 @@ public class Messages {
    * @return the built message
    */
   @NonNull
-  public static EmbedQuery build(
+  public static EmbedBuilder build(
       @NonNull String titleKey,
       @NonNull String descKey,
       @NonNull Map<String, String> placeholders,
@@ -182,9 +177,9 @@ public class Messages {
    * @return the built embed query
    */
   @NonNull
-  public static EmbedQuery build(@NonNull BotUser user, @NonNull BotUser viewer) {
+  public static EmbedBuilder build(@NonNull BotUser user, @NonNull BotUser viewer) {
     Map<String, String> placeholders = user.getPlaceholders();
-    EmbedQuery build =
+    EmbedBuilder build =
             Messages.build("user-info.title", "user-info.description", placeholders, viewer.getLocaleFile());
     user.getPreferences()
         .getMap()
@@ -192,7 +187,7 @@ public class Messages {
             (key, value) -> {
               if (key.equalsIgnoreCase("lang") || key.equalsIgnoreCase("freelancer")) return;
               if (value instanceof Collection) {
-                build.addField(key, Lots.pretty((Collection<?>) value), true);
+                build.addField(key, value.toString().replace("[", "").replace("]", ""), true);
               } else {
                 build.addField(key, value.toString(), true);
               }
@@ -208,6 +203,8 @@ public class Messages {
    * @return the consumer for errors
    */
   public static Consumer<Message> getErrorConsumer() {
-    return Starfish.getCommandManager().getListener().getConsumer(new Result(ResultType.ERROR, ""));
+    return message -> {};
+    // return Starfish.getCommandManager().getListener().getConsumer(new Result(ResultType.ERROR, ""));
+    // TODO resolve
   }
 }

@@ -6,7 +6,7 @@ import com.starfishst.api.user.FreelancerRating;
 import java.util.Map;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.time.Time;
+import me.googas.starbox.time.Time;
 
 /** Implementation of freelancer rating */
 public class StarfishFreelancerRating implements FreelancerRating {

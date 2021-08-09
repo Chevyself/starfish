@@ -11,16 +11,16 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.bot.messages.ClaimOrderReactionResponse;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
-import com.starfishst.commands.jda.utils.message.MessageQuery;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.NonNull;
-import me.googas.commons.Lots;
-import me.googas.commons.events.ListenPriority;
-import me.googas.commons.events.Listener;
+import me.googas.starbox.events.ListenPriority;
+import me.googas.starbox.events.Listener;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -42,7 +42,9 @@ public class TicketAnnouncementHandler implements StarfishHandler {
       if (this.getPreferences().getOr("pin-copy-in-ticket", Boolean.class, true)
           && textChannel != null
           && owner != null) {
-        ticket.toCompleteInformation(owner, false).send(textChannel, msg -> msg.pin().queue());
+        textChannel
+            .sendMessageEmbeds(ticket.toCompleteInformation(owner, false).build())
+            .queue(msg -> msg.pin().queue());
       }
       if (owner != null && this.getAnnounceTypes().contains(type)) {
         TextChannel channel = type.getChannel();
@@ -70,7 +72,7 @@ public class TicketAnnouncementHandler implements StarfishHandler {
             (key, value) -> {
               // Safe to cast
               if (value instanceof List) {
-                Class<?> clazz = Lots.getClazz((List<?>) value);
+                Class<?> clazz = ValuesMap.getClazz((List<?>) value);
                 if (clazz != null) {
                   if (Long.class.isAssignableFrom(clazz)) {
                     toMention.addAll(Discord.getRoles(ticket.getDetails().getList(key)));
@@ -78,27 +80,28 @@ public class TicketAnnouncementHandler implements StarfishHandler {
                 }
               }
             });
-    EmbedQuery embedQuery = ticket.toCompleteInformation(user, false);
+    EmbedBuilder builder = ticket.toCompleteInformation(user, false);
     if (ticket.getType() == TicketType.QUOTE) {
       String footer = this.getPreferences().getOr("quote-footer", String.class, "none");
       if (!footer.equalsIgnoreCase("none")) {
-        embedQuery.setFooter(user.getLocaleFile().get(footer, ticket.getPlaceholders()));
+        builder.setFooter(user.getLocaleFile().get(footer, ticket.getPlaceholders()));
       }
     }
-    MessageQuery query = embedQuery.getAsMessageQuery();
-    query.getBuilder().append(Lots.pretty(Discord.getAsMention(toMention)));
-    query.send(
-        channel,
-        msg -> {
-          if (ticket.getType() == TicketType.ORDER) {
-            new BotResponsiveMessage(
-                    msg,
-                    Lots.set(new ClaimOrderReactionResponse(null)),
-                    new ValuesMap("id", ticket.getId()))
-                .cache()
-                .update();
-          }
-        });
+    MessageBuilder messageBuilder =
+        new MessageBuilder(builder).append(ValuesMap.pretty(Discord.getAsMention(toMention)));
+    channel
+        .sendMessage(messageBuilder.build())
+        .queue(
+            msg -> {
+              if (ticket.getType() == TicketType.ORDER) {
+                new BotResponsiveMessage(
+                        msg,
+                        new HashSet<>(Arrays.asList(new ClaimOrderReactionResponse(null))),
+                        new ValuesMap("id", ticket.getId()))
+                    .cache()
+                    .update();
+              }
+            });
   }
 
   /**

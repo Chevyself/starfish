@@ -2,13 +2,14 @@ package com.starfishst.api.exception;
 
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.core.exceptions.type.SimpleException;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
 import lombok.NonNull;
+import me.googas.commands.exceptions.type.StarboxException;
+import me.googas.commands.jda.result.ResultType;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
 
-/** An implementation for {@link SimpleException} */
-public class StarfishException extends SimpleException {
+/** An implementation for {@link me.googas.commands.exceptions.type.StarboxException} */
+public class StarfishException extends StarboxException {
 
   /**
    * Create the exception
@@ -36,7 +37,7 @@ public class StarfishException extends SimpleException {
    * @return the exception as a query
    */
   @NonNull
-  public EmbedQuery toQuery(@NonNull BotUser user) {
-    return Messages.build(this.getMessage(), ResultType.ERROR, user);
+  public MessageBuilder toQuery(@NonNull BotUser user) {
+    return new MessageBuilder(Messages.build(this.getMessage(), ResultType.ERROR, user));
   }
 }

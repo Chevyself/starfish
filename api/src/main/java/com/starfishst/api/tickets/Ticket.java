@@ -8,17 +8,17 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import lombok.NonNull;
-import me.googas.commons.Strings;
-import me.googas.commons.maps.Maps;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.starbox.Strings;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -84,13 +84,13 @@ public interface Ticket extends StarfishCatchable {
    * @return the complete information of a ticket
    */
   @NonNull
-  default EmbedQuery toCompleteInformation(@NonNull LocaleFile locale, boolean appendUsers) {
+  default EmbedBuilder toCompleteInformation(@NonNull LocaleFile locale, boolean appendUsers) {
     Map<String, String> placeholders = this.getPlaceholders();
     LinkedHashMap<String, String> fields = new LinkedHashMap<>();
 
     this.getDetails().toStringMap().forEach(fields::put);
     if (appendUsers) {
-      StringBuilder usersBuilder = Strings.getBuilder();
+      StringBuilder usersBuilder = new StringBuilder();
       this.getUsers()
           .forEach(
               (ticketUser, role) -> {
@@ -111,7 +111,9 @@ public interface Ticket extends StarfishCatchable {
               });
       fields.put("users", usersBuilder.toString());
     }
-    EmbedQuery embedQuery =
+
+
+    EmbedBuilder embedQuery =
         Messages.build(
             locale.get("ticket-info.title", placeholders),
             locale.get("ticket-info.description", placeholders),
@@ -129,7 +131,7 @@ public interface Ticket extends StarfishCatchable {
    * @return the complete information of a ticket
    */
   @NonNull
-  default EmbedQuery toCompleteInformation(@NonNull BotUser user, boolean appendUsers) {
+  default EmbedBuilder toCompleteInformation(@NonNull BotUser user, boolean appendUsers) {
     return this.toCompleteInformation(user.getLocaleFile(), appendUsers);
   }
 
@@ -264,11 +266,10 @@ public interface Ticket extends StarfishCatchable {
    */
   @NonNull
   default Map<String, String> getPlaceholders() {
-    Map<String, String> placeholders =
-        Maps.builder("id", String.valueOf(this.getId()))
-            .append("type", this.getType().toString().toLowerCase())
-            .append("status", this.getStatus().toString().toLowerCase())
-            .build();
+    Map<String, String> placeholders = new HashMap<>();
+    placeholders.put("id", String.valueOf(this.getId()));
+    placeholders.put("type", this.getType().toString().toLowerCase());
+    placeholders.put("status", this.getStatus().toString().toLowerCase());
     BotUser owner = this.getOwner();
     if (owner != null) {
       placeholders.put("owner", owner.getName());

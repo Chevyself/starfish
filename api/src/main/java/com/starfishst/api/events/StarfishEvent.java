@@ -1,7 +1,7 @@
 package com.starfishst.api.events;
 
 import com.starfishst.api.Starfish;
-import me.googas.commons.events.Event;
+import me.googas.starbox.events.Event;
 
 /** An event that can be called by the Starfish Bot */
 public interface StarfishEvent extends Event {

@@ -7,8 +7,8 @@ import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.user.BotUser;
 import lombok.NonNull;
-import me.googas.commons.events.ListenPriority;
-import me.googas.commons.events.Listener;
+import me.googas.starbox.events.ListenPriority;
+import me.googas.starbox.events.Listener;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Checks to update the name of a ticket channel */

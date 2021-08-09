@@ -3,8 +3,8 @@ package com.starfishst.bot.commands;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.tickets.Ticket;
-import com.starfishst.commands.jda.annotations.Command;
-import com.starfishst.core.annotations.Required;
+import me.googas.commands.annotations.Required;
+import me.googas.commands.jda.annotations.Command;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** General moderation commands */

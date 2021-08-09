@@ -2,16 +2,21 @@ package com.starfishst.api.lang;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
+
 import lombok.NonNull;
-import me.googas.commons.Strings;
-import me.googas.commons.Validate;
-import me.googas.commons.maps.MapBuilder;
+import me.googas.io.StarboxFile;
+import me.googas.starbox.Strings;
+import me.googas.starbox.builders.MapBuilder;
 
 /** The file of localized messages. Used to get the messages for {@link Localizable} */
 public interface LocaleFile extends Localizable {
 
-  /** Saves the locale file */
-  void save();
+  /** Saves the locale file
+   * @return this same instance
+   */
+  @NonNull
+  LocaleFile save();
 
   /**
    * Get the raw string from the file
@@ -43,7 +48,7 @@ public interface LocaleFile extends Localizable {
    */
   @NonNull
   default String get(@NonNull String path, @NonNull Map<String, String> placeholders) {
-    return Strings.build(this.get(path), placeholders);
+    return Strings.format(this.get(path), placeholders);
   }
 
   /**
@@ -56,7 +61,7 @@ public interface LocaleFile extends Localizable {
    */
   @NonNull
   default String get(@NonNull String path, @NonNull MapBuilder<String, String> placeholders) {
-    return Strings.build(this.get(path), placeholders);
+    return Strings.format(this.get(path), placeholders);
   }
 
   /**
@@ -65,7 +70,7 @@ public interface LocaleFile extends Localizable {
    * @return the file that this is using
    */
   @NonNull
-  File getFile();
+  StarboxFile getFile();
 
   /**
    * Get the unicode that differentiates this language
@@ -73,6 +78,6 @@ public interface LocaleFile extends Localizable {
    * @return the unicode to differentiate this language
    */
   default @NonNull String getUnicode() {
-    return Validate.notNull(this.getRaw("unicode"), this + " has a null unicode property");
+    return Objects.requireNonNull(this.getRaw("unicode"), this + " has a null unicode property");
   }
 }

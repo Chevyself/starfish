@@ -4,16 +4,16 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.permissions.Permissible;
 import com.starfishst.api.user.BotUser;
-import com.starfishst.commands.jda.context.CommandContext;
-import com.starfishst.core.exceptions.ArgumentProviderException;
-import com.starfishst.core.providers.type.IArgumentProvider;
+import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
-import me.googas.commons.maps.Maps;
+import me.googas.commands.exceptions.ArgumentProviderException;
+import me.googas.commands.jda.context.CommandContext;
+import me.googas.commands.jda.providers.type.JdaArgumentProvider;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
-public class PermissibleProvider implements IArgumentProvider<Permissible, CommandContext> {
+public class PermissibleProvider implements JdaArgumentProvider<Permissible> {
   @Override
   public @NonNull Class<Permissible> getClazz() {
     return Permissible.class;
@@ -44,7 +44,9 @@ public class PermissibleProvider implements IArgumentProvider<Permissible, Comma
       return permissible;
     } else {
       throw new ArgumentProviderException(
-          sender.getLocaleFile().get("invalid.permissible", Maps.singleton("string", string)));
+          sender
+              .getLocaleFile()
+              .get("invalid.permissible", Collections.singletonMap("string", string)));
     }
   }
 }

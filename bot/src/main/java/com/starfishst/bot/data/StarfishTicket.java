@@ -13,11 +13,11 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.ValuesMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.builder.ToStringBuilder;
-import me.googas.commons.time.Time;
+import me.googas.starbox.time.Time;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -161,13 +161,13 @@ public class StarfishTicket implements Ticket {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
-        .append("id", this.id)
-        .append("type", this.type)
-        .append("users", this.users)
-        .append("details", this.details)
-        .append("channel", this.channel)
-        .append("status", this.status)
-        .build();
+    return new StringJoiner(", ", StarfishTicket.class.getSimpleName() + "[", "]")
+        .add("id=" + this.id)
+        .add("type=" + this.type)
+        .add("users=" + this.users)
+        .add("details=" + this.details)
+        .add("channel=" + this.channel)
+        .add("status=" + this.status)
+        .toString();
   }
 }

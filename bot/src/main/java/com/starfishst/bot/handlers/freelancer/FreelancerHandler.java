@@ -6,12 +6,13 @@ import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
+import com.starfishst.api.utility.ValuesMap;
 import java.util.ArrayList;
 import java.util.List;
-import me.googas.commons.Lots;
-import me.googas.commons.events.ListenPriority;
-import me.googas.commons.events.Listener;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.starbox.events.ListenPriority;
+import me.googas.starbox.events.Listener;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -35,14 +36,16 @@ public class FreelancerHandler implements StarfishHandler {
       if (user != null) {
         user.openPrivateChannel()
             .queue(
-                privateChannel ->
-                    Messages.build(
-                            botUser
-                                .getLocaleFile()
-                                .get("user.not-freelancer", ticket.getPlaceholders()),
-                            ResultType.PERMISSION,
-                            botUser)
-                        .send(privateChannel));
+                privateChannel -> {
+                  EmbedBuilder embedBuilder =
+                      Messages.build(
+                          botUser
+                              .getLocaleFile()
+                              .get("user.not-freelancer", ticket.getPlaceholders()),
+                          ResultType.PERMISSION,
+                          botUser);
+                  privateChannel.sendMessageEmbeds(embedBuilder.build()).queue();
+                });
       }
     } else {
       if (ticket.hasFreelancers()) {
@@ -52,14 +55,16 @@ public class FreelancerHandler implements StarfishHandler {
               .getUser()
               .openPrivateChannel()
               .queue(
-                  channel ->
-                      Messages.build(
-                              botUser
-                                  .getLocaleFile()
-                                  .get("freelancer.ticket-claimed", ticket.getPlaceholders()),
-                              ResultType.PERMISSION,
-                              botUser)
-                          .send(channel));
+                  channel -> {
+                    EmbedBuilder embedBuilder =
+                        Messages.build(
+                            botUser
+                                .getLocaleFile()
+                                .get("freelancer.ticket-claimed", ticket.getPlaceholders()),
+                            ResultType.PERMISSION,
+                            botUser);
+                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                  });
         }
         event.setCancelled(true);
       } else {
@@ -70,7 +75,7 @@ public class FreelancerHandler implements StarfishHandler {
             .forEach(
                 (key, value) -> {
                   if (value instanceof List) {
-                    Class<?> clazz = Lots.getClazz((List<?>) value);
+                    Class<?> clazz = ValuesMap.getClazz((List<?>) value);
                     if (clazz != null && Long.class.isAssignableFrom(clazz)) {
                       allowedRoles.addAll(Discord.getRoles(ticket.getDetails().getList(key)));
                     }
@@ -91,14 +96,16 @@ public class FreelancerHandler implements StarfishHandler {
                 .getUser()
                 .openPrivateChannel()
                 .queue(
-                    privateChannel ->
-                        Messages.build(
-                                botUser
-                                    .getLocaleFile()
-                                    .get("freelancer.not-roles", ticket.getPlaceholders()),
-                                ResultType.PERMISSION,
-                                botUser)
-                            .send(privateChannel));
+                    privateChannel -> {
+                      EmbedBuilder embedBuilder =
+                          Messages.build(
+                              botUser
+                                  .getLocaleFile()
+                                  .get("freelancer.not-roles", ticket.getPlaceholders()),
+                              ResultType.PERMISSION,
+                              botUser);
+                      privateChannel.sendMessageEmbeds(embedBuilder.build());
+                    });
             event.setCancelled(true);
           }
         }

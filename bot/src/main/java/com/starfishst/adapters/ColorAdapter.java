@@ -1,15 +1,16 @@
 package com.starfishst.adapters;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
-import java.awt.*;
+import com.google.gson.JsonSerializer;
+import java.awt.Color;
 import java.lang.reflect.Type;
-import me.googas.commons.gson.adapters.JsonAdapter;
 
-public class ColorAdapter implements JsonAdapter<Color> {
+public class ColorAdapter implements JsonSerializer<Color>, JsonDeserializer<Color> {
 
   @Override
   public Color deserialize(

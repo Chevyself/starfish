@@ -4,8 +4,8 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.events.StarfishHandler;
 import lombok.CustomLog;
 import lombok.NonNull;
-import me.googas.commons.time.Time;
-import me.googas.commons.time.Unit;
+import me.googas.starbox.time.Time;
+import me.googas.starbox.time.unit.Unit;
 
 /** A task to auto-save the config */
 @CustomLog
@@ -19,7 +19,7 @@ public class AutoSaveHandler implements StarfishHandler, Runnable {
   @NonNull
   private Time getTime() {
     try {
-      return Time.fromString(this.getPreferences().getOr("time", String.class, "2m"));
+      return Time.parse(this.getPreferences().getOr("time", String.class, "2m"), true);
     } catch (IllegalArgumentException e) {
       Starfish.getFallback()
           .process(
@@ -27,7 +27,7 @@ public class AutoSaveHandler implements StarfishHandler, Runnable {
               "Auto Save: "
                   + this.getPreferences().get("time", String.class)
                   + " is not valid time!");
-      return new Time(2, Unit.MINUTES);
+      return Time.of(2, Unit.MINUTES);
     }
   }
 

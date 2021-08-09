@@ -4,7 +4,7 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.utility.ValuesMap;
 import java.util.HashMap;
 import lombok.NonNull;
-import me.googas.commons.events.ListenerManager;
+import me.googas.starbox.events.ListenerManager;
 import net.dv8tion.jda.api.JDA;
 
 /** Handles JDA events */
@@ -17,7 +17,7 @@ public interface StarfishHandler {
    */
   default void register(@NonNull JDA api, @NonNull ListenerManager listenerManager) {
     api.addEventListener(this);
-    listenerManager.registerListeners(this);
+    listenerManager.parseAndRegister(this);
   }
 
   /**

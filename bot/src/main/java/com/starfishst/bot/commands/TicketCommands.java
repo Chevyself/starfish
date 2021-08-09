@@ -10,15 +10,14 @@ import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
-import com.starfishst.commands.jda.annotations.Command;
-import com.starfishst.commands.jda.context.CommandContext;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.core.annotations.Optional;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import me.googas.commons.Strings;
+import me.googas.commands.annotations.Free;
+import me.googas.commands.jda.annotations.Command;
+import me.googas.commands.jda.context.CommandContext;
+import me.googas.commands.jda.result.Result;
+import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Commands for tickets */
@@ -41,16 +40,18 @@ public class TicketCommands {
   public Result ticketinfo(
       CommandContext context,
       BotUser user,
-      @Optional(
+      @Free(
               name = "Ticket",
               description = "The id of the ticket to see the information",
               suggestions = "-1")
           Ticket ticket) {
+    Result.ResultBuilder builder = Result.builder();
     if (context.hasFlag("-u") && user.hasPermission("starfish.ticket.info.users", "discord")) {
-      return new Result(ticket.toCompleteInformation(user, true));
+      builder.getMessage().setEmbeds(ticket.toCompleteInformation(user, true).build());
     } else {
-      return new Result(ticket.toCompleteInformation(user, false));
+      builder.getMessage().setEmbeds(ticket.toCompleteInformation(user, false).build());
     }
+    return builder.build();
   }
 
   @Command(
@@ -59,7 +60,7 @@ public class TicketCommands {
       node = "starfish.ticket.announce")
   public Result announce(
       BotUser user,
-      @Optional(
+      @Free(
               name = "id",
               description = "The id of the ticket to see the information",
               suggestions = "-1")
@@ -87,7 +88,7 @@ public class TicketCommands {
   @Command(aliases = "close", description = "close.desc", node = "starfish.close")
   public Result close(
       BotUser sender,
-      @Optional(name = "close.ticket", description = "close.ticket.desc", suggestions = "-1")
+      @Free(name = "close.ticket", description = "close.ticket.desc", suggestions = "-1")
           Ticket ticket) {
     if (ticket.getStatus() == TicketStatus.CLOSED) {
       return new Result(sender.getLocaleFile().get("closed.already", ticket.getPlaceholders()));
@@ -101,7 +102,7 @@ public class TicketCommands {
   public Result offers(
       CommandContext context,
       BotUser sender,
-      @Optional(name = "offers.ticket", description = "offers.ticket.desc", suggestions = "-1")
+      @Free(name = "offers.ticket", description = "offers.ticket.desc", suggestions = "-1")
           Ticket ticket) {
     LocaleFile locale = sender.getLocaleFile();
     if (ticket.getType() != TicketType.QUOTE) {
@@ -114,7 +115,7 @@ public class TicketCommands {
       }
       Loader loader = Starfish.getLoader();
       Collection<Offer> offers = loader.getOffers(ticket);
-      StringBuilder builder = Strings.getBuilder();
+      StringBuilder builder = new StringBuilder();
       builder.append(locale.get("offers.title", ticket.getPlaceholders()));
       for (Offer offer : offers) {
         HashMap<String, String> placeholders = new HashMap<>();

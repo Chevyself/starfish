@@ -2,10 +2,10 @@ package com.starfishst.api.utility;
 
 import com.starfishst.api.Starfish;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import lombok.NonNull;
-import me.googas.commons.Lots;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
@@ -23,9 +23,7 @@ public class Discord {
 
   /** This list contains the permissions needed for a user to read and write inside a channel */
   @NonNull
-  public static final List<Permission> ALLOWED =
-      Lots.list(
-          Permission.VOICE_CONNECT,
+  public static final List<Permission> ALLOWED = Arrays.asList(Permission.VOICE_CONNECT,
           Permission.VOICE_SPEAK,
           Permission.VOICE_STREAM,
           Permission.VOICE_USE_VAD,
@@ -34,10 +32,11 @@ public class Discord {
           Permission.MESSAGE_EMBED_LINKS,
           Permission.MESSAGE_HISTORY);
 
+
   /** This list contains the permissions needed for a user to read inside a channel */
   @NonNull
-  public static final List<Permission> ALLOWED_SEE =
-      Lots.list(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
+  public static final List<Permission> ALLOWED_SEE = Arrays.asList(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
+
 
   /**
    * Validates a category by checking that it is not null and is not full. If it is full it will
@@ -67,7 +66,7 @@ public class Discord {
         return category.createCopy().complete();
       } else {
         category = guild.createCategory(name).complete();
-        applyPermissions(category, removePerms, allow, allowSee);
+        Discord.applyPermissions(category, removePerms, allow, allowSee);
         return category;
       }
     }
@@ -84,7 +83,7 @@ public class Discord {
    */
   public static <I extends IPermissionHolder, C extends GuildChannel> void allow(
       @NonNull C channel, @NonNull List<I> toAllow, @NonNull Collection<Permission> permissions) {
-    toAllow.forEach(allow -> allow(channel, allow, permissions));
+    toAllow.forEach(allow -> Discord.allow(channel, allow, permissions));
   }
 
   /**
@@ -143,7 +142,7 @@ public class Discord {
     if (ids == null || ids.isEmpty()) return mentions;
     for (Long id : ids) {
       if (id != null) {
-        Role role = getRole(id);
+        Role role = Discord.getRole(id);
         if (role != null) mentions.add(role.getAsMention());
       }
     }
@@ -172,7 +171,7 @@ public class Discord {
       List<I> allowSee) {
     if (channel == null) {
       channel = guild.createTextChannel(channelName).complete();
-      applyPermissions(channel, removePerms, allow, allowSee);
+      Discord.applyPermissions(channel, removePerms, allow, allowSee);
     }
     return channel;
   }
@@ -191,13 +190,13 @@ public class Discord {
   private static <C extends GuildChannel, I extends IPermissionHolder> void applyPermissions(
       @NonNull C channel, boolean removePerms, List<I> allow, List<I> allowSee) {
     if (removePerms) {
-      removePublicPerms(channel);
+      Discord.removePublicPerms(channel);
     }
     if (allow != null && !allow.isEmpty()) {
-      allow(channel, allow, ALLOWED);
+      Discord.allow(channel, allow, Discord.ALLOWED);
     }
     if (allowSee != null && !allowSee.isEmpty()) {
-      allow(channel, allowSee, ALLOWED_SEE);
+      Discord.allow(channel, allowSee, Discord.ALLOWED_SEE);
     }
   }
 
@@ -228,7 +227,7 @@ public class Discord {
   public static <I extends IPermissionHolder, C extends GuildChannel> void disallow(
       @NonNull C channel, @NonNull List<I> members) {
     for (I member : members) {
-      disallow(channel, member);
+      Discord.disallow(channel, member);
     }
   }
 
@@ -256,7 +255,7 @@ public class Discord {
   public static boolean hasRole(@NonNull Member member, @NonNull List<Role> query) {
     if (query.isEmpty()) return false;
     for (Role role : query) {
-      if (hasRole(member, role)) return true;
+      if (Discord.hasRole(member, role)) return true;
     }
     return false;
   }
@@ -285,7 +284,7 @@ public class Discord {
     if (ids == null || ids.isEmpty()) return roles;
     for (Long id : ids) {
       if (id != null) {
-        Role role = getRole(id);
+        Role role = Discord.getRole(id);
         if (role != null) {
           roles.add(role);
         }

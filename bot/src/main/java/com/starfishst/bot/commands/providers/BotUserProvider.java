@@ -2,14 +2,16 @@ package com.starfishst.bot.commands.providers;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.user.BotUser;
-import com.starfishst.commands.jda.context.CommandContext;
-import com.starfishst.commands.jda.providers.type.JdaArgumentProvider;
-import com.starfishst.core.exceptions.ArgumentProviderException;
 import lombok.NonNull;
+import me.googas.commands.exceptions.ArgumentProviderException;
+import me.googas.commands.jda.context.CommandContext;
+import me.googas.commands.jda.providers.type.JdaArgumentProvider;
+import me.googas.commands.jda.providers.type.JdaExtraArgumentProvider;
 import net.dv8tion.jda.api.entities.User;
 
 /** Provides the command manager with bot users */
-public class BotUserProvider implements JdaArgumentProvider<BotUser> {
+public class BotUserProvider
+    implements JdaArgumentProvider<BotUser>, JdaExtraArgumentProvider<BotUser> {
 
   @Override
   public @NonNull Class<BotUser> getClazz() {
@@ -28,8 +30,9 @@ public class BotUserProvider implements JdaArgumentProvider<BotUser> {
     }
   }
 
+  @NonNull
   @Override
-  public boolean provides(@NonNull Class<?> clazz) {
-    return clazz == BotUser.class;
+  public BotUser getObject(@NonNull CommandContext context) {
+    return Starfish.getLoader().getStarfishUser(context.getSender().getIdLong());
   }
 }

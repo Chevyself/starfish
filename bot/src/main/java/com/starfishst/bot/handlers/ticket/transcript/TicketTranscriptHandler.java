@@ -7,7 +7,6 @@ import com.starfishst.api.tickets.Ticket;
 import java.io.IOException;
 import java.util.Map;
 import lombok.NonNull;
-import me.googas.commons.Strings;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
@@ -42,7 +41,7 @@ public class TicketTranscriptHandler implements StarfishHandler {
     Map<String, String> placeholders = ticket.getPlaceholders();
     placeholders.put("sender", event.getAuthor().getAsTag());
     placeholders.put("senderId", String.valueOf(event.getAuthor().getIdLong()));
-    StringBuilder builder = Strings.getBuilder();
+    StringBuilder builder = new StringBuilder();
     Message message = event.getMessage();
     builder.append(message.getContentRaw()).append(" ");
     event

@@ -11,12 +11,12 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.bot.messages.TicketCreatorReactionResponse;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.commands.jda.utils.message.MessageQuery;
 import java.util.List;
 import java.util.Map;
-import me.googas.commons.events.ListenPriority;
-import me.googas.commons.events.Listener;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.starbox.events.ListenPriority;
+import me.googas.starbox.events.Listener;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Handles ticket creators */
@@ -39,25 +39,27 @@ public class TicketCreatorHandler implements StarfishHandler {
         && owner != null) {
       LocaleFile locale = owner.getLocaleFile();
       Map<String, String> placeholders = ticket.getPlaceholders();
-      MessageQuery query =
-          Messages.build(
+      MessageBuilder builder =
+          new MessageBuilder(
+              Messages.build(
                   locale.get("ticket-creator.title", placeholders),
                   locale.get("ticket-creator.description", placeholders),
                   ResultType.GENERIC,
-                  owner)
-              .getAsMessageQuery();
+                  owner));
       List<BotUser> customers = ticket.getUsers("customer");
       for (BotUser customer : customers) {
-        query.getBuilder().append(customer.getMention());
+        builder.append(customer.getMention());
       }
-      query.send(
-          channel,
-          msg -> {
-            TicketCreatorReactionResponse.add(
-                new BotResponsiveMessage(msg.getIdLong(), new ValuesMap("ticket", ticket.getId()))
-                    .cache(),
-                msg);
-          });
+      channel
+          .sendMessage(builder.build())
+          .queue(
+              msg -> {
+                TicketCreatorReactionResponse.add(
+                    new BotResponsiveMessage(
+                            msg.getIdLong(), new ValuesMap("ticket", ticket.getId()))
+                        .cache(),
+                    msg);
+              });
     }
   }
 

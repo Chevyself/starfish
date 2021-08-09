@@ -1,22 +1,21 @@
 package com.starfishst.bot.configuration;
 
 import com.google.gson.annotations.SerializedName;
+import com.starfishst.api.Starfish;
+import com.starfishst.api.StarfishFiles;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.utility.Fee;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.bot.utility.Mongo;
-import com.starfishst.commands.jda.ManagerOptions;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.commons.CoreFiles;
-import me.googas.commons.time.Time;
-import me.googas.commons.time.Unit;
+import me.googas.commands.jda.DefaultListenerOptions;
+import me.googas.commands.jda.ListenerOptions;
+import me.googas.starbox.time.Time;
+import me.googas.starbox.time.unit.Unit;
 
 /** An implementation for {@link com.starfishst.api.configuration.Configuration} */
 public class StarfishConfiguration implements Configuration {
@@ -36,7 +35,7 @@ public class StarfishConfiguration implements Configuration {
   @SerializedName("commands")
   @NonNull
   @Getter
-  private final ManagerOptions managerOptions;
+  private final ListenerOptions listenerOptions;
 
   @SerializedName("handlers")
   @NonNull
@@ -64,8 +63,8 @@ public class StarfishConfiguration implements Configuration {
   @Setter @Getter private long total;
 
   /**
-   * This constructor is used for gson. Use {@link me.googas.commons.fallback.Fallback} for a
-   * configuration with no constructor
+   * This constructor is used for gson. Use {@link com.starfishst.api.Fallback} for a configuration
+   * with no constructor
    */
   @Deprecated
   public StarfishConfiguration() {
@@ -74,11 +73,11 @@ public class StarfishConfiguration implements Configuration {
         "en",
         0,
         new ArrayList<>(),
-        new Time(25, Unit.MINUTES),
-        new Time(25, Unit.MINUTES),
-        new Time(25, Unit.MINUTES),
+        Time.of(25, Unit.MINUTES),
+        Time.of(25, Unit.MINUTES),
+        Time.of(25, Unit.MINUTES),
         new StarfishMongoConfiguration("", ""),
-        new ManagerOptions(),
+        new DefaultListenerOptions(),
         new HashMap<>(),
         "-");
   }
@@ -94,7 +93,7 @@ public class StarfishConfiguration implements Configuration {
    * @param unloadUsers the time to unload users
    * @param unloadMessages the time to unload messages
    * @param mongoConfiguration the configuration for mongo
-   * @param managerOptions the options for commands
+   * @param listenerOptions the options for commands
    * @param handlerPreferences the preferences for handlers
    * @param prefix
    */
@@ -107,7 +106,7 @@ public class StarfishConfiguration implements Configuration {
       @NonNull Time unloadUsers,
       @NonNull Time unloadMessages,
       @NonNull StarfishMongoConfiguration mongoConfiguration,
-      @NonNull ManagerOptions managerOptions,
+      @NonNull ListenerOptions listenerOptions,
       @NonNull HashMap<String, ValuesMap> handlerPreferences,
       @NonNull String prefix) {
     this.token = token;
@@ -118,7 +117,7 @@ public class StarfishConfiguration implements Configuration {
     this.unloadUsers = unloadUsers;
     this.unloadMessages = unloadMessages;
     this.mongoConfiguration = mongoConfiguration;
-    this.managerOptions = managerOptions;
+    this.listenerOptions = listenerOptions;
     this.handlerPreferences = handlerPreferences;
     this.prefix = prefix;
   }
@@ -135,33 +134,24 @@ public class StarfishConfiguration implements Configuration {
         "en",
         0,
         new ArrayList<>(),
-        new Time(25, Unit.MINUTES),
-        new Time(25, Unit.MINUTES),
-        new Time(25, Unit.MINUTES),
+        Time.of(25, Unit.MINUTES),
+        Time.of(25, Unit.MINUTES),
+        Time.of(25, Unit.MINUTES),
         new StarfishMongoConfiguration("", ""),
-        new ManagerOptions(),
+        new DefaultListenerOptions(),
         new HashMap<>(),
         "-");
   }
 
   @NonNull
   public static StarfishConfiguration init() {
-    FileReader reader = null;
-    StarfishConfiguration configuration = StarfishConfiguration.fallback();
-    try {
-      reader =
-          new FileReader(CoreFiles.getFileOrResource(CoreFiles.currentDirectory(), "config.json"));
-      configuration = Mongo.GSON.fromJson(reader, StarfishConfiguration.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    if (reader != null) {
-      try {
-        reader.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    return configuration;
+    return StarfishFiles.CONFIG
+        .read(Starfish.getJson(), StarfishConfiguration.class)
+        .handle(
+            e -> {
+              Starfish.getFallback().process(e, "Could not config.json");
+            })
+        .provide()
+        .orElseGet(StarfishConfiguration::fallback);
   }
 }

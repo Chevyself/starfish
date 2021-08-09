@@ -1,7 +1,7 @@
 package com.starfishst.api.messages;
 
-import com.starfishst.commands.jda.utils.responsive.ReactionResponse;
 import lombok.NonNull;
+import me.googas.commands.jda.utils.responsive.ReactionResponse;
 
 public interface BotReactionResponse extends ReactionResponse {
 

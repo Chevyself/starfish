@@ -3,14 +3,14 @@ package com.starfishst.bot;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.role.BotRole;
 import com.starfishst.api.user.BotUser;
-import com.starfishst.commands.jda.context.CommandContext;
-import com.starfishst.commands.jda.context.GuildCommandContext;
-import com.starfishst.commands.jda.messages.MessagesProvider;
-import com.starfishst.commands.jda.permissions.JdaPermission;
-import com.starfishst.commands.jda.permissions.PermissionChecker;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.commands.jda.result.ResultType;
 import lombok.NonNull;
+import me.googas.commands.jda.context.CommandContext;
+import me.googas.commands.jda.context.GuildCommandContext;
+import me.googas.commands.jda.messages.MessagesProvider;
+import me.googas.commands.jda.permissions.EasyPermission;
+import me.googas.commands.jda.permissions.PermissionChecker;
+import me.googas.commands.jda.result.Result;
+import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
 
@@ -36,11 +36,13 @@ public class StarfishPermissionChecker implements PermissionChecker {
   }
 
   @Override
-  public Result checkPermission(@NonNull CommandContext context, @NonNull JdaPermission perm) {
+  public Result checkPermission(@NonNull CommandContext context, @NonNull EasyPermission perm) {
     String permNode = perm.getNode();
     Permission permission = perm.getPermission();
     if (permission != Permission.UNKNOWN) {
-      return new Result(ResultType.ERROR, "This operation is not supported by this bot");
+      return Result.forType(ResultType.ERROR)
+          .setDescription("This operation is not support by this bot")
+          .build();
     }
     // If a node starts with user: it will check for user permissions not member
     if (!permNode.isEmpty()) {
@@ -58,7 +60,9 @@ public class StarfishPermissionChecker implements PermissionChecker {
           BotRole roleData = this.dataLoader.getStarfishRole(role.getIdLong());
           if (roleData.containsPermission(permNode, "discord")
               && !roleData.hasPermission(permNode, "context")) {
-            return new Result(ResultType.PERMISSION, this.messagesProvider.notAllowed(context));
+            return Result.forType(ResultType.PERMISSION)
+                .setDescription(this.messagesProvider.notAllowed(context))
+                .build();
           } else if (roleData.hasPermission(permNode, "discord")) {
             return null;
           }
@@ -70,7 +74,9 @@ public class StarfishPermissionChecker implements PermissionChecker {
           return null;
         }
       }
-      return new Result(ResultType.PERMISSION, this.messagesProvider.notAllowed(context));
+      return Result.forType(ResultType.PERMISSION)
+          .setDescription(this.messagesProvider.notAllowed(context))
+          .build();
     }
     return null;
   }

@@ -13,6 +13,7 @@ import com.starfishst.adapters.PermissionStackDeserializer;
 import com.starfishst.adapters.QuestionAdapter;
 import com.starfishst.adapters.ReactionResponseAdapter;
 import com.starfishst.adapters.ResponsiveMessageDeserializer;
+import com.starfishst.adapters.TimeAdapter;
 import com.starfishst.adapters.ValuesMapAdapter;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.messages.BotResponsiveMessage;
@@ -22,18 +23,17 @@ import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.bot.data.StarfishPermission;
 import com.starfishst.bot.handlers.questions.Question;
-import com.starfishst.commands.jda.utils.responsive.ReactionResponse;
-import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
 import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.NonNull;
-import me.googas.annotations.Nullable;
-import me.googas.commons.cache.Cache;
-import me.googas.commons.gson.adapters.time.TimeAdapter;
-import me.googas.commons.time.Time;
+import me.googas.commands.jda.utils.responsive.ReactionResponse;
+import me.googas.commands.jda.utils.responsive.ResponsiveMessage;
+import me.googas.net.cache.Cache;
+import me.googas.starbox.time.Time;
 import org.bson.Document;
 
 /** Static utilities for mongo */
@@ -81,7 +81,6 @@ public class Mongo {
     }
   }
 
-  @Nullable
   public static <T extends StarfishCatchable> T get(
       @NonNull Class<T> typeOfT,
       @NonNull MongoCollection<Document> collection,
@@ -91,7 +90,6 @@ public class Mongo {
         .getOrSupply(typeOfT, predicate, () -> Mongo.getCatchable(typeOfT, collection, query));
   }
 
-  @Nullable
   public static <T extends StarfishCatchable> T getCatchable(
       @NonNull Class<T> typeOfT,
       @NonNull MongoCollection<Document> collection,
@@ -99,8 +97,8 @@ public class Mongo {
     Document first = collection.find(query).first();
     if (first == null) return null;
     T t = Mongo.getObject(typeOfT, first);
-    T t1 = Starfish.getCache().get(typeOfT, catchable -> catchable.equals(t));
-    if (t1 != null) return t1;
+    Optional<T> optional = Starfish.getCache().get(typeOfT, catchable -> catchable.equals(t));
+    if (optional.isPresent()) return optional.get();
     if (t != null) t.cache();
     return t;
   }
@@ -113,7 +111,6 @@ public class Mongo {
    * @param <T> the type of the object
    * @return the object given by json
    */
-  @Nullable
   public static <T> T getObject(@NonNull Type typeOfT, @NonNull Document document) {
     try {
       return Mongo.GSON.fromJson(document.toJson(), typeOfT);
@@ -127,7 +124,7 @@ public class Mongo {
       @NonNull Class<T> typeOfT,
       @NonNull MongoCollection<Document> collection,
       @NonNull Document query,
-      @Nullable Document sort,
+      Document sort,
       int page,
       int limit) {
     List<T> list = new ArrayList<>();
@@ -193,7 +190,7 @@ public class Mongo {
       @NonNull Class<T> clazz,
       @NonNull MongoCollection<Document> collection,
       @NonNull Document query,
-      @Nullable Document sort,
+      Document sort,
       int page,
       int size,
       @NonNull Predicate<T> predicate) {

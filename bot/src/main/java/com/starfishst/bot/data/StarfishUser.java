@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.time.Time;
+import me.googas.starbox.time.Time;
 
 /** An implementation for {@link BotUser} */
 public class StarfishUser implements BotUser {

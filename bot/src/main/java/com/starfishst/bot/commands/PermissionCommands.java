@@ -5,12 +5,11 @@ import com.starfishst.api.permissions.Permission;
 import com.starfishst.api.permissions.PermissionStack;
 import com.starfishst.bot.data.StarfishPermission;
 import com.starfishst.bot.tickets.StarfishPermissionStack;
-import com.starfishst.commands.jda.annotations.Command;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.core.annotations.Parent;
-import com.starfishst.core.annotations.Required;
 import java.util.HashSet;
-import me.googas.commons.Strings;
+import me.googas.commands.annotations.Parent;
+import me.googas.commands.annotations.Required;
+import me.googas.commands.jda.annotations.Command;
+import me.googas.commands.jda.result.Result;
 
 /** Commands related to permissions */
 public class PermissionCommands {
@@ -29,7 +28,7 @@ public class PermissionCommands {
   public Result permissions(
       @Required(name = "permissions.permissible", description = "permissions.permissible.desc")
           Permissible permissible) {
-    StringBuilder builder = Strings.getBuilder();
+    StringBuilder builder = new StringBuilder();
     for (PermissionStack stack : permissible.getPermissions()) {
       builder.append("**Context: ").append(stack.getContext()).append("**").append("\n");
       for (Permission permission : stack.getPermissions()) {

@@ -5,11 +5,10 @@ import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.bot.messages.TicketPanelReactionResponse;
-import com.starfishst.commands.jda.annotations.Command;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.core.annotations.Optional;
-import com.starfishst.core.exceptions.type.SimpleRuntimeException;
+import me.googas.commands.annotations.Free;
+import me.googas.commands.jda.annotations.Command;
+import me.googas.commands.jda.result.Result;
+import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.entities.Message;
 
 /** Commands used by the developer or server owner */
@@ -29,32 +28,39 @@ public class DeveloperCommands {
   @Command(aliases = "ticketPanel", description = "Create a ticket panel", node = "starfish.admin")
   public Result ticketPanel(
       Message message,
-      @Optional(
+      @Free(
               name = "id",
               description = "The id of the ticket to become a ticket panel",
               suggestions = "-1")
           long number) {
     if (number != -1) {
       try {
-        message.getTextChannel().retrieveMessageById(number).complete();
-        return new Result();
+        message = message.getTextChannel().retrieveMessageById(number).complete();
       } catch (Exception e) {
-        throw new SimpleRuntimeException("The given id is not valid", e);
+        return Result.forType(ResultType.USAGE)
+            .setDescription("The given id is not a valid id")
+            .build();
       }
-    } else {
-      LocaleFile locale = Starfish.getLanguageHandler().getDefault();
-      return new Result(
-          Messages.build(
-              locale.get("ticket-panel.title"),
-              locale.get("ticket-panel.description"),
-              ResultType.GENERIC,
-              locale),
-          msg -> {
-            BotResponsiveMessage responsiveMessage =
-                new BotResponsiveMessage(msg.getIdLong()).cache();
-            responsiveMessage.addReactionResponse(
-                new TicketPanelReactionResponse(responsiveMessage), msg);
-          });
     }
+    LocaleFile locale = Starfish.getLanguageHandler().getDefault();
+    Result.ResultBuilder builder = Result.builder();
+    builder
+        .getMessage()
+        .setEmbeds(
+            Messages.build(
+                    locale.get("ticket-panel.title"),
+                    locale.get("ticket-panel.description"),
+                    ResultType.GENERIC,
+                    locale)
+                .build());
+    return builder
+        .next(
+            msg -> {
+              BotResponsiveMessage responsiveMessage =
+                  new BotResponsiveMessage(msg.getIdLong()).cache();
+              responsiveMessage.addReactionResponse(
+                  new TicketPanelReactionResponse(responsiveMessage), msg);
+            })
+        .build();
   }
 }

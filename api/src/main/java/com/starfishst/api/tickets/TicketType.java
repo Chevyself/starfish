@@ -3,7 +3,6 @@ package com.starfishst.api.tickets;
 import com.starfishst.api.Starfish;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.annotations.Nullable;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -63,7 +62,6 @@ public enum TicketType {
    *
    * @return he category where the ticket can be created
    */
-  @Nullable
   public Category getCategory() {
     return Starfish.getDiscordConfiguration().requireCategory(this.getCategoryName());
   }
@@ -74,7 +72,6 @@ public enum TicketType {
    *
    * @return he text channel where the ticket can be announced
    */
-  @Nullable
   public TextChannel getChannel() {
     return Starfish.getDiscordConfiguration().requireChannel(this.getChannelName());
   }

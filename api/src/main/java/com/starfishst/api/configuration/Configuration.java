@@ -2,13 +2,13 @@ package com.starfishst.api.configuration;
 
 import com.starfishst.api.utility.Fee;
 import com.starfishst.api.utility.ValuesMap;
-import com.starfishst.commands.jda.ManagerOptions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import lombok.NonNull;
-import me.googas.commons.time.Time;
+import me.googas.commands.jda.ListenerOptions;
+import me.googas.starbox.time.Time;
 
 /** The configuration for {@link com.starfishst.api.StarfishBot} */
 public interface Configuration {
@@ -114,7 +114,7 @@ public interface Configuration {
    * @return the options for commands
    */
   @NonNull
-  ManagerOptions getManagerOptions();
+  ListenerOptions getListenerOptions();
 
   /**
    * Get the preferences for starfish handlers

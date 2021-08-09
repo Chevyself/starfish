@@ -17,9 +17,9 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.user.FreelancerRating;
 import java.util.Collection;
 
-import com.starfishst.commands.jda.utils.responsive.controller.ResponsiveMessageController;
 import lombok.NonNull;
-import me.googas.commons.events.Listener;
+import me.googas.commands.jda.utils.responsive.controller.ResponsiveMessageController;
+import me.googas.starbox.events.Listener;
 
 /** Loads and saves data */
 // TODO create modules for each data

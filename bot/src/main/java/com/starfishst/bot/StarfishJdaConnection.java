@@ -3,12 +3,13 @@ package com.starfishst.bot;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.utility.JdaConnection;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
 import lombok.NonNull;
-import me.googas.commons.Lots;
-import me.googas.commons.time.Time;
+import me.googas.starbox.time.Time;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.AnnotatedEventManager;
@@ -100,7 +101,7 @@ public class StarfishJdaConnection implements JdaConnection {
 
   @Override
   public JDA connect(@NonNull String token) throws LoginException {
-    JDA jda = JDABuilder.create(token, Lots.list(GatewayIntent.values())).build();
+    JDA jda = JDABuilder.create(token, Arrays.asList(GatewayIntent.values())).build();
     long millis = 0;
     while (jda.getStatus() != JDA.Status.CONNECTED) {
       try {
@@ -110,7 +111,7 @@ public class StarfishJdaConnection implements JdaConnection {
         Starfish.getFallback().process(e, "InterruptedException: Discord connection failed");
       }
     }
-    this.log.info("Discord took " + Time.fromMillis(millis).toEffectiveString() + " to connect");
+    this.log.info("Discord took " + Time.ofMillis(millis, false).toString() + " to connect");
     jda.setEventManager(new AnnotatedEventManager());
     return jda;
   }
@@ -118,5 +119,10 @@ public class StarfishJdaConnection implements JdaConnection {
   @Override
   public JDA getJda() {
     return this.jda;
+  }
+
+  @Override
+  public @NonNull JDA getJdaValidated() {
+    return Objects.requireNonNull(this.jda);
   }
 }

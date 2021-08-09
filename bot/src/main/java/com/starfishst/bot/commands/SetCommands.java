@@ -2,13 +2,13 @@ package com.starfishst.bot.commands;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.utility.Discord;
-import com.starfishst.commands.jda.annotations.Command;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.core.annotations.Parent;
-import com.starfishst.core.annotations.Required;
+import com.starfishst.api.utility.ValuesMap;
 import java.util.ArrayList;
 import java.util.List;
-import me.googas.commons.Lots;
+import me.googas.commands.annotations.Parent;
+import me.googas.commands.annotations.Required;
+import me.googas.commands.jda.annotations.Command;
+import me.googas.commands.jda.result.Result;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -54,7 +54,7 @@ public class SetCommands {
         "Roles in "
             + key
             + " has been set to "
-            + Lots.pretty(Discord.getAsMention(message.getMentionedRoles())));
+            + ValuesMap.pretty(Discord.getAsMention(message.getMentionedRoles())));
   }
 
   /**

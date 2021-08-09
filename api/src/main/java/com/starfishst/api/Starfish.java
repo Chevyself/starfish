@@ -7,17 +7,18 @@ import com.starfishst.api.loader.LanguageHandler;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
-import com.starfishst.commands.jda.CommandManager;
 import java.util.Collection;
+import java.util.Objects;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.addons.AddonLoader;
-import me.googas.commons.Validate;
-import me.googas.commons.cache.Cache;
-import me.googas.commons.events.ListenerManager;
-import me.googas.commons.fallback.Fallback;
-import me.googas.commons.scheduler.Scheduler;
+import me.googas.commands.jda.CommandManager;
+import me.googas.io.context.Json;
+import me.googas.net.cache.Cache;
+import me.googas.starbox.addons.AddonLoader;
+import me.googas.starbox.events.ListenerManager;
+import me.googas.starbox.scheduler.Scheduler;
 import org.jetbrains.annotations.NotNull;
 
 /** This class contains delegated static methods of {@link StarfishBot} */
@@ -33,8 +34,7 @@ public class Starfish {
    */
   @NonNull
   public static StarfishBot validated() {
-    return Validate.notNull(
-            Starfish.instance, new IllegalStateException("A bot instance hasn't been set yet"));
+    return Objects.requireNonNull(Starfish.instance, "A bot instance hasn't been set yet");
   }
 
   public static <T extends StarfishHandler> T getHandler(@NotNull Class<T> clazz) {
@@ -48,6 +48,8 @@ public class Starfish {
   public static void save() {
       Starfish.validated().save();
   }
+
+
 
   public static void stop() {
       Starfish.validated().stop();
@@ -114,5 +116,9 @@ public class Starfish {
 
   public static @NonNull Scheduler getScheduler() {
     return Starfish.validated().getScheduler();
+  }
+
+  public static @NonNull Json getJson() {
+    return Starfish.validated().getJson();
   }
 }

@@ -7,10 +7,9 @@ import com.starfishst.api.messages.StarfishReactionResponse;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.user.FreelancerRating;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.annotations.Nullable;
+import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
@@ -19,14 +18,14 @@ public class ReviewReactionResponse extends StarfishReactionResponse {
 
   @Getter private final int value;
 
-  protected ReviewReactionResponse(@Nullable BotResponsiveMessage message, int value) {
+  protected ReviewReactionResponse(BotResponsiveMessage message, int value) {
     super(message);
     this.value = value;
   }
 
   @NonNull
   public static BotResponsiveMessage add(
-      @NonNull BotResponsiveMessage responsiveMessage, @Nullable Message message) {
+      @NonNull BotResponsiveMessage responsiveMessage, Message message) {
     for (int i = 0; i < 5; i++) {
       ReviewReactionResponse response = new ReviewReactionResponse(responsiveMessage, i + 1);
       if (message != null) {
@@ -61,11 +60,15 @@ public class ReviewReactionResponse extends StarfishReactionResponse {
     FreelancerRating rating = loader.getRating(this.getFreelancer());
     event.getChannel().deleteMessageById(event.getMessageIdLong()).queue();
     rating.addRating(event.getUserIdLong(), this.value);
-    Messages.build(
-            user.getLocaleFile().get("thanks-rating", freelancer.getPlaceholders()),
-            ResultType.GENERIC,
-            user)
-        .send(event.getChannel());
+    event
+        .getChannel()
+        .sendMessageEmbeds(
+            Messages.build(
+                    user.getLocaleFile().get("thanks-rating", freelancer.getPlaceholders()),
+                    ResultType.GENERIC,
+                    user)
+                .build())
+        .queue();
     return false;
   }
 

@@ -5,8 +5,8 @@ import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
 import lombok.NonNull;
+import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
@@ -36,12 +36,15 @@ public class WelcomeHandler implements StarfishHandler {
     BotUser user = this.loader.getStarfishUser(event.getMember().getIdLong());
     TextChannel welcome = Starfish.getDiscordConfiguration().requireChannel("welcome");
     if (welcome != null && this.getPreferences().getOr("enabled", Boolean.class, true)) {
-      Messages.build(
-              user.getLocaleFile().get("welcome.title", user.getPlaceholders()),
-              user.getLocaleFile().get("welcome.description", user.getPlaceholders()),
-              ResultType.GENERIC,
-              user)
-          .send(welcome);
+      welcome
+          .sendMessage(
+              Messages.build(
+                      user.getLocaleFile().get("welcome.title", user.getPlaceholders()),
+                      user.getLocaleFile().get("welcome.description", user.getPlaceholders()),
+                      ResultType.GENERIC,
+                      user)
+                  .build())
+          .queue();
     }
   }
 

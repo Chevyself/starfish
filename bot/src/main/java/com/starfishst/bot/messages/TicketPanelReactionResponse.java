@@ -3,21 +3,19 @@ package com.starfishst.bot.messages;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.messages.StarfishReactionResponse;
-import com.starfishst.commands.jda.AnnotatedCommand;
-import com.starfishst.commands.jda.CommandManager;
-import com.starfishst.commands.jda.context.CommandContext;
-import com.starfishst.commands.jda.listener.CommandListener;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.commands.jda.utils.embeds.EmbedFactory;
+import java.util.Objects;
 import lombok.NonNull;
-import me.googas.annotations.Nullable;
-import me.googas.commons.Validate;
+import me.googas.commands.jda.CommandManager;
+import me.googas.commands.jda.JdaCommand;
+import me.googas.commands.jda.context.CommandContext;
+import me.googas.commands.jda.listener.CommandListener;
+import me.googas.commands.jda.result.Result;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 /** The response for the ticket panel */
 public class TicketPanelReactionResponse extends StarfishReactionResponse {
 
-  public TicketPanelReactionResponse(@Nullable BotResponsiveMessage message) {
+  public TicketPanelReactionResponse(BotResponsiveMessage message) {
     super(message);
   }
 
@@ -31,8 +29,8 @@ public class TicketPanelReactionResponse extends StarfishReactionResponse {
     if (event.getUser() == null) return true;
     CommandManager manager = Starfish.getCommandManager();
     CommandListener listener = manager.getListener();
-    AnnotatedCommand command =
-        Validate.notNull(
+    JdaCommand command =
+        Objects.requireNonNull(
             manager.getCommand("new"), "Ticket Panel: 'new' command was not registered!");
     Result result =
         command.execute(
@@ -42,10 +40,11 @@ public class TicketPanelReactionResponse extends StarfishReactionResponse {
                 new String[] {"-new"},
                 event.getTextChannel(),
                 manager.getMessagesProvider(),
-                manager.getRegistry(),
+                manager.getProvidersRegistry(),
                 "new"));
-    EmbedFactory.fromResult(result, listener, null)
-        .send(event.getTextChannel(), listener.getConsumer(result));
+    // TODO Fix
+    // EmbedFactory.fromResult(result, listener, null)
+    //  .send(event.getTextChannel(), listener.getConsumer(result));
     return true;
   }
 

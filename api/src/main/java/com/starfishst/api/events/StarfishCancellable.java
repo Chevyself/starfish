@@ -1,7 +1,7 @@
 package com.starfishst.api.events;
 
 import com.starfishst.api.Starfish;
-import me.googas.commons.events.Cancellable;
+import me.googas.starbox.events.Cancellable;
 
 /** An starfish event that can be cancelled. */
 public interface StarfishCancellable extends Cancellable {
@@ -12,7 +12,7 @@ public interface StarfishCancellable extends Cancellable {
    * @return true if the event was cancelled
    */
   default boolean callAndGet() {
-    return Starfish.getListenerManager().call(this);
+    return Starfish.getListenerManager().callAndGet(this);
   }
 
   /**

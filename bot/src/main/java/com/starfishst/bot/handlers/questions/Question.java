@@ -2,12 +2,12 @@ package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
+import java.util.Collections;
 import java.util.HashMap;
 import lombok.NonNull;
-import me.googas.commons.Strings;
-import me.googas.commons.maps.Maps;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.starbox.Strings;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -62,7 +62,7 @@ public class Question {
    * @return the query to send
    */
   @NonNull
-  public EmbedQuery getQuery(@NonNull BotUser user) {
+  public EmbedBuilder getQuery(@NonNull BotUser user) {
     return Messages.build(
         this.getBuiltTitle(), this.getBuiltDescription(), ResultType.GENERIC, user);
   }
@@ -79,14 +79,15 @@ public class Question {
     if (contentRaw.length() < this.limit) {
       return contentRaw;
     } else {
-      Messages.build(
+      EmbedBuilder embed =
+          Messages.build(
               user.getLocaleFile()
                   .get(
                       "questions.longer-than-limit",
-                      Maps.singleton("limit", String.valueOf(this.limit))),
+                      Collections.singletonMap("limit", String.valueOf(this.limit))),
               ResultType.ERROR,
-              user)
-          .send(event.getChannel(), Messages.getErrorConsumer());
+              user);
+      event.getChannel().sendMessageEmbeds(embed.build()).queue(Messages.getErrorConsumer());
       return null;
     }
   }
@@ -100,7 +101,7 @@ public class Question {
   public String getBuiltTitle() {
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("limit", String.valueOf(this.limit));
-    return Strings.build(this.title, placeholders);
+    return Strings.format(this.title, placeholders);
   }
 
   /**
@@ -143,7 +144,7 @@ public class Question {
   public String getBuiltDescription() {
     HashMap<String, String> placeholders = new HashMap<>();
     placeholders.put("limit", String.valueOf(this.limit));
-    return Strings.build(this.description, placeholders);
+    return Strings.format(this.description, placeholders);
   }
 
   /**

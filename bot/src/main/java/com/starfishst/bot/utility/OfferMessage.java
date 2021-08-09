@@ -3,9 +3,9 @@ package com.starfishst.bot.utility;
 import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.tickets.Offer;
 import java.lang.ref.SoftReference;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
-import me.googas.commons.Validate;
 
 public class OfferMessage implements Offer {
 
@@ -18,7 +18,7 @@ public class OfferMessage implements Offer {
   @NonNull
   @Delegate
   public BotResponsiveMessage getMessage() {
-    return Validate.notNull(this.message.get(), "Reference to message has expired");
+    return Objects.requireNonNull(this.message.get(), "Reference to message has expired");
   }
 
   @Override

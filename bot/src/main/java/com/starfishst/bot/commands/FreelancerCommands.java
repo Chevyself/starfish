@@ -12,16 +12,17 @@ import com.starfishst.bot.commands.objects.Freelancer;
 import com.starfishst.bot.data.StarfishTicket;
 import com.starfishst.bot.messages.OfferAcceptReactionResponse;
 import com.starfishst.bot.messages.ReviewReactionResponse;
-import com.starfishst.commands.jda.annotations.Command;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.commands.jda.result.ResultType;
-import com.starfishst.commands.jda.utils.message.MessageQuery;
-import com.starfishst.core.annotations.Multiple;
-import com.starfishst.core.annotations.Required;
-import com.starfishst.core.objects.JoinedStrings;
+import java.util.Collections;
 import java.util.Map;
 import lombok.NonNull;
-import me.googas.commons.maps.Maps;
+import me.googas.commands.annotations.Multiple;
+import me.googas.commands.annotations.Required;
+import me.googas.commands.jda.annotations.Command;
+import me.googas.commands.jda.result.Result;
+import me.googas.commands.jda.result.ResultType;
+import me.googas.commands.objects.JoinedStrings;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -82,7 +83,9 @@ public class FreelancerCommands {
       BotUser sender,
       @Required(name = "freelancer", description = "The freelancer to view")
           Freelancer freelancer) {
-    return new Result(freelancer.toCompleteInformation(sender));
+    Result.ResultBuilder resultBuilder = Result.builder();
+    resultBuilder.getMessage().setEmbeds(freelancer.toCompleteInformation(sender).build());
+    return resultBuilder.build();
   }
 
   /**
@@ -109,29 +112,31 @@ public class FreelancerCommands {
       if (ticket.getStatus() == TicketStatus.CLOSED && channel == null) {
         return new Result(locale.get("quote.closed", ticket.getPlaceholders()));
       } else if (channel != null && ticket.getStatus() == TicketStatus.OPEN) {
-        Map<String, String> placeholders = Maps.singleton("offer", strings.getString());
+        Map<String, String> placeholders = Collections.singletonMap("offer", strings.getString());
         BotUser owner = ticket.getOwner();
         if (owner != null) {
-          MessageQuery query =
+          EmbedBuilder embedBuilder =
               Messages.build(
-                      owner.getLocaleFile().get("offer.title", placeholders),
-                      owner.getLocaleFile().get("offer.desc", placeholders),
-                      ResultType.GENERIC,
-                      owner)
-                  .getAsMessageQuery();
-          query.getBuilder().append(channel.getGuild().getPublicRole());
-          query.send(
-              channel,
-              msg -> {
-                ValuesMap map = new ValuesMap();
-                map.add("offer", strings.getString());
-                map.add("freelancer", freelancer.getId());
-                map.add("ticket", ticket.getId());
-                BotResponsiveMessage responsiveMessage =
-                    new BotResponsiveMessage(msg.getIdLong()).cache();
-                responsiveMessage.addReactionResponse(
-                    new OfferAcceptReactionResponse(responsiveMessage), msg);
-              });
+                  owner.getLocaleFile().get("offer.title", placeholders),
+                  owner.getLocaleFile().get("offer.desc", placeholders),
+                  ResultType.GENERIC,
+                  owner);
+          MessageBuilder messageBuilder =
+              new MessageBuilder(embedBuilder).append(channel.getGuild().getPublicRole());
+          channel
+              .sendMessage(messageBuilder.build())
+              .queue(
+                  msg -> {
+                    ValuesMap map =
+                        new ValuesMap()
+                            .add("offer", strings.getString())
+                            .add("freelancer", freelancer.getId())
+                            .add("ticket", ticket.getId());
+                    BotResponsiveMessage responsiveMessage =
+                        new BotResponsiveMessage(msg.getIdLong()).cache();
+                    responsiveMessage.addReactionResponse(
+                        new OfferAcceptReactionResponse(responsiveMessage), msg);
+                  });
         }
       }
     }
@@ -152,18 +157,27 @@ public class FreelancerCommands {
     Map<String, String> placeholders = freelancer.getPlaceholders();
     placeholders.put("user", member.getAsMention());
     LocaleFile ownerLocale = owner.getLocaleFile();
-    return new Result(
-        Messages.build(
-            ownerLocale.get("review.title", placeholders),
-            ownerLocale.get("review.description", placeholders),
-            ResultType.GENERIC,
-            owner),
-        msg ->
-            ReviewReactionResponse.add(
-                    new BotResponsiveMessage(
-                        msg.getIdLong(),
-                        new ValuesMap("freelancer", freelancer.getId()).add("user", owner.getId())),
-                    msg)
-                .cache());
+    Result.ResultBuilder resultBuilder = Result.builder();
+    resultBuilder
+        .getMessage()
+        .setEmbeds(
+            Messages.build(
+                    ownerLocale.get("review.title", placeholders),
+                    ownerLocale.get("review.description", placeholders),
+                    ResultType.GENERIC,
+                    owner)
+                .build());
+    return resultBuilder
+        .next(
+            msg -> {
+              ReviewReactionResponse.add(
+                      new BotResponsiveMessage(
+                          msg.getIdLong(),
+                          new ValuesMap("freelancer", freelancer.getId())
+                              .add("user", owner.getId())),
+                      msg)
+                  .cache();
+            })
+        .build();
   }
 }

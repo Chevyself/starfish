@@ -6,14 +6,14 @@ import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.messages.StarfishReactionResponse;
 import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.user.BotUser;
-import com.starfishst.commands.jda.utils.embeds.EmbedQuery;
 import lombok.NonNull;
-import me.googas.annotations.Nullable;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 /** Claim an order ticket */
 public class ClaimOrderReactionResponse extends StarfishReactionResponse {
-  public ClaimOrderReactionResponse(@Nullable BotResponsiveMessage message) {
+  public ClaimOrderReactionResponse(BotResponsiveMessage message) {
     super(message);
   }
 
@@ -32,13 +32,13 @@ public class ClaimOrderReactionResponse extends StarfishReactionResponse {
     LocaleFile locale = Starfish.getLanguageHandler().getDefault();
     if (ticket != null) {
       if (ticket.addUser(user, "freelancer") || ticket.hasFreelancers()) {
-        EmbedQuery query = ticket.toCompleteInformation(locale, false);
-        query.setTitle(locale.get("ticket.claimed.title", ticket.getPlaceholders()));
-        query.setDescription(locale.get("ticket.claimed.desc", ticket.getPlaceholders()));
-        query.setColor(Starfish.getConfiguration().getManagerOptions().getError());
+        EmbedBuilder builder = ticket.toCompleteInformation(locale, false);
+        builder.setTitle(locale.get("ticket.claimed.title", ticket.getPlaceholders()));
+        builder.setDescription(locale.get("ticket.claimed.desc", ticket.getPlaceholders()));
+        // builder.setColor(Starfish.getConfiguration().getListenerOptions().getError());
         event
             .getChannel()
-            .editMessageById(event.getMessageIdLong(), query.getAsMessageQuery().build())
+            .editMessageById(event.getMessageIdLong(), new MessageBuilder(builder).build())
             .queue();
       }
     }

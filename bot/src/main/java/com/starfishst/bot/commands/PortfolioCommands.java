@@ -1,13 +1,13 @@
 package com.starfishst.bot.commands;
 
+import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.bot.commands.objects.Freelancer;
-import com.starfishst.commands.jda.annotations.Command;
-import com.starfishst.commands.jda.result.Result;
-import com.starfishst.core.annotations.Parent;
-import com.starfishst.core.annotations.Required;
+import java.util.Collections;
 import java.util.List;
-import me.googas.commons.Lots;
-import me.googas.commons.maps.Maps;
+import me.googas.commands.annotations.Parent;
+import me.googas.commands.annotations.Required;
+import me.googas.commands.jda.annotations.Command;
+import me.googas.commands.jda.result.Result;
 
 /** Commands for managing portfolio */
 public class PortfolioCommands {
@@ -25,12 +25,12 @@ public class PortfolioCommands {
     if (freelancer.getPreferences().getList("portfolio").isEmpty()) {
       string = "Empty";
     } else {
-      string = Lots.pretty(freelancer.getPreferences().getList("portfolio"));
+      string = ValuesMap.pretty(freelancer.getPreferences().getList("portfolio"));
     }
     return new Result(
         freelancer
             .getLocaleFile()
-            .get("portfolio.freelancer", Maps.singleton("portfolio", string)));
+            .get("portfolio.freelancer", Collections.singletonMap("portfolio", string)));
   }
 
   /**
@@ -48,7 +48,9 @@ public class PortfolioCommands {
     portfolio.add(value);
     freelancer.getPreferences().add("portfolio", portfolio);
     return new Result(
-        freelancer.getLocaleFile().get("portfolio.add.result", Maps.singleton("value", value)));
+        freelancer
+            .getLocaleFile()
+            .get("portfolio.add.result", Collections.singletonMap("value", value)));
   }
 
   /**
@@ -67,6 +69,8 @@ public class PortfolioCommands {
     portfolio.removeIf(string -> string.equalsIgnoreCase(value));
     freelancer.getPreferences().add("portfolio", portfolio);
     return new Result(
-        freelancer.getLocaleFile().get("portfolio.remove.result", Maps.singleton("value", value)));
+        freelancer
+            .getLocaleFile()
+            .get("portfolio.remove.result", Collections.singletonMap("value", value)));
   }
 }

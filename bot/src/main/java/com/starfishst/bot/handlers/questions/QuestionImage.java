@@ -2,9 +2,9 @@ package com.starfishst.bot.handlers.questions;
 
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
+import java.util.Collections;
 import lombok.NonNull;
-import me.googas.commons.maps.Maps;
+import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -43,11 +43,16 @@ public class QuestionImage extends Question {
     if (this.checkUrl(raw)) {
       return raw;
     } else {
-      Messages.build(
-              user.getLocaleFile().get("questions.invalid-image-url", Maps.singleton("url", raw)),
-              ResultType.ERROR,
-              user)
-          .send(event.getChannel(), Messages.getErrorConsumer());
+      event
+          .getChannel()
+          .sendMessageEmbeds(
+              Messages.build(
+                      user.getLocaleFile()
+                          .get("questions.invalid-image-url", Collections.singletonMap("url", raw)),
+                      ResultType.ERROR,
+                      user)
+                  .build())
+          .queue(Messages.getErrorConsumer());
       return null;
     }
   }

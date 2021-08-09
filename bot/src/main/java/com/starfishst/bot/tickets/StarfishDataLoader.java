@@ -27,17 +27,17 @@ import com.starfishst.bot.data.StarfishUser;
 import com.starfishst.bot.utility.Enums;
 import com.starfishst.bot.utility.Mongo;
 import com.starfishst.bot.utility.Offers;
-import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.Lots;
-import me.googas.commons.events.ListenPriority;
-import me.googas.commons.events.Listener;
+import me.googas.commands.jda.utils.responsive.ResponsiveMessage;
+import me.googas.starbox.events.ListenPriority;
+import me.googas.starbox.events.Listener;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
@@ -189,10 +189,10 @@ public class StarfishDataLoader implements Loader {
       @NonNull String role,
       @NonNull Collection<TicketType> types,
       TicketStatus... statuses) {
-    Set<TicketType> typesSet =
-        types.isEmpty() ? Lots.set(TicketType.values()) : new HashSet<>(types);
-    Set<TicketStatus> statusSet =
-        statuses.length == 0 ? Lots.set(TicketStatus.values()) : Lots.set(statuses);
+    List<TicketType> typesSet =
+        types.isEmpty() ? Arrays.asList(TicketType.values()) : new ArrayList<>(types);
+    List<TicketStatus> statusSet =
+        statuses.length == 0 ? Arrays.asList(TicketStatus.values()) : Arrays.asList(statuses);
     Document query =
         new Document("users." + user.getId(), role)
             .append("type", new Document("$in", Enums.getNames(statusSet)))

@@ -9,7 +9,6 @@ import com.starfishst.api.user.BotUser;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.annotations.Nullable;
 
 /** Called before a ticket is created by a {@link TicketManager} */
 public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellable {
@@ -17,7 +16,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
   @NonNull @Getter private final TicketManager manager;
   @NonNull @Getter private final TicketType type;
   @NonNull @Getter private final BotUser user;
-  @Nullable @Getter private final Ticket parent;
+  @Getter private final Ticket parent;
   @Getter @Setter private boolean cancelled;
   @Getter @Setter @NonNull private String reason = "Ticket creation cancelled: No reason given";
 
@@ -33,7 +32,7 @@ public class TicketPreCreationEvent implements StarfishEvent, StarfishCancellabl
       @NonNull TicketManager manager,
       @NonNull TicketType type,
       @NonNull BotUser user,
-      @Nullable Ticket parent) {
+      Ticket parent) {
     this.manager = manager;
     this.type = type;
     this.user = user;

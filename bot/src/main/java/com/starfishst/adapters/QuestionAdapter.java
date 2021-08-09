@@ -1,21 +1,20 @@
 package com.starfishst.adapters;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.starfishst.bot.handlers.questions.Question;
 import com.starfishst.bot.handlers.questions.QuestionImage;
 import com.starfishst.bot.handlers.questions.QuestionInformation;
 import com.starfishst.bot.handlers.questions.QuestionRole;
 import java.lang.reflect.Type;
 import lombok.NonNull;
-import me.googas.commons.Validate;
-import me.googas.commons.gson.adapters.JsonAdapter;
 
-public class QuestionAdapter implements JsonAdapter<Question> {
+public class QuestionAdapter implements JsonSerializer<Question>, JsonDeserializer<Question> {
 
   @NonNull
   private static Question getQuestion(
@@ -40,30 +39,18 @@ public class QuestionAdapter implements JsonAdapter<Question> {
       JsonElement jsonElement, Type type, JsonDeserializationContext context)
       throws JsonParseException {
     JsonObject object = jsonElement.getAsJsonObject();
-    String title =
-        Validate.notNullOr(
-                object.get("title"),
-                new JsonPrimitive("No title"),
-                "Questions must have a title. In: " + object)
-            .getAsString();
+    JsonElement titleElement = object.get("title");
+    String title = titleElement == null ? "No title" : titleElement.getAsString();
+    JsonElement descriptionElement = object.get("description");
     String description =
-        Validate.notNullOr(
-                object.get("description"),
-                new JsonPrimitive("No description"),
-                "Questions must have a description. In: " + object)
-            .getAsString();
+        descriptionElement == null ? "No description" : descriptionElement.getAsString();
+    JsonElement simpleElement = object.get("simple");
     String simple =
-        Validate.notNullOr(
-                object.get("simple"),
-                new JsonPrimitive("no_simple"),
-                "Questions must have a simple. In: " + object)
-            .getAsString();
-    int limit =
-        Validate.notNullOr(
-                object.get("limit"),
-                new JsonPrimitive(50),
-                "Questions must have a limit. In: " + object)
-            .getAsInt();
+        simpleElement == null
+            ? "no_simple"
+            : simpleElement.getAsString().replace(" ", "_").replace(".", "_");
+    JsonElement limitElement = object.get("limit");
+    int limit = limitElement == null ? 50 : limitElement.getAsInt();
     return QuestionAdapter.getQuestion(object, title, description, simple, limit);
   }
 

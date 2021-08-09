@@ -12,12 +12,12 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.bot.data.StarfishTicket;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import me.googas.commons.maps.Maps;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -69,7 +69,7 @@ public class StarfishTicketManager implements TicketManager {
     if (parent != null) {
       users = parent.getUsersIdMap();
     } else {
-      users = Maps.singleton(user.getId(), "owner");
+      users = Collections.singletonMap(user.getId(), "owner");
     }
     return users;
   }

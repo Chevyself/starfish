@@ -7,7 +7,7 @@ import com.starfishst.api.role.BotRole;
 import java.util.Set;
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.time.Time;
+import me.googas.starbox.time.Time;
 
 /** An implementation for {@link BotRole} */
 public class StarfishRole implements BotRole {

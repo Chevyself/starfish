@@ -6,16 +6,15 @@ import com.starfishst.api.messages.StarfishReactionResponse;
 import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
-import com.starfishst.commands.jda.result.ResultType;
 import lombok.NonNull;
-import me.googas.annotations.Nullable;
+import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 /** The reaction to accept an offer */
 public class OfferAcceptReactionResponse extends StarfishReactionResponse {
 
-  public OfferAcceptReactionResponse(@Nullable BotResponsiveMessage message) {
+  public OfferAcceptReactionResponse(BotResponsiveMessage message) {
     super(message);
   }
 
@@ -40,11 +39,16 @@ public class OfferAcceptReactionResponse extends StarfishReactionResponse {
         TextChannel channel = ticket.getTextChannel();
         BotUser owner = ticket.getOwner();
         if (channel != null && owner != null) {
-          Messages.build(
-                  owner.getLocaleFile().get("offer.freelancer-cant-join", ticket.getPlaceholders()),
-                  ResultType.ERROR,
-                  owner)
-              .send(channel, Messages.getErrorConsumer());
+          channel
+              .sendMessage(
+                  Messages.build(
+                          owner
+                              .getLocaleFile()
+                              .get("offer.freelancer-cant-join", ticket.getPlaceholders()),
+                          ResultType.ERROR,
+                          owner)
+                      .build())
+              .queue(Messages.getErrorConsumer());
         }
       }
     }

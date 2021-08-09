@@ -9,11 +9,11 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.commons.Lots;
-import me.googas.commons.Validate;
-import me.googas.commons.maps.Maps;
+import me.googas.starbox.Strings;
+import org.jetbrains.annotations.Nullable;
 
 /** This object represents certain changes and configurations for an object */
+@Deprecated
 public class ValuesMap {
 
   @NonNull @Getter
@@ -66,17 +66,16 @@ public class ValuesMap {
   }
 
   /**
-   * Get the preference casted to certain class or a default value
+   * Get the clazz of the objects inside a list. If the list is empty it will return null
    *
-   * @param name the name of the preference
-   * @param clazz the clazz to which the value of the preference will be casted to
-   * @param def the default value in case the preference is null
-   * @param <T> the type of the clazz to which the value of the preference will be casted to
-   * @return the value of the preference or null if it does not have one
+   * @param list the list to get the class from
+   * @return the clazz of the list or empty if there's no object in the list
    */
-  @NonNull
-  public <T> T getOr(@NonNull String name, @NonNull Class<T> clazz, @NonNull T def) {
-    return Validate.notNullOr(this.get(name, clazz), def);
+  public static Class<?> getClazz(@NonNull List<?> list) {
+    if (list.isEmpty()) {
+      return null;
+    }
+    return list.get(0).getClass();
   }
 
   /**
@@ -122,6 +121,49 @@ public class ValuesMap {
     this.getMap().remove(key);
   }
 
+  @NonNull
+  public static <O> String pretty(@NonNull Collection<O> collection, @Nullable String empty) {
+    if (collection.isEmpty()) return empty == null ? "Empty" : empty;
+    StringBuilder builder = new StringBuilder();
+    boolean first = true;
+    for (O obj : collection) {
+      if (first) {
+        builder.append("- ").append(obj);
+        first = false;
+      } else {
+        builder.append("\n- ").append(obj);
+      }
+    }
+    return builder.toString();
+  }
+
+  /**
+   * Gives a pretty string of a collection
+   *
+   * @param collection the collection to give as string
+   * @param <O> the type of the collection
+   * @return a string given by the collection
+   */
+  @NonNull
+  public static <O> String pretty(@NonNull Collection<O> collection) {
+    return collection.toString().replace("[", "").replace("]", "");
+  }
+
+  /**
+   * Get the preference casted to certain class or a default value
+   *
+   * @param name the name of the preference
+   * @param clazz the clazz to which the value of the preference will be casted to
+   * @param def the default value in case the preference is null
+   * @param <T> the type of the clazz to which the value of the preference will be casted to
+   * @return the value of the preference or null if it does not have one
+   */
+  @NonNull
+  public <T> T getOr(@NonNull String name, @NonNull Class<T> clazz, @NonNull T def) {
+    T t = this.get(name, clazz);
+    return t == null ? def : t;
+  }
+
   /**
    * Convert the preferences into a string map. Maybe to be read by an user?
    *
@@ -134,14 +176,14 @@ public class ValuesMap {
         .forEach(
             (key, value) -> {
               if (value instanceof List) {
-                Class<?> clazz = Lots.getClazz((List<?>) value);
+                Class<?> clazz = ValuesMap.getClazz((List<?>) value);
                 if (clazz != null && Long.class.isAssignableFrom(clazz)) {
                   stringMap.put(
-                      key, Lots.pretty(Discord.getRolesAsMention(this.getList(key))));
+                      key, ValuesMap.pretty(Discord.getRolesAsMention(this.getList(key))));
                   return;
                 }
               } else if (value instanceof Collection) {
-                stringMap.put(key, Lots.pretty((Collection<?>) value));
+                stringMap.put(key, ValuesMap.pretty((Collection<?>) value));
                 return;
               }
               stringMap.put(key, value.toString());

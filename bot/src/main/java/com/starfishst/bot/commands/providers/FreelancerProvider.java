@@ -4,14 +4,16 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.bot.commands.objects.Freelancer;
-import com.starfishst.commands.jda.context.CommandContext;
-import com.starfishst.commands.jda.providers.type.JdaArgumentProvider;
-import com.starfishst.core.exceptions.ArgumentProviderException;
 import lombok.NonNull;
+import me.googas.commands.exceptions.ArgumentProviderException;
+import me.googas.commands.jda.context.CommandContext;
+import me.googas.commands.jda.providers.type.JdaArgumentProvider;
+import me.googas.commands.jda.providers.type.JdaExtraArgumentProvider;
 import net.dv8tion.jda.api.entities.User;
 
 /** Provides command manager with freelancers */
-public class FreelancerProvider implements JdaArgumentProvider<Freelancer> {
+public class FreelancerProvider
+    implements JdaArgumentProvider<Freelancer>, JdaExtraArgumentProvider<Freelancer> {
 
   @Override
   public @NonNull Class<Freelancer> getClazz() {
@@ -35,5 +37,16 @@ public class FreelancerProvider implements JdaArgumentProvider<Freelancer> {
     } else {
       throw new ArgumentProviderException("Provider did not return an user!");
     }
+  }
+
+  @NonNull
+  @Override
+  public Freelancer getObject(@NonNull CommandContext context) throws ArgumentProviderException {
+    Loader loader = Starfish.getLoader();
+    BotUser botUser = loader.getStarfishUser(context.getSender().getIdLong());
+    if (botUser.isFreelancer()) {
+      return new Freelancer(botUser);
+    }
+    throw new ArgumentProviderException(botUser.getLocaleFile().get("user.not-freelancer"));
   }
 }

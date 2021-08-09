@@ -14,9 +14,9 @@ import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.user.FreelancerRating;
-import com.starfishst.commands.jda.utils.responsive.ResponsiveMessage;
 import java.util.Collection;
 import lombok.NonNull;
+import me.googas.commands.jda.utils.responsive.ResponsiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
 
 /** A fallback for the starfish ticket loader */

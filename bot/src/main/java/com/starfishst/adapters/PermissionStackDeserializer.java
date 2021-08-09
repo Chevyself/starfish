@@ -1,15 +1,17 @@
 package com.starfishst.adapters;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.starfishst.api.permissions.PermissionStack;
 import com.starfishst.bot.tickets.StarfishPermissionStack;
 import java.lang.reflect.Type;
-import me.googas.commons.gson.adapters.JsonAdapter;
 
-public class PermissionStackDeserializer implements JsonAdapter<PermissionStack> {
+public class PermissionStackDeserializer
+    implements JsonSerializer<PermissionStack>, JsonDeserializer<PermissionStack> {
 
   @Override
   public JsonElement serialize(

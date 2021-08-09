@@ -2,7 +2,7 @@ package com.starfishst.api.utility;
 
 import com.starfishst.api.Starfish;
 import lombok.NonNull;
-import me.googas.commons.cache.Catchable;
+import me.googas.net.cache.Catchable;
 
 public interface StarfishCatchable extends Catchable {
 

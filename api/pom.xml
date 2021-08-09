@@ -15,25 +15,32 @@
     <version>3.0.0</version>
 
     <repositories>
-        <!-- Starfish -->
         <repository>
-            <id>bintray-xchevy-Starfish</id>
-            <name>xchevy-Starfish</name>
-            <url>https://dl.bintray.com/xchevy/Starfish</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
     <dependencies>
+        <!-- Command Framework-->
         <dependency>
-            <groupId>me.googas.addons</groupId>
-            <artifactId>addons</artifactId>
-            <version>1.0.0_1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.starfishst.commands.jda</groupId>
+            <groupId>me.googas.starbox-commands</groupId>
             <artifactId>jda</artifactId>
-            <version>1.0.0</version>
+            <version>5b6ee18a63</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>me.googas.starbox</groupId>
+                    <artifactId>core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <!-- Starbox core -->
+        <dependency>
+            <groupId>me.googas.starbox</groupId>
+            <artifactId>core</artifactId>
+            <version>0d43ef8294</version>
+        </dependency>
+        <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
