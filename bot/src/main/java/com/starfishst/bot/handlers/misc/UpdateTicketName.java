@@ -6,10 +6,10 @@ import com.starfishst.api.events.tickets.TicketStatusUpdatedEvent;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.user.BotUser;
+import java.util.Optional;
 import lombok.NonNull;
 import me.googas.starbox.events.ListenPriority;
 import me.googas.starbox.events.Listener;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Checks to update the name of a ticket channel */
 public class UpdateTicketName implements StarfishHandler {
@@ -22,13 +22,19 @@ public class UpdateTicketName implements StarfishHandler {
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketStatusUpdated(@NonNull TicketStatusUpdatedEvent event) {
     Ticket ticket = event.getTicket();
-    TextChannel textChannel = ticket.getTextChannel();
-    BotUser owner = ticket.getOwner();
-    if (textChannel != null) {
-      LocaleFile file =
-          owner == null ? Starfish.getLanguageHandler().getFile("en") : owner.getLocaleFile();
-      textChannel.getManager().setName(file.get("ticket.channel-name", ticket.getPlaceholders()));
-    }
+    ticket
+        .getTextChannel()
+        .ifPresent(
+            channel -> {
+              Optional<BotUser> optionalOwner = ticket.getOwner();
+              LocaleFile file =
+                  !optionalOwner.isPresent()
+                      ? Starfish.getLanguageHandler().getFile("en")
+                      : optionalOwner.get().getLocaleFile();
+              channel
+                  .getManager()
+                  .setName(file.get("ticket.channel-name", ticket.getPlaceholders()));
+            });
   }
 
   @Override

@@ -75,14 +75,16 @@ public class QuestionsHandler implements StarfishHandler {
   public void onTicketStatusUpdated(@NonNull TicketStatusUpdatedEvent event) {
     if (!event.isCancelled() && event.getStatus() == TicketStatus.CREATING) {
       Ticket ticket = this.refresh(event.getTicket());
-      TextChannel channel = ticket.getTextChannel();
+      Optional<TextChannel> optionalChannel = ticket.getTextChannel();
       QuestionsConfiguration questions = this.questions.get(ticket.getType());
-      BotUser owner = event.getTicket().getOwner();
+      Optional<BotUser> optionalOwner = event.getTicket().getOwner();
       if (!this.current.containsKey(ticket.getId())
-          && owner != null
+          && optionalOwner.isPresent()
           && questions != null
           && !questions.getQuestions().isEmpty()
-          && channel != null) {
+          && optionalChannel.isPresent()) {
+        TextChannel channel = optionalChannel.get();
+        BotUser owner = optionalOwner.get();
         Ticket parent = this.getTicketByChannel(channel).orElse(null);
         if (parent != null) {
           this.current.put(ticket.getId(), this.current.get(parent.getId()));
@@ -160,7 +162,7 @@ public class QuestionsHandler implements StarfishHandler {
   /** @see CleanerHandler#refresh(Ticket) */
   @NonNull
   private Ticket refresh(@NonNull Ticket ticket) {
-    return Starfish.getHandler(CleanerHandler.class).refresh(ticket);
+    return Starfish.requireHandler(CleanerHandler.class).refresh(ticket);
   }
 
   /**
@@ -181,16 +183,15 @@ public class QuestionsHandler implements StarfishHandler {
    * @return the ticket if found else null
    */
   @NonNull
-  private Optional<Ticket> getTicketByChannel(@NonNull TextChannel channel) {
+  private Optional<? extends Ticket> getTicketByChannel(@NonNull TextChannel channel) {
     return this.current.keySet().stream()
         .map(id -> Starfish.getLoader().getTicket(id))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
         .filter(
             ticket -> {
-              if (ticket != null) {
-                TextChannel textChannel = ticket.getTextChannel();
-                return textChannel != null && textChannel.equals(channel);
-              }
-              return false;
+              Optional<TextChannel> textChannel = ticket.getTextChannel();
+              return textChannel.isPresent() && textChannel.get().equals(channel);
             })
         .findFirst();
   }

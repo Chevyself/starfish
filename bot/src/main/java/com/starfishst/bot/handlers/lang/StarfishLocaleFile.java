@@ -4,7 +4,7 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.StarfishFiles;
 import com.starfishst.api.lang.LocaleFile;
 import java.io.IOException;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import lombok.Getter;
 import lombok.NonNull;
@@ -67,7 +67,8 @@ public class StarfishLocaleFile implements LocaleFile {
    * @return the unicode to differentiate this language
    */
   public @NonNull String getUnicode() {
-    return Objects.requireNonNull(this.getRaw("unicode"), this + " has a null unicode property");
+    return this.getRaw("unicode")
+        .orElseThrow(() -> new NullPointerException(this + " has a null unicode property!"));
   }
 
   @Override
@@ -77,7 +78,8 @@ public class StarfishLocaleFile implements LocaleFile {
 
   @Override
   public @NonNull String getLang() {
-    return Objects.requireNonNull(this.getRaw("lang"), this + " has a null lang property!");
+    return this.getRaw("lang")
+        .orElseThrow(() -> new NullPointerException(this + " has a null lang property!"));
   }
 
   @Override
@@ -87,7 +89,7 @@ public class StarfishLocaleFile implements LocaleFile {
   }
 
   @Override
-  public String getRaw(@NonNull String path) {
-    return this.properties.getProperty(path);
+  public Optional<String> getRaw(@NonNull String path) {
+    return Optional.ofNullable(this.properties.getProperty(path));
   }
 }

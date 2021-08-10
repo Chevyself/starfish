@@ -15,6 +15,7 @@ import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.user.FreelancerRating;
 import java.util.Collection;
+import java.util.Optional;
 import lombok.NonNull;
 import me.googas.commands.jda.utils.responsive.ResponsiveMessage;
 import net.dv8tion.jda.api.entities.Guild;
@@ -42,13 +43,13 @@ public class StarfishTicketLoaderFallback implements StarfishLoader {
   }
 
   @Override
-  public Ticket getTicket(long id) {
+  public Optional<Ticket> getTicket(long id) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }
 
   @Override
-  public Ticket getTicketByChannel(long channelId) {
+  public Optional<Ticket> getTicketByChannel(long channelId) {
     throw new UnsupportedOperationException(
         "Operations are not permitted in fallback ticket loader");
   }

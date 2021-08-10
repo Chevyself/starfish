@@ -13,9 +13,7 @@ import me.googas.commands.jda.result.ResultType;
 import me.googas.starbox.events.ListenPriority;
 import me.googas.starbox.events.Listener;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
 
 /** Handles freelancers */
 public class FreelancerHandler implements StarfishHandler {
@@ -32,40 +30,44 @@ public class FreelancerHandler implements StarfishHandler {
     BotUser botUser = event.getUser();
     if (!botUser.isFreelancer()) {
       event.setCancelled(true);
-      User user = botUser.getDiscord();
-      if (user != null) {
-        user.openPrivateChannel()
-            .queue(
-                privateChannel -> {
-                  EmbedBuilder embedBuilder =
-                      Messages.build(
-                          botUser
-                              .getLocaleFile()
-                              .get("user.not-freelancer", ticket.getPlaceholders()),
-                          ResultType.PERMISSION,
-                          botUser);
-                  privateChannel.sendMessageEmbeds(embedBuilder.build()).queue();
-                });
-      }
+      botUser
+          .getDiscord()
+          .ifPresent(
+              user -> {
+                user.openPrivateChannel()
+                    .queue(
+                        privateChannel -> {
+                          EmbedBuilder embedBuilder =
+                              Messages.build(
+                                  botUser
+                                      .getLocaleFile()
+                                      .get("user.not-freelancer", ticket.getPlaceholders()),
+                                  ResultType.PERMISSION,
+                                  botUser);
+                          privateChannel.sendMessageEmbeds(embedBuilder.build()).queue();
+                        });
+              });
     } else {
       if (ticket.hasFreelancers()) {
-        Member member = botUser.getMember();
-        if (member != null) {
-          member
-              .getUser()
-              .openPrivateChannel()
-              .queue(
-                  channel -> {
-                    EmbedBuilder embedBuilder =
-                        Messages.build(
-                            botUser
-                                .getLocaleFile()
-                                .get("freelancer.ticket-claimed", ticket.getPlaceholders()),
-                            ResultType.PERMISSION,
-                            botUser);
-                    channel.sendMessageEmbeds(embedBuilder.build()).queue();
-                  });
-        }
+        botUser
+            .getMember()
+            .ifPresent(
+                member -> {
+                  member
+                      .getUser()
+                      .openPrivateChannel()
+                      .queue(
+                          channel -> {
+                            EmbedBuilder embedBuilder =
+                                Messages.build(
+                                    botUser
+                                        .getLocaleFile()
+                                        .get("freelancer.ticket-claimed", ticket.getPlaceholders()),
+                                    ResultType.PERMISSION,
+                                    botUser);
+                            channel.sendMessageEmbeds(embedBuilder.build()).queue();
+                          });
+                });
         event.setCancelled(true);
       } else {
         List<Role> allowedRoles = new ArrayList<>();
@@ -81,34 +83,36 @@ public class FreelancerHandler implements StarfishHandler {
                     }
                   }
                 });
-        Member member = botUser.getMember();
-        if (member != null) {
-          // Check if the freelancer has an allowed role
-          boolean allowed = false;
-          for (Role role : member.getRoles()) {
-            if (allowedRoles.contains(role)) {
-              allowed = true;
-              break;
-            }
-          }
-          if (!allowed) {
-            member
-                .getUser()
-                .openPrivateChannel()
-                .queue(
-                    privateChannel -> {
-                      EmbedBuilder embedBuilder =
-                          Messages.build(
-                              botUser
-                                  .getLocaleFile()
-                                  .get("freelancer.not-roles", ticket.getPlaceholders()),
-                              ResultType.PERMISSION,
-                              botUser);
-                      privateChannel.sendMessageEmbeds(embedBuilder.build());
-                    });
-            event.setCancelled(true);
-          }
-        }
+        botUser
+            .getMember()
+            .ifPresent(
+                member -> {
+                  // Check if the freelancer has an allowed role
+                  boolean allowed = false;
+                  for (Role role : member.getRoles()) {
+                    if (allowedRoles.contains(role)) {
+                      allowed = true;
+                      break;
+                    }
+                  }
+                  if (!allowed) {
+                    member
+                        .getUser()
+                        .openPrivateChannel()
+                        .queue(
+                            privateChannel -> {
+                              EmbedBuilder embedBuilder =
+                                  Messages.build(
+                                      botUser
+                                          .getLocaleFile()
+                                          .get("freelancer.not-roles", ticket.getPlaceholders()),
+                                      ResultType.PERMISSION,
+                                      botUser);
+                              privateChannel.sendMessageEmbeds(embedBuilder.build());
+                            });
+                    event.setCancelled(true);
+                  }
+                });
       }
     }
   }

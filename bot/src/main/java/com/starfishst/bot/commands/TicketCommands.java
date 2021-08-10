@@ -13,6 +13,7 @@ import com.starfishst.bot.handlers.ticket.TicketAnnouncementHandler;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import me.googas.commands.annotations.Free;
 import me.googas.commands.jda.annotations.Command;
 import me.googas.commands.jda.context.CommandContext;
@@ -66,9 +67,10 @@ public class TicketCommands {
               suggestions = "-1")
           Ticket ticket) {
     TicketType type = ticket.getType();
-    TextChannel channel = type.getChannel();
-    if (channel != null) {
-      Starfish.getHandler(TicketAnnouncementHandler.class).announce(channel, user, ticket);
+    Optional<TextChannel> optional = type.getChannel();
+    if (optional.isPresent()) {
+      TextChannel channel = optional.get();
+      Starfish.requireHandler(TicketAnnouncementHandler.class).announce(channel, user, ticket);
       Map<String, String> placeholders = ticket.getPlaceholders();
       placeholders.put("announce-channel", channel.getAsMention());
       return new Result(user.getLocaleFile().get("ticket.announced", placeholders));

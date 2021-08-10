@@ -15,6 +15,7 @@ import com.starfishst.bot.data.StarfishTicket;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -41,8 +42,8 @@ public class StarfishTicketManager implements TicketManager {
   private TextChannel getChannel(
       @NonNull BotUser user, Ticket parent, Category category, StarfishTicket ticket) {
     TextChannel channel;
-    if (parent != null && parent.getTextChannel() != null) {
-      channel = parent.getTextChannel();
+    if (parent != null && parent.getTextChannel().isPresent()) {
+      channel = parent.getTextChannel().get();
       channel.getManager().setParent(category).queue();
     } else {
       channel =
@@ -81,18 +82,18 @@ public class StarfishTicketManager implements TicketManager {
     TicketPreCreationEvent preCreationEvent = new TicketPreCreationEvent(this, type, user, parent);
     if (preCreationEvent.callAndGet())
       throw new TicketCreationException(preCreationEvent.getReason());
-    Category category = type.getCategory();
+    Optional<Category> category = type.getCategory();
     Map<Long, String> users = this.getUsers(user, parent);
     ValuesMap details = this.getDetails(parent);
-    if (category != null) {
+    if (category.isPresent()) {
       if (parent != null) parent.unload(false);
       StarfishTicket ticket =
           new StarfishTicket(this.getNewId(parent), type, details, TicketStatus.LOADING, users, -1)
               .cache();
-      TextChannel channel = this.getChannel(user, parent, category, ticket);
+      TextChannel channel = this.getChannel(user, parent, category.get(), ticket);
       ticket.setTextChannel(channel);
-      if (user.getMember() != null) {
-        Discord.allow(channel, user.getMember(), Discord.ALLOWED);
+      if (user.getMember().isPresent()) {
+        Discord.allow(channel, user.getMember().get(), Discord.ALLOWED);
       }
       ticket.setStatus(TicketStatus.CREATING);
       return ticket;

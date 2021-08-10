@@ -9,9 +9,9 @@ import com.starfishst.api.tickets.TicketStatus;
 import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
+import java.util.Optional;
 import me.googas.starbox.events.ListenPriority;
 import me.googas.starbox.events.Listener;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Handles quotes */
 public class QuoteHandler implements StarfishHandler {
@@ -24,8 +24,7 @@ public class QuoteHandler implements StarfishHandler {
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketAddDetailEvent(TicketAddDetailEvent event) {
     Ticket ticket = event.getTicket();
-    BotUser owner = ticket.getOwner();
-    TextChannel channel = ticket.getTextChannel();
+    Optional<BotUser> optionalOwner = ticket.getOwner();
     Object detail = event.getDetail();
     if (!event.isCancelled()
         && event.getSimple().startsWith("budget")
@@ -33,7 +32,8 @@ public class QuoteHandler implements StarfishHandler {
         && ((String) detail).toLowerCase().contains("quote")
         && ticket.getStatus() == TicketStatus.CREATING
         && ticket.getType() != TicketType.QUOTE
-        && owner != null) {
+        && optionalOwner.isPresent()) {
+      BotUser owner = optionalOwner.get();
       try {
         Starfish.getTicketManager().createTicket(TicketType.QUOTE, owner, ticket);
         try {
@@ -42,9 +42,12 @@ public class QuoteHandler implements StarfishHandler {
           throwable.printStackTrace();
         }
       } catch (TicketCreationException e) {
-        if (channel != null) {
-          channel.sendMessage(e.toQuery(owner).build()).queue(Messages.getErrorConsumer());
-        }
+        ticket
+            .getTextChannel()
+            .ifPresent(
+                channel -> {
+                  channel.sendMessage(e.toQuery(owner).build()).queue(Messages.getErrorConsumer());
+                });
       }
     }
   }

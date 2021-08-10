@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.jda.utils.responsive.ResponsiveMessage;
@@ -111,14 +112,15 @@ public class StarfishDataLoader implements Loader {
   @Override
   public ResponsiveMessage getResponsiveMessage(Guild guild, long messageId) {
     return Mongo.get(
-        BotResponsiveMessage.class,
-        this.messages(),
-        new Document("id", messageId),
-        message -> message.getId() == messageId);
+            BotResponsiveMessage.class,
+            this.messages(),
+            new Document("id", messageId),
+            message -> message.getId() == messageId)
+        .orElse(null);
   }
 
   @Override
-  public Ticket getTicket(long id) {
+  public Optional<StarfishTicket> getTicket(long id) {
     return Mongo.get(
         StarfishTicket.class,
         this.tickets(),
@@ -127,7 +129,7 @@ public class StarfishDataLoader implements Loader {
   }
 
   @Override
-  public Ticket getTicketByChannel(long channelId) {
+  public Optional<StarfishTicket> getTicketByChannel(long channelId) {
     return Mongo.get(
         StarfishTicket.class,
         this.tickets(),
@@ -137,20 +139,16 @@ public class StarfishDataLoader implements Loader {
 
   @Override
   public @NonNull BotUser getStarfishUser(long id) {
-    StarfishUser starfishUser =
-        Mongo.get(
-            StarfishUser.class, this.users(), new Document("id", id), user -> user.getId() == id);
-    if (starfishUser != null) return starfishUser;
-    return new StarfishUser(id).cache();
+    return Mongo.get(
+            StarfishUser.class, this.users(), new Document("id", id), user -> user.getId() == id)
+        .orElseGet(() -> new StarfishUser(id).cache());
   }
 
   @Override
   public @NonNull BotRole getStarfishRole(long id) {
-    StarfishRole starfishRole =
-        Mongo.get(
-            StarfishRole.class, this.roles(), new Document("id", id), role -> role.getId() == id);
-    if (starfishRole != null) return starfishRole;
-    return new StarfishRole(id, new HashSet<>()).cache();
+    return Mongo.get(
+            StarfishRole.class, this.roles(), new Document("id", id), role -> role.getId() == id)
+        .orElseGet(() -> new StarfishRole(id, new HashSet<>()).cache());
   }
 
   @Override
@@ -173,14 +171,12 @@ public class StarfishDataLoader implements Loader {
 
   @Override
   public @NonNull FreelancerRating getRating(long id) {
-    StarfishFreelancerRating freelancerRating =
-        Mongo.get(
+    return Mongo.get(
             StarfishFreelancerRating.class,
             this.ratings(),
             new Document("id", id),
-            rating -> rating.getId() == id);
-    if (freelancerRating != null) return freelancerRating;
-    return new StarfishFreelancerRating(id, new HashMap<>());
+            rating -> rating.getId() == id)
+        .orElseGet(() -> new StarfishFreelancerRating(id, new HashMap<>()));
   }
 
   @Override

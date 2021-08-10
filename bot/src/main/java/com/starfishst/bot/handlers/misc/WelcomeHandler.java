@@ -7,7 +7,6 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import lombok.NonNull;
 import me.googas.commands.jda.result.ResultType;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.SubscribeEvent;
 
@@ -34,18 +33,22 @@ public class WelcomeHandler implements StarfishHandler {
   @SubscribeEvent
   public void onMemberJoin(GuildMemberJoinEvent event) {
     BotUser user = this.loader.getStarfishUser(event.getMember().getIdLong());
-    TextChannel welcome = Starfish.getDiscordConfiguration().getChannelOrCreate("welcome");
-    if (welcome != null && this.getPreferences().getOr("enabled", Boolean.class, true)) {
-      welcome
-          .sendMessage(
-              Messages.build(
-                      user.getLocaleFile().get("welcome.title", user.getPlaceholders()),
-                      user.getLocaleFile().get("welcome.description", user.getPlaceholders()),
-                      ResultType.GENERIC,
-                      user)
-                  .build())
-          .queue();
-    }
+    if (!this.getPreferences().getOr("enabled", Boolean.class, true)) return;
+    Starfish.getDiscordConfiguration()
+        .getChannelOrCreate("welcome")
+        .ifPresent(
+            welcome -> {
+              welcome
+                  .sendMessage(
+                      Messages.build(
+                              user.getLocaleFile().get("welcome.title", user.getPlaceholders()),
+                              user.getLocaleFile()
+                                  .get("welcome.description", user.getPlaceholders()),
+                              ResultType.GENERIC,
+                              user)
+                          .build())
+                  .queue();
+            });
   }
 
   @Override

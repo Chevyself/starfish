@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.NonNull;
 import me.googas.starbox.events.ListenPriority;
@@ -37,20 +38,19 @@ public class TicketAnnouncementHandler implements StarfishHandler {
     Ticket ticket = event.getTicket();
     TicketType type = ticket.getType();
     if (!event.isCancelled() && event.getStatus() == TicketStatus.OPEN) {
-      BotUser owner = ticket.getOwner();
-      TextChannel textChannel = ticket.getTextChannel();
+      Optional<BotUser> optionalOwner = ticket.getOwner();
+      Optional<TextChannel> optionalChannel = ticket.getTextChannel();
       if (this.getPreferences().getOr("pin-copy-in-ticket", Boolean.class, true)
-          && textChannel != null
-          && owner != null) {
-        textChannel
+          && optionalChannel.isPresent()
+          && optionalOwner.isPresent()) {
+        BotUser owner = optionalOwner.get();
+        optionalChannel
+            .get()
             .sendMessageEmbeds(ticket.toCompleteInformation(owner, false).build())
             .queue(msg -> msg.pin().queue());
       }
-      if (owner != null && this.getAnnounceTypes().contains(type)) {
-        TextChannel channel = type.getChannel();
-        if (channel != null) {
-          this.announce(channel, owner, ticket);
-        }
+      if (optionalOwner.isPresent() && this.getAnnounceTypes().contains(type)) {
+        type.getChannel().ifPresent(channel -> this.announce(channel, optionalOwner.get(), ticket));
       }
     }
   }

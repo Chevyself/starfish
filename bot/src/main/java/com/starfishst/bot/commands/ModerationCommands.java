@@ -2,7 +2,6 @@ package com.starfishst.bot.commands;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.api.tickets.Ticket;
 import me.googas.commands.annotations.Required;
 import me.googas.commands.jda.annotations.Command;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -20,8 +19,7 @@ public class ModerationCommands {
     } else if (amount > 100) {
       amount = 100;
     }
-    Ticket ticket = Starfish.getLoader().getTicketByChannel(channel.getIdLong());
-    if (ticket != null) return;
+    if (Starfish.getLoader().getTicketByChannel(channel.getIdLong()).isPresent()) return;
     channel
         .getHistory()
         .retrievePast(amount)

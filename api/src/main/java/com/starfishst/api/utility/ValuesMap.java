@@ -121,7 +121,7 @@ public class ValuesMap {
     this.getMap().remove(key);
   }
 
-  @NonNull
+  @NonNull @Deprecated
   public static <O> String pretty(@NonNull Collection<O> collection, @Nullable String empty) {
     if (collection.isEmpty()) return empty == null ? "Empty" : empty;
     StringBuilder builder = new StringBuilder();
@@ -144,7 +144,7 @@ public class ValuesMap {
    * @param <O> the type of the collection
    * @return a string given by the collection
    */
-  @NonNull
+  @NonNull @Deprecated
   public static <O> String pretty(@NonNull Collection<O> collection) {
     return collection.toString().replace("[", "").replace("]", "");
   }

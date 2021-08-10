@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import lombok.NonNull;
@@ -55,11 +56,13 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
     if (this.getPreferences().getOr("delete-uncompleted-ticket-channels", Boolean.class, true)
         && ticket.getStatus() == TicketStatus.CREATING) {
       if (this.containsTime(time)) {
-        BotUser owner = ticket.getOwner();
-        TextChannel channel = ticket.getTextChannel();
-        if (owner != null && channel != null) {
+        Optional<BotUser> optionalOwner = ticket.getOwner();
+        Optional<TextChannel> optionalChannel = ticket.getTextChannel();
+        if (optionalOwner.isPresent() && optionalChannel.isPresent()) {
           Map<String, String> placeholders = Collections.singletonMap("time", time.toString());
-          channel
+          BotUser owner = optionalOwner.get();
+          optionalChannel
+              .get()
               .sendMessage(
                   Messages.build(
                           owner.getLocaleFile().get("cleaner.delete-time.title", placeholders),
@@ -133,19 +136,23 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
 
   @Override
   public void run() {
-    HashMap<Long, Long> copy = new HashMap<>(this.map);
+    Map<Long, Long> copy = new HashMap<>(this.map);
     copy.forEach(
         (id, secondsLeft) -> {
           long left = secondsLeft - 1;
-          Ticket ticket = Starfish.getLoader().getTicket(id);
           this.map.put(id, left);
-          if (ticket != null && ticket.getStatus() == TicketStatus.CREATING) {
-            if (left > 0) {
-              this.onSecondPass(ticket, Time.of(left, Unit.SECONDS));
-            } else {
-              this.unload(ticket);
-            }
-          }
+          Starfish.getLoader()
+              .getTicket(id)
+              .ifPresent(
+                  ticket -> {
+                    if (ticket.getStatus() == TicketStatus.CREATING) {
+                      if (left > 0) {
+                        this.onSecondPass(ticket, Time.of(left, Unit.SECONDS));
+                      } else {
+                        this.unload(ticket);
+                      }
+                    }
+                  });
         });
   }
 

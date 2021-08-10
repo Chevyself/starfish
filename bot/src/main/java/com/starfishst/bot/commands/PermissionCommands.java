@@ -55,12 +55,16 @@ public class PermissionCommands {
       @Required(name = "node", description = "The node of the permission") String node,
       @Required(name = "enabled", description = "Whether the permission is enabled")
           boolean enabled) {
-    PermissionStack discord = permissible.getPermissions("discord");
-    if (discord == null) {
-      discord = new StarfishPermissionStack("discord", new HashSet<>());
-      permissible.getPermissions().add(discord);
-    }
-    discord.getPermissions().add(new StarfishPermission(node, enabled));
+    permissible
+        .getPermissions("discord")
+        .orElseGet(
+            () -> {
+              PermissionStack stack = new StarfishPermissionStack("discord", new HashSet<>());
+              permissible.getPermissions().add(stack);
+              return stack;
+            })
+        .getPermissions()
+        .add(new StarfishPermission(node, enabled));
     return new Result(
         "The permission " + node + " in status " + enabled + " has been given to " + permissible);
   }
@@ -79,10 +83,14 @@ public class PermissionCommands {
       @Required(name = "Permissible", description = "The entity to give the permission to")
           Permissible permissible,
       @Required(name = "node", description = "The node of the permission") String node) {
-    PermissionStack discord = permissible.getPermissions("discord");
-    if (discord != null) {
-      discord.getPermissions().removeIf(permission -> permission.getNode().equalsIgnoreCase(node));
-    }
+    permissible
+        .getPermissions("discord")
+        .ifPresent(
+            discord -> {
+              discord
+                  .getPermissions()
+                  .removeIf(permission -> permission.getNode().equalsIgnoreCase(node));
+            });
     return new Result("The permission " + node + " has been removed from " + permissible);
   }
 }

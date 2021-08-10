@@ -7,6 +7,7 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Discord;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import me.googas.commands.jda.annotations.Command;
 import me.googas.commands.jda.context.CommandContext;
 import me.googas.commands.jda.result.Result;
@@ -39,8 +40,8 @@ public class ChannelsCommands {
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("add.mentions-empty"));
     }
-    Ticket ticket = loader.getTicketByChannel(channel.getIdLong());
-    if (ticket == null) {
+    Optional<? extends Ticket> optionalTicket = loader.getTicketByChannel(channel.getIdLong());
+    if (!optionalTicket.isPresent()) {
       GuildVoiceState state = member.getVoiceState();
       if (state != null && state.getChannel() != null) {
         channel = state.getChannel();
@@ -60,6 +61,7 @@ public class ChannelsCommands {
       }
       return new Result(user.getLocaleFile().get("add.members-added"));
     } else {
+      Ticket ticket = optionalTicket.get();
       for (IMentionable mentionable : mentions) {
         if (mentionable instanceof Member) {
           BotUser starfishUser = loader.getStarfishUser(mentionable.getIdLong());
@@ -102,8 +104,8 @@ public class ChannelsCommands {
     if (mentions.isEmpty()) {
       return new Result(ResultType.USAGE, user.getLocaleFile().get("remove.mentions-empty"));
     }
-    Ticket ticket = loader.getTicketByChannel(channel.getIdLong());
-    if (ticket == null) {
+    Optional<? extends Ticket> optionalTicket = loader.getTicketByChannel(channel.getIdLong());
+    if (!optionalTicket.isPresent()) {
       for (IMentionable mentionable : mentions) {
         if (mentionable instanceof IPermissionHolder) {
           Discord.disallow(channel, (IPermissionHolder) mentionable);
@@ -111,6 +113,7 @@ public class ChannelsCommands {
       }
       return new Result(user.getLocaleFile().get("remove.members-remove"));
     } else {
+      Ticket ticket = optionalTicket.get();
       for (IMentionable mentionable : mentions) {
         if (mentionable instanceof Member) {
           BotUser starfishUser = loader.getStarfishUser(mentionable.getIdLong());

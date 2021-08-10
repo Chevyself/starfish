@@ -4,6 +4,7 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.loader.Loader;
 import com.starfishst.api.tickets.Ticket;
 import java.util.Collections;
+import java.util.Optional;
 import lombok.NonNull;
 import me.googas.commands.exceptions.ArgumentProviderException;
 import me.googas.commands.jda.context.CommandContext;
@@ -26,13 +27,13 @@ public class TicketProvider
     Loader loader = Starfish.getLoader();
     Object id = context.getRegistry().fromString(s, long.class, context);
     if (id instanceof Long) {
-      Ticket ticket = loader.getTicket((long) id);
-      if (ticket != null) {
-        return ticket;
+      Optional<? extends Ticket> ticket = loader.getTicket((long) id);
+      if (ticket.isPresent()) {
+        return ticket.get();
       }
       ticket = loader.getTicketByChannel(context.getChannel().getIdLong());
-      if (ticket != null) {
-        return ticket;
+      if (ticket.isPresent()) {
+        return ticket.get();
       }
     }
     throw new ArgumentProviderException(
@@ -45,9 +46,10 @@ public class TicketProvider
   @NonNull
   @Override
   public Ticket getObject(@NonNull CommandContext context) throws ArgumentProviderException {
-    Ticket ticket = Starfish.getLoader().getTicketByChannel(context.getChannel().getIdLong());
-    if (ticket != null) {
-      return ticket;
+    Optional<? extends Ticket> ticket =
+        Starfish.getLoader().getTicketByChannel(context.getChannel().getIdLong());
+    if (ticket.isPresent()) {
+      return ticket.get();
     }
     throw new ArgumentProviderException(
         Starfish.getLanguageHandler().getFile(context).get("ticket.invalid-channel"));

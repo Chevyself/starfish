@@ -20,13 +20,15 @@ public class TicketTranscriptHandler implements StarfishHandler {
    */
   @SubscribeEvent
   public void onMessageReceivedEvent(GuildMessageReceivedEvent event) {
-    Ticket ticket = Starfish.getLoader().getTicketByChannel(event.getChannel().getIdLong());
-    if (ticket != null) {
-      TicketTranscript transcript = this.getTranscript(ticket);
-      Map<String, String> placeholders = this.getPlaceholders(event, ticket);
-      LocaleFile lang = Starfish.getLanguageHandler().getDefault();
-      transcript.getLogger().info(lang.get("transcript-log.message", placeholders));
-    }
+    Starfish.getLoader()
+        .getTicketByChannel(event.getChannel().getIdLong())
+        .ifPresent(
+            ticket -> {
+              TicketTranscript transcript = this.getTranscript(ticket);
+              Map<String, String> placeholders = this.getPlaceholders(event, ticket);
+              LocaleFile lang = Starfish.getLanguageHandler().getDefault();
+              transcript.getLogger().info(lang.get("transcript-log.message", placeholders));
+            });
   }
 
   /**

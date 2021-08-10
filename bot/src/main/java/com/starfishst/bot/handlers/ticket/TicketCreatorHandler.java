@@ -13,6 +13,7 @@ import com.starfishst.api.utility.ValuesMap;
 import com.starfishst.bot.messages.TicketCreatorReactionResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import me.googas.commands.jda.result.ResultType;
 import me.googas.starbox.events.ListenPriority;
 import me.googas.starbox.events.Listener;
@@ -30,13 +31,14 @@ public class TicketCreatorHandler implements StarfishHandler {
   @Listener(priority = ListenPriority.HIGHEST)
   public void onTicketStatusUpdated(TicketStatusUpdatedEvent event) {
     Ticket ticket = event.getTicket();
-    TextChannel channel = ticket.getTextChannel();
-    BotUser owner = ticket.getOwner();
+    Optional<TextChannel> optionalChannel = ticket.getTextChannel();
+    Optional<BotUser> optionalOwner = ticket.getOwner();
     if (!event.isCancelled()
         && event.getStatus() == TicketStatus.CREATING
-        && channel != null
+        && optionalChannel.isPresent()
         && ticket.getType() == TicketType.TICKET_CREATOR
-        && owner != null) {
+        && optionalOwner.isPresent()) {
+      BotUser owner = optionalOwner.get();
       LocaleFile locale = owner.getLocaleFile();
       Map<String, String> placeholders = ticket.getPlaceholders();
       MessageBuilder builder =
@@ -50,7 +52,8 @@ public class TicketCreatorHandler implements StarfishHandler {
       for (BotUser customer : customers) {
         builder.append(customer.getMention());
       }
-      channel
+      optionalChannel
+          .get()
           .sendMessage(builder.build())
           .queue(
               msg -> {

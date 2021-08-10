@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import lombok.Getter;
@@ -98,23 +99,31 @@ public class TicketHandler implements StarfishHandler {
   public void onTicketStatusUpdated(TicketStatusUpdatedEvent event) {
     Ticket ticket = event.getTicket();
     if (!event.isCancelled()) {
-      TextChannel channel = ticket.getTextChannel();
-      BotUser owner = ticket.getOwner();
-      if (channel != null && owner != null) {
-        channel
+      Optional<TextChannel> optionalChannel = ticket.getTextChannel();
+      Optional<BotUser> optionalOwner = ticket.getOwner();
+      if (optionalChannel.isPresent() && optionalOwner.isPresent()) {
+        optionalChannel
+            .get()
             .getManager()
-            .setName(owner.getLocaleFile().get("ticket.channel-name", ticket.getPlaceholders()))
+            .setName(
+                optionalOwner
+                    .get()
+                    .getLocaleFile()
+                    .get("ticket.channel-name", ticket.getPlaceholders()))
             .queue();
       }
-      Ticket child = Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId());
+      Ticket child =
+          Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId()).orElse(null);
       if (child == ticket) {
         child = null;
       }
       if (!event.isCancelled()
           && event.getStatus() == TicketStatus.CLOSED
           && child == null
-          && channel != null
-          && owner != null) {
+          && optionalChannel.isPresent()
+          && optionalOwner.isPresent()) {
+        TextChannel channel = optionalChannel.get();
+        BotUser owner = optionalOwner.get();
         String timeString =
             this.getPreferences().getOr("time-to-delete-closed-tickets", String.class, "15s");
         if (!timeString.equalsIgnoreCase("none")) {
@@ -150,17 +159,18 @@ public class TicketHandler implements StarfishHandler {
   public void onTicketAddUser(TicketAddUserEvent event) {
     BotUser user = event.getUser();
     if (!event.isCancelled()) {
-      TextChannel channel = event.getTicket().getTextChannel();
-      Member member = user.getMember();
-      BotUser owner = event.getTicket().getOwner();
-      if (member != null && channel != null) {
-        Discord.allow(channel, member, Discord.ALLOWED);
-        if (owner != null
+      Optional<TextChannel> optionalChannel = event.getTicket().getTextChannel();
+      Optional<Member> optionalMember = user.getMember();
+      Optional<BotUser> optionalOwner = event.getTicket().getOwner();
+      if (optionalMember.isPresent() && optionalChannel.isPresent()) {
+        Discord.allow(optionalChannel.get(), optionalMember.get(), Discord.ALLOWED);
+        if (optionalOwner.isPresent()
                 && this.getPreferences()
                     .getOr("announce-all-users-joining-leaving", Boolean.class, false)
-            || owner != null && user.isFreelancer()) {
-          EmbedBuilder embed = user.toCompleteInformation(owner);
-          LocaleFile locale = owner.getLocaleFile();
+            || optionalOwner.isPresent() && user.isFreelancer()) {
+          TextChannel channel = optionalChannel.get();
+          EmbedBuilder embed = user.toCompleteInformation(optionalOwner.get());
+          LocaleFile locale = optionalOwner.get().getLocaleFile();
           if (user.isFreelancer()) {
             embed.setTitle(locale.get("freelancer-joined-ticket.title", user.getPlaceholders()));
           } else {
@@ -187,17 +197,18 @@ public class TicketHandler implements StarfishHandler {
   public void onTicketRemoveUser(TicketRemoveUserEvent event) {
     BotUser user = event.getUser();
     if (!event.isCancelled()) {
-      TextChannel channel = event.getTicket().getTextChannel();
-      Member member = user.getMember();
-      if (member != null && channel != null) {
-        Discord.disallow(channel, member);
-        BotUser owner = event.getTicket().getOwner();
-        if (owner != null
+      Optional<TextChannel> optionalChannel = event.getTicket().getTextChannel();
+      Optional<Member> optionalMember = user.getMember();
+      if (optionalMember.isPresent() && optionalChannel.isPresent()) {
+        TextChannel channel = optionalChannel.get();
+        Discord.disallow(channel, optionalMember.get());
+        Optional<BotUser> owner = event.getTicket().getOwner();
+        if (owner.isPresent()
                 && this.getPreferences()
                     .getOr("announce-all-users-joining-leaving", Boolean.class, false)
-            || owner != null && user.isFreelancer()) {
-          EmbedBuilder embed = user.toCompleteInformation(owner);
-          LocaleFile locale = owner.getLocaleFile();
+            || owner.isPresent() && user.isFreelancer()) {
+          EmbedBuilder embed = user.toCompleteInformation(owner.get());
+          LocaleFile locale = owner.get().getLocaleFile();
           if (user.isFreelancer()) {
             embed.setTitle(locale.get("freelancer-left-ticket.title", user.getPlaceholders()));
           } else {

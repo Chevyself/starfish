@@ -25,8 +25,7 @@ public class ValuesMapAdapter implements JsonSerializer<ValuesMap>, JsonDeserial
    * mongo name and the type to deserialize
    */
   @NonNull
-  static final Map<String, Type> objectId =
-      Collections.singletonMap("numberLong", Long.class);
+  static final Map<String, Type> objectId = Collections.singletonMap("numberLong", Long.class);
 
   /**
    * Add the values from a json object to a guido values map

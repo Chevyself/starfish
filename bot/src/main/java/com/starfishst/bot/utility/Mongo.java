@@ -81,26 +81,36 @@ public class Mongo {
     }
   }
 
-  public static <T extends StarfishCatchable> T get(
+  @NonNull
+  public static <T extends StarfishCatchable> Optional<T> get(
       @NonNull Class<T> typeOfT,
       @NonNull MongoCollection<Document> collection,
       @NonNull Document query,
       @NonNull Predicate<T> predicate) {
-    return Starfish.getCache()
-        .getOrSupply(typeOfT, predicate, () -> Mongo.getCatchable(typeOfT, collection, query));
+    return Optional.ofNullable(
+        Starfish.getCache()
+            .get(typeOfT, predicate)
+            .orElseGet(() -> Mongo.getCatchable(typeOfT, collection, query).orElse(null)));
   }
 
-  public static <T extends StarfishCatchable> T getCatchable(
+  @NonNull
+  public static <T extends StarfishCatchable> Optional<T> getCatchable(
       @NonNull Class<T> typeOfT,
       @NonNull MongoCollection<Document> collection,
       @NonNull Document query) {
     Document first = collection.find(query).first();
-    if (first == null) return null;
-    T t = Mongo.getObject(typeOfT, first);
-    Optional<T> optional = Starfish.getCache().get(typeOfT, catchable -> catchable.equals(t));
-    if (optional.isPresent()) return optional.get();
-    if (t != null) t.cache();
-    return t;
+    if (first != null) {
+      T other = Mongo.getObject(typeOfT, first);
+      return Optional.ofNullable(
+          Starfish.getCache()
+              .get(typeOfT, catchable -> catchable.equals(other))
+              .orElseGet(
+                  () -> {
+                    if (other != null) other.cache();
+                    return other;
+                  }));
+    }
+    return Optional.empty();
   }
 
   /**

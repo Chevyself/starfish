@@ -4,7 +4,6 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.exception.TicketCreationException;
 import com.starfishst.api.messages.BotResponsiveMessage;
 import com.starfishst.api.messages.StarfishReactionResponse;
-import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
@@ -56,21 +55,24 @@ public class TicketCreatorReactionResponse extends StarfishReactionResponse {
   public boolean onReaction(@NonNull MessageReactionAddEvent event) {
     if (this.message == null) return true;
     BotUser user = Starfish.getLoader().getStarfishUser(event.getUserIdLong());
-    Ticket ticket =
-        Starfish.getLoader().getTicket(this.message.getData().getOr("ticket", Long.class, -1L));
-    if (ticket != null) {
-      try {
-        Starfish.getTicketManager().createTicket(this.ticketType, user, ticket);
-        ResponsiveMessage message =
-            Starfish.getLoader().getResponsiveMessage(event.getGuild(), event.getMessageIdLong());
-        if (message instanceof BotResponsiveMessage) ((BotResponsiveMessage) message).delete();
-      } catch (TicketCreationException e) {
-        event
-            .getTextChannel()
-            .sendMessage(e.toQuery(user).build())
-            .queue(Messages.getErrorConsumer());
-      }
-    }
+    Starfish.getLoader()
+        .getTicket(this.message.getData().getOr("ticket", Long.class, -1L))
+        .ifPresent(
+            ticket -> {
+              try {
+                Starfish.getTicketManager().createTicket(this.ticketType, user, ticket);
+                ResponsiveMessage message =
+                    Starfish.getLoader()
+                        .getResponsiveMessage(event.getGuild(), event.getMessageIdLong());
+                if (message instanceof BotResponsiveMessage)
+                  ((BotResponsiveMessage) message).delete();
+              } catch (TicketCreationException e) {
+                event
+                    .getTextChannel()
+                    .sendMessage(e.toQuery(user).build())
+                    .queue(Messages.getErrorConsumer());
+              }
+            });
     return true;
   }
 

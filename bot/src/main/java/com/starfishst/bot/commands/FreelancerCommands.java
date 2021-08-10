@@ -14,6 +14,7 @@ import com.starfishst.bot.messages.OfferAcceptReactionResponse;
 import com.starfishst.bot.messages.ReviewReactionResponse;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import lombok.NonNull;
 import me.googas.commands.annotations.Multiple;
 import me.googas.commands.annotations.Required;
@@ -108,36 +109,39 @@ public class FreelancerCommands {
     if (ticket.getType() != TicketType.QUOTE) {
       return new Result(locale.get("quote.ticket-not-quote", ticket.getPlaceholders()));
     } else {
-      TextChannel channel = ticket.getTextChannel();
-      if (ticket.getStatus() == TicketStatus.CLOSED && channel == null) {
+      Optional<TextChannel> optionalChannel = ticket.getTextChannel();
+      if (ticket.getStatus() == TicketStatus.CLOSED && !optionalChannel.isPresent()) {
         return new Result(locale.get("quote.closed", ticket.getPlaceholders()));
-      } else if (channel != null && ticket.getStatus() == TicketStatus.OPEN) {
+      } else if (optionalChannel.isPresent() && ticket.getStatus() == TicketStatus.OPEN) {
+        TextChannel channel = optionalChannel.get();
         Map<String, String> placeholders = Collections.singletonMap("offer", strings.getString());
-        BotUser owner = ticket.getOwner();
-        if (owner != null) {
-          EmbedBuilder embedBuilder =
-              Messages.build(
-                  owner.getLocaleFile().get("offer.title", placeholders),
-                  owner.getLocaleFile().get("offer.desc", placeholders),
-                  ResultType.GENERIC,
-                  owner);
-          MessageBuilder messageBuilder =
-              new MessageBuilder(embedBuilder).append(channel.getGuild().getPublicRole());
-          channel
-              .sendMessage(messageBuilder.build())
-              .queue(
-                  msg -> {
-                    ValuesMap map =
-                        new ValuesMap()
-                            .add("offer", strings.getString())
-                            .add("freelancer", freelancer.getId())
-                            .add("ticket", ticket.getId());
-                    BotResponsiveMessage responsiveMessage =
-                        new BotResponsiveMessage(msg.getIdLong()).cache();
-                    responsiveMessage.addReactionResponse(
-                        new OfferAcceptReactionResponse(responsiveMessage), msg);
-                  });
-        }
+        ticket
+            .getOwner()
+            .ifPresent(
+                owner -> {
+                  EmbedBuilder embedBuilder =
+                      Messages.build(
+                          owner.getLocaleFile().get("offer.title", placeholders),
+                          owner.getLocaleFile().get("offer.desc", placeholders),
+                          ResultType.GENERIC,
+                          owner);
+                  MessageBuilder messageBuilder =
+                      new MessageBuilder(embedBuilder).append(channel.getGuild().getPublicRole());
+                  channel
+                      .sendMessage(messageBuilder.build())
+                      .queue(
+                          msg -> {
+                            ValuesMap map =
+                                new ValuesMap()
+                                    .add("offer", strings.getString())
+                                    .add("freelancer", freelancer.getId())
+                                    .add("ticket", ticket.getId());
+                            BotResponsiveMessage responsiveMessage =
+                                new BotResponsiveMessage(msg.getIdLong()).cache();
+                            responsiveMessage.addReactionResponse(
+                                new OfferAcceptReactionResponse(responsiveMessage), msg);
+                          });
+                });
       }
     }
     return new Result(locale.get("quote.sent", ticket.getPlaceholders()));
@@ -147,12 +151,16 @@ public class FreelancerCommands {
   public Result review(LocaleFile locale, Ticket ticket) {
     if (!(ticket instanceof StarfishTicket))
       return new Result(ResultType.ERROR, "This ticket is not an starfish ticket");
-    BotUser owner = ticket.getOwner();
-    if (owner == null) return new Result(ResultType.ERROR, locale.get("review.ticket-no-user"));
-    Member member = owner.getMember();
-    if (member == null) return new Result(ResultType.ERROR, locale.get("review.ticket-no-user"));
+    Optional<BotUser> optionalOwner = ticket.getOwner();
+    if (!optionalOwner.isPresent())
+      return new Result(ResultType.ERROR, locale.get("review.ticket-no-user"));
+    Optional<Member> optionalMember = optionalOwner.get().getMember();
+    if (!optionalMember.isPresent())
+      return new Result(ResultType.ERROR, locale.get("review.ticket-no-user"));
     if (!ticket.hasFreelancers())
       return new Result(ResultType.ERROR, locale.get("review.ticket-no-freelancer"));
+    BotUser owner = optionalOwner.get();
+    Member member = optionalMember.get();
     BotUser freelancer = ticket.getFreelancer();
     Map<String, String> placeholders = freelancer.getPlaceholders();
     placeholders.put("user", member.getAsMention());

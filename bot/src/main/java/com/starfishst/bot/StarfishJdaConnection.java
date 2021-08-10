@@ -5,6 +5,7 @@ import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.utility.JdaConnection;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
@@ -117,8 +118,8 @@ public class StarfishJdaConnection implements JdaConnection {
   }
 
   @Override
-  public JDA getJda() {
-    return this.jda;
+  public Optional<JDA> getJda() {
+    return Optional.ofNullable(this.jda);
   }
 
   @Override

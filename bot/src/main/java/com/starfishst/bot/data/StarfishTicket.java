@@ -13,12 +13,12 @@ import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.ValuesMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.starbox.time.Time;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Represents a StarfishTicket. TODO This documentation has to be a little bit more done. */
@@ -94,12 +94,9 @@ public class StarfishTicket implements Ticket {
   }
 
   @Override
-  public TextChannel getTextChannel() {
-    JDA jda = Starfish.getJdaConnection().getJda();
-    if (jda != null) {
-      return jda.getTextChannelById(this.channel);
-    }
-    return null;
+  @NonNull
+  public Optional<TextChannel> getTextChannel() {
+    return Starfish.getJdaConnection().getJda().map(jda -> jda.getTextChannelById(this.channel));
   }
 
   @Override

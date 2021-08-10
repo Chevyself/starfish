@@ -33,7 +33,7 @@ public interface Loader extends StarfishHandler, ResponsiveMessageController {
    * @return a {@link java.util.Optional} holding the nullable ticket
    */
   @NonNull
-  Optional<Ticket> getTicket(long id);
+  Optional<? extends Ticket> getTicket(long id);
 
   /**
    * Get a ticket by its channel
@@ -42,7 +42,7 @@ public interface Loader extends StarfishHandler, ResponsiveMessageController {
    * @return a {@link java.util.Optional} holding the nullable ticket
    */
   @NonNull
-  Optional<Ticket> getTicketByChannel(long channelId);
+  Optional<? extends Ticket> getTicketByChannel(long channelId);
 
   /**
    * Get an starfish user by its id
