@@ -69,5 +69,6 @@ public interface FreelancerRating extends StarfishCatchable {
    *
    * @return the map of ratings of this freelancer.
    */
+  @NonNull
   Map<Long, Integer> getMap();
 }

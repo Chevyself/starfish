@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.NonNull;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -138,15 +142,7 @@ public class Discord {
    */
   @NonNull
   public static List<String> getRolesAsMention(Collection<Long> ids) {
-    List<String> mentions = new ArrayList<>();
-    if (ids == null || ids.isEmpty()) return mentions;
-    for (Long id : ids) {
-      if (id != null) {
-        Role role = Discord.getRole(id);
-        if (role != null) mentions.add(role.getAsMention());
-      }
-    }
-    return mentions;
+    return Discord.getRoles(ids).stream().map(IMentionable::getAsMention).collect(Collectors.toList());
   }
 
   /**
@@ -264,12 +260,11 @@ public class Discord {
    * Get a role by its id
    *
    * @param id the id of the role to get
-   * @return the role if found null otherwise
+   * @return a {@link java.util.Optional} holding the nullable role
    */
-  public static Role getRole(long id) {
-    JDA jda = Starfish.getJdaConnection().getJda();
-    if (jda == null) return null;
-    return jda.getRoleById(id);
+  @NonNull
+  public static Optional<Role> getRole(long id) {
+    return Starfish.getJdaConnection().getJda().map(jda -> jda.getRoleById(id));
   }
 
   /**
@@ -280,16 +275,6 @@ public class Discord {
    */
   @NonNull
   public static List<Role> getRoles(Collection<Long> ids) {
-    List<Role> roles = new ArrayList<>();
-    if (ids == null || ids.isEmpty()) return roles;
-    for (Long id : ids) {
-      if (id != null) {
-        Role role = Discord.getRole(id);
-        if (role != null) {
-          roles.add(role);
-        }
-      }
-    }
-    return roles;
+    return ids.stream().map(id -> Discord.getRole(id).orElse(null)).filter(Objects::nonNull).collect(Collectors.toList());
   }
 }

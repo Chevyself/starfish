@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.NonNull;
 import me.googas.commands.jda.ListenerOptions;
 import me.googas.starbox.time.Time;
@@ -45,13 +47,7 @@ public interface Configuration {
    */
   @NonNull
   default Collection<Fee> getFees(double value) {
-    List<Fee> fees = new ArrayList<>();
-    for (Fee fee : this.getFees()) {
-      if (fee.applies(value)) {
-        fees.add(fee);
-      }
-    }
-    return fees;
+    return this.getFees().stream().filter(fee -> fee.applies(value)).collect(Collectors.toList());
   }
 
   /**

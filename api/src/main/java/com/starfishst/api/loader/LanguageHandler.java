@@ -25,12 +25,7 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
    */
   @NonNull
   default LocaleFile getFile(@NonNull String lang) {
-    for (LocaleFile file : this.getFiles()) {
-      if (file.getLang().equalsIgnoreCase(lang)) {
-        return file;
-      }
-    }
-    return this.getFile("en");
+    return this.getFiles().stream().filter(file -> file.getLang().equalsIgnoreCase(lang)).findFirst().orElseGet(() -> this.getFile("en"));
   }
 
   /**
@@ -42,12 +37,7 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
    */
   @NonNull
   default LocaleFile getFileFromUnicode(@NonNull String unicode) {
-    for (LocaleFile file : this.getFiles()) {
-      if (file.getUnicode().equalsIgnoreCase(unicode)) {
-        return file;
-      }
-    }
-    throw new IllegalArgumentException(unicode + " is not a valid unicode");
+    return this.getFiles().stream().filter(file -> file.getUnicode().equalsIgnoreCase(unicode)).findFirst().orElseThrow(() -> new IllegalArgumentException(unicode + " is not a valid unicode"));
   }
 
   /**

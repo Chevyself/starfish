@@ -4,6 +4,8 @@ import javax.security.auth.login.LoginException;
 import lombok.NonNull;
 import net.dv8tion.jda.api.JDA;
 
+import java.util.Optional;
+
 /** Setups connection with JDA */
 public interface JdaConnection {
 
@@ -19,9 +21,10 @@ public interface JdaConnection {
   /**
    * Get the jda connection
    *
-   * @return the jda connection
+   * @return a {@link java.util.Optional} holding the nullable jda connection
    */
-  JDA getJda();
+  @NonNull
+  Optional<JDA> getJda();
 
   /**
    * Get the jda connection validated as not-null

@@ -12,6 +12,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** The configuration for discord */
 public interface DiscordConfiguration {
@@ -21,80 +24,63 @@ public interface DiscordConfiguration {
    * Discord#validateCategory(Category, Guild, String, boolean, List, List)}.
    *
    * @param key the key of the category
-   * @return if this returns null it means that the guild has not been set
+   * @return a {@link java.util.Optional} holding the nullable category
    */
-  default Category requireCategory(@NonNull String key) {
-    Guild guild = this.getGuild();
-    if (guild != null) {
-      Category validated =
-          Discord.validateCategory(
-              this.getCategory(key),
-              guild,
-              key,
-              true,
-              this.getRoles("allowed-in-categories"),
-              this.getRoles("allowed-to-see-in-categories"));
-      if (validated.getIdLong() != this.getCategories().getOrDefault(key, -1L)) {
-        this.getCategories().put(key, validated.getIdLong());
+  @NonNull
+  default Optional<Category> geCategoryOrCreate(@NonNull String key) {
+    return this.getGuild().map(guild -> {
+      Category category =
+              Discord.validateCategory(
+                      this.getCategory(key).orElse(null),
+                      guild,
+                      key,
+                      true,
+                      this.getRoles("allowed-in-categories"),
+                      this.getRoles("allowed-to-see-in-categories"));
+      if (category.getIdLong() != this.getCategories().getOrDefault(key, -1L)) {
+        this.getCategories().put(key, category.getIdLong());
       }
-      return validated;
-    }
-    return null;
+      return category;
+    });
   }
 
   /**
-   * * Get a channel using its key
+   * Get a channel using its key
    *
    * @param key the key of the channel
-   * @return the channel
+   * @return a {@link java.util.Optional} holding the nullable channel
    */
-  default TextChannel requireChannel(@NonNull String key) {
-    Guild guild = this.getGuild();
-    if (guild != null) {
-      TextChannel validated =
-          Discord.validateChannel(
-              this.getChannel(key),
-              guild,
-              key,
-              true,
-              this.getRoles("allowed-in-channels"),
-              this.getRoles("allowed-to-see-in-channels"));
-      if (validated.getIdLong() != this.getChannels().getOrDefault(key, -1L)) {
-        this.getChannels().put(key, validated.getIdLong());
+  @NonNull
+  default Optional<TextChannel> getChannelOrCreate(@NonNull String key) {
+    return this.getGuild().map(guild -> {
+      TextChannel channel = Discord.validateChannel(this.getChannel(key).orElse(null), guild, key, true, this.getRoles("allowed-in-channels"), this.getRoles("allowed-to-see-in-channels"));
+      if (channel.getIdLong() != this.getChannels().getOrDefault(key, -1L)) {
+        this.getChannels().put(key, channel.getIdLong());
       }
-      return validated;
-    }
-    return null;
+      return channel;
+    });
   }
 
   /**
    * * Get a channel using its key
    *
    * @param key the key of the channel
-   * @return the channel
+   * @return a {@link java.util.Optional} holding the nullable channel
    */
-  default TextChannel getChannel(@NonNull String key) {
-    Guild guild = this.getGuild();
-    if (guild != null) {
-      long id = this.getChannels().getOrDefault(key, -1L);
-      return guild.getTextChannelById(id);
-    }
-    return null;
+  @NonNull
+  default Optional<TextChannel> getChannel(@NonNull String key) {
+    return this.getGuild().map(guild -> guild.getTextChannelById(this.getChannels().getOrDefault(key, -1L)));
   }
 
   /**
    * * Get a channel using its key
    *
    * @param key the key of the channel
-   * @return the channel
+   * @return a {@link java.util.Optional} holding the nullable category
    */
-  default Category getCategory(@NonNull String key) {
-    Guild guild = this.getGuild();
-    if (guild != null) {
-      long id = this.getCategories().getOrDefault(key, -1L);
-      return guild.getCategoryById(id);
-    }
-    return null;
+  @NonNull
+  default Optional<Category> getCategory(@NonNull String key) {
+    return this.getGuild().map(guild -> guild.getCategoryById(this.getCategories().getOrDefault(key, -1L)));
   }
 
   /**
@@ -105,22 +91,8 @@ public interface DiscordConfiguration {
    */
   @NonNull
   default List<Role> getRoles(@NonNull String key) {
-    List<Role> roles = new ArrayList<>();
-    List<Long> stored = this.getRoles().get(key);
-    List<Long> validated = stored == null ? new ArrayList<>() : stored;
-    if (validated != stored) {
-      this.getRoles().put(key, validated);
-    }
-    JDA jda = Starfish.getJdaConnection().getJda();
-    if (jda != null) {
-      for (Long id : validated) {
-        Role role = jda.getRoleById(id);
-        if (role != null) {
-          roles.add(role);
-        }
-      }
-    }
-    return roles;
+    Optional<JDA> optionalJda = Starfish.getJdaConnection().getJda();
+    return this.getRoles().computeIfAbsent(key, initialKey -> new ArrayList<>()).stream().map(id -> optionalJda.map(jda -> jda.getRoleById(id)).orElse(null)).filter(Objects::nonNull).collect(Collectors.toList());
   }
 
   /**
@@ -149,14 +121,11 @@ public interface DiscordConfiguration {
   /**
    * Get the guild where the bot is working
    *
-   * @return the guild where the bot is working
+   * @return a {@link java.util.Optional} holding the nullable guild
    */
-  default Guild getGuild() {
-    JDA jda = Starfish.getJdaConnection().getJda();
-    if (jda != null) {
-      return jda.getGuildById(this.getGuildId());
-    }
-    return null;
+  @NonNull
+  default Optional<Guild> getGuild() {
+    return Starfish.getJdaConnection().getJda().map(jda -> jda.getGuildById(this.getGuildId()));
   }
 
   /**

@@ -7,6 +7,8 @@ import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import lombok.NonNull;
 
+import java.util.Optional;
+
 /** Managers {@link Ticket} */
 public interface TicketManager {
 
@@ -35,10 +37,8 @@ public interface TicketManager {
       return parent.getId();
     } else {
       long total = this.getTotal();
-      Ticket ticket = this.getDataLoader().getTicket(total);
-      while (ticket != null) {
+      while (this.getDataLoader().getTicket(total).isPresent()) {
         total++;
-        ticket = this.getDataLoader().getTicket(total);
       }
       this.setTotal(total);
       return total;

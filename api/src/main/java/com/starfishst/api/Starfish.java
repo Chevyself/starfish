@@ -9,6 +9,7 @@ import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,7 +38,7 @@ public class Starfish {
     return Objects.requireNonNull(Starfish.instance, "A bot instance hasn't been set yet");
   }
 
-  public static <T extends StarfishHandler> T getHandler(@NotNull Class<T> clazz) {
+  public static @NonNull <T extends StarfishHandler> Optional<T> getHandler(@NotNull Class<T> clazz) {
     return Starfish.validated().getHandler(clazz);
   }
 

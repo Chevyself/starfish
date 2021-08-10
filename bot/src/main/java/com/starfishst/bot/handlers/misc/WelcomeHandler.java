@@ -34,7 +34,7 @@ public class WelcomeHandler implements StarfishHandler {
   @SubscribeEvent
   public void onMemberJoin(GuildMemberJoinEvent event) {
     BotUser user = this.loader.getStarfishUser(event.getMember().getIdLong());
-    TextChannel welcome = Starfish.getDiscordConfiguration().requireChannel("welcome");
+    TextChannel welcome = Starfish.getDiscordConfiguration().getChannelOrCreate("welcome");
     if (welcome != null && this.getPreferences().getOr("enabled", Boolean.class, true)) {
       welcome
           .sendMessage(

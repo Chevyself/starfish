@@ -12,10 +12,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import lombok.NonNull;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
@@ -41,6 +44,7 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    *
    * @return the rating of the freelancer
    */
+  @NonNull
   FreelancerRating getRating();
 
   /**
@@ -50,12 +54,7 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    */
   @NonNull
   default String getMention() {
-    User user = this.getDiscord();
-    if (user != null) {
-      return user.getAsMention();
-    } else {
-      return String.valueOf(this.getId());
-    }
+    return this.getDiscord().map(IMentionable::getAsMention).orElseGet(() -> String.valueOf(this.getId()));
   }
 
   /**
@@ -65,12 +64,7 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    */
   @NonNull
   default String getDiscordTag() {
-    User user = this.getDiscord();
-    if (user != null) {
-      return user.getAsTag();
-    } else {
-      return String.valueOf(this.getId());
-    }
+    return this.getDiscord().map(User::getAsTag).orElseGet(() -> String.valueOf(this.getId()));
   }
   /**
    * Get the id that is used to represent this used in discord
@@ -107,27 +101,21 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
   /**
    * Get the discord user of this bot user
    *
-   * @return the discord user if found else null
+   * @return a {@link Optional} instance holding the nullable user
    */
-  default User getDiscord() {
-    JDA jda = Starfish.getJdaConnection().getJda();
-    if (jda != null) {
-      return jda.getUserById(this.getId());
-    }
-    return null;
+  @NonNull
+  default Optional<User> getDiscord() {
+    return Starfish.getJdaConnection().getJda().map(jda -> jda.getUserById(this.getId()));
   }
 
   /**
    * Get the discord member of this bot user
    *
-   * @return the discord user if found else null
+   * @return a {@link Optional} instance holding the nullable member
    */
-  default Member getMember() {
-    Guild guild = Starfish.getDiscordConfiguration().getGuild();
-    if (guild != null) {
-      return guild.getMemberById(this.getId());
-    }
-    return null;
+  @NonNull
+  default Optional<Member> getMember() {
+    return Starfish.getDiscordConfiguration().getGuild().map(guild -> guild.getMemberById(this.getId()));
   }
 
   /**
@@ -137,16 +125,10 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    */
   @NonNull
   default String getName() {
-    Member member = this.getMember();
-    if (member != null) {
-      return member.getNickname() == null ? member.getEffectiveName() : member.getNickname();
-    } else {
-      User discord = this.getDiscord();
-      if (discord != null) {
-        return discord.getName();
-      }
-    }
-    return String.valueOf(this.getId());
+    return this.getMember().map(member -> {
+      String nickname = member.getNickname();
+      return nickname == null ? member.getEffectiveName() : nickname;
+    }).orElseGet(() -> this.getDiscord().map(User::getName).orElse(String.valueOf(this.getId())));
   }
 
   /**

@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 /** This object represents an Starfish bot instance */
 public interface StarfishBot {
@@ -32,15 +33,11 @@ public interface StarfishBot {
    *
    * @param clazz the class of the handler to get
    * @param <T> the type of the handler to get
-   * @return the handler if it is inside {@link #getHandlers()} else null
+   * @return a {@link java.util.Optional} holding the nullable handler
    */
-  default <T extends StarfishHandler> T getHandler(@NotNull Class<T> clazz) {
-    for (StarfishHandler handler : this.getHandlers()) {
-      if (clazz.isAssignableFrom(handler.getClass())) {
-        return clazz.cast(handler);
-      }
-    }
-    return null;
+  @NonNull
+  default <T extends StarfishHandler> Optional<T> getHandler(@NotNull Class<T> clazz) {
+    return this.getHandlers().stream().filter(handler -> clazz.isAssignableFrom(handler.getClass())).map(clazz::cast).findFirst();
   }
 
   /**
@@ -52,7 +49,7 @@ public interface StarfishBot {
    */
   @NonNull
   default <T extends StarfishHandler> T requireHandler(@NonNull Class<T> clazz) {
-    return Objects.requireNonNull(this.getHandler(clazz), "The handler " + clazz + " has not been registered");
+    return this.getHandler(clazz).orElseThrow(() -> new NullPointerException("The handler " + clazz + " has not been registered"));
   }
 
   /** Saves the bot */
@@ -82,13 +79,10 @@ public interface StarfishBot {
   default void stop() {
     this.saveCache();
     Collection<StarfishHandler> handlers = this.getHandlers();
-    JDA jda = this.getJdaConnection().getJda();
-    if (jda != null) {
-      for (StarfishHandler handler : handlers) {
-        handler.unregister(jda);
-      }
-      jda.shutdownNow();
-    }
+    this.getJdaConnection().getJda().ifPresent(jda -> {
+      handlers.forEach(handler -> handler.unregister(jda));
+      jda.shutdown();
+    });
     handlers.clear();
     System.exit(0);
   }

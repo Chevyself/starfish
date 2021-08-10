@@ -6,6 +6,8 @@ import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.util.Optional;
+
 /** There's many different type of tickets and the way to differentiate them is this enum */
 public enum TicketType {
   /** An order is a generic ticket. A freelancer and a customer */
@@ -60,19 +62,21 @@ public enum TicketType {
    * Get the category where the ticket can be created. This returns null if the guild has not been
    * set
    *
-   * @return he category where the ticket can be created
+   * @return a {@link java.util.Optional} holding the nullable category
    */
-  public Category getCategory() {
-    return Starfish.getDiscordConfiguration().requireCategory(this.getCategoryName());
+  @NonNull
+  public Optional<Category> getCategory() {
+    return Starfish.getDiscordConfiguration().geCategoryOrCreate(this.getCategoryName());
   }
 
   /**
    * Get the category where the ticket can be created. This returns null if the guild has not been
    * set
    *
-   * @return he text channel where the ticket can be announced
+   * @return a {@link java.util.Optional} holding the nullable channel
    */
-  public TextChannel getChannel() {
-    return Starfish.getDiscordConfiguration().requireChannel(this.getChannelName());
+  @NonNull
+  public Optional<TextChannel> getChannel() {
+    return Starfish.getDiscordConfiguration().getChannelOrCreate(this.getChannelName());
   }
 }

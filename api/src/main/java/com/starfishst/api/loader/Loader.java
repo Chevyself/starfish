@@ -16,6 +16,7 @@ import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.user.FreelancerRating;
 import java.util.Collection;
+import java.util.Optional;
 
 import lombok.NonNull;
 import me.googas.commands.jda.utils.responsive.controller.ResponsiveMessageController;
@@ -29,17 +30,19 @@ public interface Loader extends StarfishHandler, ResponsiveMessageController {
    * Get a ticket by its id
    *
    * @param id the id of the ticket
-   * @return the returned ticket
+   * @return a {@link java.util.Optional} holding the nullable ticket
    */
-  Ticket getTicket(long id);
+  @NonNull
+  Optional<Ticket> getTicket(long id);
 
   /**
    * Get a ticket by its channel
    *
    * @param channelId the id of the channel
-   * @return the returned ticket
+   * @return a {@link java.util.Optional} holding the nullable ticket
    */
-  Ticket getTicketByChannel(long channelId);
+  @NonNull
+  Optional<Ticket> getTicketByChannel(long channelId);
 
   /**
    * Get an starfish user by its id

@@ -15,6 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.NonNull;
 import me.googas.commands.jda.result.ResultType;
 import me.googas.starbox.Strings;
@@ -64,16 +67,10 @@ public interface Ticket extends StarfishCatchable {
    */
   @NonNull
   default List<BotUser> getUsers(@NonNull String roleToMatch) {
-    List<BotUser> users = new ArrayList<>();
-    this.getUsers()
-        .forEach(
-            (user, role) -> {
-              if (role.equalsIgnoreCase(roleToMatch)
-                  || roleToMatch.equalsIgnoreCase("customer") && role.equalsIgnoreCase("owner")) {
-                users.add(user);
-              }
-            });
-    return users;
+    return this.getUsers().entrySet().stream().filter(entry -> {
+      String role = entry.getValue();
+      return role.equalsIgnoreCase(roleToMatch) || (roleToMatch.equalsIgnoreCase("customer") && role.equalsIgnoreCase("owner"));
+    }).map(Map.Entry::getKey).collect(Collectors.toList());
   }
 
   /**
@@ -94,20 +91,18 @@ public interface Ticket extends StarfishCatchable {
       this.getUsers()
           .forEach(
               (ticketUser, role) -> {
-                Member member = ticketUser.getMember();
-                if (member != null) {
-                  usersBuilder
-                      .append(member.getAsMention())
-                      .append(" role: ")
-                      .append(role)
-                      .append("\n");
+                Optional<Member> optionalMember = ticketUser.getMember();
+                if (optionalMember.isPresent()) {
+                  usersBuilder.append(optionalMember.get().getAsMention());
                 } else {
-                  usersBuilder
-                      .append(ticketUser.getId())
-                      .append(" role: ")
-                      .append(role)
-                      .append("\n");
+                  usersBuilder.append(ticketUser.getId());
                 }
+                usersBuilder.append(" role: ")
+                        .append(role)
+                        .append("\n");
+                ticketUser.getMember().ifPresent(member -> {
+                  usersBuilder.append(member.getAsMention());
+                });
               });
       fields.put("users", usersBuilder.toString());
     }
@@ -183,9 +178,10 @@ public interface Ticket extends StarfishCatchable {
   /**
    * Get the text channel where the ticket is running
    *
-   * @return the text channel
+   * @return a {@link java.util.Optional} holding the nullable channel
    */
-  TextChannel getTextChannel();
+  @NonNull
+  Optional<TextChannel> getTextChannel();
 
   /**
    * Get the type of ticket
@@ -198,14 +194,16 @@ public interface Ticket extends StarfishCatchable {
   /**
    * Get the owner of the ticket. This will user {@link #getUsers(String)} with the role 'owner'
    *
-   * @return the user if found else null
+   * @return a {@link java.util.Optional} holding the nullable user
    */
-  default BotUser getOwner() {
+  @NonNull
+  default Optional<BotUser> getOwner() {
+    BotUser user = null;
     List<BotUser> owners = this.getUsers("owner");
-    if (owners.isEmpty()) {
-      return null;
+    if (!owners.isEmpty()) {
+      user = owners.get(0);
     }
-    return owners.get(0);
+    return Optional.ofNullable(user);
   }
 
   /**
@@ -270,15 +268,13 @@ public interface Ticket extends StarfishCatchable {
     placeholders.put("id", String.valueOf(this.getId()));
     placeholders.put("type", this.getType().toString().toLowerCase());
     placeholders.put("status", this.getStatus().toString().toLowerCase());
-    BotUser owner = this.getOwner();
-    if (owner != null) {
+    this.getOwner().ifPresent(owner -> {
       placeholders.put("owner", owner.getName());
       placeholders.put("owner_tag", owner.getMention());
-    }
-    TextChannel channel = this.getTextChannel();
-    if (channel != null) {
+    });
+    this.getTextChannel().ifPresent(channel -> {
       placeholders.put("channel", channel.getAsMention());
-    }
+    });
     return placeholders;
   }
 
@@ -289,13 +285,7 @@ public interface Ticket extends StarfishCatchable {
    */
   @NonNull
   default Collection<BotUser> getFreelancers() {
-    ArrayList<BotUser> freelancers = new ArrayList<>();
-    this.getUsers()
-        .forEach(
-            (user, role) -> {
-              if (role.equalsIgnoreCase("freelancer")) freelancers.add(user);
-            });
-    return freelancers;
+    return this.getUsers("freelancer");
   }
 
   /**

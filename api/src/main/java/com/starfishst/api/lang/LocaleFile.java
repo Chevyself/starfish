@@ -3,6 +3,7 @@ package com.starfishst.api.lang;
 import java.io.File;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
@@ -22,9 +23,10 @@ public interface LocaleFile extends Localizable {
    * Get the raw string from the file
    *
    * @param path the path to the string
-   * @return the string if the path leads to one else null
+   * @return a {@link java.util.Optional} holding the nullable string
    */
-  String getRaw(@NonNull String path);
+  @NonNull
+  Optional<String> getRaw(@NonNull String path);
 
   /**
    * Get the string or the path to create it
@@ -34,8 +36,7 @@ public interface LocaleFile extends Localizable {
    */
   @NonNull
   default String get(@NonNull String path) {
-    String raw = this.getRaw(path);
-    return raw == null ? path : raw;
+    return this.getRaw(path).orElseGet(() -> path);
   }
 
   /**
@@ -78,6 +79,6 @@ public interface LocaleFile extends Localizable {
    * @return the unicode to differentiate this language
    */
   default @NonNull String getUnicode() {
-    return Objects.requireNonNull(this.getRaw("unicode"), this + " has a null unicode property");
+    return this.getRaw("unicode").orElseThrow(() -> new NullPointerException(this + " has a null unicode property"));
   }
 }

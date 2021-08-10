@@ -1,5 +1,6 @@
 package com.starfishst.api.permissions;
 
+import java.util.Optional;
 import java.util.Set;
 import lombok.NonNull;
 
@@ -14,8 +15,8 @@ public interface Permissible {
    * @return true if the entity posses the permission and it is enabled
    */
   default boolean hasPermission(@NonNull String node, @NonNull String context) {
-    PermissionStack stack = this.getPermissions(context);
-    return stack != null && stack.hasPermission(node) || stack != null && stack.hasPermission("*");
+    Optional<PermissionStack> optionalStack = this.getPermissions(context);
+    return optionalStack.isPresent() && optionalStack.get().hasPermission(node) || optionalStack.isPresent() && optionalStack.get().hasPermission("*");
   }
 
   /**
@@ -26,23 +27,19 @@ public interface Permissible {
    * @return true if the entity posses the permission
    */
   default boolean containsPermission(@NonNull String node, @NonNull String context) {
-    PermissionStack stack = this.getPermissions(context);
-    return stack != null && stack.containsPermission(node);
+    Optional<PermissionStack> optionalStack = this.getPermissions(context);
+    return optionalStack.isPresent() && optionalStack.get().containsPermission(node);
   }
 
   /**
    * Get a permission stack from this permissible entity using its context
    *
    * @param context the context that differentiates the stack
-   * @return the stack of permissions if found else null
+   * @return a {@link java.util.Optional} holding the nullable stack
    */
-  default PermissionStack getPermissions(@NonNull String context) {
-    for (PermissionStack permission : this.getPermissions()) {
-      if (permission.getContext().equalsIgnoreCase(context)) {
-        return permission;
-      }
-    }
-    return null;
+  @NonNull
+  default Optional<PermissionStack> getPermissions(@NonNull String context) {
+    return this.getPermissions().stream().filter(stack -> stack.getContext().equalsIgnoreCase(context)).findFirst();
   }
 
   /**
