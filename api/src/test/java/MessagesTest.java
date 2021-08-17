@@ -37,7 +37,7 @@ public class MessagesTest {
     StarfishFiles.Assets.Messages.DIR.mkdirs();
     JDA jda =
         JDABuilder.create(
-                "ODY2Nzk3NDg0MjkzNjE5NzEy.YPXyEA.eEtktZJ6rLq-5urwcmpq0qYQnQo",
+                "",
                 Arrays.asList(GatewayIntent.values()))
             .build()
             .awaitReady();
