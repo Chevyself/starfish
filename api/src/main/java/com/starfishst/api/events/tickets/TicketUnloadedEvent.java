@@ -4,6 +4,7 @@ import com.starfishst.api.tickets.Ticket;
 import lombok.NonNull;
 
 /** Called when an event gets unloaded */
+@Deprecated
 public class TicketUnloadedEvent extends TicketEvent {
   /**
    * Create the event

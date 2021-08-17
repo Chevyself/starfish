@@ -39,7 +39,7 @@ public class CleanerHandler extends TimerTask implements StarfishHandler {
     if (channel != null
             && this.getPreferences()
             .getValueOr("delete-uncompleted-ticket-channels", Boolean.class, true)) {
-      Ticket child = Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId());
+      Ticket child = Starfish.getTicketManager().getLoader().getTicket(ticket.getId());
       if (child == ticket) {
         child = null;
       }

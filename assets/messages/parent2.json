@@ -1,0 +1,15 @@
+{
+  "parent": "parent",
+  "embeds": [
+    {
+      "title": "LMAO",
+      "description": "",
+      "fields": []
+    },
+    {
+      "title": "LMAO2",
+      "description": "",
+      "fields": []
+    }
+  ]
+}

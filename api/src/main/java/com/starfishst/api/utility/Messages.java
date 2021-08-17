@@ -3,17 +3,15 @@ package com.starfishst.api.utility;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.user.BotUser;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 import lombok.NonNull;
 import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
-@Deprecated
 public class Messages {
 
   /**
@@ -30,6 +28,7 @@ public class Messages {
    * @return the embed query
    */
   @NonNull
+  @Deprecated
   public static EmbedBuilder build(
       String title,
       String description,
@@ -39,7 +38,13 @@ public class Messages {
       ResultType type,
       LinkedHashMap<String, String> fields,
       boolean inline) {
-    EmbedBuilder builder = new EmbedBuilder().setTitle(title).setDescription(description).setThumbnail(thumbnail).setImage(image).setFooter(footer);
+    EmbedBuilder builder =
+        new EmbedBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setThumbnail(thumbnail)
+            .setImage(image)
+            .setFooter(footer);
     if (fields != null) {
       fields.forEach((key, value) -> builder.addField(key, value, inline));
     }
@@ -53,6 +58,7 @@ public class Messages {
    * @return the thumbnail for the user
    */
   @NonNull
+  @Deprecated
   public static String getThumbnail(@NonNull LocaleFile locale) {
     return locale.get("thumbnail-url");
   }
@@ -64,6 +70,7 @@ public class Messages {
    * @return the thumbnail for the user
    */
   @NonNull
+  @Deprecated
   public static String getFooter(@NonNull LocaleFile locale) {
     return locale.get("footer");
   }
@@ -77,6 +84,7 @@ public class Messages {
    * @param locale the locale that will read the message
    * @return the embed query
    */
+  @Deprecated
   public static EmbedBuilder build(
       @NonNull String title,
       @NonNull String description,
@@ -103,6 +111,7 @@ public class Messages {
    * @return the embed query
    */
   @NonNull
+  @Deprecated
   public static EmbedBuilder build(
       @NonNull String title,
       @NonNull String description,
@@ -120,6 +129,7 @@ public class Messages {
    * @return the embed query
    */
   @NonNull
+  @Deprecated
   public static EmbedBuilder build(
       @NonNull String description, @NonNull ResultType type, @NonNull LocaleFile locale) {
     return Messages.build(
@@ -142,6 +152,7 @@ public class Messages {
    * @return the embed query
    */
   @NonNull
+  @Deprecated
   public static EmbedBuilder build(
       @NonNull String description, @NonNull ResultType type, @NonNull BotUser user) {
     return Messages.build(description, type, user.getLocaleFile());
@@ -157,6 +168,7 @@ public class Messages {
    * @return the built message
    */
   @NonNull
+  @Deprecated
   public static EmbedBuilder build(
       @NonNull String titleKey,
       @NonNull String descKey,
@@ -177,10 +189,12 @@ public class Messages {
    * @return the built embed query
    */
   @NonNull
+  @Deprecated
   public static EmbedBuilder build(@NonNull BotUser user, @NonNull BotUser viewer) {
     Map<String, String> placeholders = user.getPlaceholders();
     EmbedBuilder build =
-            Messages.build("user-info.title", "user-info.description", placeholders, viewer.getLocaleFile());
+        Messages.build(
+            "user-info.title", "user-info.description", placeholders, viewer.getLocaleFile());
     user.getPreferences()
         .getMap()
         .forEach(
@@ -202,9 +216,11 @@ public class Messages {
    *
    * @return the consumer for errors
    */
+  @Deprecated
   public static Consumer<Message> getErrorConsumer() {
     return message -> {};
-    // return Starfish.getCommandManager().getListener().getConsumer(new Result(ResultType.ERROR, ""));
+    // return Starfish.getCommandManager().getListener().getConsumer(new Result(ResultType.ERROR,
+    // ""));
     // TODO resolve
   }
 }

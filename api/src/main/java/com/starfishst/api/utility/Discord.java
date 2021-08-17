@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.NonNull;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
@@ -27,7 +25,9 @@ public class Discord {
 
   /** This list contains the permissions needed for a user to read and write inside a channel */
   @NonNull
-  public static final List<Permission> ALLOWED = Arrays.asList(Permission.VOICE_CONNECT,
+  public static final List<Permission> ALLOWED =
+      Arrays.asList(
+          Permission.VOICE_CONNECT,
           Permission.VOICE_SPEAK,
           Permission.VOICE_STREAM,
           Permission.VOICE_USE_VAD,
@@ -36,11 +36,10 @@ public class Discord {
           Permission.MESSAGE_EMBED_LINKS,
           Permission.MESSAGE_HISTORY);
 
-
   /** This list contains the permissions needed for a user to read inside a channel */
   @NonNull
-  public static final List<Permission> ALLOWED_SEE = Arrays.asList(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
-
+  public static final List<Permission> ALLOWED_SEE =
+      Arrays.asList(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_HISTORY);
 
   /**
    * Validates a category by checking that it is not null and is not full. If it is full it will
@@ -142,7 +141,9 @@ public class Discord {
    */
   @NonNull
   public static List<String> getRolesAsMention(Collection<Long> ids) {
-    return Discord.getRoles(ids).stream().map(IMentionable::getAsMention).collect(Collectors.toList());
+    return Discord.getRoles(ids).stream()
+        .map(IMentionable::getAsMention)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -275,6 +276,9 @@ public class Discord {
    */
   @NonNull
   public static List<Role> getRoles(Collection<Long> ids) {
-    return ids.stream().map(id -> Discord.getRole(id).orElse(null)).filter(Objects::nonNull).collect(Collectors.toList());
+    return ids.stream()
+        .map(id -> Discord.getRole(id).orElse(null))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
   }
 }

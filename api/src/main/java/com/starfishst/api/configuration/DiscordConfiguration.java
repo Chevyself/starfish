@@ -2,19 +2,18 @@ package com.starfishst.api.configuration;
 
 import com.starfishst.api.Starfish;
 import com.starfishst.api.utility.Discord;
-import lombok.NonNull;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.NonNull;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 /** The configuration for discord */
 public interface DiscordConfiguration {
@@ -28,20 +27,22 @@ public interface DiscordConfiguration {
    */
   @NonNull
   default Optional<Category> geCategoryOrCreate(@NonNull String key) {
-    return this.getGuild().map(guild -> {
-      Category category =
-              Discord.validateCategory(
+    return this.getGuild()
+        .map(
+            guild -> {
+              Category category =
+                  Discord.validateCategory(
                       this.getCategory(key).orElse(null),
                       guild,
                       key,
                       true,
                       this.getRoles("allowed-in-categories"),
                       this.getRoles("allowed-to-see-in-categories"));
-      if (category.getIdLong() != this.getCategories().getOrDefault(key, -1L)) {
-        this.getCategories().put(key, category.getIdLong());
-      }
-      return category;
-    });
+              if (category.getIdLong() != this.getCategories().getOrDefault(key, -1L)) {
+                this.getCategories().put(key, category.getIdLong());
+              }
+              return category;
+            });
   }
 
   /**
@@ -52,13 +53,22 @@ public interface DiscordConfiguration {
    */
   @NonNull
   default Optional<TextChannel> getChannelOrCreate(@NonNull String key) {
-    return this.getGuild().map(guild -> {
-      TextChannel channel = Discord.validateChannel(this.getChannel(key).orElse(null), guild, key, true, this.getRoles("allowed-in-channels"), this.getRoles("allowed-to-see-in-channels"));
-      if (channel.getIdLong() != this.getChannels().getOrDefault(key, -1L)) {
-        this.getChannels().put(key, channel.getIdLong());
-      }
-      return channel;
-    });
+    return this.getGuild()
+        .map(
+            guild -> {
+              TextChannel channel =
+                  Discord.validateChannel(
+                      this.getChannel(key).orElse(null),
+                      guild,
+                      key,
+                      true,
+                      this.getRoles("allowed-in-channels"),
+                      this.getRoles("allowed-to-see-in-channels"));
+              if (channel.getIdLong() != this.getChannels().getOrDefault(key, -1L)) {
+                this.getChannels().put(key, channel.getIdLong());
+              }
+              return channel;
+            });
   }
 
   /**
@@ -69,7 +79,8 @@ public interface DiscordConfiguration {
    */
   @NonNull
   default Optional<TextChannel> getChannel(@NonNull String key) {
-    return this.getGuild().map(guild -> guild.getTextChannelById(this.getChannels().getOrDefault(key, -1L)));
+    return this.getGuild()
+        .map(guild -> guild.getTextChannelById(this.getChannels().getOrDefault(key, -1L)));
   }
 
   /**
@@ -80,7 +91,8 @@ public interface DiscordConfiguration {
    */
   @NonNull
   default Optional<Category> getCategory(@NonNull String key) {
-    return this.getGuild().map(guild -> guild.getCategoryById(this.getCategories().getOrDefault(key, -1L)));
+    return this.getGuild()
+        .map(guild -> guild.getCategoryById(this.getCategories().getOrDefault(key, -1L)));
   }
 
   /**
@@ -92,7 +104,10 @@ public interface DiscordConfiguration {
   @NonNull
   default List<Role> getRoles(@NonNull String key) {
     Optional<JDA> optionalJda = Starfish.getJdaConnection().getJda();
-    return this.getRoles().computeIfAbsent(key, initialKey -> new ArrayList<>()).stream().map(id -> optionalJda.map(jda -> jda.getRoleById(id)).orElse(null)).filter(Objects::nonNull).collect(Collectors.toList());
+    return this.getRoles().computeIfAbsent(key, initialKey -> new ArrayList<>()).stream()
+        .map(id -> optionalJda.map(jda -> jda.getRoleById(id)).orElse(null))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
   }
 
   /**

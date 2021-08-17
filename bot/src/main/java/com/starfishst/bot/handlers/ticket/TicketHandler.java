@@ -113,7 +113,7 @@ public class TicketHandler implements StarfishHandler {
             .queue();
       }
       Ticket child =
-          Starfish.getTicketManager().getDataLoader().getTicket(ticket.getId()).orElse(null);
+          Starfish.getTicketManager().getLoader().getTicket(ticket.getId()).orElse(null);
       if (child == ticket) {
         child = null;
       }

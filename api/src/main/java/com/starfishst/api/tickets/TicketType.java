@@ -1,12 +1,11 @@
 package com.starfishst.api.tickets;
 
 import com.starfishst.api.Starfish;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.TextChannel;
-
-import java.util.Optional;
 
 /** There's many different type of tickets and the way to differentiate them is this enum */
 public enum TicketType {

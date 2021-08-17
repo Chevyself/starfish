@@ -1,10 +1,7 @@
 package com.starfishst.api.lang;
 
-import java.io.File;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-
 import lombok.NonNull;
 import me.googas.io.StarboxFile;
 import me.googas.starbox.Strings;
@@ -13,7 +10,9 @@ import me.googas.starbox.builders.MapBuilder;
 /** The file of localized messages. Used to get the messages for {@link Localizable} */
 public interface LocaleFile extends Localizable {
 
-  /** Saves the locale file
+  /**
+   * Saves the locale file
+   *
    * @return this same instance
    */
   @NonNull
@@ -79,6 +78,7 @@ public interface LocaleFile extends Localizable {
    * @return the unicode to differentiate this language
    */
   default @NonNull String getUnicode() {
-    return this.getRaw("unicode").orElseThrow(() -> new NullPointerException(this + " has a null unicode property"));
+    return this.getRaw("unicode")
+        .orElseThrow(() -> new NullPointerException(this + " has a null unicode property"));
   }
 }

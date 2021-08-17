@@ -23,7 +23,7 @@ public class Fallback {
   }
 
   @NonNull
-  public  List<String> getErrors() {
+  public List<String> getErrors() {
     return this.errors;
   }
 }

@@ -1,10 +1,9 @@
 package com.starfishst.api.utility;
 
+import java.util.Optional;
 import javax.security.auth.login.LoginException;
 import lombok.NonNull;
 import net.dv8tion.jda.api.JDA;
-
-import java.util.Optional;
 
 /** Setups connection with JDA */
 public interface JdaConnection {

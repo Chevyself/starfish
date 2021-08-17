@@ -4,6 +4,7 @@ import com.starfishst.api.messages.BotResponsiveMessage;
 import lombok.NonNull;
 
 /** Called when a bot message is unloaded */
+@Deprecated
 public class BotMessageUnloadedEvent extends BotMessageEvent {
   /**
    * Create the event

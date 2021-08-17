@@ -27,13 +27,13 @@ public class OfferAcceptReactionResponse extends StarfishReactionResponse {
   public boolean onReaction(@NonNull MessageReactionAddEvent event) {
     if (this.message == null) return true;
     Starfish.getTicketManager()
-        .getDataLoader()
+        .getLoader()
         .getTicketByChannel(event.getChannel().getIdLong())
         .ifPresent(
             ticket -> {
               BotUser freelancer =
                   Starfish.getTicketManager()
-                      .getDataLoader()
+                      .getLoader()
                       .getStarfishUser(this.message.getData().getOr("freelancer", Long.class, -1L));
               if (!ticket.addUser(freelancer, "freelancer")) {
                 Optional<TextChannel> optionalChannel = ticket.getTextChannel();

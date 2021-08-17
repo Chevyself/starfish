@@ -33,6 +33,22 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+            <!-- Maven java formatter plugin (Google format) -->
+            <plugin>
+                <artifactId>fmt-maven-plugin</artifactId>
+                <groupId>com.coveo</groupId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <style>google</style>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

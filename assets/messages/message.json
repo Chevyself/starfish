@@ -1,0 +1,17 @@
+{
+  "parent": "parent2",
+  "content": "%placeholder%",
+  "embeds": [
+    {
+      "title": "",
+      "description": "%placeholder%",
+      "fields": [
+        {
+          "name": "Hello! %placeholder%",
+          "value": "World %placeholder%",
+          "inline": true
+        }
+      ]
+    }
+  ]
+}

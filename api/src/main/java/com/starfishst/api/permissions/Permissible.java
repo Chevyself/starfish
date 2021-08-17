@@ -16,7 +16,8 @@ public interface Permissible {
    */
   default boolean hasPermission(@NonNull String node, @NonNull String context) {
     Optional<PermissionStack> optionalStack = this.getPermissions(context);
-    return optionalStack.isPresent() && optionalStack.get().hasPermission(node) || optionalStack.isPresent() && optionalStack.get().hasPermission("*");
+    return optionalStack.isPresent() && optionalStack.get().hasPermission(node)
+        || optionalStack.isPresent() && optionalStack.get().hasPermission("*");
   }
 
   /**
@@ -39,7 +40,9 @@ public interface Permissible {
    */
   @NonNull
   default Optional<PermissionStack> getPermissions(@NonNull String context) {
-    return this.getPermissions().stream().filter(stack -> stack.getContext().equalsIgnoreCase(context)).findFirst();
+    return this.getPermissions().stream()
+        .filter(stack -> stack.getContext().equalsIgnoreCase(context))
+        .findFirst();
   }
 
   /**

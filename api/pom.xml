@@ -40,6 +40,22 @@
             <artifactId>core</artifactId>
             <version>0d43ef8294</version>
         </dependency>
+        <!-- lazy-db -->
+        <dependency>
+            <groupId>me.googas.lazy-db</groupId>
+            <artifactId>jsongo</artifactId>
+            <version>fe37d085a1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>me.googas.starbox</groupId>
+                    <artifactId>core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>

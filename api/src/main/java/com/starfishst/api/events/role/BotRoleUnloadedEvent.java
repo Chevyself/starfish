@@ -4,6 +4,7 @@ import com.starfishst.api.role.BotRole;
 import lombok.NonNull;
 
 /** Called when a role is loaded */
+@Deprecated
 public class BotRoleUnloadedEvent extends BotRoleEvent {
 
   /**

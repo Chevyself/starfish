@@ -1,6 +1,5 @@
 package com.starfishst.api.messages;
 
-import com.starfishst.api.Starfish;
 import com.starfishst.api.events.messages.BotMessageUnloadedEvent;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
@@ -8,7 +7,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
-
 import lombok.Getter;
 import lombok.NonNull;
 import me.googas.commands.jda.utils.responsive.ReactionResponse;
@@ -57,7 +55,7 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
 
   /** Deletes the responsive message */
   public void delete() {
-    Starfish.getLoader().deleteMessage(this);
+    // Starfish.getLoader().deleteMessage(this);
   }
 
   /**
@@ -84,10 +82,10 @@ public class BotResponsiveMessage implements ResponsiveMessage, StarfishCatchabl
   @Override
   public String toString() {
     return new StringJoiner(", ", BotResponsiveMessage.class.getSimpleName() + "[", "]")
-            .add("id=" + this.id)
-            .add("reactions=" + this.reactions)
-            .add("data=" + this.data)
-            .toString();
+        .add("id=" + this.id)
+        .add("reactions=" + this.reactions)
+        .add("data=" + this.data)
+        .toString();
   }
 
   @Override

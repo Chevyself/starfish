@@ -6,7 +6,6 @@ import lombok.NonNull;
 import me.googas.commands.exceptions.type.StarboxException;
 import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Message;
 
 /** An implementation for {@link me.googas.commands.exceptions.type.StarboxException} */
 public class StarfishException extends StarboxException {

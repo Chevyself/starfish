@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import lombok.NonNull;
 import me.googas.commands.jda.context.CommandContext;
 import me.googas.commands.jda.messages.MessagesProvider;
@@ -25,7 +24,10 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
    */
   @NonNull
   default LocaleFile getFile(@NonNull String lang) {
-    return this.getFiles().stream().filter(file -> file.getLang().equalsIgnoreCase(lang)).findFirst().orElseGet(() -> this.getFile("en"));
+    return this.getFiles().stream()
+        .filter(file -> file.getLang().equalsIgnoreCase(lang))
+        .findFirst()
+        .orElseGet(() -> this.getFile("en"));
   }
 
   /**
@@ -37,7 +39,10 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
    */
   @NonNull
   default LocaleFile getFileFromUnicode(@NonNull String unicode) {
-    return this.getFiles().stream().filter(file -> file.getUnicode().equalsIgnoreCase(unicode)).findFirst().orElseThrow(() -> new IllegalArgumentException(unicode + " is not a valid unicode"));
+    return this.getFiles().stream()
+        .filter(file -> file.getUnicode().equalsIgnoreCase(unicode))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException(unicode + " is not a valid unicode"));
   }
 
   /**
@@ -66,7 +71,10 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
    */
   @NonNull
   default String getLang(@NonNull CommandContext context) {
-    return Starfish.getLoader().getStarfishUser(context.getSender().getIdLong()).getLang();
+    return Starfish.getLoader()
+        .getSubloader(UserSubloader.class)
+        .getStarfishUser(context.getSender().getIdLong())
+        .getLang();
   }
 
   /**
@@ -122,7 +130,10 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
   @Override
   @NonNull
   default String cooldown(long timeLeft, CommandContext context) {
-    return this.getFile(context).get("cooldown", Collections.singletonMap("cooldown", Time.ofMillis(timeLeft, true).toString()));
+    return this.getFile(context)
+        .get(
+            "cooldown",
+            Collections.singletonMap("cooldown", Time.ofMillis(timeLeft, true).toString()));
   }
 
   @Override
@@ -138,15 +149,14 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
     placeholders.put("name", file.get(name));
     placeholders.put("description", file.get(description));
     placeholders.put("position", String.valueOf(position));
-    return file
-        .get(
-            "missing-argument", placeholders);
+    return file.get("missing-argument", placeholders);
   }
 
   @Override
   default @NonNull String commandNotFound(
       @NonNull String s, @NonNull CommandContext commandContext) {
-    return this.getFile(commandContext).get("command-not-found", Collections.singletonMap("name", s));
+    return this.getFile(commandContext)
+        .get("command-not-found", Collections.singletonMap("name", s));
   }
 
   @Override
@@ -177,9 +187,8 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
       @NonNull String title, @NonNull String description, CommandContext commandContext) {
     Map<String, String> placeholders = new HashMap<>();
     placeholders.put("title", title);
-    placeholders.put("description",description);
-    return this.getFile(commandContext)
-        .get("response", placeholders);
+    placeholders.put("description", description);
+    return this.getFile(commandContext).get("response", placeholders);
   }
 
   @Override
@@ -204,7 +213,8 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
 
   @Override
   default @NonNull String invalidMember(@NonNull String s, @NonNull CommandContext commandContext) {
-    return this.getFile(commandContext).get("invalid.member", Collections.singletonMap("string", s));
+    return this.getFile(commandContext)
+        .get("invalid.member", Collections.singletonMap("string", s));
   }
 
   @Override
@@ -214,7 +224,8 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
 
   @Override
   default @NonNull String invalidTextChannel(String s, CommandContext commandContext) {
-    return this.getFile(commandContext).get("invalid.channel", Collections.singletonMap("string", s));
+    return this.getFile(commandContext)
+        .get("invalid.channel", Collections.singletonMap("string", s));
   }
 
   @Override
@@ -231,8 +242,6 @@ public interface LanguageHandler extends MessagesProvider, StarfishHandler {
     placeholders.put("position", String.valueOf(position));
     placeholders.put("min", String.valueOf(min));
     placeholders.put("missing", String.valueOf(missing));
-    return this.getFile(context)
-        .get(
-            "invalid.strings", placeholders);
+    return this.getFile(context).get("invalid.strings", placeholders);
   }
 }

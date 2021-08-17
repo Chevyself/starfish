@@ -6,24 +6,22 @@ import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.loader.LanguageHandler;
-import com.starfishst.api.loader.Loader;
 import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
 import com.starfishst.api.utility.StarfishCatchable;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.logging.Logger;
 import lombok.NonNull;
 import me.googas.commands.jda.CommandManager;
 import me.googas.io.context.Json;
+import me.googas.lazy.Loader;
 import me.googas.net.cache.Cache;
 import me.googas.net.cache.Catchable;
 import me.googas.starbox.addons.AddonLoader;
 import me.googas.starbox.events.ListenerManager;
 import me.googas.starbox.scheduler.Scheduler;
-import net.dv8tion.jda.api.JDA;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
 
 /** This object represents an Starfish bot instance */
 public interface StarfishBot {
@@ -37,7 +35,10 @@ public interface StarfishBot {
    */
   @NonNull
   default <T extends StarfishHandler> Optional<T> getHandler(@NotNull Class<T> clazz) {
-    return this.getHandlers().stream().filter(handler -> clazz.isAssignableFrom(handler.getClass())).map(clazz::cast).findFirst();
+    return this.getHandlers().stream()
+        .filter(handler -> clazz.isAssignableFrom(handler.getClass()))
+        .map(clazz::cast)
+        .findFirst();
   }
 
   /**
@@ -49,40 +50,55 @@ public interface StarfishBot {
    */
   @NonNull
   default <T extends StarfishHandler> T requireHandler(@NonNull Class<T> clazz) {
-    return this.getHandler(clazz).orElseThrow(() -> new NullPointerException("The handler " + clazz + " has not been registered"));
+    return this.getHandler(clazz)
+        .orElseThrow(
+            () -> new NullPointerException("The handler " + clazz + " has not been registered"));
   }
 
   /** Saves the bot */
   default void save() {
     Fallback fallback = this.getFallback();
-    StarfishFiles.CONFIG.write(this.getJson(), this.getConfiguration()).handle(e -> {
-      fallback.process(e, "There's been an error while trying to save 'config.json'");
-    }).provide();
-    StarfishFiles.DISCORD.write(this.getJson(), this.getDiscordConfiguration()).handle(e -> {
-      fallback.process(e, "There's been an error while trying to save 'discord.json'");
-    });
+    StarfishFiles.CONFIG
+        .write(this.getJson(), this.getConfiguration())
+        .handle(
+            e -> {
+              fallback.process(e, "There's been an error while trying to save 'config.json'");
+            })
+        .provide();
+    StarfishFiles.DISCORD
+        .write(this.getJson(), this.getDiscordConfiguration())
+        .handle(
+            e -> {
+              fallback.process(e, "There's been an error while trying to save 'discord.json'");
+            });
     for (LocaleFile file : this.getLanguageHandler().getFiles()) {
       file.save();
     }
   }
 
   default void saveCache() {
-    this.getCache().keySetCopy().forEach(reference -> {
-      Catchable catchable = reference.get();
-      if (catchable instanceof StarfishCatchable) {
-        ((StarfishCatchable) catchable).unload();
-      }
-    });
+    this.getCache()
+        .keySetCopy()
+        .forEach(
+            reference -> {
+              Catchable catchable = reference.get();
+              if (catchable instanceof StarfishCatchable) {
+                ((StarfishCatchable) catchable).unload();
+              }
+            });
   }
 
   /** Stops the bot */
   default void stop() {
     this.saveCache();
     Collection<StarfishHandler> handlers = this.getHandlers();
-    this.getJdaConnection().getJda().ifPresent(jda -> {
-      handlers.forEach(handler -> handler.unregister(jda));
-      jda.shutdown();
-    });
+    this.getJdaConnection()
+        .getJda()
+        .ifPresent(
+            jda -> {
+              handlers.forEach(handler -> handler.unregister(jda));
+              jda.shutdown();
+            });
     handlers.clear();
     System.exit(0);
   }
@@ -125,9 +141,15 @@ public interface StarfishBot {
    * @return the data loader
    */
   @NonNull
-  default Loader getLoader() {
-    return this.requireHandler(Loader.class);
-  }
+  Loader getLoader();
+
+  /**
+   * Get the logger of the Starfish bot.
+   *
+   * @return the logger
+   */
+  @NonNull
+  Logger getLogger();
 
   /**
    * Get the command manager of the bot
@@ -182,7 +204,8 @@ public interface StarfishBot {
    *
    * @return the gson instance
    */
-  @NonNull @Deprecated
+  @NonNull
+  @Deprecated
   Gson getGson();
 
   @NonNull

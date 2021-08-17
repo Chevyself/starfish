@@ -6,8 +6,7 @@ import com.starfishst.api.tickets.Ticket;
 import com.starfishst.api.tickets.TicketType;
 import com.starfishst.api.user.BotUser;
 import lombok.NonNull;
-
-import java.util.Optional;
+import me.googas.lazy.Loader;
 
 /** Managers {@link Ticket} */
 public interface TicketManager {
@@ -32,12 +31,12 @@ public interface TicketManager {
    * @param parent the parent of the ticket being created
    * @return the new id
    */
-  default long getNewId(Ticket parent) {
+  default long nextId(Ticket parent) {
     if (parent != null && parent.getType() != TicketType.PRODUCT) {
       return parent.getId();
     } else {
       long total = this.getTotal();
-      while (this.getDataLoader().getTicket(total).isPresent()) {
+      while (this.getLoader().getSubloader(TicketSubloader.class).getTicket(total).isPresent()) {
         total++;
       }
       this.setTotal(total);
@@ -49,15 +48,19 @@ public interface TicketManager {
    * Set the total of tickets created
    *
    * @param total the new total
+   * @return this same instance
    */
-  void setTotal(long total);
+  @NonNull
+  TicketManager setTotal(long total);
 
   /**
    * Sets the data loader that the manager must
    *
    * @param loader the new loader to set
+   * @return this same instance
    */
-  void setDataLoader(@NonNull Loader loader);
+  @NonNull
+  TicketManager setLoader(@NonNull Loader loader);
 
   /**
    * Get the total of tickets loaded
@@ -70,8 +73,10 @@ public interface TicketManager {
    * Sets the configuration that the manager must use
    *
    * @param configuration the configuration
+   * @return this same instance
    */
-  void setConfiguration(@NonNull Configuration configuration);
+  @NonNull
+  TicketManager setConfiguration(@NonNull Configuration configuration);
 
   /**
    * Get the data loader that the manager is using
@@ -79,5 +84,5 @@ public interface TicketManager {
    * @return the data loader
    */
   @NonNull
-  Loader getDataLoader();
+  Loader getLoader();
 }

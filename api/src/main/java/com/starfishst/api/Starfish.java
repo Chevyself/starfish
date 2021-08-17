@@ -4,18 +4,18 @@ import com.starfishst.api.configuration.Configuration;
 import com.starfishst.api.configuration.DiscordConfiguration;
 import com.starfishst.api.events.StarfishHandler;
 import com.starfishst.api.loader.LanguageHandler;
-import com.starfishst.api.loader.Loader;
 import com.starfishst.api.loader.TicketManager;
 import com.starfishst.api.utility.JdaConnection;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import me.googas.commands.jda.CommandManager;
 import me.googas.io.context.Json;
+import me.googas.lazy.Loader;
 import me.googas.net.cache.Cache;
 import me.googas.starbox.addons.AddonLoader;
 import me.googas.starbox.events.ListenerManager;
@@ -38,7 +38,8 @@ public class Starfish {
     return Objects.requireNonNull(Starfish.instance, "A bot instance hasn't been set yet");
   }
 
-  public static @NonNull <T extends StarfishHandler> Optional<T> getHandler(@NotNull Class<T> clazz) {
+  public static @NonNull <T extends StarfishHandler> Optional<T> getHandler(
+      @NotNull Class<T> clazz) {
     return Starfish.validated().getHandler(clazz);
   }
 
@@ -47,13 +48,11 @@ public class Starfish {
   }
 
   public static void save() {
-      Starfish.validated().save();
+    Starfish.validated().save();
   }
 
-
-
   public static void stop() {
-      Starfish.validated().stop();
+    Starfish.validated().stop();
   }
 
   /**
@@ -63,8 +62,9 @@ public class Starfish {
    * @throws IllegalStateException if attempted to set when there's already an isntance
    */
   public void set(@NonNull StarfishBot bot) {
-    if (Starfish.instance != null) throw new IllegalStateException("Bot has been already initialized");
-      Starfish.instance = bot;
+    if (Starfish.instance != null)
+      throw new IllegalStateException("Bot has been already initialized");
+    Starfish.instance = bot;
   }
 
   public static @NonNull Configuration getConfiguration() {
@@ -77,6 +77,10 @@ public class Starfish {
 
   public static @NonNull Cache getCache() {
     return Starfish.validated().getCache();
+  }
+
+  public static @NonNull Logger getLogger() {
+    return Starfish.validated().getLogger();
   }
 
   public static @NonNull Loader getLoader() {

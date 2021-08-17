@@ -4,23 +4,20 @@ import com.starfishst.api.Starfish;
 import com.starfishst.api.events.tickets.TicketAddUserEvent;
 import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.lang.LocaleFile;
+import com.starfishst.api.loader.UserSubloader;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import lombok.NonNull;
 import me.googas.commands.jda.result.ResultType;
-import me.googas.starbox.Strings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -67,10 +64,15 @@ public interface Ticket extends StarfishCatchable {
    */
   @NonNull
   default List<BotUser> getUsers(@NonNull String roleToMatch) {
-    return this.getUsers().entrySet().stream().filter(entry -> {
-      String role = entry.getValue();
-      return role.equalsIgnoreCase(roleToMatch) || (roleToMatch.equalsIgnoreCase("customer") && role.equalsIgnoreCase("owner"));
-    }).map(Map.Entry::getKey).collect(Collectors.toList());
+    return this.getUsers().entrySet().stream()
+        .filter(
+            entry -> {
+              String role = entry.getValue();
+              return role.equalsIgnoreCase(roleToMatch)
+                  || (roleToMatch.equalsIgnoreCase("customer") && role.equalsIgnoreCase("owner"));
+            })
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -97,16 +99,16 @@ public interface Ticket extends StarfishCatchable {
                 } else {
                   usersBuilder.append(ticketUser.getId());
                 }
-                usersBuilder.append(" role: ")
-                        .append(role)
-                        .append("\n");
-                ticketUser.getMember().ifPresent(member -> {
-                  usersBuilder.append(member.getAsMention());
-                });
+                usersBuilder.append(" role: ").append(role).append("\n");
+                ticketUser
+                    .getMember()
+                    .ifPresent(
+                        member -> {
+                          usersBuilder.append(member.getAsMention());
+                        });
               });
       fields.put("users", usersBuilder.toString());
     }
-
 
     EmbedBuilder embedQuery =
         Messages.build(
@@ -242,8 +244,9 @@ public interface Ticket extends StarfishCatchable {
     this.getUsersIdMap()
         .forEach(
             (id, role) -> {
-              BotUser user = Starfish.getLoader().getStarfishUser(id);
-              if (user != null) map.put(user, role);
+              BotUser user =
+                  Starfish.getLoader().getSubloader(UserSubloader.class).getStarfishUser(id);
+              map.put(user, role);
             });
     return map;
   }
@@ -268,13 +271,17 @@ public interface Ticket extends StarfishCatchable {
     placeholders.put("id", String.valueOf(this.getId()));
     placeholders.put("type", this.getType().toString().toLowerCase());
     placeholders.put("status", this.getStatus().toString().toLowerCase());
-    this.getOwner().ifPresent(owner -> {
-      placeholders.put("owner", owner.getName());
-      placeholders.put("owner_tag", owner.getMention());
-    });
-    this.getTextChannel().ifPresent(channel -> {
-      placeholders.put("channel", channel.getAsMention());
-    });
+    this.getOwner()
+        .ifPresent(
+            owner -> {
+              placeholders.put("owner", owner.getName());
+              placeholders.put("owner_tag", owner.getMention());
+            });
+    this.getTextChannel()
+        .ifPresent(
+            channel -> {
+              placeholders.put("channel", channel.getAsMention());
+            });
     return placeholders;
   }
 

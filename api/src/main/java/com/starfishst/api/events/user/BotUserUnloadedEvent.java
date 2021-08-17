@@ -4,6 +4,7 @@ import com.starfishst.api.user.BotUser;
 import lombok.NonNull;
 
 /** Called when a bot user gets unloaded */
+@Deprecated
 public class BotUserUnloadedEvent extends BotUserEvent {
   /**
    * Create the event

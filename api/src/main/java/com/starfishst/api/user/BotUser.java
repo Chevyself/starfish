@@ -7,17 +7,13 @@ import com.starfishst.api.permissions.Permissible;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import lombok.NonNull;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -54,7 +50,9 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    */
   @NonNull
   default String getMention() {
-    return this.getDiscord().map(IMentionable::getAsMention).orElseGet(() -> String.valueOf(this.getId()));
+    return this.getDiscord()
+        .map(IMentionable::getAsMention)
+        .orElseGet(() -> String.valueOf(this.getId()));
   }
 
   /**
@@ -115,7 +113,9 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    */
   @NonNull
   default Optional<Member> getMember() {
-    return Starfish.getDiscordConfiguration().getGuild().map(guild -> guild.getMemberById(this.getId()));
+    return Starfish.getDiscordConfiguration()
+        .getGuild()
+        .map(guild -> guild.getMemberById(this.getId()));
   }
 
   /**
@@ -125,10 +125,13 @@ public interface BotUser extends Localizable, Permissible, StarfishCatchable {
    */
   @NonNull
   default String getName() {
-    return this.getMember().map(member -> {
-      String nickname = member.getNickname();
-      return nickname == null ? member.getEffectiveName() : nickname;
-    }).orElseGet(() -> this.getDiscord().map(User::getName).orElse(String.valueOf(this.getId())));
+    return this.getMember()
+        .map(
+            member -> {
+              String nickname = member.getNickname();
+              return nickname == null ? member.getEffectiveName() : nickname;
+            })
+        .orElseGet(() -> this.getDiscord().map(User::getName).orElse(String.valueOf(this.getId())));
   }
 
   /**

@@ -2,7 +2,6 @@ package com.starfishst.api.user;
 
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.utility.StarfishCatchable;
-
 import java.util.HashMap;
 import java.util.Map;
 import lombok.NonNull;
@@ -34,8 +33,7 @@ public interface FreelancerRating extends StarfishCatchable {
       Map<String, String> map = new HashMap<>();
       map.put("average", String.valueOf(this.getRating()));
       map.put("total", String.valueOf(this.getMap().size()));
-      return locale.get(
-          "freelancer-rating.rating", map);
+      return locale.get("freelancer-rating.rating", map);
     }
   }
 

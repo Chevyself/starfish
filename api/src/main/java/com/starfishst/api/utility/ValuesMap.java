@@ -6,18 +6,15 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.Getter;
 import lombok.NonNull;
-import me.googas.starbox.Strings;
 import org.jetbrains.annotations.Nullable;
 
 /** This object represents certain changes and configurations for an object */
 @Deprecated
 public class ValuesMap {
 
-  @NonNull @Getter
-  private final Map<String, Object> map;
+  @NonNull @Getter private final Map<String, Object> map;
 
   public ValuesMap(@NonNull Map<String, Object> map) {
     this.map = map;
@@ -121,7 +118,8 @@ public class ValuesMap {
     this.getMap().remove(key);
   }
 
-  @NonNull @Deprecated
+  @NonNull
+  @Deprecated
   public static <O> String pretty(@NonNull Collection<O> collection, @Nullable String empty) {
     if (collection.isEmpty()) return empty == null ? "Empty" : empty;
     StringBuilder builder = new StringBuilder();
@@ -144,7 +142,8 @@ public class ValuesMap {
    * @param <O> the type of the collection
    * @return a string given by the collection
    */
-  @NonNull @Deprecated
+  @NonNull
+  @Deprecated
   public static <O> String pretty(@NonNull Collection<O> collection) {
     return collection.toString().replace("[", "").replace("]", "");
   }
