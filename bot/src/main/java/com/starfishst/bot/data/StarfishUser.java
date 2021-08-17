@@ -51,7 +51,7 @@ public class StarfishUser implements BotUser {
   }
 
   @Override
-  public FreelancerRating getRating() {
+  public @NonNull FreelancerRating getRating() {
     return Starfish.getLoader().getRating(this.id);
   }
 

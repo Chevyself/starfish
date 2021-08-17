@@ -3,7 +3,7 @@ package com.starfishst.api.configuration;
 import com.starfishst.api.utility.Fee;
 import com.starfishst.api.utility.ValuesMap;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import me.googas.commands.jda.ListenerOptions;
@@ -115,5 +115,5 @@ public interface Configuration {
    * @return the preferences for starfish handlers
    */
   @NonNull
-  HashMap<String, ? extends ValuesMap> getHandlerPreferences();
+  Map<String, ? extends ValuesMap> getHandlerPreferences();
 }

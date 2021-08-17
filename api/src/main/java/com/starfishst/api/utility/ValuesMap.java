@@ -11,7 +11,6 @@ import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 
 /** This object represents certain changes and configurations for an object */
-@Deprecated
 public class ValuesMap {
 
   @NonNull @Getter private final Map<String, Object> map;

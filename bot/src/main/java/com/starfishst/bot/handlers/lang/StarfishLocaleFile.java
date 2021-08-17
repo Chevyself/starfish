@@ -83,13 +83,13 @@ public class StarfishLocaleFile implements LocaleFile {
   }
 
   @Override
-  public StarfishLocaleFile save() {
+  public @NonNull StarfishLocaleFile save() {
     StarfishFiles.Contexts.PROPERTIES.write(this.file, this.properties, "");
     return this;
   }
 
   @Override
-  public Optional<String> getRaw(@NonNull String path) {
+  public @NonNull Optional<String> getRaw(@NonNull String path) {
     return Optional.ofNullable(this.properties.getProperty(path));
   }
 }

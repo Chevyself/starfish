@@ -108,6 +108,7 @@ public class StarfishTicketManager implements TicketManager {
     return this.configuration.getTotal();
   }
 
+  @NonNull
   @Override
   public void setTotal(long total) {
     this.configuration.setTotal(total);

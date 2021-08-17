@@ -1,5 +1,6 @@
 package com.starfishst.api.utility;
 
+import com.starfishst.api.AbstractMessageBuilder;
 import com.starfishst.api.Starfish;
 import com.starfishst.api.lang.LocaleFile;
 import com.starfishst.api.user.BotUser;
@@ -13,6 +14,11 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 
 public class Messages {
+
+  @NonNull
+  public static AbstractMessageBuilder of(@NonNull String key) {
+    return AbstractMessageBuilder.of(key);
+  }
 
   /**
    * Create an embed query

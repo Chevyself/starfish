@@ -69,7 +69,7 @@ public class TicketCreatorReactionResponse extends StarfishReactionResponse {
               } catch (TicketCreationException e) {
                 event
                     .getTextChannel()
-                    .sendMessage(e.toQuery(user).build())
+                    .sendMessage(e.toMessage().build())
                     .queue(Messages.getErrorConsumer());
               }
             });

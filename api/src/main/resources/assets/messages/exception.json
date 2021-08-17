@@ -1,0 +1,8 @@
+{
+  "embeds": [
+    {
+      "title": "An exception has been encountered!",
+      "description": "%message%"
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -24,6 +25,8 @@ public class AbstractMessageBuilder
 
   @NonNull @Getter
   private static final Map<String, AbstractMessageBuilder> parents = new HashMap<>();
+
+  @NonNull private static final Map<String, AbstractMessageBuilder> messages = new HashMap<>();
 
   @Getter private final String parent;
   @NonNull @Getter private String content;
@@ -56,24 +59,31 @@ public class AbstractMessageBuilder
 
   @NonNull
   public static AbstractMessageBuilder of(@NonNull String key) {
-    return StarfishFiles.Assets.Messages.getMessageFile(key)
-        .read(Starfish.getJson(), AbstractMessageBuilder.class)
-        .handle(
-            e ->
-                Starfish.getLogger()
-                    .log(Level.SEVERE, e, () -> "Could not load file for message: " + key))
-        .provide()
-        .orElseThrow(NullPointerException::new);
+    key = key.endsWith(".json") ? key.substring(0, key.length() - 5) : key;
+    return AbstractMessageBuilder.getParents()
+        .computeIfAbsent(
+            key,
+            name ->
+                StarfishFiles.Assets.Messages.getMessageFile(name)
+                    .read(Starfish.getJson(), AbstractMessageBuilder.class)
+                    .handle(
+                        e ->
+                            Starfish.getLogger()
+                                .log(
+                                    Level.SEVERE,
+                                    e,
+                                    () -> "Could not load file for message: " + name))
+                    .provide()
+                    .orElseThrow(
+                        () ->
+                            new NullPointerException(
+                                "Could not load file for message or it is empty: " + name)));
   }
 
   @NonNull
-  public static AbstractMessageBuilder getParent(String key) {
-    AbstractMessageBuilder message = AbstractMessageBuilder.parents.get(key);
-    if (message == null) {
-      message = AbstractMessageBuilder.of(key);
-      AbstractMessageBuilder.parents.put(key, message);
-    }
-    return message;
+  public static AbstractMessageBuilder getParent(@NonNull String key) {
+    key = key.endsWith(".json") ? key.substring(0, key.length() - 5) : key;
+    return AbstractMessageBuilder.parents.computeIfAbsent(key, AbstractMessageBuilder::of);
   }
 
   private static String formatOrNull(String string, @NonNull Map<String, String> map) {
@@ -114,7 +124,7 @@ public class AbstractMessageBuilder
 
   @NonNull
   private AbstractMessageBuilder apply(@NonNull Map<String, String> map) {
-    this.setContent(Strings.format(this.getContent(), map));
+    this.setContent(AbstractMessageBuilder.formatOrNull(this.getContent(), map));
     this.getEmbeds()
         .forEach(
             builder -> {
@@ -130,6 +140,12 @@ public class AbstractMessageBuilder
                   AbstractMessageBuilder.formatOrNull(
                       builder.getDescriptionBuilder().toString(), map));
             });
+    return this;
+  }
+
+  @NonNull
+  public AbstractMessageBuilder withEmbeds(@NonNull Consumer<List<EmbedBuilder>> consumer) {
+    consumer.accept(this.getEmbeds());
     return this;
   }
 
@@ -174,17 +190,26 @@ public class AbstractMessageBuilder
     return this.build(new HashMap<>());
   }
 
-  @Override
   @NonNull
-  public Message build(@NonNull Map<String, String> map) {
+  public MessageBuilder toMessageBuilder() {
+    return this.toMessageBuilder(new HashMap<>());
+  }
+
+  @NonNull
+  public MessageBuilder toMessageBuilder(@NonNull Map<String, String> map) {
     AbstractMessageBuilder message = this.prepare().apply(map);
     return new MessageBuilder()
         .setContent(message.getContent())
         .setEmbeds(
             message.getEmbeds().stream().map(EmbedBuilder::build).collect(Collectors.toList()))
         .setTTS(message.isTts())
-        .setNonce(message.getNonce())
-        .build();
+        .setNonce(message.getNonce());
+  }
+
+  @Override
+  @NonNull
+  public Message build(@NonNull Map<String, String> map) {
+    return this.toMessageBuilder(map).build();
   }
 
   @Override

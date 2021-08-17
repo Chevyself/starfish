@@ -46,7 +46,7 @@ public class QuoteHandler implements StarfishHandler {
             .getTextChannel()
             .ifPresent(
                 channel -> {
-                  channel.sendMessage(e.toQuery(owner).build()).queue(Messages.getErrorConsumer());
+                  channel.sendMessage(e.toMessage().build()).queue(Messages.getErrorConsumer());
                 });
       }
     }

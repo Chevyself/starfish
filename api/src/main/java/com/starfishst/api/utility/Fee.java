@@ -49,7 +49,7 @@ public class Fee {
    */
   @Deprecated
   public double apply(double subtotal) {
-    return getApply(subtotal) + subtotal;
+    return this.getApply(subtotal) + subtotal;
   }
 
   /**

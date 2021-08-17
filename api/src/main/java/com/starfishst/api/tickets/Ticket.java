@@ -1,25 +1,19 @@
 package com.starfishst.api.tickets;
 
-import com.starfishst.api.Starfish;
-import com.starfishst.api.events.tickets.TicketAddUserEvent;
-import com.starfishst.api.events.tickets.TicketRemoveUserEvent;
 import com.starfishst.api.lang.LocaleFile;
-import com.starfishst.api.loader.UserSubloader;
 import com.starfishst.api.user.BotUser;
 import com.starfishst.api.utility.Messages;
 import com.starfishst.api.utility.StarfishCatchable;
 import com.starfishst.api.utility.ValuesMap;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.NonNull;
-import me.googas.commands.jda.result.ResultType;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /** Represents a ticket made by a customer */
@@ -32,14 +26,17 @@ public interface Ticket extends StarfishCatchable {
    * @param role the role of the user
    * @return whether the user was added or not. true if removed
    */
-  default boolean addUser(@NonNull BotUser user, @NonNull String role) {
-    if (!this.getUsersIdMap().containsKey(user.getId())
-        && !new TicketAddUserEvent(this, user, role).callAndGet()) {
-      this.getUsersIdMap().put(user.getId(), role);
-      return true;
-    }
-    return false;
-  }
+  @Deprecated
+  boolean addUser(@NonNull BotUser user, @NonNull String role);
+
+  /**
+   * Adds an user to the ticket
+   *
+   * @param user the user that is going to be added
+   * @param role the role of the user
+   * @return whether the user was added or not. true if removed
+   */
+  boolean addUser(@NonNull BotUser user, @NonNull TicketRole role);
 
   /**
    * Removes an user from the ticket
@@ -47,14 +44,7 @@ public interface Ticket extends StarfishCatchable {
    * @param user the user to remove from the ticket
    * @return whether the user was removed. true if removed
    */
-  default boolean removeUser(@NonNull BotUser user) {
-    if (this.getUsersIdMap().containsKey(user.getId())
-        && !new TicketRemoveUserEvent(this, user).callAndGet()) {
-      this.getUsersIdMap().remove(user.getId());
-      return true;
-    }
-    return false;
-  }
+  boolean removeUser(@NonNull BotUser user);
 
   /**
    * Get the list of users matching a role
@@ -63,13 +53,25 @@ public interface Ticket extends StarfishCatchable {
    * @return the list of users matching it
    */
   @NonNull
+  @Deprecated
   default List<BotUser> getUsers(@NonNull String roleToMatch) {
+    return this.getUsers(TicketRole.valueOf(roleToMatch.toUpperCase()));
+  }
+
+  /**
+   * Get the list of users matching a role
+   *
+   * @param toMatch the role to match
+   * @return the list of users matching it
+   */
+  @NonNull
+  default List<BotUser> getUsers(@NonNull TicketRole toMatch) {
     return this.getUsers().entrySet().stream()
         .filter(
             entry -> {
-              String role = entry.getValue();
-              return role.equalsIgnoreCase(roleToMatch)
-                  || (roleToMatch.equalsIgnoreCase("customer") && role.equalsIgnoreCase("owner"));
+              TicketRole role = entry.getValue();
+              return toMatch == role
+                  || (toMatch == TicketRole.CUSTOMER && role == TicketRole.OWNER);
             })
         .map(Map.Entry::getKey)
         .collect(Collectors.toList());
@@ -83,41 +85,31 @@ public interface Ticket extends StarfishCatchable {
    * @return the complete information of a ticket
    */
   @NonNull
-  default EmbedBuilder toCompleteInformation(@NonNull LocaleFile locale, boolean appendUsers) {
-    Map<String, String> placeholders = this.getPlaceholders();
-    LinkedHashMap<String, String> fields = new LinkedHashMap<>();
-
-    this.getDetails().toStringMap().forEach(fields::put);
-    if (appendUsers) {
-      StringBuilder usersBuilder = new StringBuilder();
-      this.getUsers()
-          .forEach(
-              (ticketUser, role) -> {
-                Optional<Member> optionalMember = ticketUser.getMember();
-                if (optionalMember.isPresent()) {
-                  usersBuilder.append(optionalMember.get().getAsMention());
-                } else {
-                  usersBuilder.append(ticketUser.getId());
+  default Message toCompleteInformation(@NonNull LocaleFile locale, boolean appendUsers) {
+    // Don't remove locale it might be useful in the future
+    return Messages.of("ticket-info")
+        .withEmbeds(
+            builders -> {
+              if (!builders.isEmpty()) {
+                // TODO name could be changed for the name in parameter locale
+                EmbedBuilder builder = builders.get(0);
+                this.getDetails()
+                    .toStringMap()
+                    .forEach((name, value) -> builder.addField(name, value, true));
+                if (appendUsers) {
+                  StringBuilder usersBuilder = new StringBuilder();
+                  this.getUsers()
+                      .forEach(
+                          (user, role) -> usersBuilder
+                              .append(user.getDiscordTag())
+                              .append(" role: ")
+                              .append(role)
+                              .append("\n"));
+                  builder.addField("users", usersBuilder.toString(), true);
                 }
-                usersBuilder.append(" role: ").append(role).append("\n");
-                ticketUser
-                    .getMember()
-                    .ifPresent(
-                        member -> {
-                          usersBuilder.append(member.getAsMention());
-                        });
-              });
-      fields.put("users", usersBuilder.toString());
-    }
-
-    EmbedBuilder embedQuery =
-        Messages.build(
-            locale.get("ticket-info.title", placeholders),
-            locale.get("ticket-info.description", placeholders),
-            ResultType.GENERIC,
-            locale);
-    fields.forEach((key, value) -> embedQuery.addField(key, value, true));
-    return embedQuery;
+              }
+            })
+        .build(this.getPlaceholders());
   }
 
   /**
@@ -128,23 +120,8 @@ public interface Ticket extends StarfishCatchable {
    * @return the complete information of a ticket
    */
   @NonNull
-  default EmbedBuilder toCompleteInformation(@NonNull BotUser user, boolean appendUsers) {
+  default Message toCompleteInformation(@NonNull BotUser user, boolean appendUsers) {
     return this.toCompleteInformation(user.getLocaleFile(), appendUsers);
-  }
-
-  /**
-   * Get how many freelancers there is in the ticket
-   *
-   * @return the amount of freelancers
-   */
-  default int countFreelancers() {
-    int size = 0;
-    for (String value : this.getUsersIdMap().values()) {
-      if (value.equalsIgnoreCase("freelancer")) {
-        size++;
-      }
-    }
-    return size;
   }
 
   /**
@@ -171,13 +148,6 @@ public interface Ticket extends StarfishCatchable {
   long getId();
 
   /**
-   * Get the id of the text channel where this ticket is on
-   *
-   * @return the id of the channel
-   */
-  long getTextChannelId();
-
-  /**
    * Get the text channel where the ticket is running
    *
    * @return a {@link java.util.Optional} holding the nullable channel
@@ -194,18 +164,12 @@ public interface Ticket extends StarfishCatchable {
   TicketType getType();
 
   /**
-   * Get the owner of the ticket. This will user {@link #getUsers(String)} with the role 'owner'
+   * Check whether the ticket has freelancers
    *
-   * @return a {@link java.util.Optional} holding the nullable user
+   * @return true if the ticket has freelancers
    */
-  @NonNull
-  default Optional<BotUser> getOwner() {
-    BotUser user = null;
-    List<BotUser> owners = this.getUsers("owner");
-    if (!owners.isEmpty()) {
-      user = owners.get(0);
-    }
-    return Optional.ofNullable(user);
+  default boolean hasFreelancers() {
+    return this.getUsers(TicketRole.FREELANCER).size() > 0;
   }
 
   /**
@@ -225,13 +189,19 @@ public interface Ticket extends StarfishCatchable {
   TicketStatus getStatus();
 
   /**
-   * Get the users inside the ticket. The map shows the user and its role in the ticket: 'user' or
-   * 'freelancer'
+   * Get the owner of the ticket. This will user {@link #getUsers(String)} with the role 'owner'
    *
-   * @return a map of users inside the ticket
+   * @return a {@link java.util.Optional} holding the nullable user
    */
   @NonNull
-  Map<Long, String> getUsersIdMap();
+  default Optional<BotUser> getOwner() {
+    BotUser user = null;
+    List<BotUser> owners = this.getUsers(TicketRole.OWNER);
+    if (!owners.isEmpty()) {
+      user = owners.get(0);
+    }
+    return Optional.ofNullable(user);
+  }
 
   /**
    * Get the Map of users and their role in the ticket
@@ -239,26 +209,7 @@ public interface Ticket extends StarfishCatchable {
    * @return the map of users
    */
   @NonNull
-  default Map<BotUser, String> getUsers() {
-    Map<BotUser, String> map = new HashMap<>();
-    this.getUsersIdMap()
-        .forEach(
-            (id, role) -> {
-              BotUser user =
-                  Starfish.getLoader().getSubloader(UserSubloader.class).getStarfishUser(id);
-              map.put(user, role);
-            });
-    return map;
-  }
-
-  /**
-   * Check whether the ticket has freelancers
-   *
-   * @return true if the ticket has freelancers
-   */
-  default boolean hasFreelancers() {
-    return this.countFreelancers() > 0;
-  }
+  Map<BotUser, TicketRole> getUsers();
 
   /**
    * Get the placeholders of this ticket for messages
@@ -277,11 +228,7 @@ public interface Ticket extends StarfishCatchable {
               placeholders.put("owner", owner.getName());
               placeholders.put("owner_tag", owner.getMention());
             });
-    this.getTextChannel()
-        .ifPresent(
-            channel -> {
-              placeholders.put("channel", channel.getAsMention());
-            });
+    this.getTextChannel().ifPresent(channel -> placeholders.put("channel", channel.getAsMention()));
     return placeholders;
   }
 
@@ -292,7 +239,7 @@ public interface Ticket extends StarfishCatchable {
    */
   @NonNull
   default Collection<BotUser> getFreelancers() {
-    return this.getUsers("freelancer");
+    return this.getUsers(TicketRole.FREELANCER);
   }
 
   /**

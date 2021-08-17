@@ -43,7 +43,13 @@ public class MessagesTest {
             .awaitReady();
     TextChannel channel = Objects.requireNonNull(jda.getTextChannelById(817549065168355371L));
     Arrays.asList("parent", "parent2", "message")
-        .forEach(key -> channel.sendMessage(AbstractMessageBuilder.of(key).build(MapBuilder.of("placeholder", "._.XD").build())).queue());
+        .forEach(
+            key ->
+                channel
+                    .sendMessage(
+                        AbstractMessageBuilder.of(key)
+                            .build(MapBuilder.of("placeholder", "._.XD").build()))
+                    .queue());
   }
 
   public static class TestBot implements StarfishBot {

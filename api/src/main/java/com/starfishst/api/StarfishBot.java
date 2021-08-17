@@ -61,16 +61,12 @@ public interface StarfishBot {
     StarfishFiles.CONFIG
         .write(this.getJson(), this.getConfiguration())
         .handle(
-            e -> {
-              fallback.process(e, "There's been an error while trying to save 'config.json'");
-            })
+            e -> fallback.process(e, "There's been an error while trying to save 'config.json'"))
         .provide();
     StarfishFiles.DISCORD
         .write(this.getJson(), this.getDiscordConfiguration())
         .handle(
-            e -> {
-              fallback.process(e, "There's been an error while trying to save 'discord.json'");
-            });
+            e -> fallback.process(e, "There's been an error while trying to save 'discord.json'"));
     for (LocaleFile file : this.getLanguageHandler().getFiles()) {
       file.save();
     }

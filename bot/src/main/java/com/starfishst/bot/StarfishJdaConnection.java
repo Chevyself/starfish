@@ -118,7 +118,7 @@ public class StarfishJdaConnection implements JdaConnection {
   }
 
   @Override
-  public Optional<JDA> getJda() {
+  public @NonNull Optional<JDA> getJda() {
     return Optional.ofNullable(this.jda);
   }
 
